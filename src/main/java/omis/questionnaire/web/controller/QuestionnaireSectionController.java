@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.questionnaire.web.controller;
 
 import java.util.ArrayList;
@@ -45,9 +62,10 @@ import omis.web.controller.delegate.BusinessExceptionHandlerDelegate;
 /**
  * QuestionnaireSectionController.java
  * 
- *@author Annie Jacques 
- *@version 0.1.0 (Sep 13, 2016)
- *@since OMIS 3.0
+ * @author Annie Jacques
+ * @author Josh Divine 
+ * @version 0.1.1 (Feb 12, 2018)
+ * @since OMIS 3.0
  *
  */
 @Controller
@@ -343,14 +361,14 @@ public class QuestionnaireSectionController {
 			//create/update/remove the AdministeredQuestionnaireSectionNote
 			if(sectionNote != null){
 				if(form.getSectionComments() != null && 
-						form.getSectionComments() != ""){
+						!form.getSectionComments().isEmpty()){
 					//note exists in the database and on the form, so update it
 					this.administeredQuestionnaireService
 					.updateAdministeredQuestionnaireSectionNote(sectionNote, 
 							questionnaireSection, form.getSectionComments());
 				}
 				else if(form.getSectionComments() == null || 
-						form.getSectionComments() == ""){
+						form.getSectionComments().isEmpty()){
 					//note exists in the database but not on the form, 
 					//so remove it
 					this.administeredQuestionnaireService
@@ -359,7 +377,7 @@ public class QuestionnaireSectionController {
 			}
 			else{
 				if(form.getSectionComments() != null && 
-						form.getSectionComments() != ""){
+						!form.getSectionComments().isEmpty()){
 					//a note does not exist in the database but does on the form
 					//so create it
 					this.administeredQuestionnaireService
@@ -494,9 +512,9 @@ public class QuestionnaireSectionController {
 						}
 						else if(item.getAnswerValue() == null &&
 								((item.getAnswerValueText() != null && 
-								item.getAnswerValueText() != "") || 
+								!item.getAnswerValueText().isEmpty()) || 
 								(item.getComments() != null && 
-								item.getComments() != ""))){
+								!item.getComments().isEmpty()))){
 							//Database value exists, form has no answerValue
 							//but does have text/comments, so update with 
 							//only the text/comments
@@ -510,9 +528,9 @@ public class QuestionnaireSectionController {
 						}
 						else if(item.getAnswerValue() == null &&
 								(item.getAnswerValueText() == null || 
-								item.getAnswerValueText() == "") && 
+								item.getAnswerValueText().isEmpty()) && 
 								(item.getComments() == null ||
-								item.getComments() == "")){
+								item.getComments().isEmpty())){
 							//database value exists but form item is empty
 							//so remove it
 							this.administeredQuestionnaireService
@@ -534,9 +552,9 @@ public class QuestionnaireSectionController {
 						}
 						else if(item.getAnswerValue() == null && 
 								((item.getAnswerValueText() != null && 
-								item.getAnswerValueText() != "") || 
+								!item.getAnswerValueText().isEmpty()) || 
 								(item.getComments() != null && 
-								item.getComments() != ""))){
+								!item.getComments().isEmpty()))){
 							//database value does not exist, form item does exist
 							//without an answer value but with text/comments, so 
 							//create it with only text/comments
@@ -661,9 +679,9 @@ public class QuestionnaireSectionController {
 						}
 						else if(answerValuesNew.isEmpty() &&
 								((item.getAnswerValueText() != null && 
-								item.getAnswerValueText() != "") || 
+								!item.getAnswerValueText().isEmpty()) || 
 								(item.getComments() != null && 
-								item.getComments() != ""))){
+								!item.getComments().isEmpty()))){
 							//There are no answerValues but there are text/comments
 							if(!(answerValuesOriginal.isEmpty())){
 								//remove AdministeredQuestionValues with an 
@@ -700,9 +718,9 @@ public class QuestionnaireSectionController {
 						}
 						else if(answerValuesNew.isEmpty() &&
 								(item.getAnswerValueText() == null || 
-								item.getAnswerValueText() == "") && 
+								item.getAnswerValueText().isEmpty()) && 
 								(item.getComments() == null ||
-								item.getComments() == "")){
+								item.getComments().isEmpty())){
 							//The form item is completely empty
 							//remove any existing administeredQuestionValues
 							for(AdministeredQuestionValue questionValue 
@@ -731,9 +749,9 @@ public class QuestionnaireSectionController {
 							}
 						}
 						else if((item.getAnswerValueText() != null && 
-									item.getAnswerValueText() != "")
+									!item.getAnswerValueText().isEmpty())
 									|| (item.getComments() != null && 
-									item.getComments() != "")){
+									!item.getComments().isEmpty())){
 							//create new AdministeredQuestionValues 
 							//without answerValues
 							this.administeredQuestionnaireService

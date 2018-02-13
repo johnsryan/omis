@@ -19,8 +19,10 @@ package omis.victim.service.delegate;
 
 import java.util.List;
 
+import omis.instance.factory.InstanceFactory;
 import omis.victim.dao.VictimNoteCategoryDao;
 import omis.victim.domain.VictimNoteCategory;
+import omis.victim.exception.VictimNoteCategoryExistsException;
 
 /**
  * Delegate for categories of victim note.
@@ -36,6 +38,10 @@ public class VictimNoteCategoryDelegate {
 	
 	private final VictimNoteCategoryDao victimNoteCategoryDao;
 	
+	/* Instance factories. */
+	private InstanceFactory<VictimNoteCategory> 
+		victimNoteCategoryInstanceFactory;
+	
 	/* Constructors. */
 	
 	/**
@@ -44,8 +50,12 @@ public class VictimNoteCategoryDelegate {
 	 * @param victimNoteCategoryDao data access object for victim notes
 	 */
 	public VictimNoteCategoryDelegate(
-			final VictimNoteCategoryDao victimNoteCategoryDao) {
+			final VictimNoteCategoryDao victimNoteCategoryDao,
+			final InstanceFactory<VictimNoteCategory> 
+				victimNoteCategoryInstanceFactory) {
 		this.victimNoteCategoryDao = victimNoteCategoryDao;
+		this.victimNoteCategoryInstanceFactory 
+			= victimNoteCategoryInstanceFactory;
 	}
 	
 	/**
@@ -55,5 +65,32 @@ public class VictimNoteCategoryDelegate {
 	 */
 	public List<VictimNoteCategory> findAll() {
 		return this.victimNoteCategoryDao.findAll();
+	}
+	
+	/**
+	 * Create victim note category.
+	 *
+	 *
+	 * @param name name
+	 * @param sortOrder sort order
+	 * @param contact contact
+	 * @param valid valid
+	 * @return note category
+	 * @throws VictimNoteCategoryExistsException victim note category exists
+	 */
+	public VictimNoteCategory create(final String name, final Short sortOrder, 
+			final Boolean contact, final Boolean valid) 
+					throws VictimNoteCategoryExistsException {
+		if (this.victimNoteCategoryDao.find(name) != null) {
+			throw new VictimNoteCategoryExistsException(
+					"Duplicate victim note category found.");
+		}
+		VictimNoteCategory category 
+			= this.victimNoteCategoryInstanceFactory.createInstance();
+		category.setContact(contact);
+		category.setName(name);
+		category.setSortOrder(sortOrder);
+		category.setValid(valid);
+		return this.victimNoteCategoryDao.makePersistent(category);
 	}
 }

@@ -18,6 +18,7 @@ import omis.user.domain.UserAccount;
  * 
  * @author Joel Norris
  * @author Yidong Li
+ * @author Stephen Abson
  * @version 0.1.0 (Jan 26, 2016)
  * @since OMIS 3.0
  */
@@ -33,6 +34,8 @@ public class EditRelationshipsForm implements Serializable {
 		= new ArrayList<TelephoneNumberItem>();
 	private List<OnlineAccountContactItem> onlineAccountContactItems
 		= new ArrayList<OnlineAccountContactItem>();
+	private List<OffenderRelationshipNoteItem> noteItems
+		= new ArrayList<OffenderRelationshipNoteItem>();
 	private UserAccount verifiedByUserAccount;
 	private Date verificationDate;
 	private Boolean verified;
@@ -188,6 +191,25 @@ public class EditRelationshipsForm implements Serializable {
 	public void setOnlineAccountContactItems(
 		final	List<OnlineAccountContactItem> onlineAccountContactItems) {
 		this.onlineAccountContactItems = onlineAccountContactItems;
+	}
+	
+	/**
+	 * Sets note items.
+	 * 
+	 * @param noteItems note items
+	 */
+	public void setNoteItems(
+			final List<OffenderRelationshipNoteItem> noteItems) {
+		this.noteItems = noteItems;
+	}
+	
+	/**
+	 * Returns note items.
+	 * 
+	 * @return note items
+	 */
+	public List<OffenderRelationshipNoteItem> getNoteItems() {
+		return this.noteItems;
 	}
 	
 	/**

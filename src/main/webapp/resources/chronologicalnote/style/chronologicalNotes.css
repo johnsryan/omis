@@ -1,0 +1,77 @@
+/**
+ * Styling for chronological note.
+ *
+ * Author: Yidong Li
+ * Version: 0.1.0 (February)
+ * Since: OMIS 3.0
+ */
+ 
+form.listForm fieldset span.categoryListContainer span{
+   display: inline-block;
+   width: 24%;
+   min-width: 300px;
+   text-align: left;
+   margin: 3px 0px 3px 0px;
+}
+
+form.listForm {
+	margin-top: 0px;
+	margin-bottom: 0px;
+	margin-left: 0px;
+	margin-right: 0px;
+	padding-left: 25px;
+	padding-right: 10px;
+	padding-bottom: 10px;
+	padding-top: 0px;
+	border-width: 0px;
+}
+
+/* Form elements. */
+form.listForm select::-ms-expand {
+	display:none;
+}
+
+form.listForm fieldset legend {
+	padding: 5px;
+	padding-left: 9px;
+	padding-right: 9px;
+}
+
+/* Field sets. */
+form.listForm fieldset {
+	padding: 23px;
+	margin: 2px;
+	border-width: 0px;
+	border-style: solid;
+	margin-bottom: 12px;
+	clear: left;
+}
+
+form.listForm fieldset legend {
+	padding: 5px;
+	padding-left: 9px;
+	padding-right: 9px;
+}
+
+/* Form labels and values. */
+form.listForm fieldset div span.fieldGroup.relevantOptionFieldGroup {
+	width: 100px;
+	display: inline-block;
+}
+
+form.listForm fieldset div {
+	margin: 5px;
+}
+
+form.listForm fieldset div span.fieldGroup label.fieldLabel {
+	width: 100px;
+	display: inline-block;
+	text-align: right;
+}
+
+form.listForm select, form select {
+    padding-right: 22px;
+    min-width: 90px;      
+    text-indent: 0.01px;
+    text-overflow: ""; 
+}

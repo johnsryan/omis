@@ -28,6 +28,9 @@ public class LegacyLocationTermDaoHibernateImpl
 	private static final String OFFENDER_ID_PARAM_NAME = "offenderId";
 
 	private static final String EFFECTIVE_DATE_PARAM_NAME = "effectiveDate";
+
+	private static final String END_LEGACY_LOCATION_QUERY_NAME
+		= "endLegacyLocation";
 	
 	/**
 	 * Instantiates legacy Hibernate implementation of data access object for
@@ -112,5 +115,23 @@ public class LegacyLocationTermDaoHibernateImpl
 	public long countAfterDateExcluding(final Offender offender,
 			final Date startDate, final LocationTerm excludedLocationTerm) {
 		throw new UnsupportedOperationException("Not yet implemented");
+	}
+	
+	/** {@inheritDoc} */
+	@Override
+	public LocationTerm endLocationTerm(
+			final Offender offender, final Date effectiveDate) {
+		this.getSessionFactory().getCurrentSession()
+			.getNamedQuery(END_LEGACY_LOCATION_QUERY_NAME)
+			.setParameter(OFFENDER_ID_PARAM_NAME, offender.getId())
+			.setTimestamp(EFFECTIVE_DATE_PARAM_NAME, effectiveDate)
+			.executeUpdate();
+		return (LocationTerm) this.getSessionFactory()
+				.getCurrentSession().getNamedQuery(
+						FIND_BY_OFFENDER_ON_DATE_QUERY_NAME)
+				.setParameter(OFFENDER_ID_PARAM_NAME, offender.getId())
+				.setTimestamp(EFFECTIVE_DATE_PARAM_NAME, effectiveDate)
+				.setReadOnly(true)
+				.uniqueResult();
 	}
 }

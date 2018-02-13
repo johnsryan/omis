@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.paroleboardcondition.service.delegate;
 
 import java.util.List;
@@ -5,8 +22,10 @@ import java.util.List;
 import omis.audit.AuditComponentRetriever;
 import omis.audit.domain.CreationSignature;
 import omis.audit.domain.UpdateSignature;
+import omis.boardhearing.domain.BoardHearing;
 import omis.condition.domain.Agreement;
 import omis.exception.DuplicateEntityFoundException;
+import omis.hearinganalysis.domain.HearingAnalysis;
 import omis.instance.factory.InstanceFactory;
 import omis.paroleboardcondition.dao.ParoleBoardAgreementDao;
 import omis.paroleboardcondition.domain.ParoleBoardAgreement;
@@ -15,9 +34,10 @@ import omis.paroleboardcondition.domain.ParoleBoardAgreementCategory;
 /**
  * Parole Board Agreement Delegate.
  * 
- *@author Annie Wahl 
- *@version 0.1.0 (Dec 18, 2017)
- *@since OMIS 3.0
+ * @author Annie Wahl
+ * @author Josh Divine 
+ * @version 0.1.1 (Feb 6, 2018)
+ * @since OMIS 3.0
  *
  */
 public class ParoleBoardAgreementDelegate {
@@ -53,67 +73,65 @@ public class ParoleBoardAgreementDelegate {
 	
 	/**
 	 * Creates a Parole Board Agreement with the specified properties.
-	 * @param agreement - Agreement
-	 * @param category - Parole Board Agreement Category
-	 * @return Newly created Parole Board Agreement
-	 * @throws DuplicateEntityFoundException - When a Parole Board Agreement
-	 * already exists with the given Agreement and Category.
+	 * 
+	 * @param agreement agreement
+	 * @param boardHearing board hearing
+	 * @param hearingAnalysis hearing analysis
+	 * @param category parole board agreement category
+	 * @return parole board agreement
+	 * @throws DuplicateEntityFoundException When a parole board agreement
+	 * already exists with the given agreement and category.
 	 */
 	public ParoleBoardAgreement create(final Agreement agreement,
+			final BoardHearing boardHearing,
+			final HearingAnalysis hearingAnalysis,
 			final ParoleBoardAgreementCategory category)
 					throws DuplicateEntityFoundException {
-		if (this.paroleBoardAgreementDao.find(agreement, category) != null) {
+		if (this.paroleBoardAgreementDao.find(agreement, boardHearing,
+				hearingAnalysis, category) != null) {
 			throw new DuplicateEntityFoundException(DUPLICATE_ENTITY_FOUND_MSG);
 		}
-		
 		ParoleBoardAgreement paroleBoardAgreement = 
 				this.paroleBoardAgreementInstanceFactory.createInstance();
-		
-		paroleBoardAgreement.setAgreement(agreement);
-		paroleBoardAgreement.setCategory(category);
+		populateParoleBoardAgreement(paroleBoardAgreement, agreement, 
+				boardHearing, hearingAnalysis, category);
 		paroleBoardAgreement.setCreationSignature(
 				new CreationSignature(
 						this.auditComponentRetriever.retrieveUserAccount(), 
 						this.auditComponentRetriever.retrieveDate()));
-		paroleBoardAgreement.setUpdateSignature(
-				new UpdateSignature(
-						this.auditComponentRetriever.retrieveUserAccount(),
-						this.auditComponentRetriever.retrieveDate()));
-		
 		return this.paroleBoardAgreementDao
 				.makePersistent(paroleBoardAgreement);
 	}
 	
 	/**
-	 * Updates a Parole Board Agreement with the specified properties.
-	 * @param paroleBoardAgreement - Parole Board Agreement to update
-	 * @param agreement - Agreement
-	 * @param category - Parole Board Agreement Category
-	 * @return Updated Parole Board Agreement
-	 * @throws DuplicateEntityFoundException - When a Parole Board Agreement
-	 * already exists with the given Agreement and Category.
+	 * Updates a parole board agreement with the specified properties.
+	 * 
+	 * @param paroleBoardAgreement parole board agreement to update
+	 * @param agreement agreement
+	 * @param boardHearing board hearing
+	 * @param hearingAnalysis hearing analysis
+	 * @param category parole board agreement category
+	 * @return parole board agreement
+	 * @throws DuplicateEntityFoundException When a parole board agreement
+	 * already exists with the given agreement and category.
 	 */
 	public ParoleBoardAgreement update(
 			final ParoleBoardAgreement paroleBoardAgreement,
 			final Agreement agreement,
+			final BoardHearing boardHearing,
+			final HearingAnalysis hearingAnalysis,
 			final ParoleBoardAgreementCategory category)
 					throws DuplicateEntityFoundException {
-		if (this.paroleBoardAgreementDao.findExcluding(agreement, category,
-				paroleBoardAgreement) != null) {
+		if (this.paroleBoardAgreementDao.findExcluding(agreement, boardHearing, 
+				hearingAnalysis, category, paroleBoardAgreement) != null) {
 			throw new DuplicateEntityFoundException(DUPLICATE_ENTITY_FOUND_MSG);
 		}
-
-		paroleBoardAgreement.setAgreement(agreement);
-		paroleBoardAgreement.setCategory(category);
-		paroleBoardAgreement.setUpdateSignature(
-				new UpdateSignature(
-						this.auditComponentRetriever.retrieveUserAccount(),
-						this.auditComponentRetriever.retrieveDate()));
-		
+		populateParoleBoardAgreement(paroleBoardAgreement, agreement, 
+				boardHearing, hearingAnalysis, category);
 		return this.paroleBoardAgreementDao
 				.makePersistent(paroleBoardAgreement);
 	}
-	
+
 	/**
 	 * Removes the specified Parole Board Agreement.
 	 * @param paroleBoardAgreement - Parole Board Agreement to remove;
@@ -130,5 +148,18 @@ public class ParoleBoardAgreementDelegate {
 		return this.paroleBoardAgreementDao.findAll();
 	}
 	
-	
+	// Populates a parole board agreement
+	private void populateParoleBoardAgreement(
+			final ParoleBoardAgreement paroleBoardAgreement,
+			final Agreement agreement, final BoardHearing boardHearing,
+			final HearingAnalysis hearingAnalysis,
+			final ParoleBoardAgreementCategory category) {
+		paroleBoardAgreement.setAgreement(agreement);
+		paroleBoardAgreement.setBoardHearing(boardHearing);
+		paroleBoardAgreement.setHearingAnalysis(hearingAnalysis);
+		paroleBoardAgreement.setCategory(category);
+		paroleBoardAgreement.setUpdateSignature(new UpdateSignature(
+				this.auditComponentRetriever.retrieveUserAccount(),
+				this.auditComponentRetriever.retrieveDate()));
+	}
 }

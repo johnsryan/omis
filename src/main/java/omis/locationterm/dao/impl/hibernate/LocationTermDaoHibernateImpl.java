@@ -212,4 +212,16 @@ public class LocationTermDaoHibernateImpl
 						excludedLocationTerm).uniqueResult();
 		return count;
 	}
+	
+	/** {@inheritDoc} */
+	@Override
+	public LocationTerm endLocationTerm(
+			final Offender offender, final Date effectiveDate) {
+		
+		// TODO - remove this method once legacy functionality is no longer
+		// required - SA
+		throw new UnsupportedOperationException(
+				"Ending location term not supported - update location term"
+					+ " instead");
+	}
 }

@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ - OMIS - Offender Management Information System
+ - Copyright (C) 2011 - 2017 State of Montana
+ -
+ - This program is free software: you can redistribute it and/or modify
+ - it under the terms of the GNU General Public License as published by
+ - the Free Software Foundation, either version 3 of the License, or
+ - (at your option) any later version.
+ -
+ - This program is distributed in the hope that it will be useful,
+ - but WITHOUT ANY WARRANTY; without even the implied warranty of
+ - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ - GNU General Public License for more details.
+ -
+ - You should have received a copy of the GNU General Public License
+ - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<!-- 
+  - Parole review configuration.
+  -
+  - Author: Josh Divine
+  -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+        
+        <!-- Services -->
+        
+        <bean id="paroleReviewService"
+        	class="omis.parolereview.service.impl.ParoleReviewServiceImpl">
+        	<constructor-arg name="paroleReviewDelegate" ref="paroleReviewDelegate"/>
+        	<constructor-arg name="documentDelegate" ref="documentDelegate"/>
+        	<constructor-arg name="documentTagDelegate" ref="documentTagDelegate"/>
+        	<constructor-arg name="paroleReviewDocumentAssociationDelegate" ref="paroleReviewDocumentAssociationDelegate"/>
+        	<constructor-arg name="paroleReviewNoteDelegate" ref="paroleReviewNoteDelegate"/>
+        	<constructor-arg name="paroleEndorsementCategoryDelegate" ref="paroleEndorsementCategoryDelegate"/>
+        	<constructor-arg name="staffRoleCategoryDelegate" ref="staffRoleCategoryDelegate"/>
+        </bean>        
+        
+        <!-- Report services -->
+        
+        <bean id="paroleReviewSummaryReportService"
+        	class="omis.parolereview.report.impl.hibernate.ParoleReviewSummaryReportServiceHibernateImpl">
+        	<constructor-arg name="sessionFactory" ref="sessionFactory"/>
+        </bean>
+        
+        <!-- Delegates -->
+        
+        <bean id="paroleReviewDelegate"
+        	class="omis.parolereview.service.delegate.ParoleReviewDelegate">
+        	<constructor-arg name="paroleReviewDao" ref="paroleReviewDao"/>
+        	<constructor-arg name="auditComponentRetriever" ref="auditComponentRetriever"/>
+        	<constructor-arg name="paroleReviewInstanceFactory" ref="paroleReviewInstanceFactory"/>
+        </bean>
+        
+        <bean id="paroleReviewDocumentAssociationDelegate"
+        	class="omis.parolereview.service.delegate.ParoleReviewDocumentAssociationDelegate">
+        	<constructor-arg name="paroleReviewDocumentAssociationDao" ref="paroleReviewDocumentAssociationDao"/>
+        	<constructor-arg name="auditComponentRetriever" ref="auditComponentRetriever"/>
+        	<constructor-arg name="paroleReviewDocumentAssociationInstanceFactory" ref="paroleReviewDocumentAssociationInstanceFactory"/>
+        </bean>
+        
+        <bean id="paroleReviewNoteDelegate"
+        	class="omis.parolereview.service.delegate.ParoleReviewNoteDelegate">
+        	<constructor-arg name="paroleReviewNoteDao" ref="paroleReviewNoteDao"/>
+        	<constructor-arg name="auditComponentRetriever" ref="auditComponentRetriever"/>
+        	<constructor-arg name="paroleReviewNoteInstanceFactory" ref="paroleReviewNoteInstanceFactory"/>
+        </bean>
+        
+        <bean id="paroleEndorsementCategoryDelegate"
+        	class="omis.parolereview.service.delegate.ParoleEndorsementCategoryDelegate">
+        	<constructor-arg name="paroleEndorsementCategoryDao" ref="paroleEndorsementCategoryDao"/>
+        	<constructor-arg name="paroleEndorsementCategoryInstanceFactory" ref="paroleEndorsementCategoryInstanceFactory"/>
+        </bean>
+        
+        <bean id="staffRoleCategoryDelegate"
+        	class="omis.parolereview.service.delegate.StaffRoleCategoryDelegate">
+        	<constructor-arg name="staffRoleCategoryDao" ref="staffRoleCategoryDao"/>
+        	<constructor-arg name="staffRoleCategoryInstanceFactory" ref="staffRoleCategoryInstanceFactory"/>
+        </bean>
+        
+        <!-- Data access objects -->
+        
+        <bean id="paroleReviewDao"
+        	class="omis.parolereview.dao.impl.hibernate.ParoleReviewDaoHibernateImpl">
+    		<constructor-arg name="entityName" value="omis.parolereview.domain.ParoleReview"/>
+    		<constructor-arg name="sessionFactory" ref="sessionFactory"/>
+  		</bean>
+  		
+  		<bean id="paroleReviewDocumentAssociationDao"
+        	class="omis.parolereview.dao.impl.hibernate.ParoleReviewDocumentAssociationDaoHibernateImpl">
+    		<constructor-arg name="entityName" value="omis.parolereview.domain.ParoleReviewDocumentAssociation"/>
+    		<constructor-arg name="sessionFactory" ref="sessionFactory"/>
+  		</bean>
+  		
+  		<bean id="paroleReviewNoteDao"
+        	class="omis.parolereview.dao.impl.hibernate.ParoleReviewNoteDaoHibernateImpl">
+    		<constructor-arg name="entityName" value="omis.parolereview.domain.ParoleReviewNote"/>
+    		<constructor-arg name="sessionFactory" ref="sessionFactory"/>
+  		</bean>
+  		
+  		<bean id="paroleEndorsementCategoryDao"
+        	class="omis.parolereview.dao.impl.hibernate.ParoleEndorsementCategoryDaoHibernateImpl">
+    		<constructor-arg name="entityName" value="omis.parolereview.domain.ParoleEndorsementCategory"/>
+    		<constructor-arg name="sessionFactory" ref="sessionFactory"/>
+  		</bean>
+  		
+  		<bean id="staffRoleCategoryDao"
+        	class="omis.parolereview.dao.impl.hibernate.StaffRoleCategoryDaoHibernateImpl">
+    		<constructor-arg name="entityName" value="omis.parolereview.domain.StaffRoleCategory"/>
+    		<constructor-arg name="sessionFactory" ref="sessionFactory"/>
+  		</bean>
+  		
+  		<!-- Instance factories -->
+  		 
+		<bean id="paroleReviewInstanceFactory"
+			class="omis.instance.factory.hibernate.impl.InstanceFactoryHibernateImpl">
+			<constructor-arg name="instanceFactoryDelegate" ref="instanceFactoryDelegate"/>
+			<constructor-arg name="entityName" value="omis.parolereview.domain.ParoleReview"/>
+		</bean>
+		
+		<bean id="paroleReviewDocumentAssociationInstanceFactory"
+			class="omis.instance.factory.hibernate.impl.InstanceFactoryHibernateImpl">
+			<constructor-arg name="instanceFactoryDelegate" ref="instanceFactoryDelegate"/>
+			<constructor-arg name="entityName" value="omis.parolereview.domain.ParoleReviewDocumentAssociation"/>
+		</bean>
+		
+		<bean id="paroleReviewNoteInstanceFactory"
+			class="omis.instance.factory.hibernate.impl.InstanceFactoryHibernateImpl">
+			<constructor-arg name="instanceFactoryDelegate" ref="instanceFactoryDelegate"/>
+			<constructor-arg name="entityName" value="omis.parolereview.domain.ParoleReviewNote"/>
+		</bean>
+		
+		<bean id="paroleEndorsementCategoryInstanceFactory"
+			class="omis.instance.factory.hibernate.impl.InstanceFactoryHibernateImpl">
+			<constructor-arg name="instanceFactoryDelegate" ref="instanceFactoryDelegate"/>
+			<constructor-arg name="entityName" value="omis.parolereview.domain.ParoleEndorsementCategory"/>
+		</bean>
+		
+		<bean id="staffRoleCategoryInstanceFactory"
+			class="omis.instance.factory.hibernate.impl.InstanceFactoryHibernateImpl">
+			<constructor-arg name="instanceFactoryDelegate" ref="instanceFactoryDelegate"/>
+			<constructor-arg name="entityName" value="omis.parolereview.domain.StaffRoleCategory"/>
+		</bean>
+
+  		<!--Property editor factories -->
+ 		 
+ 		<bean id="paroleReviewPropertyEditorFactory"
+       		class="omis.beans.factory.impl.hibernate.PropertyEditorFactoryHibernateImpl">
+ 			<constructor-arg name="entityName" value="omis.parolereview.domain.ParoleReview"/>
+ 			<constructor-arg name="configuration" ref="hibernateConfiguration"/>
+  			<constructor-arg name="dao" ref="paroleReviewDao"/>
+		</bean>
+		
+		<bean id="paroleReviewDocumentAssociationPropertyEditorFactory"
+       		class="omis.beans.factory.impl.hibernate.PropertyEditorFactoryHibernateImpl">
+ 			<constructor-arg name="entityName" value="omis.parolereview.domain.ParoleReviewDocumentAssociation"/>
+ 			<constructor-arg name="configuration" ref="hibernateConfiguration"/>
+  			<constructor-arg name="dao" ref="paroleReviewDocumentAssociationDao"/>
+		</bean>
+		
+		<bean id="paroleReviewNotePropertyEditorFactory"
+       		class="omis.beans.factory.impl.hibernate.PropertyEditorFactoryHibernateImpl">
+ 			<constructor-arg name="entityName" value="omis.parolereview.domain.ParoleReviewNote"/>
+ 			<constructor-arg name="configuration" ref="hibernateConfiguration"/>
+  			<constructor-arg name="dao" ref="paroleReviewNoteDao"/>
+		</bean>
+		
+		<bean id="paroleEndorsementCategoryPropertyEditorFactory"
+       		class="omis.beans.factory.impl.hibernate.PropertyEditorFactoryHibernateImpl">
+ 			<constructor-arg name="entityName" value="omis.parolereview.domain.ParoleEndorsementCategory"/>
+ 			<constructor-arg name="configuration" ref="hibernateConfiguration"/>
+  			<constructor-arg name="dao" ref="paroleEndorsementCategoryDao"/>
+		</bean>
+		
+		<bean id="staffRoleCategoryPropertyEditorFactory"
+       		class="omis.beans.factory.impl.hibernate.PropertyEditorFactoryHibernateImpl">
+ 			<constructor-arg name="entityName" value="omis.parolereview.domain.StaffRoleCategory"/>
+ 			<constructor-arg name="configuration" ref="hibernateConfiguration"/>
+  			<constructor-arg name="dao" ref="staffRoleCategoryDao"/>
+		</bean>
+		
+		<!-- Document Beans -->
+		
+		<bean id="paroleReviewDocumentPersister" class="omis.document.io.impl.SimpleDocumentPersisterImpl">
+			<constructor-arg name="fileLocator" ref="paroleReviewDocumentLocator"/>
+		</bean>
+
+		<bean id="paroleReviewDocumentRetriever" class="omis.document.io.impl.SimpleDocumentRetrieverImpl">
+			<constructor-arg name="fileLocator" ref="paroleReviewDocumentLocator"/>
+			<constructor-arg name="defaultFilename" value="notFound"/>
+		</bean>
+
+		<bean id="paroleReviewDocumentLocator" class="omis.io.impl.FileFromPathLocatorImpl">
+			<constructor-arg name="path" value="${application.resource.path}\Documents\ParoleReviewDocuments"/>
+		</bean>
+		
+		<bean id="paroleReviewDocumentRemover" class="omis.io.impl.SimpleFileRemoverImpl">
+			<constructor-arg name="fileLocator" ref="paroleReviewDocumentLocator"/>
+		</bean>
+</beans>

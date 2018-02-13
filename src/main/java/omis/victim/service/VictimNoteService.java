@@ -20,7 +20,6 @@ package omis.victim.service;
 import java.util.Date;
 import java.util.List;
 
-import omis.exception.DuplicateEntityFoundException;
 import omis.person.domain.Person;
 import omis.victim.domain.VictimAssociation;
 import omis.victim.domain.VictimNote;

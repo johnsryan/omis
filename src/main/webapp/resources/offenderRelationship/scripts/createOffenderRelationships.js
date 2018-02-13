@@ -19,6 +19,7 @@
  * Offender relationships edit screen java script.
  * 
  * Author: Yidong Li
+ * Author: Stephen Abson
  * Version: 0.1.0 (January 19, 2016)
  * Since: OMIS 3.0
  */
@@ -112,6 +113,24 @@ window.onload = function() {
 			};
 		});
 		
+		applyActionMenu(document.getElementById("noteItemsActionMenuLink"), function() {
+			createRelationshipNoteItemLink = document.getElementById("createRelationshipNoteItemLink");
+			createRelationshipNoteItemLink.onclick = function() {
+				var url = createRelationshipNoteItemLink.getAttribute("href") + "?offenderRelationshipNoteItemIndex=" + offenderRelationshipNoteItemIndex;
+				var request = new XMLHttpRequest();
+				request.open("GET", url, false);
+				request.send(null);
+				if (request.status == 200) {
+					ui.appendHtml(document.getElementById("relationshipNotesTableBody"), request.responseText);
+					applyRelationshipNoteRowBehavior(offenderRelationshipNoteItemIndex);
+					offenderRelationshipNoteItemIndex++;
+				} else {
+					alert("Error - status: " + request.status + "; URL: " + url);
+				}
+				return false;
+			};
+		});
+		
 		var existingAddressRadioButton = document.getElementById("existingAddress");
 		var newAddressRadioButton = document.getElementById("newAddress");
 		var addressFieldsHouseNumber = document.getElementById("addressFieldsHouseNumber");
@@ -202,6 +221,12 @@ window.onload = function() {
 		applyOnlineAccountRowBehavior(x);
 	}
 	
+	for (var x = 0; x < offenderRelationshipNoteItemIndex; x++) {
+		if(document.getElementById("noteItems[" + x + "].row") != null) {
+			applyRelationshipNoteRowBehavior(x);
+		}
+	}
+	
 	function applyTelephoneNumberRowBehavior(telephoneNumberItemIndex) {
 		var newTelephoneNumberItemRemoveLink = document.getElementById("removeTelephoneNumber[" + telephoneNumberItemIndex + "]");
 		newTelephoneNumberItemRemoveLink.onclick = function() {
@@ -216,6 +241,18 @@ window.onload = function() {
 		newOnlineAccountItemRemoveLink.onclick = function() {
 			onlineAccountTableRow = document.getElementById(this.getAttribute("id").replace("removeOnlineAccount", "onlineAccountRow"));
 			onlineAccountTableRow.parentNode.removeChild(onlineAccountTableRow);
+			return false;
+		};
+	}
+	
+	function applyRelationshipNoteRowBehavior(offenderRelationshipNoteItemIndex) {
+		var noteItemDate = document.getElementById("noteItems[" + offenderRelationshipNoteItemIndex + "].fields.date");
+		applyDatePicker(noteItemDate);
+		var removeLink = document.getElementById("noteItems[" + offenderRelationshipNoteItemIndex + "].removeLink");
+		removeLink.onclick = function() {
+			var offenderRelationshipNoteItemIndex = this.getAttribute("id").replace("noteItems[", "").replace("].removeLink", "");
+			var noteItemTableRow = document.getElementById("noteItems[" + offenderRelationshipNoteItemIndex + "].row");
+			noteItemTableRow.parentNode.removeChild(noteItemTableRow);
 			return false;
 		};
 	}

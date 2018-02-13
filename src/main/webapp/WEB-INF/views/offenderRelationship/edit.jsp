@@ -46,6 +46,7 @@
 		var offender = ${offender.id};
 		var offenderRelationshipTelephoneNumberIndex= ${offenderRelationshipTelephoneNumberIndex};
 		var offenderRelationshipOnlineAccountIndex= ${offenderRelationshipOnlineAccountIndex};
+		var offenderRelationshipNoteItemIndex = ${offenderRelationshipNoteItemIndex};
 	</script>
 </head>
 <body>

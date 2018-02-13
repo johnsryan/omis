@@ -56,7 +56,7 @@ public class OffenderRelationshipNoteFieldsValidatorDelegate {
 			errors.rejectValue(fieldsPropertyName + ".date",
 					"offenderRelationshipNote.date.empty");
 		}
-		if (fields.getValue() == null) {
+		if (fields.getValue() == null || fields.getValue().isEmpty()) {
 			errors.rejectValue(fieldsPropertyName + ".value",
 					"offenderRelationshipNote.value.empty");
 		}

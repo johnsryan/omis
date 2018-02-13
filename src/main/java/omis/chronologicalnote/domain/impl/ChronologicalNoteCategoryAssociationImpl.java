@@ -23,7 +23,7 @@ import omis.chronologicalnote.domain.ChronologicalNote;
 import omis.chronologicalnote.domain.ChronologicalNoteCategory;
 import omis.chronologicalnote.domain.ChronologicalNoteCategoryAssociation;
 
-/** Implementation of chronological note category category.
+/** Implementation of chronological note category association.
  * @author Yidong Li
  * @version 0.1.0 (Jan 29, 2018)
  * @since OMIS 3.0 */

@@ -42,6 +42,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import omis.beans.factory.PropertyEditorFactory;
 import omis.beans.factory.spring.CustomDateEditorFactory;
+import omis.boardhearing.domain.BoardHearing;
 import omis.condition.domain.Agreement;
 import omis.condition.domain.AgreementAssociableDocument;
 import omis.condition.domain.AgreementCategory;
@@ -54,6 +55,7 @@ import omis.document.io.impl.DocumentFilenameGenerator;
 import omis.document.web.form.DocumentTagItem;
 import omis.document.web.form.DocumentTagOperation;
 import omis.exception.DuplicateEntityFoundException;
+import omis.hearinganalysis.domain.HearingAnalysis;
 import omis.io.FileRemover;
 import omis.offender.beans.factory.OffenderPropertyEditorFactory;
 import omis.offender.domain.Offender;
@@ -70,9 +72,10 @@ import omis.web.controller.delegate.BusinessExceptionHandlerDelegate;
 /**
  * Parole Board Agreement Controller.
  * 
- *@author Annie Wahl 
- *@version 0.1.0 (Dec 18, 2017)
- *@since OMIS 3.0
+ * @author Annie Wahl
+ * @author Josh Divine 
+ * @version 0.1.1 (Feb 5, 2018)
+ * @since OMIS 3.0
  *
  */
 @Controller
@@ -126,6 +129,10 @@ public class ParoleBoardAgreementController {
 	
 	private static final String AGREEMENT_ASSOCIABLE_DOCUMENT_ITEM_MODEL_KEY =
 			"agreementAssociableDocumentItem";
+	
+	private static final String BOARD_HEARING_MODEL_KEY = "boardHearing";
+	
+	private static final String HEARING_ANALYSIS_MODEL_KEY = "hearingAnalysis";
 	
 	/* Message Keys */
 	
@@ -202,6 +209,14 @@ public class ParoleBoardAgreementController {
 	private PropertyEditorFactory
 		agreementAssociableDocumentPropertyEditorFactory;
 	
+	@Autowired
+	@Qualifier("boardHearingPropertyEditorFactory")
+	private PropertyEditorFactory boardHearingPropertyEditorFactory;
+	
+	@Autowired
+	@Qualifier("hearingAnalysisPropertyEditorFactory")
+	private PropertyEditorFactory hearingAnalysisPropertyEditorFactory;
+	
 	/* Validator. */
 	
 	@Autowired
@@ -225,12 +240,22 @@ public class ParoleBoardAgreementController {
 	@RequestMapping(value = "/create.html", method = RequestMethod.GET)
 	@PreAuthorize("hasRole('PAROLE_BOARD_CONDITION_CREATE') "
 			+ "or hasRole('ADMIN')")
-	public ModelAndView create(@RequestParam(
-			value = "offender", required = true)
-		final Offender offender, @RequestParam(
-				value = "paroleBoardAgreementCategory", required = true)
-			final ParoleBoardAgreementCategory paroleBoardAgreementCategory) {
+	public ModelAndView create(
+			@RequestParam(value = "offender", required = true)
+				final Offender offender, 
+			@RequestParam(value = "paroleBoardAgreementCategory", 
+				required = true) final ParoleBoardAgreementCategory 
+					paroleBoardAgreementCategory,
+			@RequestParam(value = "boardHearing", required = false)
+				final BoardHearing boardHearing,
+			@RequestParam(value = "hearingAnalysis", required = false)
+				final HearingAnalysis hearingAnalysis) {
+		if (boardHearing == null && hearingAnalysis == null) {
+			throw new IllegalArgumentException(
+					"Board hearing or hearing analysis required.");
+		}
 		return this.prepareEditMav(offender, paroleBoardAgreementCategory,
+				boardHearing, hearingAnalysis,
 				new ParoleBoardAgreementForm(), new ModelMap());
 	}
 	
@@ -252,26 +277,42 @@ public class ParoleBoardAgreementController {
 	@RequestMapping(value = "/create.html", method = RequestMethod.POST)
 	@PreAuthorize("hasRole('PAROLE_BOARD_CONDITION_CREATE') "
 			+ "or hasRole('ADMIN')")
-	public ModelAndView save(@RequestParam(
-			value = "offender", required = true)
-		final Offender offender, @RequestParam(
-				value = "paroleBoardAgreementCategory", required = true)
-			final ParoleBoardAgreementCategory paroleBoardAgreementCategory,
+	public ModelAndView save(
+			@RequestParam(value = "offender", required = true)
+				final Offender offender, 
+			@RequestParam(value = "paroleBoardAgreementCategory", 
+				required = true) final ParoleBoardAgreementCategory 
+					paroleBoardAgreementCategory,
+			@RequestParam(value = "boardHearing", required = false)
+				final BoardHearing boardHearing,
+			@RequestParam(value = "hearingAnalysis", required = false)
+				final HearingAnalysis hearingAnalysis,
 			final ParoleBoardAgreementForm form,
-			final BindingResult bindingResult)
-						throws DuplicateEntityFoundException {
+			final BindingResult bindingResult) 
+					throws DuplicateEntityFoundException {
+		if (boardHearing == null && hearingAnalysis == null) {
+			throw new IllegalArgumentException(
+					"Board hearing or hearing analysis required.");
+		}
 		this.paroleBoardAgreementFormValidator.validate(form, bindingResult);
 		
 		if (bindingResult.hasErrors()) {
 			return this.prepareEditMav(offender, paroleBoardAgreementCategory,
-					form, new ModelMap());
+					boardHearing, hearingAnalysis, form, new ModelMap());
 		} else {
 			Agreement agreement = this.paroleBoardConditionService
 					.createAgreement(offender, form.getStartDate(),
 							form.getEndDate(), form.getDescription(),
 							AgreementCategory.BOARD_PARDONS_PAROLE);
-			this.paroleBoardConditionService.createParoleBoardAgreement(
-							agreement, paroleBoardAgreementCategory);
+			if (boardHearing != null) {
+				this.paroleBoardConditionService.createParoleBoardAgreement(
+						agreement, boardHearing, paroleBoardAgreementCategory);	
+			} else if (hearingAnalysis != null) {
+				this.paroleBoardConditionService.createParoleBoardAgreement(
+						agreement, hearingAnalysis, 
+						paroleBoardAgreementCategory);
+			}
+			
 			this.processItems(agreement,
 					form.getAgreementAssociableDocumentItems());
 			return new ModelAndView(String.format(
@@ -300,6 +341,8 @@ public class ParoleBoardAgreementController {
 		return this.prepareEditMav(
 				paroleBoardAgreement.getAgreement().getOffender(),
 				paroleBoardAgreement.getCategory(),
+				paroleBoardAgreement.getBoardHearing(),
+				paroleBoardAgreement.getHearingAnalysis(),
 				this.populateForm(paroleBoardAgreement), modelMap);
 	}
 	
@@ -334,6 +377,8 @@ public class ParoleBoardAgreementController {
 			return this.prepareEditMav(
 					paroleBoardAgreement.getAgreement().getOffender(), 
 					paroleBoardAgreement.getCategory(),
+					paroleBoardAgreement.getBoardHearing(),
+					paroleBoardAgreement.getHearingAnalysis(),
 					form, modelMap);
 		} else {
 			Agreement agreement = this.paroleBoardConditionService
@@ -342,8 +387,7 @@ public class ParoleBoardAgreementController {
 							form.getDescription(),
 							AgreementCategory.BOARD_PARDONS_PAROLE);
 			this.paroleBoardConditionService.updateParoleBoardAgreement(
-					paroleBoardAgreement, agreement,
-					paroleBoardAgreement.getCategory());
+					paroleBoardAgreement, paroleBoardAgreement.getCategory());
 			this.processItems(agreement,
 					form.getAgreementAssociableDocumentItems());
 			return new ModelAndView(String.format(
@@ -530,11 +574,15 @@ public class ParoleBoardAgreementController {
 	 */
 	private ModelAndView prepareEditMav(final Offender offender,
 			final ParoleBoardAgreementCategory paroleBoardAgreementCategory,
+			final BoardHearing boardHearing, 
+			final HearingAnalysis hearingAnalysis,
 			final ParoleBoardAgreementForm paroleBoardAgreementForm,
 			final ModelMap modelMap) {
 		modelMap.addAttribute(OFFENDER_MODEL_KEY, offender);
 		modelMap.addAttribute(PAROLE_BOARD_AGREEMENT_CATEGORY_MODEL_KEY,
 				paroleBoardAgreementCategory);
+		modelMap.addAttribute(BOARD_HEARING_MODEL_KEY, boardHearing);
+		modelMap.addAttribute(HEARING_ANALYSIS_MODEL_KEY, hearingAnalysis);
 		modelMap.addAttribute(PAROLE_BOARD_AGREEMENT_FORM_MODEL_KEY,
 				paroleBoardAgreementForm);
 		List<Integer> dtIndexes = new ArrayList<Integer>();
@@ -599,10 +647,6 @@ public class ParoleBoardAgreementController {
 				Document document = this.paroleBoardConditionService
 						.updateDocument(item.getDocument(),
 								item.getDate(), item.getTitle());
-				this.paroleBoardConditionService
-					.updateAgreementAssociableDocument(
-						item.getAgreementAssociableDocument(),
-						agreement, document);
 				if (item.getTagItems() != null) {
 					for (DocumentTagItem tagItem : item.getTagItems()) {
 						if (DocumentTagOperation.CREATE.equals(
@@ -707,5 +751,10 @@ public class ParoleBoardAgreementController {
 				.createPropertyEditor());
 		binder.registerCustomEditor(byte[].class,
 				new ByteArrayMultipartFileEditor());
+		binder.registerCustomEditor(BoardHearing.class,
+				this.boardHearingPropertyEditorFactory.createPropertyEditor());
+		binder.registerCustomEditor(HearingAnalysis.class,
+				this.hearingAnalysisPropertyEditorFactory
+				.createPropertyEditor());
 	}
 }

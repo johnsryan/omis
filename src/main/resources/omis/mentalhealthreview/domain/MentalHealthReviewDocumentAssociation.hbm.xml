@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ - OMIS - Offender Management Information System
+ - Copyright (C) 2011 - 2017 State of Montana
+ -
+ - This program is free software: you can redistribute it and/or modify
+ - it under the terms of the GNU General Public License as published by
+ - the Free Software Foundation, either version 3 of the License, or
+ - (at your option) any later version.
+ -
+ - This program is distributed in the hope that it will be useful,
+ - but WITHOUT ANY WARRANTY; without even the implied warranty of
+ - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ - GNU General Public License for more details.
+ -
+ - You should have received a copy of the GNU General Public License
+ - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="omis.mentalhealthreview.domain">
+	<class	entity-name="omis.mentalhealthreview.domain.MentalHealthReviewDocumentAssociation"
+			proxy="omis.mentalhealthreview.domain.MentalHealthReviewDocumentAssociation"
+			name="omis.mentalhealthreview.domain.impl.MentalHealthReviewDocumentAssociationImpl"
+			table="`MENTL_HLTH_RVW_DCMT_ASSCTN`">
+		<id name="id" type="java.lang.Long" column="`ID`">
+			<generator class="sequence">
+				<param name="sequence">`MENTL_HLTH_RVW_DCMT_ASSCTN_SEQ`</param>
+			</generator>
+		</id>
+		<many-to-one name="document" entity-name="omis.document.domain.Document" not-null="true" column="`DOCUMENT_ID`"/>
+		<many-to-one name="mentalHealthReview" entity-name="omis.mentalhealthreview.domain.MentalHealthReview" not-null="true" column="`MENTAL_HEALTH_REVIEW_ID`"/>
+		<component name="creationSignature">
+			<many-to-one name="userAccount" column="`CREATE_ACCOUNT_ID`"
+			             not-null="true"/>
+			<property name="date" column="`CREATE_DATE`" not-null="true"/>
+		</component>
+		<component name="updateSignature">
+			<many-to-one name="userAccount" column="`UPDATE_ACCOUNT_ID`"
+			             not-null="true"/>
+			<property name="date" column="`UPDATE_DATE`" not-null="true"/>
+		</component>
+	</class>
+	<query name="findMentalHealthReviewDocumentAssociation"><![CDATA[
+		select mentalHealthReviewDocumentAssociation
+		from omis.mentalhealthreview.domain.MentalHealthReviewDocumentAssociation mentalHealthReviewDocumentAssociation
+		where
+			mentalHealthReviewDocumentAssociation.document = :document
+		and
+			mentalHealthReviewDocumentAssociation.mentalHealthReview = :mentalHealthReview
+	]]></query>
+	<query name="findMentalHealthReviewDocumentAssociationsByMentalHealthReview"><![CDATA[
+		select mentalHealthReviewDocumentAssociation
+		from omis.mentalhealthreview.domain.MentalHealthReviewDocumentAssociation mentalHealthReviewDocumentAssociation
+		where
+			mentalHealthReviewDocumentAssociation.mentalHealthReview = :mentalHealthReview
+	]]></query>
+</hibernate-mapping>

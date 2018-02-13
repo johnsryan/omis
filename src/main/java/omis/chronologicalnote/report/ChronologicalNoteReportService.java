@@ -19,7 +19,6 @@ package omis.chronologicalnote.report;
 
 import java.util.List;
 
-import omis.chronologicalnote.domain.ChronologicalNote;
 import omis.chronologicalnote.domain.ChronologicalNoteCategory;
 import omis.offender.domain.Offender;
 
@@ -32,35 +31,27 @@ import omis.offender.domain.Offender;
  */
 public interface ChronologicalNoteReportService {
 	/**
-	 * Returns the list of chronologocal note summary on offender.
+	 * Returns the list of chronologocal note summaries on offender.
 	 * 
 	 * @param offender offender
-	 * @return list of offender
+	 * @return a list of chronological note summaries
 	 */
 	List<ChronologicalNoteSummary> findByOffender(Offender offender);
 	
 	/**
-	 * Returns the list of chronological note summary.
+	 * Returns the list of chronological note summaries.
 	 * 
 	 * @param offender offender
 	 * @param categories a list of categories
-	 * @return list of chronological note summary
+	 * @return a list of chronological note summaries
 	 */
 	List<ChronologicalNoteSummary> findByOffenderAndCategories(
 		Offender offender, List<ChronologicalNoteCategory> categories);
 	
 	/**
-	 * Returns the list of chronological note summary on date.
+	 * Returns all chronological note categories.
 	 * 
-	 * @return list of chronological note summary
+	 * @return all chronological note categories
 	 */
 	List<ChronologicalNoteCategory> findCategories();
-	
-	/**
-	 * Returns the list of chronological note category names by note.
-	 * 
-	 * @param note chronological note.
-	 * @return list of chronological note category names
-	 */
-	List<String> findCategoryNamesByNote(ChronologicalNote note);;
 }

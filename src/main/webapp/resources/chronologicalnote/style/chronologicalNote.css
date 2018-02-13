@@ -1,0 +1,15 @@
+/**
+ * Styling for chronological note.
+ *
+ * Author: Joel Norris
+ * Version: 0.1.0 (February)
+ * Since: OMIS 3.0
+ */
+ 
+ form.editForm fieldset span.categoryItem {
+   display: inline-block;
+   width: 24%;
+   min-width: 300px;
+   text-align: left;
+   margin: 3px 0px 3px 0px;
+}

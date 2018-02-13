@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.courtcase.web.form;
 
 import java.io.Serializable;
@@ -5,9 +22,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import omis.court.domain.Court;
 import omis.courtcase.domain.JurisdictionAuthority;
 import omis.courtcase.domain.OffenderDangerDesignator;
+import omis.docket.domain.Docket;
+import omis.docket.web.form.DocketFields;
 import omis.person.domain.Person;
 import omis.region.domain.State;
 
@@ -16,7 +34,8 @@ import omis.region.domain.State;
  * 
  * @author Stephen Abson
  * @author Ryan Johns
- * @version 0.1.1 (Apr 18, 2016)
+ * @author Josh Divine
+ * @version 0.1.2 (Feb 8, 2018)
  * @since OMIS 3.0
  */
 public class CourtCaseForm implements Serializable {
@@ -31,15 +50,11 @@ public class CourtCaseForm implements Serializable {
 	
 	private Boolean dismissed;
 	
-	private Court court;
-
 	private Date pronouncementDate;
 	
 	private Date sentenceReviewDate;
 	
 	private String comments;
-	
-	private String docketValue;
 	
 	private Person judge;
 	
@@ -60,9 +75,13 @@ public class CourtCaseForm implements Serializable {
 	
 	private OffenderDangerDesignator dangerDesignator;
 	
-	private Boolean allowCourt;
-	
 	private Boolean allowDocket;
+	
+	private Boolean allowExistingDocket;
+	
+	private Docket existingDocket;
+	
+	private DocketFields docketFields = new DocketFields();
 	
 	/** Instantiates a default court case form. */
 	public CourtCaseForm() {
@@ -145,24 +164,6 @@ public class CourtCaseForm implements Serializable {
 	}
 
 	/**
-	 * Returns the court.
-	 * 
-	 * @return court
-	 */
-	public Court getCourt() {
-		return this.court;
-	}
-
-	/**
-	 * Sets the court.
-	 * 
-	 * @param court court
-	 */
-	public void setCourt(final Court court) {
-		this.court = court;
-	}
-
-	/**
 	 * Returns the pronouncement date.
 	 * 
 	 * @return pronouncement date
@@ -214,24 +215,6 @@ public class CourtCaseForm implements Serializable {
 	 */
 	public void setComments(final String comments) {
 		this.comments = comments;
-	}
-
-	/**
-	 * Returns the docket.
-	 * 
-	 * @return docket
-	 */
-	public String getDocketValue() {
-		return this.docketValue;
-	}
-
-	/**
-	 * Sets the docket.
-	 * 
-	 * @param docketValue docket
-	 */
-	public void setDocketValue(final String docketValue) {
-		this.docketValue = docketValue;
 	}
 
 	/**
@@ -393,23 +376,6 @@ public class CourtCaseForm implements Serializable {
 		this.dangerDesignator = dangerDesignator;
 	}
 
-	/**
-	 * Returns whether court is allowed to be edited.
-	 * 
-	 * @return whether court is allowed to be edited
-	 */
-	public Boolean getAllowCourt() {
-		return allowCourt;
-	}
-
-	/**
-	 * Sets whether court is allowed to be edited.
-	 * 
-	 * @param allowCourt allow court
-	 */
-	public void setAllowCourt(final Boolean allowCourt) {
-		this.allowCourt = allowCourt;
-	}
 
 	/**
 	 * Returns whether docket is allowed to be edited.
@@ -427,5 +393,59 @@ public class CourtCaseForm implements Serializable {
 	 */
 	public void setAllowDocket(final Boolean allowDocket) {
 		this.allowDocket = allowDocket;
+	}
+
+	/**
+	 * Returns whether to show existing dockets.
+	 *
+	 * @return whether to show existing dockets
+	 */
+	public Boolean getAllowExistingDocket() {
+		return allowExistingDocket;
+	}
+
+	/**
+	 * Sets whether to show existing dockets.
+	 *
+	 * @param allowExistingDocket allow existing docket
+	 */
+	public void setAllowExistingDocket(final Boolean allowExistingDocket) {
+		this.allowExistingDocket = allowExistingDocket;
+	}
+
+	/**
+	 * Returns the existing docket.
+	 *
+	 * @return docket
+	 */
+	public Docket getExistingDocket() {
+		return existingDocket;
+	}
+
+	/**
+	 * Sets the existing docket.
+	 *
+	 * @param existingDocket existing docket
+	 */
+	public void setExistingDocket(final Docket existingDocket) {
+		this.existingDocket = existingDocket;
+	}
+
+	/**
+	 * Returns the docket fields.
+	 *
+	 * @return docket fields
+	 */
+	public DocketFields getDocketFields() {
+		return docketFields;
+	}
+
+	/**
+	 * Sets the docket fields.
+	 *
+	 * @param docketFields docket fields
+	 */
+	public void setDocketFields(final DocketFields docketFields) {
+		this.docketFields = docketFields;
 	}
 }

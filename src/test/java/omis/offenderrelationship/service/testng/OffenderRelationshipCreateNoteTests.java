@@ -19,6 +19,8 @@ package omis.offenderrelationship.service.testng;
 import java.util.Date;
 
 import omis.exception.DuplicateEntityFoundException;
+import omis.offender.domain.Offender;
+import omis.offender.service.delegate.OffenderDelegate;
 import omis.offenderrelationship.service.CreateRelationshipsService;
 import omis.person.domain.Person;
 import omis.person.service.delegate.PersonDelegate;
@@ -40,16 +42,22 @@ import org.testng.annotations.Test;
  * Test offender relationship "create note" service method.
  *
  * @author Yidong Li
+ * @author Stephen Abson
  * @version 0.0.1
  * @since OMIS 3.0
  */
-@Test(groups = {"offenderrelationship"})
+@Test(groups = {"offenderRelationship"})
 public class OffenderRelationshipCreateNoteTests
 		extends AbstractHibernateTransactionalTestNGSpringContextTests {
+	
 	/* Delegates. */
 	@Autowired
 	@Qualifier("relationshipDelegate")
 	private RelationshipDelegate relationshipDelegate;
+	
+	@Autowired
+	@Qualifier("offenderDelegate")
+	private OffenderDelegate offenderDelegate;
 	
 	@Autowired
 	@Qualifier("personDelegate")
@@ -78,12 +86,10 @@ public class OffenderRelationshipCreateNoteTests
 		throws DuplicateEntityFoundException, ReflexiveRelationshipException,
 		RelationshipNoteExistsException {
 		// Arrangement
-		Person firstPerson = this.personDelegate.create("testLastName1", 
-			"testFirstName1", "testMiddleName1", "Mr.");
+		Offender firstPerson = this.offenderDelegate.createWithoutIdentity(
+				"testLastName1", "testFirstName1", "testMiddleName1", "Mr.");
 		Person secondPerson = this.personDelegate.create("testLastName2", 
 			"testFirstName2", "testMiddleName2", "Ms.");
-		Relationship relationship = this.relationshipDelegate.create(
-			firstPerson, secondPerson);
 		final int shortInt = 12;
 		RelationshipNoteCategory relationshipNoteCategory 
 			= this.relationshipNoteCategoryDelegate.create(
@@ -93,8 +99,8 @@ public class OffenderRelationshipCreateNoteTests
 		
 		// Action
 		RelationshipNote relationshipNote = this.createRelationshipsService
-			.createNote(relationship, relationshipNoteCategory, "Note tests", 
-			date);
+			.createNote(firstPerson, secondPerson, relationshipNoteCategory,
+					"Note tests", date);
 	
 		// Assertions
 		assert firstPerson.equals(relationshipNote.getRelationship()
@@ -136,11 +142,12 @@ public class OffenderRelationshipCreateNoteTests
 	 */
 	@Test(expectedExceptions = {RelationshipNoteExistsException.class})
 	public void testDuplicateOffenderRelationshipsCreate() 
-		throws DuplicateEntityFoundException, ReflexiveRelationshipException,
-		RelationshipNoteExistsException {
+			throws DuplicateEntityFoundException, ReflexiveRelationshipException,
+			RelationshipNoteExistsException {
+		
 		// Assignment
-		Person firstPerson = this.personDelegate.create("testLastName1", 
-			"testFirstName1", "testMiddleName1", "Mr.");
+		Offender firstPerson = this.offenderDelegate.createWithoutIdentity(
+				"testLastName1", "testFirstName1", "testMiddleName1", "Mr.");
 		Person secondPerson = this.personDelegate.create("testLastName2", 
 			"testFirstName2", "testMiddleName2", "Ms.");
 		Relationship relationship = this.relationshipDelegate.create(
@@ -151,11 +158,11 @@ public class OffenderRelationshipCreateNoteTests
 			= this.relationshipNoteCategoryDelegate.create(
 			"relationshipNoteCategory1", new Short((short) shortInt));
 		Date date = new Date(dateInt);
-		this.createRelationshipsService.createNote(relationship, 
+		this.relationshipNoteDelegate.create(relationship, 
 			relationshipNoteCategory, "Note tests",	date);
 		
 		// Action
-		this.createRelationshipsService.createNote(relationship, 
+		this.createRelationshipsService.createNote(firstPerson, secondPerson, 
 			relationshipNoteCategory, "Note tests",	date);
 	}
 }

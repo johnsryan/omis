@@ -24,5 +24,13 @@
 			criminalAssociationCategory.valid = true
 			order by criminalAssociationCategory.name
 	]]></query>
-	
+	<query name="findCriminalAssociationCategory"><![CDATA[
+		select category
+		from
+			omis.criminalassociation.domain.CriminalAssociationCategory category
+		where
+			category.name = :name
+		order by
+			category.sortOrder
+	]]></query>	
 	</hibernate-mapping>

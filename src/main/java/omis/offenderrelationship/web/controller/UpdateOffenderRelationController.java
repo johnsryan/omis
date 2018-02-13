@@ -25,6 +25,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
 import omis.address.domain.Address;
 import omis.address.domain.AddressUnitDesignator;
 import omis.address.domain.BuildingCategory;
@@ -53,20 +70,25 @@ import omis.contact.web.form.PoBoxFields;
 import omis.contact.web.form.TelephoneNumberFields;
 import omis.contact.web.form.TelephoneNumberItemOperation;
 import omis.country.domain.Country;
-import omis.exception.DuplicateEntityFoundException;
 import omis.family.domain.FamilyAssociation;
+import omis.family.exception.FamilyAssociationConflictException;
 import omis.offender.beans.factory.OffenderPropertyEditorFactory;
 import omis.offender.domain.Offender;
 import omis.offender.report.OffenderReportService;
 import omis.offender.report.OffenderSummary;
 import omis.offender.web.controller.delegate.OffenderSummaryModelDelegate;
 import omis.offenderrelationship.service.UpdateOffenderRelationService;
+import omis.offenderrelationship.web.controller.delegate.OffenderRelationshipNoteFieldsControllerDelegate;
 import omis.offenderrelationship.web.form.EditRelationshipsForm;
+import omis.offenderrelationship.web.form.OffenderRelationshipNoteFields;
+import omis.offenderrelationship.web.form.OffenderRelationshipNoteItem;
+import omis.offenderrelationship.web.form.OffenderRelationshipNoteItemOperation;
 import omis.offenderrelationship.web.form.OnlineAccountContactItem;
 import omis.offenderrelationship.web.form.TelephoneNumberItem;
 import omis.offenderrelationship.web.validator.EditRelationshipsFormValidator;
 import omis.person.domain.Person;
 import omis.person.domain.Suffix;
+import omis.person.exception.PersonExistsException;
 import omis.person.exception.PersonIdentityExistsException;
 import omis.person.exception.PersonNameExistsException;
 import omis.person.web.delegate.PersonFieldsControllerDelegate;
@@ -75,29 +97,16 @@ import omis.region.domain.City;
 import omis.region.domain.State;
 import omis.region.exception.CityExistsException;
 import omis.relationship.domain.Relationship;
+import omis.relationship.domain.RelationshipNote;
+import omis.relationship.domain.RelationshipNoteCategory;
 import omis.relationship.exception.RelationshipNoteExistsException;
 import omis.report.ReportFormat;
 import omis.report.ReportRunner;
 import omis.report.web.controller.delegate.ReportControllerDelegate;
 import omis.util.StringUtility;
+import omis.victim.exception.VictimExistsException;
+import omis.visitation.exception.VisitationExistsException;
 import omis.web.controller.delegate.BusinessExceptionHandlerDelegate;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
 /**
  * Edit offender relationship controller.
@@ -105,6 +114,7 @@ import org.springframework.web.servlet.ModelAndView;
  * @author Joel Norris
  * @author Yidong Li
  * @author Josh Divine
+ * @author Stephen Abson
  * @version 0.1.1 (Nov 21, 2017)
  * @since OMIS 3.0
  */
@@ -126,10 +136,15 @@ public class UpdateOffenderRelationController {
 	private static final String EMAILS_ACTION_MENU_VIEW_NAME
 		= "offenderRelationship/includes/update/"
 				+ "offenderRelationshipEmailActionMenu";
+	private static final String NOTES_ACTION_MENU_VIEW_NAME
+		= "offenderRelationship/includes/update/"
+				+ "offenderRelationshipNoteItemsActionMenu";
 	private static final String EDIT_TELEPHONE_NUMBER_TABLE_ROW_VIEW_NAME 
 		= "offenderRelationship/includes/update/editTelephoneNumberTableRow";
 	private static final String EDIT_ONLINE_ACCOUNT_TABLE_ROW_VIEW_NAME 
 		= "offenderRelationship/includes/update/editOnlineAccountTableRow";
+	private static final String CREATE_RELATIONSHIP_NOTE_TABLE_ROW_VIEW_NAME
+		= "offenderRelationship/includes/offenderRelationshipNoteItemTableRow";
 	
 	/* Model keys. */
 	private static final String EDIT_RELATIONSHIPS_FORM_MODEL_KEY
@@ -148,6 +163,9 @@ public class UpdateOffenderRelationController {
 	private static final String 
 		OFFENDER_RELATIONSHIP_ONLINE_ACCOUNT_INDEX_MODEL_KEY 
 		= "offenderRelationshipOnlineAccountIndex";
+	private static final String
+		OFFENDER_RELATIONSHIP_NOTE_ITEM_INDEX_MODEL_KEY
+		= "offenderRelationshipNoteItemIndex";
 	private static final String TELEPHONE_NUMBER_ITEM_INDEX_MODEL_KEY 
 		= "telephoneNumberIndex";
 	private static final String TELEPHONE_NUMBER_CATEGORY_MODEL_KEY
@@ -167,6 +185,14 @@ public class UpdateOffenderRelationController {
 	private static final String RELATIONSHIP_MODEL_KEY = "relationship";
 	private static final String EXISTING_ADDRESS_MODEL_KEY
 		= "existingAddress";
+	private static final String BASE_URL_MODEL_KEY = "baseUrl";
+	private static final String OFFENDER_RELATIONSHIP_NOTE_ITEM_MODEL_KEY
+		= "offenderRelationshipNoteItem";
+	private static final String
+	OFFENDER_RELATIONSHIP_NOTE_ITEMS_FIELD_NAME_MODEL_KEY
+		= "offenderRelationshipNoteItemsFieldName";
+	
+	/* Message keys. */
 	private static final String PERSON_NAME_EXISTS_EXCEPTION_MESSAGE_KEY
 		= "personName.Conflicts";
 	private static final String PERSON_IDENTITY_EXISTS_EXCEPTION_MESSAGE_KEY
@@ -204,16 +230,34 @@ public class UpdateOffenderRelationController {
 	private static final String FAMILY_ASSOCIATION_DETAILS_REPORT_NAME 
 		= "/Relationships/Family/Family_Details_Redacted";
 	
-	/* Report runners. */
-	@Autowired
-	@Qualifier("reportRunner")
-	private ReportRunner reportRunner;
-	
 	/* Fields names. */
 	private static final String PERSON_FIELDS_NAME = "personFields";
 	private static final String ADDRESS_FIELDS_NAME
 		= "addressFields";
 	private static final String PO_BOX_FIELDS_NAME = "poBoxFields";
+	private static final String OFFENDER_RELATIONSHIP_NOTE_ITEMS_FIELD_NAME
+		= "noteItems";
+	
+	/* Redirects. */
+	private static final String LIST_REDIRECT
+		= "redirect:/offenderRelationship/list.html?offender=%d";
+	
+	/* URLs. */
+	
+	private static final String BASE_URL = "/offenderRelationship/update";
+	
+	/* Report parameter names. */
+	private static final String FAMILY_MEMBER_DETAILS_ID_REPORT_PARAM_NAME 
+		= "FAMILY_ASSOC_ID";
+	
+	/* Message bundles. */
+	private static final String ERROR_BUNDLE_NAME
+		= "omis.offenderrelationship.msgs.form";
+	
+	/* Report runners. */
+	@Autowired
+	@Qualifier("reportRunner")
+	private ReportRunner reportRunner;
 	
 	/* PropertyEditors. */
 	@Autowired
@@ -288,6 +332,14 @@ public class UpdateOffenderRelationController {
 	private PropertyEditorFactory onlineAccountPropertyEditorFactory;
 	
 	@Autowired
+	@Qualifier("relationshipNotePropertyEditorFactory")
+	private PropertyEditorFactory relationshipNotePropertyEditorFactory;
+	
+	@Autowired
+	@Qualifier("relationshipNoteCategoryPropertyEditorFactory")
+	private PropertyEditorFactory relationshipNoteCategoryPropertyEditorFactory;
+	
+	@Autowired
 	@Qualifier("familyAssociationPropertyEditorFactory")
 	private PropertyEditorFactory familyAssociationPropertyEditorFactory;
 		
@@ -341,17 +393,10 @@ public class UpdateOffenderRelationController {
 	@Qualifier("businessExceptionHandlerDelegate")
 	private BusinessExceptionHandlerDelegate businessExceptionHandlerDelegate;
 	
-	/* Redirects. */
-	private static final String LIST_REDIRECT
-		= "redirect:/offenderRelationship/list.html?offender=%d";
-	
-	/* Report parameter names. */
-	private static final String FAMILY_MEMBER_DETAILS_ID_REPORT_PARAM_NAME 
-		= "FAMILY_ASSOC_ID";
-	
-	/* Message bundles. */
-	private static final String ERROR_BUNDLE_NAME
-		= "omis.offenderrelationship.msgs.form";
+	@Autowired
+	@Qualifier("offenderRelationshipNoteFieldsControllerDelegate")
+	private OffenderRelationshipNoteFieldsControllerDelegate
+	offenderRelationshipNoteFieldsControllerDelegate;
 	
 	/**
 	 * Instantiates a default instance of offender relationship controller.
@@ -367,7 +412,6 @@ public class UpdateOffenderRelationController {
 	 * @param relationship relationship
 	 * @param editRelationshipsForm edit relationship form
 	 * @return model and view to redirect to list screen
-	 * @throws DuplicateEntityFoundException DuplicateEntityFoundException
 	 * @throws AddressExistsException address exists exception
 	 * @throws ZipCodeExistsException zipCode exists exception
 	 * @throws PersonNameExistsException person name exists exception
@@ -386,11 +430,12 @@ public class UpdateOffenderRelationController {
 		final Relationship relationship,
 		final EditRelationshipsForm editRelationshipsForm,
 		final BindingResult result) 
-		throws DuplicateEntityFoundException, AddressExistsException,
-		ZipCodeExistsException, PersonNameExistsException,
-		PersonIdentityExistsException, CityExistsException,
-		RelationshipNoteExistsException, ContactExistsException,
-		TelephoneNumberExistsException, OnlineAccountExistsException {
+				throws AddressExistsException,
+				ZipCodeExistsException, PersonNameExistsException,
+				PersonIdentityExistsException, CityExistsException,
+				RelationshipNoteExistsException, ContactExistsException,
+				TelephoneNumberExistsException, OnlineAccountExistsException,
+				RelationshipNoteExistsException {
 		if (editRelationshipsForm.getPoBoxFields().getCountry() != null) {
 			// Has state
 			if (this.updateOffenderRelationService.hasStates(
@@ -1338,10 +1383,40 @@ public class UpdateOffenderRelationController {
 			}
 			onlineAccountCounter = onlineAccountCounter + 1;
 		}
+		
+		// Creates/updates/removes notes
+		for (OffenderRelationshipNoteItem noteItem
+				: editRelationshipsForm.getNoteItems()) {
+			if (noteItem.getOperation() != null) {
+				if (OffenderRelationshipNoteItemOperation
+						.CREATE.equals(noteItem.getOperation())) {
+					this.updateOffenderRelationService
+						.createNote(relationship,
+								noteItem.getFields().getCategory(),
+								noteItem.getFields().getValue(),
+								noteItem.getFields().getDate());
+				} else if (OffenderRelationshipNoteItemOperation
+						.UPDATE.equals(noteItem.getOperation())) {
+					this.updateOffenderRelationService
+						.updateNote(noteItem.getNote(),
+								noteItem.getFields().getCategory(),
+								noteItem.getFields().getValue(),
+								noteItem.getFields().getDate());
+				} else if (OffenderRelationshipNoteItemOperation
+						.REMOVE.equals(noteItem.getOperation())) {
+					this.updateOffenderRelationService
+						.removeNote(noteItem.getNote());
+				} else {
+					throw new UnsupportedOperationException(
+							String.format("Note operation not supported: %s",
+									noteItem.getOperation()));
+				}
+			}
+		}
+		
+		// Redirects to listing screen
 		Person person = relationship.getFirstPerson();
-		return new ModelAndView(String.format(LIST_REDIRECT, 
-			((Offender) (person)).getId()));
-//			((Offender) (relationship.getFirstPerson())).getId()));
+		return new ModelAndView(String.format(LIST_REDIRECT, person.getId()));
 	}
 	
 	/**
@@ -1518,6 +1593,28 @@ public class UpdateOffenderRelationController {
 		/* Set current address as default at edit screen */
 		/*editRelationshipsForm.setAddressOperation(
 			OffenderRelationshipAddressOperation.CURRENT);*/
+		
+		// Adds notes
+		List<RelationshipNote> notes = this.updateOffenderRelationService
+				.findNotes(relationship);
+		List<OffenderRelationshipNoteItem> noteItems
+			= new ArrayList<OffenderRelationshipNoteItem>();
+		for (RelationshipNote note : notes) {
+			OffenderRelationshipNoteItem noteItem
+				= new OffenderRelationshipNoteItem();
+			noteItem.setOperation(OffenderRelationshipNoteItemOperation.UPDATE);
+			noteItem.setNote(note);
+			OffenderRelationshipNoteFields fields
+				= new OffenderRelationshipNoteFields();
+			fields.setCategory(note.getCategory());
+			fields.setDate(note.getDate());
+			fields.setValue(note.getValue());
+			noteItem.setFields(fields);
+			noteItems.add(noteItem);
+		}
+		editRelationshipsForm.setNoteItems(noteItems);
+		
+		// Returns edit model and view
 		return this.prepareEditMav(editRelationshipsForm, 
 			personFieldsBirthStates, personFieldsBirthCities, relationship);
 	}
@@ -1600,6 +1697,9 @@ public class UpdateOffenderRelationController {
 		
 		mav.addObject(OFFENDER_RELATIONSHIP_ONLINE_ACCOUNT_INDEX_MODEL_KEY, 
 			form.getOnlineAccountContactItems().size());
+		
+		mav.addObject(OFFENDER_RELATIONSHIP_NOTE_ITEM_INDEX_MODEL_KEY,
+			form.getNoteItems().size());
 		
 		ModelMap map = mav.getModelMap();
 		AddressFields addressFields = form.getAddressFields();
@@ -1882,10 +1982,17 @@ public class UpdateOffenderRelationController {
 				PERSON_FIELDS_PROPERTY_NAME);
 		}
 
+		List<RelationshipNoteCategory> noteCategories
+			= this.updateOffenderRelationService
+				.findDesignatedNoteCategories();
+		
 		this.onlineAccountFieldsControllerDelegate
 			.prepareEditOnlineAccountFields(map, onlineAccountHosts);
 		this.telephoneNumberFieldsControllerDelegate
 			.prepareEditTelephoneNumberFields(map);
+		this.offenderRelationshipNoteFieldsControllerDelegate
+			.prepareEditOffenderRelationshipNotesFields(map, noteCategories);
+		
 		this.offenderSummaryModelDelegate.add(map,
 			(Offender) relationship.getFirstPerson());
 		return new ModelAndView(EDIT_VIEW_NAME, map);
@@ -2168,6 +2275,41 @@ public class UpdateOffenderRelationController {
 	}
 	
 	/**
+	 * Returns new offender relationship note item.
+	 * 
+	 * @param offenderRelationshipNoteItemIndex offender relationship note
+	 * item index
+	 * @return new offender relationship note item
+	 */
+	@RequestMapping(value = "createRelationshipNoteItem.html",
+			method = RequestMethod.GET)
+	public ModelAndView createRelationshipNoteItem(
+			@RequestParam(
+					value = "offenderRelationshipNoteItemIndex",
+					required = true)
+				final Integer offenderRelationshipNoteItemIndex) {
+		List<RelationshipNoteCategory> noteCategories
+			= this.updateOffenderRelationService.findDesignatedNoteCategories();
+		OffenderRelationshipNoteItem offenderRelationshipNoteItem
+			= new OffenderRelationshipNoteItem();
+		offenderRelationshipNoteItem.setOperation(
+				OffenderRelationshipNoteItemOperation.CREATE);
+		ModelAndView mav = new ModelAndView(
+				CREATE_RELATIONSHIP_NOTE_TABLE_ROW_VIEW_NAME);
+		mav.addObject(OFFENDER_RELATIONSHIP_NOTE_ITEM_INDEX_MODEL_KEY,
+				offenderRelationshipNoteItemIndex);
+		mav.addObject(OFFENDER_RELATIONSHIP_NOTE_ITEM_MODEL_KEY,
+				offenderRelationshipNoteItem);
+		mav.addObject(OFFENDER_RELATIONSHIP_NOTE_ITEMS_FIELD_NAME_MODEL_KEY,
+				OFFENDER_RELATIONSHIP_NOTE_ITEMS_FIELD_NAME);
+		mav.addObject(BASE_URL_MODEL_KEY, BASE_URL);
+		this.offenderRelationshipNoteFieldsControllerDelegate
+			.prepareEditOffenderRelationshipNotesFields(
+					mav.getModelMap(), noteCategories);
+		return mav;
+	}
+	
+	/**
 	 * Returns a view for online account action menu pertaining to the specified
 	 * offender.
 	 * 
@@ -2181,6 +2323,19 @@ public class UpdateOffenderRelationController {
 		ModelMap map = new ModelMap();
 		map.addAttribute(OFFENDER_MODEL_KEY, offender);
 		return new ModelAndView(EMAILS_ACTION_MENU_VIEW_NAME, map);
+	}
+	
+	/**
+	 * Shows action menu for notes.
+	 * 
+	 * @return action menu for notes
+	 */
+	@RequestMapping(
+			value = "/noteItemsActionMenu.html",
+			method = RequestMethod.GET)
+	public ModelAndView noteItemsActionMenu() {
+		ModelAndView mav = new ModelAndView(NOTES_ACTION_MENU_VIEW_NAME);
+		return mav;
 	}
 	
 	/**
@@ -2363,21 +2518,64 @@ public class UpdateOffenderRelationController {
 			ERROR_BUNDLE_NAME, relationshipNoteExistsException);
 	}
 	
+	/**
+	 * Handles {@code VictimExistsException}.
+	 * 
+	 * @param victimExistsException victim exists exception thrown
+	 * @return screen to handle {@code VictimExistsException}
+	 */
+	@ExceptionHandler(VictimExistsException.class)
+	public ModelAndView handleVictimExistsException(
+		final VictimExistsException victimExistsException) {
+		return this.businessExceptionHandlerDelegate.prepareModelAndView(
+			VICTIM_EXISTS_EXCEPTION_MESSAGE_KEY,
+			ERROR_BUNDLE_NAME, victimExistsException);
+	}
 	
+	/**
+	 * Handles {@code VisitationExistsException}.
+	 * 
+	 * @param visitationExistsException visitation exists exception thrown
+	 * @return screen to handle {@code VisitationExistsException}
+	 */
+	@ExceptionHandler(VisitationExistsException.class)
+	public ModelAndView handleVisitationExistsException(
+		final VisitationExistsException visitationExistsException) {
+		return this.businessExceptionHandlerDelegate.prepareModelAndView(
+			VISITATION_EXISTS_EXCEPTION_MESSAGE_KEY,
+			ERROR_BUNDLE_NAME, visitationExistsException);
+	}
 	
+	/**
+	 * Handles {@code PersonExistsException}.
+	 * 
+	 * @param personExistsException person exists exception thrown
+	 * @return screen to handle {@code PersonExistsException}
+	 */
+	@ExceptionHandler(PersonExistsException.class)
+	public ModelAndView handlePersonExistsException(
+		final PersonExistsException personExistsException) {
+		return this.businessExceptionHandlerDelegate.prepareModelAndView(
+			PERSON_EXISTS_EXCEPTION_MESSAGE_KEY,
+			ERROR_BUNDLE_NAME, 	personExistsException);
+	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	/**
+	 * Handles {@code FamilyAssociationConflictException}.
+	 * 
+	 * @param familyAssociationConflictException family association Conflict
+	 * exception thrown
+	 * @return screen to handle {@code FamilyAssociationConflictException}
+	 */
+	@ExceptionHandler(FamilyAssociationConflictException.class)
+	public ModelAndView handleFamilyAssociationConflictException(
+		final FamilyAssociationConflictException
+		familyAssociationConflictException) {
+		return this.businessExceptionHandlerDelegate.prepareModelAndView(
+			FAMILY_ASSOCIATION_CONFLICT_EXCEPTION_MESSAGE_KEY,
+			ERROR_BUNDLE_NAME, familyAssociationConflictException);
+	}
+
 	/**
 	 * Sets up and registers property editors.
 	 * 
@@ -2421,6 +2619,11 @@ public class UpdateOffenderRelationController {
 			this.telephoneNumberPropertyEditorFactory.createPropertyEditor());
 		binder.registerCustomEditor(OnlineAccount.class,
 			this.onlineAccountPropertyEditorFactory.createPropertyEditor());
+		binder.registerCustomEditor(RelationshipNote.class,
+			this.relationshipNotePropertyEditorFactory.createPropertyEditor());
+		binder.registerCustomEditor(RelationshipNoteCategory.class,
+			this.relationshipNoteCategoryPropertyEditorFactory
+				.createPropertyEditor());
 		binder.registerCustomEditor(Relationship.class,
 			this.relationshipPropertyEditorFactory.createPropertyEditor());
 		binder.registerCustomEditor(FamilyAssociation.class,

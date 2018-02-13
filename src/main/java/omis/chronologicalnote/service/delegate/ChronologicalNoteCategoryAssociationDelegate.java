@@ -19,6 +19,8 @@ package omis.chronologicalnote.service.delegate;
 
 import java.util.List;
 
+import omis.audit.AuditComponentRetriever;
+import omis.audit.domain.CreationSignature;
 import omis.chronologicalnote.dao.ChronologicalNoteCategoryAssociationDao;
 import omis.chronologicalnote.domain.ChronologicalNote;
 import omis.chronologicalnote.domain.ChronologicalNoteCategory;
@@ -42,6 +44,9 @@ public class ChronologicalNoteCategoryAssociationDelegate {
 	private InstanceFactory<ChronologicalNoteCategoryAssociation>
 	chronologicalNoteCategoryAssociationInstanceFactory;
 	
+	/* Component retrievers. */
+	private AuditComponentRetriever auditComponentRetriever;
+	
 	/**
 	 * Instantiates a chronological note category association delegate with the specified data access object
 	 * and instance factory.
@@ -52,9 +57,11 @@ public class ChronologicalNoteCategoryAssociationDelegate {
 	public ChronologicalNoteCategoryAssociationDelegate(
 			final ChronologicalNoteCategoryAssociationDao chronologicalNoteCategoryAssociationDao,
 			final InstanceFactory<ChronologicalNoteCategoryAssociation>
-			chronologicalNoteCategoryAssociationInstanceFactory) {
+			chronologicalNoteCategoryAssociationInstanceFactory,
+			final AuditComponentRetriever auditComponentRetriever) {
 		this.chronologicalNoteCategoryAssociationDao = chronologicalNoteCategoryAssociationDao;
 		this.chronologicalNoteCategoryAssociationInstanceFactory = chronologicalNoteCategoryAssociationInstanceFactory;
+		this.auditComponentRetriever = auditComponentRetriever;
 	}
 	
 	/**
@@ -74,6 +81,9 @@ public class ChronologicalNoteCategoryAssociationDelegate {
 		ChronologicalNoteCategoryAssociation association = this.chronologicalNoteCategoryAssociationInstanceFactory.createInstance();
 		association.setNote(note);
 		association.setCategory(category);
+		association.setCreationSignature(new CreationSignature(
+				this.auditComponentRetriever.retrieveUserAccount(),
+				this.auditComponentRetriever.retrieveDate()));
 		return this.chronologicalNoteCategoryAssociationDao.makePersistent(association);
 	}
 	

@@ -1,8 +1,26 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.paroleboardcondition.service;
 
 import java.util.Date;
 import java.util.List;
 
+import omis.boardhearing.domain.BoardHearing;
 import omis.condition.domain.Agreement;
 import omis.condition.domain.AgreementAssociableDocument;
 import omis.condition.domain.AgreementCategory;
@@ -15,20 +33,21 @@ import omis.condition.domain.ConditionTitle;
 import omis.document.domain.Document;
 import omis.document.domain.DocumentTag;
 import omis.exception.DuplicateEntityFoundException;
+import omis.hearinganalysis.domain.HearingAnalysis;
 import omis.offender.domain.Offender;
 import omis.paroleboardcondition.domain.ParoleBoardAgreement;
 import omis.paroleboardcondition.domain.ParoleBoardAgreementCategory;
 
 /**
- * Parole Board Condition Service.
+ * Parole board condition service.
  * 
- *@author Annie Wahl 
- *@version 0.1.0 (Dec 18, 2017)
- *@since OMIS 3.0
+ * @author Annie Wahl 
+ * @author Josh Divine
+ * @version 0.1.1 (Feb 6, 2018)
+ * @since OMIS 3.0
  *
  */
 public interface ParoleBoardConditionService {
-	
 	
 	/**
 	 * Creates a Agreement.
@@ -66,20 +85,36 @@ public interface ParoleBoardConditionService {
 	
 	/**
 	 * Creates a Parole Board Agreement with the specified properties.
-	 * @param agreement - Agreement
-	 * @param category - Parole Board Agreement Category
-	 * @return Newly created Parole Board Agreement
-	 * @throws DuplicateEntityFoundException - When a Parole Board Agreement
-	 * already exists with the given Agreement and Category.
+	 * 
+	 * @param agreement agreement
+	 * @param boardHearing board hearing
+	 * @param category parole board agreement category
+	 * @return parole board agreement
+	 * @throws DuplicateEntityFoundException When a parole board agreement
+	 * already exists with the given agreement and category.
 	 */
 	ParoleBoardAgreement createParoleBoardAgreement(Agreement agreement,
+			BoardHearing boardHearing, ParoleBoardAgreementCategory category)
+					throws DuplicateEntityFoundException;
+	
+	/**
+	 * Creates a Parole Board Agreement with the specified properties.
+	 * 
+	 * @param agreement agreement
+	 * @param hearingAnalysis hearing analysis
+	 * @param category parole board agreement category
+	 * @return parole board agreement
+	 * @throws DuplicateEntityFoundException When a parole board agreement
+	 * already exists with the given agreement and category.
+	 */
+	ParoleBoardAgreement createParoleBoardAgreement(Agreement agreement,
+			HearingAnalysis hearingAnalysis, 
 			ParoleBoardAgreementCategory category)
 					throws DuplicateEntityFoundException;
 	
 	/**
 	 * Updates a Parole Board Agreement with the specified properties.
 	 * @param paroleBoardAgreement - Parole Board Agreement to update
-	 * @param agreement - Agreement
 	 * @param category - Parole Board Agreement Category
 	 * @return Updated Parole Board Agreement
 	 * @throws DuplicateEntityFoundException - When a Parole Board Agreement
@@ -87,7 +122,6 @@ public interface ParoleBoardConditionService {
 	 */
 	ParoleBoardAgreement updateParoleBoardAgreement(
 			ParoleBoardAgreement paroleBoardAgreement,
-			Agreement agreement,
 			ParoleBoardAgreementCategory category)
 					throws DuplicateEntityFoundException;
 	
@@ -171,23 +205,6 @@ public interface ParoleBoardConditionService {
 	 * Document already exists with the given properties
 	 */
 	AgreementAssociableDocument createAgreementAssociableDocument(
-			Agreement agreement, Document document)
-					throws DuplicateEntityFoundException;
-	
-	/**
-	 * Updates the specified AgreementAssociableDocument with the specified
-	 * properties.
-	 * 
-	 * @param agreementAssociableDocument - AgreementAssociableDocument to
-	 * update
-	 * @param agreement - Agreement
-	 * @param document - Document
-	 * @return Updated AgreementAssociableDocument
-	 * @throws DuplicateEntityFoundException - When another
-	 * AgreementAssociableDocument already exists with the specified properties
-	 */
-	AgreementAssociableDocument updateAgreementAssociableDocument(
-			AgreementAssociableDocument agreementAssociableDocument,
 			Agreement agreement, Document document)
 					throws DuplicateEntityFoundException;
 	

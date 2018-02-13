@@ -46,7 +46,6 @@ import omis.contact.service.delegate.TelephoneNumberDelegate;
 import omis.country.domain.Country;
 import omis.country.service.delegate.CountryDelegate;
 import omis.demographics.domain.Sex;
-import omis.exception.DuplicateEntityFoundException;
 import omis.offender.domain.Offender;
 import omis.offenderrelationship.service.UpdateOffenderRelationService;
 import omis.person.domain.Person;
@@ -76,6 +75,7 @@ import omis.relationship.service.delegate.RelationshipNoteDelegate;
  * @author Joel Norris
  * @author Yidong Li
  * @author Stephen Abson
+ * @author Sheronda Vaughn
  * @version 0.1.1 (Nov 8, 2017)
  * @since OMIS 3.0
  */
@@ -100,7 +100,7 @@ public class UpdateOffenderRelationServiceImpl
 	private final RelationshipDelegate relationshipDelegate;
 	private final RelationshipNoteDelegate relationshipNoteDelegate;
 	private final RelationshipNoteCategoryDesignatorDelegate
-	relationshipNoteCategoryDesignatorDelegate;
+		relationshipNoteCategoryDesignatorDelegate;
 	
 	/**
 	 * Instantiates implementation of service to update offender relations.
@@ -175,18 +175,18 @@ public class UpdateOffenderRelationServiceImpl
 		PersonIdentityExistsException {
 		Person updatedPerson = this.personDelegate.update(
 				person, lastName, firstName, middleName, suffix);
-		if(person.getIdentity()!=null){
+		if (person.getIdentity() != null) {
 			this.personIdentityDelegate.update(person.getIdentity(), sex, 
 				birthDate,	birthCountry, birthState, birthCity, 
 				socialSecurityNumber, stateId, deceased, deathDate);
-		}
-		else {
-			if(sex!=null || birthDate!=null || birthCountry!=null || 
-				birthState!=null || birthCity!=null || 
-				socialSecurityNumber!=null || stateId!=null || deceased!=null
-				|| deathDate!=null ){
+		} else {
+			if (sex != null || birthDate != null || birthCountry != null 
+					|| birthState != null || birthCity != null 
+					|| socialSecurityNumber != null || stateId != null 
+				|| deceased != null || deathDate != null) {
 				PersonIdentity identity = this.personIdentityDelegate.create(
-					person, sex, birthDate, birthCountry, birthState, birthCity, 
+					person, sex, birthDate, birthCountry, birthState, 
+					birthCity, 
 					socialSecurityNumber, stateId, deceased, deathDate);
 				person.setIdentity(identity);
 			}
@@ -196,7 +196,7 @@ public class UpdateOffenderRelationServiceImpl
 	
 	/** {@inheritDoc} */
 	@Override
-	public List<Suffix> findNameSuffixes(){
+	public List<Suffix> findNameSuffixes() {
 		return this.suffixDelegate.findAll();
 	}
 	
@@ -209,6 +209,7 @@ public class UpdateOffenderRelationServiceImpl
 	}
 
 	/** {@inheritDoc} */
+	@SuppressWarnings("deprecation")
 	@Override
 	public List<Address> findAddresses(String addressQuery) {
 		return this.addressDelegate.findAddressesByValue(addressQuery);
@@ -264,7 +265,8 @@ public class UpdateOffenderRelationServiceImpl
 
 	/** {@inheritDoc} */
 	@Override
-	public City createCity(final String name, final State state, final Country country) 
+	public City createCity(final String name, final State state, 
+			final Country country) 
 		throws CityExistsException {
 		return this.cityDelegate.create(name, true, state, country);
 	}
@@ -272,7 +274,7 @@ public class UpdateOffenderRelationServiceImpl
 	/** {@inheritDoc} */
 	@Override
 	public ZipCode createZipCode(final String value, final String extension, 
-		final City city) throws ZipCodeExistsException{
+		final City city) throws ZipCodeExistsException {
 		return this.zipCodeDelegate.create(city, value, extension, true);
 	}
 	
@@ -295,24 +297,24 @@ public class UpdateOffenderRelationServiceImpl
 	@Override
 	public Address findMailingAddress(final Person relation) {
 		Contact contact = this.contactDelegate.find(relation);
-		if(contact != null){
+		if (contact != null) {
 			Address address = contact.getMailingAddress();
 			return address;
-		}
-		else 
+		} else {
 			return null;
+		}
 	}
 	
 	/** {@inheritDoc} */
 	@Override
 	public PoBox findPoBox(final Person relation) {
 		Contact contact = this.contactDelegate.find(relation);
-		if(contact != null){
+		if (contact != null) {
 			PoBox poBox = contact.getPoBox();
 			return poBox;
-		}
-		else 
+		} else  {
 			return null;
+		}
 	}
 	
 	/** {@inheritDoc} */
@@ -344,7 +346,7 @@ public class UpdateOffenderRelationServiceImpl
 	@Override
 	public TelephoneNumber updateTelephoneNumber(
 		final TelephoneNumber telephoneNumber, final Long value, 
-		final Integer extension, final Boolean primary, Boolean active, 
+		final Integer extension, final Boolean primary, final Boolean active, 
 		final TelephoneNumberCategory category)
 		throws TelephoneNumberExistsException {
 		return this.telephoneNumberDelegate.update(telephoneNumber, value, 
@@ -364,8 +366,8 @@ public class UpdateOffenderRelationServiceImpl
 		final Boolean active) 
 		throws OnlineAccountExistsException {
 		Contact contact = this.contactDelegate.find(relation);
-		return this.onlineAccountDelegate.create(contact, name, active, primary, 
-			host); 
+		return this.onlineAccountDelegate.create(contact, name, 
+				active, primary, host); 
 	}
 	
 	/** {@inheritDoc} */
@@ -398,8 +400,10 @@ public class UpdateOffenderRelationServiceImpl
 	
 	/** {@inheritDoc} */
 	@Override
-	public void removeRelationship(final Offender offender, final Person relation) {
-		Relationship relationship = this.relationshipDelegate.find(offender, relation);
+	public void removeRelationship(final Offender offender, 
+			final Person relation) {
+		Relationship relationship = this.relationshipDelegate.find(offender, 
+				relation);
 		this.relationshipDelegate.remove(relationship);
 	}
 	

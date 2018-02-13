@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.victim.report;
 
 import java.util.List;
@@ -5,12 +22,12 @@ import java.util.List;
 import omis.offender.domain.Offender;
 import omis.person.domain.Person;
 import omis.victim.domain.VictimAssociation;
-import omis.victim.domain.VictimDocumentAssociation;
 
 /**
  * Report service for victims.
  *
  * @author Stephen Abson
+ * @author Sheronda Vaughn
  * @version 0.0.1 (Jun 8, 2015)
  * @since OMIS 3.0
  */
@@ -44,11 +61,10 @@ public interface VictimAssociationReportService {
 	/**
 	 * Returns victim document associations for the specified victim and docket.
 	 * 
-	 * @param docket docket
 	 * @param victim victim
 	 * @return list of victim document associations
 	 */
-	public List<VictimDocumentAssociationSummary> 
+	List<VictimDocumentAssociationSummary> 
 		findDocumentAssociationSummariesByVictim(Person victim);
 
 	/**
@@ -61,9 +77,9 @@ public interface VictimAssociationReportService {
 	
 	
 	/**
-	 * Returns whether association is an offender
-	 * @param person
-	 * @return
+	 * Returns whether association is an offender.
+	 * @param person person
+	 * @return is offender
 	 */
 	boolean isOffender(Person person);
 }

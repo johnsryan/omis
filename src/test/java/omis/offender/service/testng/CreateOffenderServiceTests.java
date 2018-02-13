@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.offender.service.testng;
 
 import java.text.ParseException;
@@ -11,7 +28,6 @@ import org.testng.annotations.Test;
 import omis.citizenship.domain.Citizenship;
 import omis.country.domain.Country;
 import omis.country.service.delegate.CountryDelegate;
-import omis.datatype.DateRange;
 import omis.demographics.domain.DominantSide;
 import omis.demographics.domain.Height;
 import omis.demographics.domain.PersonDemographics;
@@ -19,9 +35,6 @@ import omis.demographics.domain.Sex;
 import omis.demographics.domain.Weight;
 import omis.demographics.domain.component.PersonAppearance;
 import omis.demographics.domain.component.PersonPhysique;
-import omis.demographics.service.delegate.PersonDemographicsDelegate;
-import omis.demographics.service.delegate.RaceDelegate;
-import omis.demographics.service.delegate.TribeDelegate;
 import omis.exception.DateConflictException;
 import omis.exception.DuplicateEntityFoundException;
 import omis.exception.OperationNotAuthorizedException;
@@ -46,7 +59,6 @@ import omis.religion.domain.ReligionGroup;
 import omis.religion.domain.ReligiousPreference;
 import omis.religion.service.delegate.ReligionDelegate;
 import omis.religion.service.delegate.ReligionGroupDelegate;
-import omis.religion.service.delegate.ReligiousPreferenceDelegate;
 import omis.testng.AbstractHibernateTransactionalTestNGSpringContextTests;
 import omis.util.PropertyValueAsserter;
 
@@ -131,19 +143,19 @@ public class CreateOffenderServiceTests
 				stateIdNumber, birthDate, birthCountry, birthPlace, sex);
 	
 		// Assert
-				PropertyValueAsserter.create()
-					.addExpectedValue("name.lastName", lastName)
-					.addExpectedValue("name.firstName", firstName)
-					.addExpectedValue("name.middleName", middleName)
-					.addExpectedValue("name.suffix", suffix)
-					.addExpectedValue("identity.socialSecurityNumber", 
-							socialSecurityNumber)
-					.addExpectedValue("identity.stateIdNumber", stateIdNumber)
-					.addExpectedValue("identity.birthDate", birthDate)
-					.addExpectedValue("identity.birthCountry", birthCountry)
-					.addExpectedValue("identity.birthPlace", birthPlace)
-					.addExpectedValue("identity.sex", sex)
-					.performAssertions(offender);
+		PropertyValueAsserter.create()
+			.addExpectedValue("name.lastName", lastName)
+			.addExpectedValue("name.firstName", firstName)
+			.addExpectedValue("name.middleName", middleName)
+			.addExpectedValue("name.suffix", suffix)
+			.addExpectedValue("identity.socialSecurityNumber", 
+					socialSecurityNumber)
+			.addExpectedValue("identity.stateIdNumber", stateIdNumber)
+			.addExpectedValue("identity.birthDate", birthDate)
+			.addExpectedValue("identity.birthCountry", birthCountry)
+			.addExpectedValue("identity.birthPlace", birthPlace)
+			.addExpectedValue("identity.sex", sex)
+			.performAssertions(offender);
 	}
 	
 	/**
@@ -230,15 +242,15 @@ public class CreateOffenderServiceTests
 						null, hispanicEthnicity, null, null);
 		//Assert
 		PropertyValueAsserter.create()
-		.addExpectedValue("person", offender)
-		.addExpectedValue("physique", physique)
-		.addExpectedValue("appearance", appearance)
-		.addExpectedValue("dominantSide", dominantSide)
-		.addExpectedValue("race", null)
-		.addExpectedValue("hispanicEthnicity", hispanicEthnicity)
-		.addExpectedValue("tribe", null)
-		.addExpectedValue("maritalStatus", null)
-		.performAssertions(demographics);
+			.addExpectedValue("person", offender)
+			.addExpectedValue("physique", physique)
+			.addExpectedValue("appearance", appearance)
+			.addExpectedValue("dominantSide", dominantSide)
+			.addExpectedValue("race", null)
+			.addExpectedValue("hispanicEthnicity", hispanicEthnicity)
+			.addExpectedValue("tribe", null)
+			.addExpectedValue("maritalStatus", null)
+			.performAssertions(demographics);
 	}
 	
 	/**
@@ -267,16 +279,16 @@ public class CreateOffenderServiceTests
 		
 		//Assert
 		PropertyValueAsserter.create()
-		.addExpectedValue("offender", offender)
-		.addExpectedValue("religion", religion)
-		.performAssertions(preference);				
+			.addExpectedValue("offender", offender)
+			.addExpectedValue("religion", religion)
+			.performAssertions(preference);				
 	}
 	
 	/**
-	 * Test setting the country of citizenship
+	 * Test setting the country of citizenship.
 	 *
 	 *
-	 * @throws DuplicateEntityFoundException
+	 * @throws DuplicateEntityFoundException duplicate entity found 
 	 */
 	public void testSetCountryOfCitizenship() 
 			throws DuplicateEntityFoundException {
@@ -294,9 +306,9 @@ public class CreateOffenderServiceTests
 		
 		//Assert
 		PropertyValueAsserter.create()
-		.addExpectedValue("offender", offender)
-		.addExpectedValue("country", country)
-		.performAssertions(citizenship);
+			.addExpectedValue("offender", offender)
+			.addExpectedValue("country", country)
+			.performAssertions(citizenship);
 	}
 	
 	/**
@@ -316,9 +328,9 @@ public class CreateOffenderServiceTests
 		
 		//Assert
 		PropertyValueAsserter.create()
-		.addExpectedValue("offender", offender)
-		.addExpectedValue("legal", legal)
-		.performAssertions(legalResidence);
+			.addExpectedValue("offender", offender)
+			.addExpectedValue("legal", legal)
+			.performAssertions(legalResidence);
 	}
 	
 	/**
@@ -345,17 +357,17 @@ public class CreateOffenderServiceTests
 				offender, category, value);		
 		//Assert
 		PropertyValueAsserter.create()
-		.addExpectedValue("offender", offender)
-		.addExpectedValue("category", category)
-		.addExpectedValue("value", value)
-		.performAssertions(flag);
+			.addExpectedValue("offender", offender)
+			.addExpectedValue("category", category)
+			.addExpectedValue("value", value)
+			.performAssertions(flag);
 	}
 	
 	/**
 	 * Tests an associated profile photo.
 	 *
 	 *
-	 * @throws DuplicateEntityFoundException
+	 * @throws DuplicateEntityFoundException duplicate entity found
 	 */
 	public void testAssociateProfilePhoto() 
 			throws DuplicateEntityFoundException {
@@ -370,9 +382,15 @@ public class CreateOffenderServiceTests
 				.associateProfilePhoto(offender, filename, photoDate);		
 		//Assert
 		PropertyValueAsserter.create()
-		.performAssertions(profilePhoto);
+			.performAssertions(profilePhoto);
 	}
 	
+	/**
+	 * Create city.
+	 *
+	 *
+	 * @throws DuplicateEntityFoundException duplicate entity
+	 */
 	public void createCity() throws DuplicateEntityFoundException {
 		//Arrangements
 		final String cityName = "CityName";
@@ -387,12 +405,20 @@ public class CreateOffenderServiceTests
 		
 		//Assert
 		PropertyValueAsserter.create()
-		.addExpectedValue("name", cityName)
-		.addExpectedValue("state", birthState)
-		.addExpectedValue("country", birthCountry)
-		.performAssertions(newCity);
+			.addExpectedValue("name", cityName)
+			.addExpectedValue("state", birthState)
+			.addExpectedValue("country", birthCountry)
+			.performAssertions(newCity);
 	}
 	
+	/**
+	 * Tests offender exists.
+	 *
+	 *
+	 * @throws DuplicateEntityFoundException duplciate entity found
+	 * @throws ParseException parse
+	 * @throws OffenderExistsException offender exists
+	 */
 	@Test(expectedExceptions = {OffenderExistsException.class})
 	public void testOffenderExistsException() 
 			throws DuplicateEntityFoundException, ParseException, 

@@ -124,7 +124,11 @@
   
   <!-- Service delegates -->
   
-  
+  <bean id="locationTermDelegate" class="omis.locationterm.service.delegate.LocationTermDelegate">
+	<constructor-arg name="locationTermDao" ref="locationTermDao"/>
+	<constructor-arg name="locationTermInstanceFactory" ref="locationTermInstanceFactory"/>
+	<constructor-arg name="auditComponentRetriever" ref="auditComponentRetriever"/>
+  </bean>
   
   <bean id="locationReasonTermDelegate" class="omis.locationterm.service.delegate.LocationReasonTermDelegate">
     <constructor-arg name="locationReasonTermDao" ref="locationReasonTermDao"/>
@@ -150,13 +154,21 @@
   	<constructor-arg name="allowedLocationChangeReasonRuleDao" ref="allowedLocationChangeReasonRuleDao"/>
   </bean>
   
-  <!-- Profile specific Service delegates -->
+  <!-- Profile specific services -->
   
-	<bean id="locationTermDelegate" class="omis.locationterm.service.delegate.LocationTermDelegate">
-	  	<constructor-arg name="locationTermDao" ref="locationTermDao"/>
-	  	<constructor-arg name="locationTermInstanceFactory" ref="locationTermInstanceFactory"/>
-	  	<constructor-arg name="auditComponentRetriever" ref="auditComponentRetriever"/>
-  </bean>
+  <beans profile="standalone,dev"> 
+	  <bean id="endLocationTermService" class="omis.locationterm.service.impl.EndLocationTermServiceImpl">
+	    <constructor-arg name="locationTermDelegate" ref="locationTermDelegate"/>
+	  </bean>
+  </beans>
+  
+  <beans profile="prod,preprod,test">
+	  <bean id="endLocationTermService" class="omis.locationterm.service.impl.EndLocationTermServiceImpl">
+	    <constructor-arg name="locationTermDelegate" ref="legacyLocationTermDelegate"/>
+	  </bean>
+  </beans>
+  
+  <!-- Profile specific Service delegates -->
   
   <beans profile="prod,preprod,test">
 	  <bean id="legacyLocationTermDelegate" class="omis.locationterm.service.delegate.LocationTermDelegate">

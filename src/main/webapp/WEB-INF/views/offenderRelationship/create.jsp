@@ -45,6 +45,7 @@
 		var offender = ${offender.id};
 		var offenderRelationshipTelephoneNumberIndex= ${offenderRelationshipTelephoneNumberIndex};
 		var offenderRelationshipOnlineAccountIndex= ${offenderRelationshipOnlineAccountIndex};
+		var offenderRelationshipNoteItemIndex = ${offenderRelationshipNoteItemIndex};
 		var createFamilyMemberStatus= ${createFamilyMemberStatus};
 		var createVictimStatus= ${createVictimStatus};
 		var createVisitorStatus= ${createVisitorStatus};

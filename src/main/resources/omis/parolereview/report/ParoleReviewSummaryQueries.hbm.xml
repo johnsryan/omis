@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ - OMIS - Offender Management Information System
+ - Copyright (C) 2011 - 2017 State of Montana
+ -
+ - This program is free software: you can redistribute it and/or modify
+ - it under the terms of the GNU General Public License as published by
+ - the Free Software Foundation, either version 3 of the License, or
+ - (at your option) any later version.
+ -
+ - This program is distributed in the hope that it will be useful,
+ - but WITHOUT ANY WARRANTY; without even the implied warranty of
+ - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ - GNU General Public License for more details.
+ -
+ - You should have received a copy of the GNU General Public License
+ - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<!--
+ - Queries for reporting parole reviews.
+ -
+ - Author: Josh Divine
+ - Version: 0.1.0 (Feb 12, 2018)
+ - Since: OMIS 3.0
+ -->
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="omis.parolereview.report">
+	<query name="findParoleReviewSummariesByOffender"><![CDATA[
+	 	SELECT new omis.parolereview.report.ParoleReviewSummary(
+	 		   paroleReview.id, 
+		       name.lastName, 
+		       name.firstName, 
+		       name.middleName, 
+		       staffTitle.name,
+		       paroleReview.date,
+		       endorsement.name,
+		       staffRole.name)
+		  FROM omis.parolereview.domain.ParoleReview as paroleReview 
+		  LEFT JOIN paroleReview.staffAssignment staffAssignment
+		  LEFT JOIN staffAssignment.staffMember as person
+		  LEFT JOIN person.name as name
+		  LEFT JOIN staffAssignment.title as staffTitle
+		  LEFT JOIN paroleReview.endorsement endorsement
+		  LEFT JOIN paroleReview.staffRole staffRole
+         WHERE 
+         	   paroleReview.offender = :offender
+      ORDER BY
+      			name.lastName,
+      			name.firstName
+	]]></query>
+</hibernate-mapping>

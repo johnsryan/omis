@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+		
+		<bean id="medicalReviewService" class="omis.medicalreview.service.impl.MedicalReviewServiceImpl">
+			<constructor-arg name="medicalReviewDelegate" ref="medicalReviewDelegate" />
+			<constructor-arg name="medicalReviewNoteDelegate" ref="medicalReviewNoteDelegate" />
+			<constructor-arg name="medicalReviewDocumentAssociationDelegate" ref="medicalReviewDocumentAssociationDelegate" />
+			<constructor-arg name="medicalHealthClassificationDelegate" ref="medicalHealthClassificationDelegate" />
+			<constructor-arg name="documentDelegate" ref="documentDelegate" />
+			<constructor-arg name="documentTagDelegate" ref="documentTagDelegate" />
+		</bean>
+		
+		<!-- MedicalReview Beans -->
+		
+		<bean id="medicalReviewDao" class="omis.medicalreview.dao.impl.hibernate.MedicalReviewDaoHibernateImpl">
+			<constructor-arg name="sessionFactory" ref="sessionFactory" />
+			<constructor-arg name="entityName" value="omis.medicalreview.domain.MedicalReview" />
+		</bean>
+		
+		<bean id="medicalReviewDelegate" class="omis.medicalreview.service.delegate.MedicalReviewDelegate">
+			<constructor-arg name="medicalReviewDao" ref="medicalReviewDao" />
+			<constructor-arg name="medicalReviewInstanceFactory" ref="medicalReviewInstanceFactory" />
+			<constructor-arg name="auditComponentRetriever" ref="auditComponentRetriever" />
+		</bean>
+		
+		<bean id="medicalReviewInstanceFactory" class="omis.instance.factory.hibernate.impl.InstanceFactoryHibernateImpl">
+			<constructor-arg name="instanceFactoryDelegate" ref="instanceFactoryDelegate" />
+			<constructor-arg name="entityName" value="omis.medicalreview.domain.MedicalReview" />
+		</bean>
+		
+		<bean id="medicalReviewPropertyEditorFactory"
+		class="omis.beans.factory.impl.hibernate.PropertyEditorFactoryHibernateImpl">
+			<constructor-arg name="dao" ref="medicalReviewDao" />
+			<constructor-arg name="entityName"
+				value="omis.medicalreview.domain.MedicalReview" />
+			<constructor-arg name="configuration" ref="hibernateConfiguration" />
+		</bean>
+		
+		<!-- MedicalReviewNote Beans -->
+		
+		<bean id="medicalReviewNoteDao" class="omis.medicalreview.dao.impl.hibernate.MedicalReviewNoteDaoHibernateImpl">
+			<constructor-arg name="sessionFactory" ref="sessionFactory" />
+			<constructor-arg name="entityName" value="omis.medicalreview.domain.MedicalReviewNote" />
+		</bean>
+		
+		<bean id="medicalReviewNoteDelegate" class="omis.medicalreview.service.delegate.MedicalReviewNoteDelegate">
+			<constructor-arg name="medicalReviewNoteDao" ref="medicalReviewNoteDao" />
+			<constructor-arg name="medicalReviewNoteInstanceFactory" ref="medicalReviewNoteInstanceFactory" />
+			<constructor-arg name="auditComponentRetriever" ref="auditComponentRetriever" />
+		</bean>
+		
+		<bean id="medicalReviewNoteInstanceFactory" class="omis.instance.factory.hibernate.impl.InstanceFactoryHibernateImpl">
+			<constructor-arg name="instanceFactoryDelegate" ref="instanceFactoryDelegate" />
+			<constructor-arg name="entityName" value="omis.medicalreview.domain.MedicalReviewNote" />
+		</bean>
+		
+		<bean id="medicalReviewNotePropertyEditorFactory"
+		class="omis.beans.factory.impl.hibernate.PropertyEditorFactoryHibernateImpl">
+			<constructor-arg name="dao" ref="medicalReviewNoteDao" />
+			<constructor-arg name="entityName"
+				value="omis.medicalreview.domain.MedicalReviewNote" />
+			<constructor-arg name="configuration" ref="hibernateConfiguration" />
+		</bean>
+		
+		<!-- MedicalReviewDocumentAssociation Beans -->
+		
+		<bean id="medicalReviewDocumentAssociationDao" class="omis.medicalreview.dao.impl.hibernate.MedicalReviewDocumentAssociationDaoHibernateImpl">
+			<constructor-arg name="sessionFactory" ref="sessionFactory" />
+			<constructor-arg name="entityName" value="omis.medicalreview.domain.MedicalReviewDocumentAssociation" />
+		</bean>
+		
+		<bean id="medicalReviewDocumentAssociationDelegate" class="omis.medicalreview.service.delegate.MedicalReviewDocumentAssociationDelegate">
+			<constructor-arg name="medicalReviewDocumentAssociationDao" ref="medicalReviewDocumentAssociationDao" />
+			<constructor-arg name="medicalReviewDocumentAssociationInstanceFactory" ref="medicalReviewDocumentAssociationInstanceFactory" />
+			<constructor-arg name="auditComponentRetriever" ref="auditComponentRetriever" />
+		</bean>
+		
+		<bean id="medicalReviewDocumentAssociationInstanceFactory" class="omis.instance.factory.hibernate.impl.InstanceFactoryHibernateImpl">
+			<constructor-arg name="instanceFactoryDelegate" ref="instanceFactoryDelegate" />
+			<constructor-arg name="entityName" value="omis.medicalreview.domain.MedicalReviewDocumentAssociation" />
+		</bean>
+		
+		<bean id="medicalReviewDocumentAssociationPropertyEditorFactory"
+		class="omis.beans.factory.impl.hibernate.PropertyEditorFactoryHibernateImpl">
+			<constructor-arg name="dao" ref="medicalReviewDocumentAssociationDao" />
+			<constructor-arg name="entityName"
+				value="omis.medicalreview.domain.MedicalReviewDocumentAssociation" />
+			<constructor-arg name="configuration" ref="hibernateConfiguration" />
+		</bean>
+		
+		<!-- MedicalHealthClassification Beans -->
+		
+		<bean id="medicalHealthClassificationDao" class="omis.medicalreview.dao.impl.hibernate.MedicalHealthClassificationDaoHibernateImpl">
+			<constructor-arg name="sessionFactory" ref="sessionFactory" />
+			<constructor-arg name="entityName" value="omis.medicalreview.domain.MedicalHealthClassification" />
+		</bean>
+		
+		<bean id="medicalHealthClassificationDelegate" class="omis.medicalreview.service.delegate.MedicalHealthClassificationDelegate">
+			<constructor-arg name="medicalHealthClassificationDao" ref="medicalHealthClassificationDao" />
+			<constructor-arg name="medicalHealthClassificationInstanceFactory" ref="medicalHealthClassificationInstanceFactory" />
+		</bean>
+		
+		<bean id="medicalHealthClassificationInstanceFactory" class="omis.instance.factory.hibernate.impl.InstanceFactoryHibernateImpl">
+			<constructor-arg name="instanceFactoryDelegate" ref="instanceFactoryDelegate" />
+			<constructor-arg name="entityName" value="omis.medicalreview.domain.MedicalHealthClassification" />
+		</bean>
+		
+		<bean id="medicalHealthClassificationPropertyEditorFactory"
+		class="omis.beans.factory.impl.hibernate.PropertyEditorFactoryHibernateImpl">
+			<constructor-arg name="dao" ref="medicalHealthClassificationDao" />
+			<constructor-arg name="entityName"
+				value="omis.medicalreview.domain.MedicalHealthClassification" />
+			<constructor-arg name="configuration" ref="hibernateConfiguration" />
+		</bean>
+		
+		<!-- Document Beans -->
+		
+		<bean id="medicalReviewDocumentPersister" class="omis.document.io.impl.SimpleDocumentPersisterImpl">
+			<constructor-arg name="fileLocator" ref="medicalReviewDocumentLocator"/>
+		</bean>
+	
+		<bean id="medicalReviewDocumentRetriever" class="omis.document.io.impl.SimpleDocumentRetrieverImpl">
+			<constructor-arg name="fileLocator" ref="medicalReviewDocumentLocator"/>
+			<constructor-arg name="defaultFilename" value="notFound"/>
+		</bean>
+	
+		<bean id="medicalReviewDocumentLocator" class="omis.io.impl.FileFromPathLocatorImpl">
+			<constructor-arg name="path" value="${application.resource.path}\Documents\MedicalReviewDocuments"/>
+		</bean>
+		
+		<bean id="medicalReviewDocumentRemover" class="omis.io.impl.SimpleFileRemoverImpl">
+			<constructor-arg name="fileLocator" ref="medicalReviewDocumentLocator"/>
+		</bean>
+		
+</beans>

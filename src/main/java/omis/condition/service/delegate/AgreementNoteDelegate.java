@@ -18,7 +18,8 @@ import omis.instance.factory.InstanceFactory;
  * @author Jonny Santy
  * @author Trevor Isles
  * @author Annie Jacques
- * @version 0.1.1 (May 21, 2017)
+ * @author Josh Divine
+ * @version 0.1.2 (Feb 7, 2018)
  * @since OMIS 3.0
  */
 public class AgreementNoteDelegate {
@@ -97,9 +98,8 @@ public class AgreementNoteDelegate {
 	public AgreementNote update(final AgreementNote agreementNote,
 			final String description, final Date date)
 				throws DuplicateEntityFoundException {
-		if(this.agreementNoteDao.findExcluding(agreementNote,
-				agreementNote.getDate(), description, 
-				agreementNote.getAgreement()) 	!= null) {
+		if(this.agreementNoteDao.findExcluding(agreementNote, date, description, 
+				agreementNote.getAgreement()) != null) {
 			throw new DuplicateEntityFoundException(
 					DUPLICATE_AGREEMENT_NOTE_MSG);
 		}

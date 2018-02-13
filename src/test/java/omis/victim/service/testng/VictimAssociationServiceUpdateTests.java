@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.victim.service.testng;
 
 import java.beans.PropertyEditor;
@@ -8,17 +25,19 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.testng.annotations.Test;
 
 import omis.beans.factory.spring.CustomDateEditorFactory;
-import omis.exception.DuplicateEntityFoundException;
 import omis.offender.domain.Offender;
 import omis.offender.service.delegate.OffenderDelegate;
 import omis.person.domain.Person;
 import omis.person.service.delegate.PersonDelegate;
 import omis.relationship.domain.Relationship;
 import omis.relationship.exception.ReflexiveRelationshipException;
+import omis.relationship.exception.RelationshipExistsException;
 import omis.relationship.service.delegate.RelationshipDelegate;
 import omis.testng.AbstractHibernateTransactionalTestNGSpringContextTests;
+import omis.util.PropertyValueAsserter;
 import omis.victim.domain.VictimAssociation;
 import omis.victim.domain.component.VictimAssociationFlags;
+import omis.victim.exception.VictimExistsException;
 import omis.victim.service.VictimAssociationService;
 import omis.victim.service.delegate.VictimAssociationDelegate;
 
@@ -26,6 +45,7 @@ import omis.victim.service.delegate.VictimAssociationDelegate;
  * Tests update of victim.
  *
  * @author Stephen Abson
+ * @author Sheronda Vaughn
  * @version 0.0.1
  * @since OMIS 3.0
  */
@@ -65,81 +85,103 @@ public class VictimAssociationServiceUpdateTests
 	
 	/* Test methods. */
 	
-	public void testUpdate() throws DuplicateEntityFoundException {
-		
+	/**
+	 * Victim association update.
+	 *
+	 *
+	 * @throws VictimExistsException victim exists 
+	 * @throws RelationshipExistsException relationship exists
+	 * @throws ReflexiveRelationshipException reflexive relationship
+	 */
+	@Test
+	public void testUpdate() 
+			throws VictimExistsException, RelationshipExistsException, 
+			ReflexiveRelationshipException {		
 		// Arrangements
-		Offender sanchez = this.offenderDelegate.createWithoutIdentity(
-				"Sanchez", "Franz", "", "");
-		Person leiter = this.personDelegate.create(
-				"Leiter", "Felix", "", "");
-		Relationship relationship;
-		try {
-			relationship = this.relationshipDelegate
-					.create(sanchez, leiter);
-		} catch (ReflexiveRelationshipException e) {
-			throw new AssertionError("Relationship exists", e);
-		}
-		VictimAssociation victimAssociation = this.victimAssociationDelegate
-				.create(relationship, this.parseDateText("03/12/2013"), true,
-						this.parseDateText("12/18/2013"),
-						new VictimAssociationFlags(true, false, true, false));
+		Offender offender = this.offenderDelegate
+				.createWithoutIdentity("Greene", "Dominic", "", "");
+		Person person = this.personDelegate
+				.create("Mathis", "Rene", "", "");
+		Date registeredDate = this.parseDateText("02/11/2014");
+		Boolean packetSent = true;
+		Date packetSendDate = this.parseDateText("03/01/2014");
+		Relationship relationship 
+			= this.relationshipDelegate.findOrCreate(offender, person);
+		VictimAssociationFlags flags = new VictimAssociationFlags();
+		flags.setBusiness(true);
+		flags.setDocRegistered(false);
+		flags.setVictim(true);
+		flags.setVineRegistered(true);				
+		VictimAssociation victimAssociation 
+			= this.victimAssociationDelegate.create(relationship, 
+				registeredDate, packetSent, packetSendDate, flags);
 		
 		// Action
-		Date registerDate = this.parseDateText("12/13/2013");
-		Boolean packetSent = true;
-		Date packetSendDate = this.parseDateText("01/02/2014");
-		Boolean victimFlag = true;
-		Boolean docRegisteredFlag = true;
-		Boolean businessFlag = false;
-		Boolean vineRegisteredFlag = false;
-		victimAssociation = this.victimAssociationService
-				.update(victimAssociation, registerDate, packetSent,
-						packetSendDate,
-						new VictimAssociationFlags(victimFlag,
-								docRegisteredFlag, businessFlag,
-								vineRegisteredFlag));
+		victimAssociation = this.victimAssociationService.update(
+				victimAssociation, registeredDate, packetSent, 
+				packetSendDate, flags);					
 		
 		// Assertions
-		assert sanchez.equals((Offender) victimAssociation
-					.getRelationship().getFirstPerson())
-				: String.format("Wrong offender - %s expected; %s found",
-						sanchez,
-						victimAssociation.getRelationship().getFirstPerson());
-		assert leiter.equals(victimAssociation.getRelationship()
-					.getSecondPerson())
-				: String.format("Wrong victim - %s expected; %s found",
-						leiter,
-						victimAssociation.getRelationship().getSecondPerson());
-		assert registerDate.equals(victimAssociation.getRegisterDate())
-				: String.format("Wrong register date - %s expected; %s found",
-						registerDate, victimAssociation.getRegisterDate());
-		assert packetSent.equals(victimAssociation.getPacketSent())
-				: String.format(
-						"Wrong packet sent flags - %s expected; %s found",
-						packetSent, victimAssociation.getPacketSent());
-		assert packetSendDate.equals(victimAssociation.getPacketSendDate())
-				: String.format(
-						"Wrong packet send date - %s expected; %s found",
-						packetSendDate, victimAssociation.getPacketSendDate());
-		assert victimFlag.equals(victimAssociation.getFlags().getVictim())
-				: String.format("Wrong victim flag - %s expected; %s found",
-						victimFlag, victimAssociation.getFlags().getVictim());
-		assert docRegisteredFlag.equals(
-					victimAssociation.getFlags().getDocRegistered())
-				: String.format(
-						"Wrong DOC registered flag - %s expected; %s found",
-						docRegisteredFlag,
-						victimAssociation.getFlags().getDocRegistered());
-		assert businessFlag.equals(victimAssociation.getFlags().getBusiness())
-				: String.format("Wrong business flag - %s expected; %s found",
-						businessFlag,
-						victimAssociation.getFlags().getBusiness());
-		assert vineRegisteredFlag.equals(
-				victimAssociation.getFlags().getVineRegistered())
-				: String.format(
-						"Wrong VINE registered flag - %s expected; %s found",
-						vineRegisteredFlag,
-						victimAssociation.getFlags().getVineRegistered());
+		PropertyValueAsserter.create()
+		.addExpectedValue("relationship.firstPerson", offender)
+		.addExpectedValue("relationship.secondPerson", person)
+		.addExpectedValue("registerDate", registeredDate)
+		.addExpectedValue("packetSent", packetSent)
+		.addExpectedValue("packetSendDate", packetSendDate)
+		.addExpectedValue("flags", flags)
+			.performAssertions(victimAssociation);
+	}
+	
+	/**
+	 * Tests duplicate victim association on update.
+	 *
+	 *
+	 * @throws VictimExistsException victim exists 
+	 * @throws RelationshipExistsException relationship exists
+	 * @throws ReflexiveRelationshipException reflexive relationship
+	 */
+	@Test(expectedExceptions = {VictimExistsException.class, 
+			ReflexiveRelationshipException.class})
+	public void testVictimAssociationExistsException() 
+			throws VictimExistsException, RelationshipExistsException, 
+			ReflexiveRelationshipException {
+		// Arrangements
+		Offender offender = this.offenderDelegate
+				.createWithoutIdentity("Greene", "Dominic", "", "");
+		Person person = this.personDelegate
+				.create("Mathis", "Rene", "", "");
+		Date registeredDate = this.parseDateText("02/11/2014");
+		Boolean packetSent = true;
+		Date packetSendDate = this.parseDateText("03/01/2014");
+		Relationship relationship 
+			= this.relationshipDelegate.findOrCreate(offender, person);
+		VictimAssociationFlags flags = new VictimAssociationFlags();
+		flags.setBusiness(true);
+		flags.setDocRegistered(false);
+		flags.setVictim(true);
+		flags.setVineRegistered(true); 
+		this.victimAssociationDelegate.create(relationship, 
+				registeredDate, packetSent, packetSendDate, flags);
+		this.victimAssociationService
+				.associate(offender, person, registeredDate, packetSent,
+						packetSendDate, flags);
+		Date registeredDate2 = this.parseDateText("02/11/2014");
+		Boolean packetSent2 = false;
+		Date packetSendDate2 = this.parseDateText("03/01/2014");
+		VictimAssociationFlags flags2 = new VictimAssociationFlags();
+		flags2.setBusiness(false);
+		flags2.setDocRegistered(true);
+		flags2.setVictim(false);
+		flags2.setVineRegistered(false);
+		VictimAssociation victimAssociation1
+			= this.victimAssociationService.associate(offender, person, 
+					registeredDate2, packetSent2, packetSendDate2, 
+					flags2);
+		
+		// Action
+		this.victimAssociationService.update(
+				victimAssociation1, registeredDate2, packetSent, 
+				packetSendDate2, flags2);	
 	}
 	
 	/* Helper methods. */

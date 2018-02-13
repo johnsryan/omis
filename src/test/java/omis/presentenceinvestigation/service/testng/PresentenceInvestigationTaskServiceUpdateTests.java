@@ -54,6 +54,7 @@ import omis.presentenceinvestigation.domain.PresentenceInvestigationTaskSource;
 import omis.presentenceinvestigation.service.PresentenceInvestigationTaskService;
 import omis.presentenceinvestigation.service.delegate.PresentenceInvestigationCategoryDelegate;
 import omis.presentenceinvestigation.service.delegate.PresentenceInvestigationRequestDelegate;
+import omis.presentenceinvestigation.service.delegate.PresentenceInvestigationTaskAssociationDelegate;
 import omis.presentenceinvestigation.service.delegate.PresentenceInvestigationTaskSourceDelegate;
 import omis.region.domain.City;
 import omis.region.domain.State;
@@ -64,12 +65,14 @@ import omis.task.domain.TaskAssignment;
 import omis.task.domain.TaskParameterValue;
 import omis.task.domain.TaskTemplate;
 import omis.task.domain.TaskTemplateGroup;
+import omis.task.service.delegate.TaskAssignmentDelegate;
 import omis.task.service.delegate.TaskDelegate;
 import omis.task.service.delegate.TaskTemplateDelegate;
 import omis.task.service.delegate.TaskTemplateGroupDelegate;
 import omis.testng.AbstractHibernateTransactionalTestNGSpringContextTests;
 import omis.user.domain.UserAccount;
 import omis.user.service.delegate.UserAccountDelegate;
+import omis.util.PropertyValueAsserter;
 
 /**
  * PresentenceInvestigationTaskServiceUpdateTests.java
@@ -83,7 +86,7 @@ import omis.user.service.delegate.UserAccountDelegate;
 public class PresentenceInvestigationTaskServiceUpdateTests
 		extends AbstractHibernateTransactionalTestNGSpringContextTests {
 	
-/* Service being tested */
+	/* Service being tested */
 	
 	@Autowired
 	@Qualifier("presentenceInvestigationTaskService")
@@ -146,6 +149,15 @@ public class PresentenceInvestigationTaskServiceUpdateTests
 	@Autowired
 	private TaskTemplateGroupDelegate taskTemplateGroupDelegate;
 	
+	@Autowired
+	private TaskAssignmentDelegate taskAssignmentDelegate;
+	
+	@Autowired
+	private PresentenceInvestigationTaskAssociationDelegate 
+			presentenceInvestigationTaskAssociationDelegate;
+	
+	/* Tests. */
+	
 	@Test
 	public void testPresentenceInvestigationTaskAssociationUpdate()
 			throws DuplicateEntityFoundException, DocketExistsException {
@@ -197,8 +209,7 @@ public class PresentenceInvestigationTaskServiceUpdateTests
 				"boop", "doop", "poof", userAccount,
 				this.parseDateText("02/02/2018"), null);
 		PresentenceInvestigationTaskAssociation taskAssociation =
-				this.presentenceInvestigationTaskService
-				.createPresentenceInvestigationTaskAssociation(
+				this.presentenceInvestigationTaskAssociationDelegate.create(
 						task2, presentenceInvestigationRequest2, taskSource2);
 		final Task task = this.taskDelegate.create(
 				taskTemplate.getControllerName(), taskTemplate.getMethodName(),
@@ -222,18 +233,12 @@ public class PresentenceInvestigationTaskServiceUpdateTests
 				.updatePresentenceInvestigationTaskAssociation(taskAssociation,
 						task, presentenceInvestigationRequest, taskSource);
 		
-		assert task.equals(taskAssociation.getTask())
-		: String.format("Wrong task for taskAssociation: #%d found; #%d expected",
-				taskAssociation.getTask().getId(), task.getId());
-		assert presentenceInvestigationRequest.equals(taskAssociation
-				.getPresentenceInvestigationRequest())
-		: String.format("Wrong presentenceInvestigationRequest for taskAssociation: " +
-				"%d found; %d expected",
-				taskAssociation.getPresentenceInvestigationRequest().getId(),
-				presentenceInvestigationRequest.getId());
-		assert taskSource.equals(taskAssociation.getTaskSource())
-		: String.format("Wrong taskSource for taskAssociation: %d found; %d expected",
-				taskAssociation.getTaskSource().getId(), taskSource.getId());
+		PropertyValueAsserter.create()
+			.addExpectedValue("task", task)
+			.addExpectedValue("presentenceInvestigationRequest", 
+					presentenceInvestigationRequest)
+			.addExpectedValue("taskSource", taskSource)
+			.performAssertions(taskAssociation);
 	}
 	
 	@Test
@@ -250,9 +255,8 @@ public class PresentenceInvestigationTaskServiceUpdateTests
 				group, "Taskeroo", "taskyTaskController", "edit");
 		final Date originationDate = this.parseDateText("01/01/2017");
 		final Date completionDate = this.parseDateText("11/03/2018");
-		Task task = this.presentenceInvestigationTaskService.createTask(
-				"boop", "doop", "poof", sourceAccount2,
-				this.parseDateText("12/31/2000"),
+		Task task = this.taskDelegate.create("boop", "doop", "poof", 
+				sourceAccount2, this.parseDateText("12/31/2000"),
 				this.parseDateText("09/29/2018"));
 		final Person user = this.personDelegate.create(
 				"Pennyworth", "Alfred", "J", null);
@@ -265,24 +269,14 @@ public class PresentenceInvestigationTaskServiceUpdateTests
 				taskTemplate.getName(), sourceAccount, originationDate,
 				completionDate);
 		
-		assert taskTemplate.getControllerName().equals(task.getControllerName())
-		: String.format("Wrong controllerName for task: %s found; %s expected",
-				task.getControllerName(), taskTemplate.getControllerName());
-		assert taskTemplate.getMethodName().equals(task.getMethodName())
-		: String.format("Wrong methodName for task: %s found; %s expected",
-				task.getMethodName(), taskTemplate.getMethodName());
-		assert taskTemplate.getName().equals(task.getDescription())
-		: String.format("Wrong description for task: %s found; %s expected",
-				task.getDescription(), taskTemplate.getName());
-		assert sourceAccount.equals(task.getSourceAccount())
-		: String.format("Wrong sourceAccount for task: %s found; %s expected",
-				task.getSourceAccount().getUsername(), sourceAccount.getUsername());
-		assert originationDate.equals(task.getOriginationDate())
-		: String.format("Wrong originationDate for task: %s found; %s expected",
-				task.getOriginationDate(), originationDate);
-		assert completionDate.equals(task.getCompletionDate())
-		: String.format("Wrong completionDate for task: %s found; %s expected",
-				task.getCompletionDate(), completionDate);
+		PropertyValueAsserter.create()
+		.addExpectedValue("controllerName", taskTemplate.getControllerName())
+		.addExpectedValue("methodName", taskTemplate.getMethodName())
+		.addExpectedValue("description", taskTemplate.getName())
+		.addExpectedValue("sourceAccount", sourceAccount)
+		.addExpectedValue("originationDate", originationDate)
+		.addExpectedValue("completionDate", completionDate)
+		.performAssertions(task);
 	}
 	
 	@Test
@@ -307,9 +301,8 @@ public class PresentenceInvestigationTaskServiceUpdateTests
 		final UserAccount assigneeAccount2 = this.userAccountDelegate.create(
 				assigneeUser2, "TheButler", "$e(ureP@$$\\/\\/0r|)",
 				this.parseDateText("12/12/2299"), 0, true);
-		TaskAssignment taskAssignment =
-				this.presentenceInvestigationTaskService.createTaskAssignment(
-						task, this.parseDateText("01/01/2011"), assigneeAccount2);
+		TaskAssignment taskAssignment = this.taskAssignmentDelegate.create(task, 
+				this.parseDateText("01/01/2011"), assigneeAccount2);
 		final Person person = this.personDelegate.create(
 				"Wayne", "Bruce", "Alen", null);
 		final UserAccount assigneeAccount = this.userAccountDelegate.create(
@@ -320,16 +313,11 @@ public class PresentenceInvestigationTaskServiceUpdateTests
 				.updateTaskAssignment(taskAssignment, assignedDate,
 						assigneeAccount);
 		
-		assert task.equals(taskAssignment.getTask())
-		: String.format("Wrong task for taskAssignment: %d found; %d expected",
-				taskAssignment.getTask().getId(), task.getId());
-		assert assignedDate.equals(taskAssignment.getAssignedDate())
-		: String.format("Wrong assignedDate for taskAssignment: %s found; %s expected",
-				taskAssignment.getAssignedDate(), assignedDate);
-		assert assigneeAccount.equals(taskAssignment.getAssigneeAccount())
-		: String.format("Wrong assigneeAccount for taskAssignment: %s found; " +
-				"%s expected", taskAssignment.getAssigneeAccount().getUsername(),
-				assigneeAccount.getUsername());
+		PropertyValueAsserter.create()
+			.addExpectedValue("task", task)
+			.addExpectedValue("assignedDate", assignedDate)
+			.addExpectedValue("assigneeAccount", assigneeAccount)
+			.performAssertions(taskAssignment);
 	}
 	
 	@Test
@@ -348,7 +336,8 @@ public class PresentenceInvestigationTaskServiceUpdateTests
 		final Date completionDate = this.parseDateText("11/03/2018");
 		final Task task = this.taskDelegate.create(
 				taskTemplate.getControllerName(), taskTemplate.getMethodName(),
-				taskTemplate.getName(), sourceAccount, originationDate, completionDate);
+				taskTemplate.getName(), sourceAccount, originationDate,
+				completionDate);
 		final String typeName =
 				"omis.presentenceinvestigation.domain.PresentenceInvestigationRequest";
 		final String instanceValue = "63";
@@ -362,19 +351,12 @@ public class PresentenceInvestigationTaskServiceUpdateTests
 				.updateTaskParameterValue(
 						taskParameterValue, typeName, instanceValue, order);
 		
-		assert task.equals(taskParameterValue.getTask())
-		: String.format("Wrong task for taskParameterValue: %d found; %d expected",
-				taskParameterValue.getTask().getId(), task.getId());
-		assert typeName.equals(taskParameterValue.getTypeName())
-		: String.format("Wrong typeName for taskParameterValue: %s found; " +
-				"%s expected", taskParameterValue.getTypeName(), typeName);
-		assert instanceValue.equals(taskParameterValue.getInstanceValue())
-		: String.format("Wrong instanceValue for taskParameterValue: %d found; " +
-				"%d expected", taskParameterValue.getInstanceValue(),
-				instanceValue);
-		assert order.equals(taskParameterValue.getOrder())
-		: String.format("Wrong order for taskParameterValue: %d found; %d expected",
-				taskParameterValue.getOrder(), order);
+		PropertyValueAsserter.create()
+			.addExpectedValue("task", task)
+			.addExpectedValue("typeName", typeName)
+			.addExpectedValue("instanceValue", instanceValue)
+			.addExpectedValue("order", order)
+			.performAssertions(taskParameterValue);
 	}
 	
 	private Date parseDateText(final String dateText) {
@@ -384,5 +366,4 @@ public class PresentenceInvestigationTaskServiceUpdateTests
 			throw new RuntimeException("Error parsing date", e);
 		}
 	}
-	
 }

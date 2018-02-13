@@ -529,6 +529,7 @@ public class VictimAssociationServiceImpl
 	}
 
 	/** {@inheritDoc} */
+	@SuppressWarnings("deprecation")
 	@Override
 	public List<Address> findAddressesByQuery(final String query) {
 		return this.addressDelegate.findAddressesByValue(query);

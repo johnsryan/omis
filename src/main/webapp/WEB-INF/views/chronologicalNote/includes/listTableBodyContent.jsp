@@ -30,16 +30,26 @@
 <fmt:setBundle basename="omis.msgs.common" var="commonBundle"/>
 <fmt:bundle basename="omis.chronologicalnote.msgs.chronologicalNote">
 	<c:forEach var="chronologicalNoteSummary" items="${chronologicalNoteSummaries}" varStatus="status">
-	<tr>
-		<td>
-			<a class="actionMenuItem chronologicalNoteListRowActionMenuItem" id="chronologicalNoteActionMenuLink${status.index}" href="${pageContext.request.contextPath}/chronologicalNoteReport/chronologicalNoteListRowActionMenu.html?note=${chronologicalNoteSummary.id}"></a>	
-		</td>
-		<td>
-			<c:out value="${trackedDocumentSummaryItem.docketValue}"/> - <c:out value="${trackedDocumentSummaryItem.courtName}"/>
-		</td>
-		<td>
-			<c:out value="${trackedDocumentSummaryItem.count}"/>
-		</td>
-	</tr>
+		<c:if test="${(empty chronologicalNoteSummary.categoryNames and Initial) or (not empty chronologicalNoteSummary.categoryNames)}">
+		<tr>
+			<td>
+				<a class="actionMenuItem chronologicalNoteListRowActionMenuItem" id="chronologicalNoteActionMenuLink${status.index}" href="${pageContext.request.contextPath}/chronologicalNote/chronologicalNoteListRowActionMenu.html?note=${chronologicalNoteSummary.id}"></a>	
+			</td>
+			<td>
+				<fmt:formatDate value="${chronologicalNoteSummary.date}" pattern="MM/dd/yyyy"/>
+			</td>
+			<td>
+				<c:forEach var="categoryName" items="${chronologicalNoteSummary.categoryNames}" varStatus="innerstatus">
+					<c:out value="${categoryName}"/><c:if test="${not innerstatus.last}">,</c:if>
+				</c:forEach>
+			</td>
+			<td>
+				<c:out value="${chronologicalNoteSummary.narrative}"/>
+			</td>
+			<td>
+				<c:out value="${chronologicalNoteSummary.updateUserLastName},"/> <c:out value="${chronologicalNoteSummary.updateUserFirstName}"/> <c:out value="("/><c:out value="${chronologicalNoteSummary.updateUserAccountName}"/><c:out value=")"/>
+			</td>
+		</tr>
+		</c:if>
 	</c:forEach>
 </fmt:bundle>

@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.commitstatus.service.testng;
 
 import java.util.Date;
@@ -6,23 +23,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.testng.annotations.Test;
 
-import omis.beans.factory.spring.CustomDateEditorFactory;
 import omis.commitstatus.domain.CommitStatus;
 import omis.commitstatus.domain.CommitStatusTerm;
 import omis.commitstatus.exception.CommitStatusTermExistsAfterException;
 import omis.commitstatus.service.CommitStatusTermService;
 import omis.commitstatus.service.delegate.CommitStatusDelegate;
+import omis.commitstatus.service.delegate.CommitStatusTermDelegate;
 import omis.datatype.DateRange;
 import omis.exception.DuplicateEntityFoundException;
 import omis.offender.domain.Offender;
 import omis.offender.service.delegate.OffenderDelegate;
 import omis.testng.AbstractHibernateTransactionalTestNGSpringContextTests;
+import omis.util.PropertyValueAsserter;
 
 /**
  * Tests "update" of commit status term
  *
  * @author Yidong Li
- * @version 0.0.1
+ * @author Josh Divine
+ * @version 0.0.2
  * @since OMIS 3.0
  */
 @Test(groups = {"commitstatus"})
@@ -38,23 +57,22 @@ public class CommitStatusTermServiceCommitStatusTermUpdateTest
 	@Qualifier("commitStatusDelegate")
 	private CommitStatusDelegate commitStatusDelegate;
 	
+	@Autowired
+	@Qualifier("commitStatusTermDelegate")
+	private CommitStatusTermDelegate commitStatusTermDelegate;
+	
 	/* Service to test. */
 	
 	@Autowired
 	@Qualifier("commitStatusTermService")
 	private CommitStatusTermService commitStatusTermService;
-	
-	/* Property editors. */
-	
-	@Autowired
-	@Qualifier("datePropertyEditorFactory")
-	private CustomDateEditorFactory datePropertyEditorFactory;
-	
+		
 	/**
 	 * Tests commit status update.
 	 */
 	@Test
-	public void testCommitStatusTermUpdate() throws DuplicateEntityFoundException{
+	public void testCommitStatusTermUpdate() 
+			throws DuplicateEntityFoundException{
 		// Arrangements
 		Offender originalOffender = this.offenderDelegate.createWithoutIdentity(
 			"Obama", "Kevin", "Johns", "Mr.");
@@ -65,7 +83,8 @@ public class CommitStatusTermServiceCommitStatusTermUpdateTest
 		Date originalEndDate = new Date(205120000);
 		originalDateRange.setStartDate(orignalStartDate);
 		originalDateRange.setEndDate(originalEndDate);
-		
+		CommitStatusTerm term = this.commitStatusTermDelegate.create(
+				originalOffender, originalStatus, originalDateRange);
 		CommitStatus newStatus = this.commitStatusDelegate.create(
 			"Status B", true);
 		DateRange newDateRange = new DateRange();
@@ -75,20 +94,16 @@ public class CommitStatusTermServiceCommitStatusTermUpdateTest
 		newDateRange.setEndDate(newEndDate);
 		
 		// Action
-		CommitStatusTerm term = this.commitStatusTermService.create(
-			originalOffender, originalStatus, originalDateRange);
-		this.commitStatusTermService.update(term, newStatus, newDateRange);
+		term = this.commitStatusTermService.update(term, newStatus, 
+				newDateRange);
 		
 		// Assertions
-		assert newStatus.equals(term.getStatus())
-		: String.format("Wrong commit status: #%d expected; #%d found",
-			newStatus.getName(), term.getStatus().getName());
-		assert newStartDate.equals(term.getDateRange().getStartDate())
-		: String.format("Wrong start date: #%s expected; #%s found",
-			newStartDate, term.getDateRange().getStartDate());
-		assert newEndDate.equals(term.getDateRange().getEndDate())
-		: String.format("Wrong end date: #%s expected; #%s found",
-			newEndDate, term.getDateRange().getEndDate());
+		PropertyValueAsserter.create()
+			.addExpectedValue("offender", originalOffender)
+			.addExpectedValue("status", newStatus)
+			.addExpectedValue("dateRange.startDate", newStartDate)
+			.addExpectedValue("dateRange.endDate", newEndDate)
+			.performAssertions(term);
 	}
 	
 	/**
@@ -97,7 +112,8 @@ public class CommitStatusTermServiceCommitStatusTermUpdateTest
 	 * @throws DuplicateEntityFoundException if duplicate term exists
 	 */
 	@Test(expectedExceptions = {DuplicateEntityFoundException.class})
-	public void testDuplicateCommitStatusTermUpdate() throws DuplicateEntityFoundException {
+	public void testDuplicateCommitStatusTermUpdate() 
+			throws DuplicateEntityFoundException {
 		// Arrangements
 		Offender offender = this.offenderDelegate.createWithoutIdentity(
 			"Obama", "Kevin", "Johns", "Mr.");
@@ -108,9 +124,8 @@ public class CommitStatusTermServiceCommitStatusTermUpdateTest
 		Date endDate1 = new Date(205120000);
 		dateRange1.setStartDate(startDate1);
 		dateRange1.setEndDate(endDate1);
-		CommitStatusTerm term1 = this.commitStatusTermService.create(offender, 
+		CommitStatusTerm term1 = this.commitStatusTermDelegate.create(offender, 
 			status1, dateRange1);
-		
 		CommitStatus status2 = this.commitStatusDelegate.create(
 			"Status B", true);
 		DateRange dateRange2 = new DateRange();
@@ -118,8 +133,7 @@ public class CommitStatusTermServiceCommitStatusTermUpdateTest
 		Date endDate2 = new Date(105120000);
 		dateRange2.setStartDate(startDate2);
 		dateRange2.setEndDate(endDate2);
-		this.commitStatusTermService.create(offender, 
-			status2, dateRange2);
+		this.commitStatusTermDelegate.create(offender, status2, dateRange2);
 		
 		// Action
 		this.commitStatusTermService.update(term1, status2, dateRange2);

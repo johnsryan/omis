@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.military.web.controller;
 
 import java.util.ArrayList;
@@ -48,7 +65,8 @@ import omis.web.controller.delegate.BusinessExceptionHandlerDelegate;
  * Military controller.
  * 
  * @author Joel Norris
- * @version 0.1.0 (May 15, 2015)
+ * @author Josh Divine
+ * @version 0.1.1 (Feb 12, 2018)
  * @since OMIS 3.0
  */
 @Controller
@@ -610,10 +628,11 @@ public class MilitaryController {
 						.equals(item.getOperation())) {
 					if (this.isNoteChanged(
 							item.getServiceTermNote(), item.getDate(), 
-							item.getNote()));
-					this.militaryServiceTermService.updateNote(
-							item.getServiceTermNote(), item.getDate(),
-							item.getNote());
+							item.getNote())) {
+						this.militaryServiceTermService.updateNote(
+								item.getServiceTermNote(), item.getDate(),
+								item.getNote());
+					}
 				} else if (MilitaryServiceTermNoteItemOperation.REMOVE
 						.equals(item.getOperation())) {
 					this.militaryServiceTermService.removeNote(

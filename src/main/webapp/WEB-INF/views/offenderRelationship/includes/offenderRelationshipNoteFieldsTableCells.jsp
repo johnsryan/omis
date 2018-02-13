@@ -23,7 +23,8 @@
   - Expects the following attributes:
   -  - offenderRelationshipNoteFieldsPropertyName - property name, if not
   -     supplied default of offenderRelationshipNoteFields is used
-  -  - offenderRelationsipNoteFields - fields 
+  -  - offenderRelationshipNoteFields - fields
+  -  - offenderRelationshipNoteCategories - note categories
   -
   - Author: Stephen Abson
   --%>
@@ -39,22 +40,22 @@
 		<option value=""><fmt:message key="nullLabel" bundle="${commonBundle}"/></option>
 		<c:forEach var="offenderRelationshipNoteCategory" items="${offenderRelationshipNoteCategories}">
 			<c:choose>
-				<c:when test="${offenderRelationsipNoteFields.category eq offenderRelationshipNoteCategory}">
+				<c:when test="${offenderRelationshipNoteFields.category eq offenderRelationshipNoteCategory}">
 					<option value="${offenderRelationshipNoteCategory.id}" selected="selected"><c:out value="${offenderRelationshipNoteCategory.name}"/></option>
 				</c:when>
-				<c:choose>
+				<c:otherwise>
 					<option value="${offenderRelationshipNoteCategory.id}"><c:out value="${offenderRelationshipNoteCategory.name}"/></option>
-				</c:choose>
+				</c:otherwise>
 			</c:choose>
 		</c:forEach>
 	</select>
 	<form:errors path="${offenderRelationshipNoteFieldsPropertyName}.category" cssClass="error"/>
 </td>
 <td>
-	<input id="${offenderRelationshipNoteFieldsPropertyName}.date" name="${offenderRelationshipNoteFieldsPropertyName}.date" class="date" value="${offenderRelationsipNoteFields.date}"/>
+	<input id="${offenderRelationshipNoteFieldsPropertyName}.date" name="${offenderRelationshipNoteFieldsPropertyName}.date" class="date" value="<fmt:formatDate value='${offenderRelationshipNoteFields.date}' pattern='MM/dd/yyyy'/>"/>
 	<form:errors path="${offenderRelationshipNoteFieldsPropertyName}.date" cssClass="error"/>
+</td>
 <td>
-<td>
-	<textarea id="${offenderRelationshipNoteFieldsPropertyName}.value" name="${offenderRelationshipNoteFieldsPropertyName}.value"><c:out value="${offenderRelationsipNoteFields.value}"/></textarea>
+	<textarea id="${offenderRelationshipNoteFieldsPropertyName}.value" name="${offenderRelationshipNoteFieldsPropertyName}.value"><c:out value="${offenderRelationshipNoteFields.value}"/></textarea>
 	<form:errors path="${offenderRelationshipNoteFieldsPropertyName}.value" cssClass="error"/>
 </td>

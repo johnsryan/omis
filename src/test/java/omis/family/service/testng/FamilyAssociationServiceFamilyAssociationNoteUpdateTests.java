@@ -17,6 +17,8 @@
  */
 package omis.family.service.testng;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,16 +27,15 @@ import org.testng.annotations.Test;
 
 import omis.beans.factory.spring.CustomDateEditorFactory;
 import omis.datatype.DateRange;
-import omis.exception.DuplicateEntityFoundException;
-import omis.family.exception.FamilyAssociationCategoryExistsException;
-import omis.family.exception.FamilyAssociationConflictException;
-import omis.family.exception.FamilyAssociationExistsException;
-import omis.family.exception.FamilyAssociationNoteExistsException;
 import omis.family.domain.FamilyAssociation;
 import omis.family.domain.FamilyAssociationCategory;
 import omis.family.domain.FamilyAssociationCategoryClassification;
 import omis.family.domain.FamilyAssociationNote;
 import omis.family.domain.component.FamilyAssociationFlags;
+import omis.family.exception.FamilyAssociationCategoryExistsException;
+import omis.family.exception.FamilyAssociationConflictException;
+import omis.family.exception.FamilyAssociationExistsException;
+import omis.family.exception.FamilyAssociationNoteExistsException;
 import omis.family.service.FamilyAssociationService;
 import omis.family.service.delegate.FamilyAssociationCategoryDelegate;
 import omis.offender.domain.Offender;
@@ -45,9 +46,10 @@ import omis.relationship.exception.ReflexiveRelationshipException;
 import omis.testng.AbstractHibernateTransactionalTestNGSpringContextTests;
 
 /**
- * Tests "update" of family association note
+ * Tests "update" of family association note.
  *
  * @author Yidong Li
+ * @author Sheronda Vaughn
  * @version 0.0.1
  * @since OMIS 3.0
  */
@@ -79,63 +81,72 @@ public class FamilyAssociationServiceFamilyAssociationNoteUpdateTests
 	
 	/**
 	 * Family association note update.
-	 * @throws FamilyAssociationCategoryExistsException 
-	 * @throws FamilyAssociationExistsException 
-	 * @throws FamilyAssociationNoteExistsException 
+	 * @throws FamilyAssociationCategoryExistsException family association 
+	 * category exists
+	 * @throws FamilyAssociationExistsException family association exists
+	 * @throws FamilyAssociationNoteExistsException family association note 
+	 * exists
+	 * @throws ReflexiveRelationshipException reflexive relationship
+	 * @throws FamilyAssociationConflictException family association conflict
 	 */
 	@Test
 	public void testFamilyAssociationNoteUpdate() 
 			throws ReflexiveRelationshipException, 
-			FamilyAssociationConflictException, FamilyAssociationCategoryExistsException, FamilyAssociationExistsException, FamilyAssociationNoteExistsException{
+			FamilyAssociationConflictException, 
+			FamilyAssociationCategoryExistsException, 
+			FamilyAssociationExistsException, 
+			FamilyAssociationNoteExistsException {
 		// Arrangements
 		Offender offender = this.offenderDelegate.createWithoutIdentity("Obama",
 			"Kevin", "Johns", "Mr.");
 		Person familyMember = personDelegate.create("Li", "Yidong", "CIC311", 
 			"Mr.");
 		DateRange familyAssociationDateRange = new DateRange();
-		Date familyAssociationStartDate = new Date(11111111);
-		Date familyAssociationEndDate = new Date(22345678);
+		Date familyAssociationStartDate = this.parseDateText("01/18/2015");
+		Date familyAssociationEndDate = this.parseDateText("01/19/2016");
 		familyAssociationDateRange.setEndDate(familyAssociationEndDate);
 		familyAssociationDateRange.setStartDate(familyAssociationStartDate);
 		FamilyAssociationCategory category 
 			= this.familyAssociationCategoryDelegate.create("testName", 
-			(Boolean)true, new Short((short) 23), 
+			(Boolean) true, new Short((short) 1),
 			FamilyAssociationCategoryClassification.CHILD);
 		FamilyAssociationFlags flags = new FamilyAssociationFlags();
 		flags.setCohabitant(true);
 		flags.setDependent(true);
 		flags.setEmergencyContact(true);
-		Date marriageDate = new Date(1113333);
-		Date divorceDate = new Date(2113333);
+		Date marriageDate = this.parseDateText("01/15/2017");
+		Date divorceDate = this.parseDateText("01/31/2017");
 		
-		FamilyAssociation familyAssociation= this.familyAssociationService
+		FamilyAssociation familyAssociation = this.familyAssociationService
 			.associate(offender, familyMember, familyAssociationDateRange, 
 			category, flags, marriageDate, divorceDate);
 		
-		Date familyAssociationNoteDate = new Date(21111111);
+		Date familyAssociationNoteDate = this.parseDateText("01/01/2015");
 		String value = "Testing note creation";
 		
-		FamilyAssociationNote familyAssociationNote= 
+		FamilyAssociationNote familyAssociationNote = 
 			this.familyAssociationService.addNote(familyAssociation, 
 			familyAssociationNoteDate, value);
 		
 		DateRange newFamilyAssociationDateRange = new DateRange();
-		Date newFamilyAssociationStartDate = new Date(14511111);
-		Date newFamilyAssociationEndDate = new Date(27845678);
+		Date newFamilyAssociationStartDate = this.parseDateText("02/11/2014");
+		Date newFamilyAssociationEndDate = this.parseDateText("03/01/2014");
 		newFamilyAssociationDateRange.setEndDate(newFamilyAssociationEndDate);
-		newFamilyAssociationDateRange.setStartDate(newFamilyAssociationStartDate);
+		newFamilyAssociationDateRange.setStartDate(
+				newFamilyAssociationStartDate);
 		FamilyAssociationFlags newFlags = new FamilyAssociationFlags();
 		newFlags.setCohabitant(false);
 		newFlags.setDependent(false);
 		newFlags.setEmergencyContact(false);
-		Date newFamilyAssociationNoteDate = new Date(21991111);
+		Date newFamilyAssociationNoteDate = this.parseDateText("01/01/2017");
 		String newValue = "New testing note creation";
 		
 		this.familyAssociationService.updateNote(familyAssociationNote, 
 			newFamilyAssociationNoteDate, newValue);
 		
 		// Assertions
-		assert newFamilyAssociationNoteDate.equals(familyAssociationNote.getDate())
+		assert newFamilyAssociationNoteDate.equals(
+				familyAssociationNote.getDate())
 		: String.format("Wrong note date: #%s expected; #%s found",
 			newFamilyAssociationNoteDate, familyAssociationNote.getDate());
 		assert newValue.equals(familyAssociationNote.getValue())
@@ -146,61 +157,66 @@ public class FamilyAssociationServiceFamilyAssociationNoteUpdateTests
 	/**
 	 * Tests duplicate family association note on update.
 	 * 
-	  * @throws ReflexiveRelationshipException, FamilyAssociationConflictException 
-	 * @throws FamilyAssociationCategoryExistsException 
-	 * @throws FamilyAssociationExistsException 
+	 * @throws FamilyAssociationCategoryExistsException family association 
+	 * category exists
+	 * @throws FamilyAssociationExistsException family association exists
+	 * @throws FamilyAssociationNoteExistsException family association note 
+	 * exists
+	 * @throws ReflexiveRelationshipException reflexive relationship
+	 * @throws FamilyAssociationConflictException family association conflict
 	 */
 	@Test(expectedExceptions = {FamilyAssociationNoteExistsException.class, 
 			ReflexiveRelationshipException.class})
 	public void testDuplicateFamilyAssociationNoteUpdate() 
 		throws FamilyAssociationNoteExistsException, 
-		ReflexiveRelationshipException, FamilyAssociationConflictException, 
-		FamilyAssociationCategoryExistsException, 
-		FamilyAssociationExistsException {
+			ReflexiveRelationshipException, FamilyAssociationConflictException, 
+			FamilyAssociationCategoryExistsException, 
+			FamilyAssociationExistsException {
 		// Arrangements
 		Offender offender = this.offenderDelegate.createWithoutIdentity("Obama",
 			"Kevin", "Johns", "Mr.");
 		Person familyMember = personDelegate.create("Li", "Yidong", "CIC311", 
 			"Mr.");
 		DateRange familyAssociationDateRange = new DateRange();
-		Date familyAssociationStartDate = new Date(11111111);
-		Date familyAssociationEndDate = new Date(22345678);
+		Date familyAssociationStartDate = this.parseDateText("01/18/2015");
+		Date familyAssociationEndDate = this.parseDateText("01/19/2016");
 		familyAssociationDateRange.setEndDate(familyAssociationEndDate);
 		familyAssociationDateRange.setStartDate(familyAssociationStartDate);
 		FamilyAssociationCategory category 
 			= this.familyAssociationCategoryDelegate.create("testName", 
-			(Boolean)true, new Short((short) 23), 
+			(Boolean) true, new Short((short) 1),
 			FamilyAssociationCategoryClassification.CHILD);
 		FamilyAssociationFlags flags = new FamilyAssociationFlags();
 		flags.setCohabitant(true);
 		flags.setDependent(true);
 		flags.setEmergencyContact(true);
-		Date marriageDate = new Date(1113333);
-		Date divorceDate = new Date(2113333);
+		Date marriageDate = this.parseDateText("01/15/2017");
+		Date divorceDate = this.parseDateText("01/31/2017");
 		
-		FamilyAssociation familyAssociation= this.familyAssociationService
+		FamilyAssociation familyAssociation = this.familyAssociationService
 			.associate(offender, familyMember, familyAssociationDateRange, 
 			category, flags, marriageDate, divorceDate);
 		
-		Date familyAssociationNoteDate = new Date(21111111);
+		Date familyAssociationNoteDate = this.parseDateText("01/01/2015");
 		String value = "Testing note creation";
 		
-		FamilyAssociationNote familyAssociationNote= 
-			this.familyAssociationService.addNote(familyAssociation, 
+		FamilyAssociationNote familyAssociationNote 
+			= this.familyAssociationService.addNote(familyAssociation, 
 			familyAssociationNoteDate, value);
 		
 		DateRange newFamilyAssociationDateRange = new DateRange();
-		Date newFamilyAssociationStartDate = new Date(21111111);
-		Date newFamilyAssociationEndDate = new Date(43345678);
+		Date newFamilyAssociationStartDate = this.parseDateText("02/11/2014");
+		Date newFamilyAssociationEndDate = this.parseDateText("03/01/2014");
 		newFamilyAssociationDateRange.setEndDate(newFamilyAssociationEndDate);
-		newFamilyAssociationDateRange.setStartDate(newFamilyAssociationStartDate);
+		newFamilyAssociationDateRange.setStartDate(
+				newFamilyAssociationStartDate);
 		
 		FamilyAssociationFlags newFlags = new FamilyAssociationFlags();
 		newFlags.setCohabitant(false);
 		newFlags.setDependent(false);
 		newFlags.setEmergencyContact(false);
 				
-		Date newFamilyAssociationNoteDate = new Date(29111111);
+		Date newFamilyAssociationNoteDate = this.parseDateText("01/01/2017");
 		String newValue = "New testing note creation";
 	
 		this.familyAssociationService.addNote(familyAssociation, 
@@ -210,4 +226,15 @@ public class FamilyAssociationServiceFamilyAssociationNoteUpdateTests
 		this.familyAssociationService.updateNote(familyAssociationNote, 
 			newFamilyAssociationNoteDate, newValue);
 	}	
+	
+	/* Helpers. */
+	
+	// Parses date text
+	private Date parseDateText(final String text) {
+		try {
+			return new SimpleDateFormat("MM/dd/yyyy").parse(text);
+		} catch (ParseException e) {
+			throw new RuntimeException("Parse error", e);
+		}
+	}
 }

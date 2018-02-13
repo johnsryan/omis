@@ -18,26 +18,30 @@
 package omis.chronologicalnote.web.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import omis.beans.factory.PropertyEditorFactory;
 import omis.chronologicalnote.domain.ChronologicalNote;
 import omis.chronologicalnote.domain.ChronologicalNoteCategory;
 import omis.chronologicalnote.report.ChronologicalNoteReportService;
 import omis.chronologicalnote.report.ChronologicalNoteSummary;
-import omis.docket.domain.Docket;
+import omis.chronologicalnote.web.form.ChronologicalNoteFilterOptionsForm;
 import omis.offender.beans.factory.OffenderPropertyEditorFactory;
 import omis.offender.domain.Offender;
 import omis.offender.web.controller.delegate.OffenderSummaryModelDelegate;
-import omis.person.domain.Person;
-import omis.trackeddocument.report.DocketDocumentReceivalSummary;
-import omis.trackeddocument.report.DocketDocumentTrackingReportService;
+import omis.report.ReportFormat;
+import omis.report.ReportRunner;
+import omis.report.web.controller.delegate.ReportControllerDelegate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -53,7 +57,7 @@ import org.springframework.web.servlet.ModelAndView;
  * @since OMIS 3.0
  */
 @Controller
-@RequestMapping("/chronologicalNoteReport")
+@RequestMapping("/chronologicalNote")
 @PreAuthorize("hasRole('USER')")
 public class ReportChronologicalNoteController {
 	/* views */
@@ -71,6 +75,9 @@ public class ReportChronologicalNoteController {
 	private static final String OFFENDER_MODEL_KEY = "offender";
 	private static final String NOTE_MODEL_KEY = "note";
 	private static final String CATEGORIES_MODEL_KEY = "categories";
+	private static final String CHRONOLOGICAL_NOTE_FILTER_OPTIONS_FORM_MODEL_KEY
+		= "chronologicalNoteFilterOptionsForm";
+	private static final String INITIAL_MODEL_KEY = "Initial";
 		
 	/* Message bundles. */
 	
@@ -80,8 +87,13 @@ public class ReportChronologicalNoteController {
 	private OffenderPropertyEditorFactory offenderPropertyEditorFactory;
 	
 	@Autowired
-	@Qualifier("docketPropertyEditorFactory")
-	private PropertyEditorFactory docketPropertyEditorFactory;
+	@Qualifier("chronologicalNotePropertyEditorFactory")
+	private PropertyEditorFactory chronologicalNotePropertyEditorFactory;
+	
+	@Autowired
+	@Qualifier("chronologicalNoteCategoryPropertyEditorFactory")
+	private PropertyEditorFactory
+		chronologicalNoteCategoryPropertyEditorFactory;
 		
 	/* Services. */
 	@Autowired
@@ -93,6 +105,31 @@ public class ReportChronologicalNoteController {
 	@Qualifier("offenderSummaryModelDelegate")
 	private OffenderSummaryModelDelegate offenderSummaryModelDelegate;
 	
+	/* Report names. */
+	
+	private static final String CHRONOLOGICAL_NOTE_LISTING_REPORT_NAME 
+		= "/CaseManagement/ChronologicalNote/Chronological_Note_Listing";
+	private static final String CHRONOLOGICAL_NOTE_DETAILS_REPORT_NAME
+		= "/CaseManagement/ChronologicalNote/Chronological_Note_Details";
+
+	/* Report parameter names. */
+	
+	private static final String CHRONOLOGICAL_NOTE_LISTING_ID_REPORT_PARAM_NAME
+		= "DOC_ID";
+	private static final String CHRONOLOGICAL_NOTE_DETAILS_ID_REPORT_PARAM_NAME
+		= "NOTE_ID";	
+	
+	/* Report runners. */
+	@Autowired
+	@Qualifier("reportRunner")
+	private ReportRunner reportRunner;
+	
+	/* Controller delegates. */
+	@Autowired
+	@Qualifier("reportControllerDelegate")
+	private ReportControllerDelegate reportControllerDelegate;
+	
+	
 	/* Constructor. */
 	/** Instantiates a default chronological note report controller. */
 	public ReportChronologicalNoteController() {
@@ -100,26 +137,68 @@ public class ReportChronologicalNoteController {
 	}
 	
 	/**
-	 * Displays a list of chronological notes.
+	 * Render a view of chronological note list screen.
 	 * 
 	 * @param offender offender
-	 * @return view to display the list of chronological notes
+	 * @return view of chronological note list screen
 	 */
 	@RequestMapping(value = "/list.html", method = RequestMethod.GET)
 	@PreAuthorize("hasRole('CHRONOLOGICAL_NOTE_LIST') or hasRole('ADMIN')")
 	public ModelAndView list(@RequestParam(value = "offender", required = true) 
 		final Offender offender) {
 		List<ChronologicalNoteSummary> chronologicalNoteSummaries
-		= new ArrayList<ChronologicalNoteSummary>();	
+			= new ArrayList<ChronologicalNoteSummary>();	
 		chronologicalNoteSummaries = this.chronologicalNoteReportService
 			.findByOffender(offender);
 		ModelAndView mav = new ModelAndView(LIST_VIEW_NAME);
 		mav.addObject(CHRONOLOGICAL_NOTE_SUMMARIES_MODEL_KEY,
-				chronologicalNoteSummaries);
+			chronologicalNoteSummaries);
 		mav.addObject(OFFENDER_MODEL_KEY, offender);
 		List<ChronologicalNoteCategory> categories
 			= this.chronologicalNoteReportService.findCategories();
 		mav.addObject(CATEGORIES_MODEL_KEY, categories);
+		ChronologicalNoteFilterOptionsForm form
+			= new ChronologicalNoteFilterOptionsForm();
+		mav.addObject(CHRONOLOGICAL_NOTE_FILTER_OPTIONS_FORM_MODEL_KEY, form);
+		mav.addObject(INITIAL_MODEL_KEY, true); 
+		this.offenderSummaryModelDelegate.add(mav.getModelMap(), offender);
+		return mav;
+	}
+	
+	/**
+	 * Submit chronological note list screen.
+	 * 
+	 * @param offender offender
+	 * @param form chronological note filter options form
+	 * @param result binding result
+	 * @return view to the list screen
+	 */
+	@RequestMapping(value = "/list.html", method = RequestMethod.POST)
+	@PreAuthorize("hasRole('CHRONOLOGICAL_NOTE_LIST') or hasRole('ADMIN')")
+	public ModelAndView submitList(@RequestParam(value = "offender",
+		required = true) final Offender offender,
+		final ChronologicalNoteFilterOptionsForm form,
+		final BindingResult result) {
+		Boolean flag = false;
+		List<ChronologicalNoteSummary> chronologicalNoteSummaries
+			= new ArrayList<ChronologicalNoteSummary>();
+		if(form.getCategories()!=null){
+			chronologicalNoteSummaries.addAll(
+			this.chronologicalNoteReportService.findByOffenderAndCategories(
+			offender, form.getCategories()));
+		} else {
+			chronologicalNoteSummaries.addAll(
+			this.chronologicalNoteReportService.findByOffender(offender));
+			flag = true;
+		}
+		ModelAndView mav = new ModelAndView(LIST_VIEW_NAME);
+		mav.addObject(CHRONOLOGICAL_NOTE_SUMMARIES_MODEL_KEY,
+			chronologicalNoteSummaries);
+		mav.addObject(OFFENDER_MODEL_KEY, offender);
+		List<ChronologicalNoteCategory> categoryOptions
+			= this.chronologicalNoteReportService.findCategories();
+		mav.addObject(CATEGORIES_MODEL_KEY, categoryOptions);
+		mav.addObject(INITIAL_MODEL_KEY, flag);
 		this.offenderSummaryModelDelegate.add(mav.getModelMap(), offender);
 		return mav;
 	}
@@ -142,20 +221,69 @@ public class ReportChronologicalNoteController {
 	}
 	
 	/**
-	 * Returns a view for chronological note list screen row action menu 
-	 * pertaining to the chronological note.
-	 * 
-	 * @param docket docket
-	 * @return model and view for document tracking row action menu
+	 * Returns a view for chronological note list screen row action menu. 
+	 *
+	 * @param note note
+	 * @return view for chronological note row action menu
 	 */
 	@RequestMapping(value = "/chronologicalNoteListRowActionMenu.html",
 		method = RequestMethod.GET)
-	public ModelAndView trackedDocumentListRowActionMenu(@RequestParam(
+	public ModelAndView chronologicalNoteListRowActionMenu(@RequestParam(
 		value = "note",	required = true) final ChronologicalNote note) {
 		ModelMap map = new ModelMap();
 		map.addAttribute(NOTE_MODEL_KEY, note);
 		return new ModelAndView(
 			CHRONOLOGICAL_NOTE_LIST_ROW_ACTION_MENU_VIEW_NAME, map);
+	}
+	
+	/**
+	 * Returns the report for the chronological notes.
+	 * 
+	 * @param offender offender
+	 * @param reportFormat report format
+	 * @return response entity with report
+	 */
+	@RequestMapping(value = "/chronologicalNoteListingReport.html",
+			method = RequestMethod.GET)
+	@PreAuthorize("hasRole('VEHICLE_VIEW') or hasRole('ADMIN')")
+	public ResponseEntity<byte []> reportChronologicalNoteListing(@RequestParam(
+		value = "offender", required = true)
+		final Offender offender,
+		@RequestParam(value = "reportFormat", required = true)
+		final ReportFormat reportFormat) {
+		Map<String, String> reportParamMap = new HashMap<String, String>();
+		reportParamMap.put(CHRONOLOGICAL_NOTE_LISTING_ID_REPORT_PARAM_NAME,
+			Long.toString(offender.getOffenderNumber()));
+		byte[] doc = this.reportRunner.runReport(
+			CHRONOLOGICAL_NOTE_LISTING_REPORT_NAME,	reportParamMap,
+			reportFormat);
+		return this.reportControllerDelegate.constructReportResponseEntity(
+				doc, reportFormat);
+	}
+	
+	/**
+	 * Returns a specific chronological note detail report.
+	 * 
+	 * @param note note
+	 * @param reportFormat report format
+	 * @return response entity with report
+	 */
+	@RequestMapping(value = "/chronologicalNoteDetailsReport.html",
+			method = RequestMethod.GET)
+	@PreAuthorize("hasRole('TRACKED_DOCUMENT_VIEW') or hasRole('ADMIN')")
+	public ResponseEntity<byte []> reportTrackedDocumentDetails(@RequestParam(
+			value = "note", required = true)
+			final ChronologicalNote note,
+			@RequestParam(value = "reportFormat", required = true)
+			final ReportFormat reportFormat) {
+		Map<String, String> reportParamMap = new HashMap<String, String>();
+		reportParamMap.put(CHRONOLOGICAL_NOTE_DETAILS_ID_REPORT_PARAM_NAME,
+				Long.toString(note.getId()));
+		byte[] doc = this.reportRunner.runReport(
+				CHRONOLOGICAL_NOTE_DETAILS_REPORT_NAME,
+				reportParamMap, reportFormat);
+		return this.reportControllerDelegate.constructReportResponseEntity(
+				doc, reportFormat);
 	}
 	
 	/**
@@ -167,7 +295,10 @@ public class ReportChronologicalNoteController {
 	protected void initBinder(final WebDataBinder binder) {
 		binder.registerCustomEditor(Offender.class,
 			this.offenderPropertyEditorFactory.createOffenderPropertyEditor());
-		/*binder.registerCustomEditor(ChronologicalNote.class,
-			this.chronologicalNotePropertyEditorFactory.createPropertyEditor());*/
+		binder.registerCustomEditor(ChronologicalNoteCategory.class,
+			this.chronologicalNoteCategoryPropertyEditorFactory
+			.createPropertyEditor());
+		binder.registerCustomEditor(ChronologicalNote.class,
+			this.chronologicalNotePropertyEditorFactory.createPropertyEditor());
 	}	
 }

@@ -72,10 +72,10 @@ public class ChronologicalNoteCategoryAssociationDaoHibernateImpl
 	/** {@inheritDoc} */
 	@Override
 	public ChronologicalNoteCategoryAssociation findByNoteAndCategory(
-		final ChronologicalNote note, final ChronologicalNoteCategory category)
-	{
-		ChronologicalNoteCategoryAssociation 
-		chronologicalNoteCategoryAssociation 
+		final ChronologicalNote note,
+		final ChronologicalNoteCategory category) {
+		ChronologicalNoteCategoryAssociation
+			chronologicalNoteCategoryAssociation 
 			= (ChronologicalNoteCategoryAssociation) this.getSessionFactory()
 			.getCurrentSession().getNamedQuery(FIND_BY_NOTE_CATEGORY_QUERY_NAME)
 			.setParameter(NOTE_PARAM_NAME, note)
@@ -90,12 +90,12 @@ public class ChronologicalNoteCategoryAssociationDaoHibernateImpl
 		ChronologicalNote note) {
 		@SuppressWarnings("unchecked")
 		List<ChronologicalNoteCategoryAssociation> 
-		chronologicalNoteCategoryAssociations
-		= (List<ChronologicalNoteCategoryAssociation>)
-		this.getSessionFactory()
-		.getCurrentSession().getNamedQuery(FIND_BY_NOTE_QUERY_NAME)
-		.setParameter(NOTE_PARAM_NAME, note)
-		.list();
+			chronologicalNoteCategoryAssociations
+			= (List<ChronologicalNoteCategoryAssociation>)
+			this.getSessionFactory()
+			.getCurrentSession().getNamedQuery(FIND_BY_NOTE_QUERY_NAME)
+			.setParameter(NOTE_PARAM_NAME, note)
+			.list();
 		return chronologicalNoteCategoryAssociations;
 	}
 	
@@ -104,18 +104,20 @@ public class ChronologicalNoteCategoryAssociationDaoHibernateImpl
 	public ChronologicalNoteCategoryAssociation find(final ChronologicalNote
 		note, final ChronologicalNoteCategory category) {
 		ChronologicalNoteCategoryAssociation
-		chronologicalNoteCategoryAssociation
-		= (ChronologicalNoteCategoryAssociation)
-		this.getSessionFactory()
-		.getCurrentSession().getNamedQuery(FIND_QUERY_NAME)
-		.setParameter(NOTE_PARAM_NAME, note)
-		.list();
+			chronologicalNoteCategoryAssociation
+			= (ChronologicalNoteCategoryAssociation)
+			this.getSessionFactory()
+			.getCurrentSession().getNamedQuery(FIND_QUERY_NAME)
+			.setParameter(NOTE_PARAM_NAME, note)
+			.setParameter(CATEGORY_PARAM_NAME, category)
+			.uniqueResult();
 		return chronologicalNoteCategoryAssociation;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public List<ChronologicalNoteCategory> findAssociatedCategories(ChronologicalNote note) {
+	public List<ChronologicalNoteCategory> findAssociatedCategories(
+		final ChronologicalNote note) {
 		@SuppressWarnings("unchecked")
 		List<ChronologicalNoteCategory> categories = this.getSessionFactory()
 				.getCurrentSession()

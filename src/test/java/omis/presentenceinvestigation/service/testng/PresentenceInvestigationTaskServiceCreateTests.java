@@ -70,6 +70,7 @@ import omis.task.service.delegate.TaskTemplateGroupDelegate;
 import omis.testng.AbstractHibernateTransactionalTestNGSpringContextTests;
 import omis.user.domain.UserAccount;
 import omis.user.service.delegate.UserAccountDelegate;
+import omis.util.PropertyValueAsserter;
 
 /**
  * PresentenceInvestigationTaskServiceCreateTests.java
@@ -203,18 +204,12 @@ public class PresentenceInvestigationTaskServiceCreateTests
 				.createPresentenceInvestigationTaskAssociation(
 						task, presentenceInvestigationRequest, taskSource);
 				
-		assert task.equals(taskAssociation.getTask())
-		: String.format("Wrong task for taskAssociation: #%d found; #%d expected",
-				taskAssociation.getTask().getId(), task.getId());
-		assert presentenceInvestigationRequest.equals(taskAssociation
-				.getPresentenceInvestigationRequest())
-		: String.format("Wrong presentenceInvestigationRequest for taskAssociation: " +
-				"%d found; %d expected",
-				taskAssociation.getPresentenceInvestigationRequest().getId(),
-				presentenceInvestigationRequest.getId());
-		assert taskSource.equals(taskAssociation.getTaskSource())
-		: String.format("Wrong taskSource for taskAssociation: %d found; %d expected",
-				taskAssociation.getTaskSource().getId(), taskSource.getId());
+		PropertyValueAsserter.create()
+		.addExpectedValue("task", task)
+		.addExpectedValue("presentenceInvestigationRequest", 
+				presentenceInvestigationRequest)
+		.addExpectedValue("taskSource", taskSource)
+		.performAssertions(taskAssociation);
 	}
 	
 	@Test
@@ -234,26 +229,17 @@ public class PresentenceInvestigationTaskServiceCreateTests
 		
 		final Task task = this.presentenceInvestigationTaskService.createTask(
 				taskTemplate.getControllerName(), taskTemplate.getMethodName(),
-				taskTemplate.getName(), sourceAccount, originationDate, completionDate);
+				taskTemplate.getName(), sourceAccount, originationDate, 
+				completionDate);
 		
-		assert taskTemplate.getControllerName().equals(task.getControllerName())
-		: String.format("Wrong controllerName for task: %s found; %s expected",
-				task.getControllerName(), taskTemplate.getControllerName());
-		assert taskTemplate.getMethodName().equals(task.getMethodName())
-		: String.format("Wrong methodName for task: %s found; %s expected",
-				task.getMethodName(), taskTemplate.getMethodName());
-		assert taskTemplate.getName().equals(task.getDescription())
-		: String.format("Wrong description for task: %s found; %s expected",
-				task.getDescription(), taskTemplate.getName());
-		assert sourceAccount.equals(task.getSourceAccount())
-		: String.format("Wrong sourceAccount for task: %s found; %s expected",
-				task.getSourceAccount().getUsername(), sourceAccount.getUsername());
-		assert originationDate.equals(task.getOriginationDate())
-		: String.format("Wrong originationDate for task: %s found; %s expected",
-				task.getOriginationDate(), originationDate);
-		assert completionDate.equals(task.getCompletionDate())
-		: String.format("Wrong completionDate for task: %s found; %s expected",
-				task.getCompletionDate(), completionDate);
+		PropertyValueAsserter.create()
+			.addExpectedValue("controllerName", taskTemplate.getControllerName())
+			.addExpectedValue("methodName", taskTemplate.getMethodName())
+			.addExpectedValue("description", taskTemplate.getName())
+			.addExpectedValue("sourceAccount", sourceAccount)
+			.addExpectedValue("originationDate", originationDate)
+			.addExpectedValue("completionDate", completionDate)
+			.performAssertions(task);
 	}
 	
 	@Test
@@ -283,16 +269,11 @@ public class PresentenceInvestigationTaskServiceCreateTests
 				this.presentenceInvestigationTaskService.createTaskAssignment(
 						task, assignedDate, assigneeAccount);
 		
-		assert task.equals(taskAssignment.getTask())
-		: String.format("Wrong task for taskAssignment: %d found; %d expected",
-				taskAssignment.getTask().getId(), task.getId());
-		assert assignedDate.equals(taskAssignment.getAssignedDate())
-		: String.format("Wrong assignedDate for taskAssignment: %s found; %s expected",
-				taskAssignment.getAssignedDate(), assignedDate);
-		assert assigneeAccount.equals(taskAssignment.getAssigneeAccount())
-		: String.format("Wrong assigneeAccount for taskAssignment: %s found; " +
-				"%s expected", taskAssignment.getAssigneeAccount().getUsername(),
-				assigneeAccount.getUsername());
+		PropertyValueAsserter.create()
+			.addExpectedValue("task", task)
+			.addExpectedValue("assignedDate", assignedDate)
+			.addExpectedValue("assigneeAccount", assigneeAccount)
+			.performAssertions(taskAssignment);
 	}
 	
 	@Test
@@ -322,19 +303,12 @@ public class PresentenceInvestigationTaskServiceCreateTests
 				.createTaskParameterValue(
 						task, typeName, instanceValue, order);
 		
-		assert task.equals(taskParameterValue.getTask())
-		: String.format("Wrong task for taskParameterValue: %d found; %d expected",
-				taskParameterValue.getTask().getId(), task.getId());
-		assert typeName.equals(taskParameterValue.getTypeName())
-		: String.format("Wrong typeName for taskParameterValue: %s found; " +
-				"%s expected", taskParameterValue.getTypeName(), typeName);
-		assert instanceValue.equals(taskParameterValue.getInstanceValue())
-		: String.format("Wrong instanceValue for taskParameterValue: %s found; " +
-				"%s expected", taskParameterValue.getInstanceValue(),
-				instanceValue);
-		assert order.equals(taskParameterValue.getOrder())
-		: String.format("Wrong order for taskParameterValue: %d found; %d expected",
-				taskParameterValue.getOrder(), order);
+		PropertyValueAsserter.create()
+			.addExpectedValue("task", task)
+			.addExpectedValue("typeName", typeName)
+			.addExpectedValue("instanceValue", instanceValue)
+			.addExpectedValue("order", order)
+			.performAssertions(taskParameterValue);
 	}
 	
 	private Date parseDateText(final String dateText) {

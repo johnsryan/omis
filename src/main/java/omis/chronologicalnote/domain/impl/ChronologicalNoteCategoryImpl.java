@@ -34,6 +34,7 @@ public class ChronologicalNoteCategoryImpl
 	
 	/** Constructor. */
 	public ChronologicalNoteCategoryImpl() {
+		
 	}
 	
 	/** {@inheritDoc} */

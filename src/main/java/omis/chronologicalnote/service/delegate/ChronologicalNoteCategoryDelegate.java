@@ -21,6 +21,8 @@ import java.util.List;
 
 import omis.chronologicalnote.dao.ChronologicalNoteCategoryDao;
 import omis.chronologicalnote.domain.ChronologicalNoteCategory;
+import omis.chronologicalnote.exception.ChronologicalNoteCategoryExistsException;
+import omis.instance.factory.InstanceFactory;
 
 /**
  * Chronological note category delegate.
@@ -35,13 +37,18 @@ public class ChronologicalNoteCategoryDelegate {
 	/* Data access objects. */
 	private ChronologicalNoteCategoryDao chronologicalNoteCategoryDao;
 	
+	/* Instance factories. */
+	private InstanceFactory<ChronologicalNoteCategory> chronlogicalNoteCategoryInstanceFactory;
+	
 	/**
 	 * Instantiates a chronological note category delegate with the specified data access object.
 	 * 
 	 * @param chronologicalNoteCategoryDao chronological note category data access object
 	 */
-	public ChronologicalNoteCategoryDelegate(final ChronologicalNoteCategoryDao chronologicalNoteCategoryDao) {
+	public ChronologicalNoteCategoryDelegate(final ChronologicalNoteCategoryDao chronologicalNoteCategoryDao,
+			final InstanceFactory<ChronologicalNoteCategory> chronologicalNoteCategoryInstanceFactory) {
 		this.chronologicalNoteCategoryDao = chronologicalNoteCategoryDao;
+		this.chronlogicalNoteCategoryInstanceFactory = chronologicalNoteCategoryInstanceFactory;
 	}
 	
 	/**
@@ -51,5 +58,25 @@ public class ChronologicalNoteCategoryDelegate {
 	 */
 	public List<ChronologicalNoteCategory> findAll() {
 		return this.chronologicalNoteCategoryDao.findAll();
+	}
+	
+	/**
+	 * Creates chronological note category.
+	 * 
+	 * @param name name
+	 * @param valid valid
+	 * @return newly created chronological note category
+	 * @throws ChronologicalNoteCategoryExistsException Thrown when a duplicate chronological note category
+	 * with the specified name is found.
+	 */
+	public ChronologicalNoteCategory create(final String name, final Boolean valid)
+		throws ChronologicalNoteCategoryExistsException {
+		if (this.chronologicalNoteCategoryDao.find(name) != null) {
+			throw new ChronologicalNoteCategoryExistsException("Chronological note exists");
+		}
+		ChronologicalNoteCategory category = this.chronlogicalNoteCategoryInstanceFactory.createInstance();
+		category.setName(name);
+		category.setValid(valid);
+		return this.chronologicalNoteCategoryDao.makePersistent(category);
 	}
 }

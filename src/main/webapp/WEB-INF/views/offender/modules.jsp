@@ -1,5 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <%--
+ - OMIS - Offender Management Information System
+ - Copyright (C) 2011 - 2017 State of Montana
+ -
+ - This program is free software: you can redistribute it and/or modify
+ - it under the terms of the GNU General Public License as published by
+ - the Free Software Foundation, either version 3 of the License, or
+ - (at your option) any later version.
+ -
+ - This program is distributed in the hope that it will be useful,
+ - but WITHOUT ANY WARRANTY; without even the implied warranty of
+ - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ - GNU General Public License for more details.
+ -
+ - You should have received a copy of the GNU General Public License
+ - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+--%>
+<%--
  - Modules screen.
  -
  - Author: Stephen Abson
@@ -47,6 +64,12 @@
      	<li class="moduleLink">
     		<a href="${pageContext.request.contextPath}/caution/list.html?offender=${offenderSummary.id}">
     			<fmt:message key="cautionLink"/></a>
+	    </li>
+    </sec:authorize>
+    <sec:authorize access="hasRole('CHRONOLOGICAL_NOTE_LIST') or hasRole('ADMIN')">
+     	<li class="moduleLink">
+    		<a href="${pageContext.request.contextPath}/chronologicalNote/list.html?offender=${offenderSummary.id}">
+    			<fmt:message key="chronologicalNoteLink"/></a>
 	    </li>
     </sec:authorize>
     <sec:authorize access="hasRole('OFFENDER_CONTACT_LIST') or hasRole('ADMIN')">
@@ -206,6 +229,19 @@
     			<fmt:message key="locationTermsLink"/></a>
 	    </li>
     </sec:authorize>
+    <sec:authorize access="hasRole('MEDICAL_REVIEW_LIST') or hasRole('ADMIN')">
+    	<li class="moduleLink">
+    		<a href="${pageContext.request.contextPath}/medicalReview/list.html?offender=${offenderSummary.id}">
+    			<fmt:message key="medicalReviewLink"/>
+    		</a>
+    	</li>
+    </sec:authorize>
+    <sec:authorize access="hasRole('MENTAL_HEALTH_REVIEW_LIST') or hasRole('ADMIN')">
+    	<li class="moduleLink">
+    		<a href="${pageContext.request.contextPath}/mentalHealthReview/list.html?offender=${offenderSummary.id}">
+    			<fmt:message key="mentalHealthReviewLink"/></a>
+    	</li>
+    </sec:authorize>
     <sec:authorize access="hasRole('MILITARY_LIST') or hasRole('ADMIN')">
     	<li class="moduleLink">
     		<a href="${pageContext.request.contextPath}/military/list.html?offender=${offenderSummary.id}">
@@ -238,6 +274,12 @@
     		<a href="${pageContext.request.contextPath}/paroleEligibility/list.html?offender=${offenderSummary.id}">
     			<fmt:message key="paroleEligibilityLink"/>
     		</a>
+    	</li>
+    </sec:authorize>
+    <sec:authorize access="hasRole('PAROLE_REVIEW_LIST') or hasRole('ADMIN')">
+    	<li class="moduleLink">
+    		<a href="${pageContext.request.contextPath}/paroleReview/list.html?offender=${offenderSummary.id}">
+    			<fmt:message key="paroleReviewLink"/></a>
     	</li>
     </sec:authorize>
     <sec:authorize access="hasRole('OFFENDER_PHOTO_LIST') or hasRole('ADMIN')">
@@ -359,12 +401,6 @@
     		<a href="${pageContext.request.contextPath}/tierDesignation/list.html?offender=${offenderSummary.id}">
     			<fmt:message key="tierDesignationLink"/>
     		</a>
-    	</li>
-    </sec:authorize>
-     <sec:authorize access="hasRole('UNIT_MANAGER_REVIEW_LIST') or hasRole('ADMIN')">
-    	<li class="moduleLink">
-    		<a href="${pageContext.request.contextPath}/unitManagerReview/list.html?offender=${offenderSummary.id}">
-    			<fmt:message key="unitManagerReviewLink"/></a>
     	</li>
     </sec:authorize>
     <sec:authorize access="hasRole('USER_ACCOUNT_LIST') or hasRole('ADMIN')">

@@ -17,6 +17,8 @@
  */
 package omis.family.service.testng;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,14 +26,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.testng.annotations.Test;
 
 import omis.datatype.DateRange;
-import omis.exception.DuplicateEntityFoundException;
-import omis.family.exception.FamilyAssociationCategoryExistsException;
-import omis.family.exception.FamilyAssociationConflictException;
-import omis.family.exception.FamilyAssociationExistsException;
 import omis.family.domain.FamilyAssociation;
 import omis.family.domain.FamilyAssociationCategory;
 import omis.family.domain.FamilyAssociationCategoryClassification;
 import omis.family.domain.component.FamilyAssociationFlags;
+import omis.family.exception.FamilyAssociationCategoryExistsException;
+import omis.family.exception.FamilyAssociationConflictException;
+import omis.family.exception.FamilyAssociationExistsException;
 import omis.family.service.FamilyAssociationService;
 import omis.family.service.delegate.FamilyAssociationCategoryDelegate;
 import omis.family.service.delegate.FamilyAssociationDelegate;
@@ -44,7 +45,7 @@ import omis.relationship.service.delegate.RelationshipDelegate;
 import omis.testng.AbstractHibernateTransactionalTestNGSpringContextTests;
 
 /**
- * Tests family association removal
+ * Tests family association removal.
  * 
  *@author Yidong Li 
  *@author Sheronda Vaughn
@@ -81,6 +82,16 @@ public class FamilyAssociationServiceFamilyAssociationRemoveTests
 	@Qualifier("familyAssociationService")
 	private FamilyAssociationService familyAssociationService;
 	
+	/**
+	 * Test family association remove.
+	 *
+	 *
+	 * @throws FamilyAssociationExistsException family association exists
+	 * @throws ReflexiveRelationshipException reflexive relationship
+	 * @throws FamilyAssociationConflictException family association conflict
+	 * @throws FamilyAssociationCategoryExistsException family association
+	 * categoy exists
+	 */
 	@Test
 	public void testFamilyAssociationRemove() 
 		throws FamilyAssociationExistsException, ReflexiveRelationshipException, 
@@ -92,21 +103,21 @@ public class FamilyAssociationServiceFamilyAssociationRemoveTests
 		Person familyMember = personDelegate.create("Li", "Yidong", "CIC311", 
 			"Mr.");
 		DateRange dateRange = new DateRange();
-		Date startDate = new Date(11111111);
-		Date endDate = new Date(12345678);
+		Date startDate = this.parseDateText("11111111");
+		Date endDate = this.parseDateText("12345678");
 		dateRange.setEndDate(endDate);
 		dateRange.setStartDate(startDate);
 		FamilyAssociationCategory category 
 			= this.familyAssociationCategoryDelegate.create("testName", 
-			(Boolean)true, new Short((short) 23), 
+			(Boolean) true, new Short((short) 1), 
 			FamilyAssociationCategoryClassification.CHILD);
 		FamilyAssociationFlags flags = new FamilyAssociationFlags();
 		flags.setCohabitant(true);
 		flags.setDependent(true);
 		flags.setEmergencyContact(true);
-		Date marriageDate = new Date(1113333);
-		Date divorceDate = new Date(2113333);
-		FamilyAssociation familyAssociation= this.familyAssociationService
+		Date marriageDate = this.parseDateText("1/11/3333");
+		Date divorceDate = this.parseDateText("2113333");
+		FamilyAssociation familyAssociation = this.familyAssociationService
 			.associate(offender, familyMember, dateRange, category, flags, 
 			marriageDate, divorceDate);
 		
@@ -115,6 +126,18 @@ public class FamilyAssociationServiceFamilyAssociationRemoveTests
 		
 		// Assertion
 		assert !(this.familyAssociationDelegate.findByOffender(offender)
-			.contains(familyAssociation)): "Family association was not removed!";
+			.contains(familyAssociation))
+				: "Family association was not removed!";
+	}
+	
+	/* Helpers. */
+	
+	// Parses date text
+	private Date parseDateText(final String text) {
+		try {
+			return new SimpleDateFormat("MM/dd/yyyy").parse(text);
+		} catch (ParseException e) {
+			throw new RuntimeException("Parse error", e);
+		}
 	}
 }

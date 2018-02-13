@@ -23,7 +23,6 @@ import java.util.List;
 import omis.audit.AuditComponentRetriever;
 import omis.audit.domain.CreationSignature;
 import omis.audit.domain.UpdateSignature;
-import omis.exception.DuplicateEntityFoundException;
 import omis.instance.factory.InstanceFactory;
 import omis.person.domain.Person;
 import omis.victim.dao.VictimNoteDao;
@@ -76,7 +75,6 @@ public class VictimNoteDelegate {
 	 * @param victim victim
 	 * @param category category
 	 * @param association association
-	 * @param contact contact
 	 * @param date date
 	 * @param value value
 	 * @return created victim note

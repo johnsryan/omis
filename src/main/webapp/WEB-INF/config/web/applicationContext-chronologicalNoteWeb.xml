@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ - OMIS - Offender Management Information System
+ - Copyright (C) 2011 - 2017 State of Montana
+ -
+ - This program is free software: you can redistribute it and/or modify
+ - it under the terms of the GNU General Public License as published by
+ - the Free Software Foundation, either version 3 of the License, or
+ - (at your option) any later version.
+ -
+ - This program is distributed in the hope that it will be useful,
+ - but WITHOUT ANY WARRANTY; without even the implied warranty of
+ - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ - GNU General Public License for more details.
+ -
+ - You should have received a copy of the GNU General Public License
+ - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+
+<!-- 
+  - Web configuration for chronological note.
+  -
+  - Author: Yidong Li
+  -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-3.1.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop-3.1.xsd">
+  
+  <!-- Validators -->
+  
+ <bean id="chronologicalNoteFormValidator"
+        class="omis.chronologicalnote.web.validator.ChronologicalNoteFormValidator">
+        <constructor-arg name="stringLengthChecks" ref="stringLengthChecks"/>
+  </bean>
+
+  <!-- Web controller packages -->
+  
+  <context:component-scan base-package="omis.chronologicalnote.web.controller"/>
+  
+  <!-- Profile Items -->
+  <bean id="chronologicalNoteProfileItem" class="omis.chronologicalnote.web.profile.ChronologicalNotesProfileItem">
+  	<constructor-arg name="requiredAuthorizations">
+  		<set>
+  			<value>CHRONOLOGICAL_NOTE_LIST</value>
+  			<value>ADMIN</value>
+  		</set>
+  	</constructor-arg>
+  	<constructor-arg name="includePage" value="/WEB-INF/views/chronologicalNote/profile/includes/profileItem.jsp"/>
+  	<constructor-arg name="name" value="chronologicalNote"/>
+  	<constructor-arg name="profileItemRegistry" ref="caseManagementProfileItemRegistry"/>
+  	<constructor-arg name="enabled" value="${chronologicalNoteProfileItemEnabled}"/>
+  	<constructor-arg name="chronologicalNotesProfileItemReportService" ref="chronologicalNotesProfileItemReportService"/>
+  </bean>
+  
+  <!-- Use controller transactions -->
+  
+  <aop:config>
+      <aop:pointcut id="reportChronologicalNoteControllerOperation" expression="execution(* omis.chronologicalnote.web.controller.ReportChronologicalNoteController.*(..))"/>
+      <aop:advisor advice-ref="transactionAdvice" pointcut-ref="reportChronologicalNoteControllerOperation"/>
+  </aop:config>
+  
+  <aop:config>
+      <aop:pointcut id="chronologicalNoteControllerOperation" expression="execution(* omis.chronologicalnote.web.controller.ChronologicalNoteController.*(..))"/>
+      <aop:advisor advice-ref="transactionAdvice" pointcut-ref="chronologicalNoteControllerOperation"/>
+  </aop:config>
+</beans>

@@ -109,6 +109,7 @@
   <bean id="victimNoteCategoryDelegate"
         class="omis.victim.service.delegate.VictimNoteCategoryDelegate">
     <constructor-arg name="victimNoteCategoryDao" ref="victimNoteCategoryDao"/>
+    <constructor-arg name="victimNoteCategoryInstanceFactory" ref="victimNoteCategoryInstanceFactory"/>
   </bean>
   
   <bean id="victimDocketAssociationDelegate"
@@ -180,6 +181,12 @@
         class="omis.instance.factory.hibernate.impl.InstanceFactoryHibernateImpl">
     <constructor-arg name="instanceFactoryDelegate" ref="instanceFactoryDelegate"/>
     <constructor-arg name="entityName" value="omis.victim.domain.VictimNote"/>
+  </bean>
+  
+   <bean id="victimNoteCategoryInstanceFactory"
+        class="omis.instance.factory.hibernate.impl.InstanceFactoryHibernateImpl">
+    <constructor-arg name="instanceFactoryDelegate" ref="instanceFactoryDelegate"/>
+    <constructor-arg name="entityName" value="omis.victim.domain.VictimNoteCategory"/>
   </bean>
   
   <bean id="victimDocketAssociationInstanceFactory"

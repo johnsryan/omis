@@ -24,13 +24,15 @@
  --%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<fmt:bundle basename="omis.trackeddocument.msgs.trackedDocument">
+<fmt:bundle basename="omis.chronologicalnote.msgs.chronologicalNote">
 	<table id="chronologicalnote" class="listTable">
 		<thead>
 			<tr>
 				<th class = "operations"> </th>
-				<th><fmt:message key="docketLabel"/></th>
-				<th><fmt:message key="totalDocumentLabel"/></th>
+				<th><fmt:message key="startDateLabel"/></th>
+				<th><fmt:message key="CategoriesLabel"/></th>
+				<th><fmt:message key="NarrativeLabel"/></th>
+				<th><fmt:message key="UpdatedByLabel"/></th>
 			</tr>
 		</thead>
 		<tbody>

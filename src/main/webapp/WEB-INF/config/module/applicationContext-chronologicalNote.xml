@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ - OMIS - Offender Management Information System
+ - Copyright (C) 2011 - 2017 State of Montana
+ -
+ - This program is free software: you can redistribute it and/or modify
+ - it under the terms of the GNU General Public License as published by
+ - the Free Software Foundation, either version 3 of the License, or
+ - (at your option) any later version.
+ -
+ - This program is distributed in the hope that it will be useful,
+ - but WITHOUT ANY WARRANTY; without even the implied warranty of
+ - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ - GNU General Public License for more details.
+ -
+ - You should have received a copy of the GNU General Public License
+ - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+
+<!-- 
+  - Configuration for chronological note.
+  -
+  - Author: Yidong Li
+  -->
+  
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+
+  <!-- Services -->
+  <bean id="chronologicalNoteService" class="omis.chronologicalnote.service.impl.ChronologicalNoteServiceImpl">
+    <constructor-arg name="chronologicalNoteDelegate" ref="chronologicalNoteDelegate"/>
+    <constructor-arg name="chronologicalNoteCategoryAssociationDelegate" ref="chronologicalNoteCategoryAssociationDelegate"/>
+    <constructor-arg name="chronologicalNoteCategoryDelegate" ref="chronologicalNoteCategoryDelegate"/>
+  </bean>
+  
+  <bean id="chronologicalNoteReportService" class="omis.chronologicalnote.report.impl.hibernate.ChronologicalNoteReportServiceHibernateImpl">
+    <constructor-arg name="sessionFactory" ref="sessionFactory"/>
+  </bean>
+  
+  <bean id="chronologicalNotesProfileItemReportService" class="omis.chronologicalnote.report.impl.hibernate.ChronologicalNotesProfileItemReportServiceHibernateImpl">
+   		<constructor-arg name="sessionFactory" ref="sessionFactory"/>
+ </bean>
+
+  <!-- Service delegates -->
+  <bean id="chronologicalNoteCategoryAssociationDelegate"
+        class="omis.chronologicalnote.service.delegate.ChronologicalNoteCategoryAssociationDelegate">
+        <constructor-arg name="chronologicalNoteCategoryAssociationDao" ref="chronologicalNoteCategoryAssociationDao"/>
+        <constructor-arg name="chronologicalNoteCategoryAssociationInstanceFactory" ref="chronologicalNoteCategoryAssociationInstanceFactory"/>
+        <constructor-arg name="auditComponentRetriever" ref="auditComponentRetriever"/>
+  </bean>
+  
+  <bean id="chronologicalNoteCategoryDelegate"
+       class="omis.chronologicalnote.service.delegate.ChronologicalNoteCategoryDelegate">
+       <constructor-arg name="chronologicalNoteCategoryDao" ref="chronologicalNoteCategoryDao"/>
+       <constructor-arg name="chronologicalNoteCategoryInstanceFactory" ref="chronologicalNoteCategoryInstanceFactory"/>
+  </bean>
+  
+  <bean id="chronologicalNoteDelegate"
+  		class="omis.chronologicalnote.service.delegate.ChronologicalNoteDelegate">
+  		<constructor-arg name="chronologicalNoteDao" ref="chronologicalNoteDao"/>
+  		<constructor-arg name="chronologicalNoteInstanceFactory" ref="chronologicalNoteInstanceFactory"/>
+  		<constructor-arg name="auditComponentRetriever" ref="auditComponentRetriever"/>
+  </bean>
+
+  <!-- Data access objects -->
+  
+  <bean id="chronologicalNoteDao" class="omis.chronologicalnote.dao.impl.hibernate.ChronologicalNoteDaoHibernateImpl">
+    <constructor-arg name="entityName" value="omis.chronologicalnote.domain.ChronologicalNote"/>
+    <constructor-arg name="sessionFactory" ref="sessionFactory"/>
+  </bean>
+  
+  <bean id="chronologicalNoteCategoryDao" class="omis.chronologicalnote.dao.impl.hibernate.ChronologicalNoteCategoryDaoHibernateImpl">
+    <constructor-arg name="entityName" value="omis.chronologicalnote.domain.ChronologicalNoteCategory"/>
+    <constructor-arg name="sessionFactory" ref="sessionFactory"/>
+  </bean>
+  
+  <bean id="chronologicalNoteCategoryAssociationDao" class="omis.chronologicalnote.dao.impl.hibernate.ChronologicalNoteCategoryAssociationDaoHibernateImpl">
+    <constructor-arg name="entityName" value="omis.chronologicalnote.domain.ChronologicalNoteCategoryAssociation"/>
+    <constructor-arg name="sessionFactory" ref="sessionFactory"/>
+  </bean>
+  
+  <!-- Instance factories -->
+  <bean id="chronologicalNoteInstanceFactory"
+        class="omis.instance.factory.hibernate.impl.InstanceFactoryHibernateImpl">
+    <constructor-arg name="instanceFactoryDelegate" ref="instanceFactoryDelegate"/>
+    <constructor-arg name="entityName" value="omis.chronologicalnote.domain.ChronologicalNote"/>
+  </bean>
+  
+  <bean id="chronologicalNoteCategoryInstanceFactory"
+        class="omis.instance.factory.hibernate.impl.InstanceFactoryHibernateImpl">
+    <constructor-arg name="instanceFactoryDelegate" ref="instanceFactoryDelegate"/>
+    <constructor-arg name="entityName" value="omis.chronologicalnote.domain.ChronologicalNoteCategory"/>
+  </bean>
+  
+  <bean id="chronologicalNoteCategoryAssociationInstanceFactory"
+        class="omis.instance.factory.hibernate.impl.InstanceFactoryHibernateImpl">
+    <constructor-arg name="instanceFactoryDelegate" ref="instanceFactoryDelegate"/>
+    <constructor-arg name="entityName" value="omis.chronologicalnote.domain.ChronologicalNoteCategoryAssociation"/>
+  </bean>
+  
+  <!--Property editor factories -->
+   <bean id="chronologicalNotePropertyEditorFactory"
+    	class="omis.beans.factory.impl.hibernate.PropertyEditorFactoryHibernateImpl">
+		<constructor-arg name="entityName" value="omis.chronologicalnote.domain.ChronologicalNote"/>
+		<constructor-arg name="configuration" ref="hibernateConfiguration"/>
+		<constructor-arg name="dao" ref="chronologicalNoteDao"/>
+	</bean>
+	<bean id="chronologicalNoteCategoryPropertyEditorFactory"
+    	class="omis.beans.factory.impl.hibernate.PropertyEditorFactoryHibernateImpl">
+		<constructor-arg name="entityName" value="omis.chronologicalnote.domain.ChronologicalNoteCategory"/>
+		<constructor-arg name="configuration" ref="hibernateConfiguration"/>
+		<constructor-arg name="dao" ref="chronologicalNoteCategoryDao"/>
+	</bean>
+	<bean id="chronologicalNoteCategoryAssociationPropertyEditorFactory"
+    	class="omis.beans.factory.impl.hibernate.PropertyEditorFactoryHibernateImpl">
+		<constructor-arg name="entityName" value="omis.chronologicalnote.domain.ChronologicalNoteCategoryAssociation"/>
+		<constructor-arg name="configuration" ref="hibernateConfiguration"/>
+		<constructor-arg name="dao" ref="chronologicalNoteCategoryAssociationDao"/>
+	</bean>
+</beans>

@@ -1,5 +1,8 @@
 package omis.offenderrelationship.web.validator;
 
+import java.io.Serializable;
+import java.util.Objects;
+
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
@@ -12,7 +15,10 @@ import omis.contact.web.validator.delegate.TelephoneNumberFieldsValidatorDelegat
 import omis.family.web.validator.delegate.FamilyAssociationFieldsCreateValidatorDelegate;
 import omis.offenderrelationship.web.controller.OffenderRelationshipAddressOperation;
 import omis.offenderrelationship.web.form.CreateRelationshipsForm;
+import omis.offenderrelationship.web.form.OffenderRelationshipNoteItem;
+import omis.offenderrelationship.web.form.OffenderRelationshipNoteItemOperation;
 import omis.person.web.validator.delegate.PersonFieldsValidatorDelegate;
+import omis.util.EqualityChecker;
 import omis.visitation.web.validator.delegate.VisitationAssociationFieldsValidatorDelegate;
 
 /**
@@ -21,6 +27,7 @@ import omis.visitation.web.validator.delegate.VisitationAssociationFieldsValidat
  * @author Joel Norris
  * @author Sheronda Vaughn
  * @author Yidong Li
+ * @author Stephen Abson
  * @version 0.1.0 (May 16, 2016)
  * @since OMIS 3.0
  */
@@ -28,23 +35,26 @@ public class CreateRelationshipsFormValidator implements Validator {
 
 	/* Validator Delegates. */
 	
-	private PersonFieldsValidatorDelegate personFieldsValidatorDelegate;
+	private final PersonFieldsValidatorDelegate personFieldsValidatorDelegate;
 	
-	private AddressFieldsValidatorDelegate addressFieldsValidatorDelegate;
+	private final AddressFieldsValidatorDelegate addressFieldsValidatorDelegate;
 	
-	private PoBoxFieldsValidatorDelegate poBoxFieldsValidatorDelegate;
+	private final PoBoxFieldsValidatorDelegate poBoxFieldsValidatorDelegate;
 	
-	private TelephoneNumberFieldsValidatorDelegate 
+	private final TelephoneNumberFieldsValidatorDelegate 
 		telephoneNumberFieldsValidatorDelegate;
 	
-	private OnlineAccountFieldsValidatorDelegate 
+	private final OnlineAccountFieldsValidatorDelegate 
 		onlineAccountFieldsValidatorDelegate;
 	
-	private FamilyAssociationFieldsCreateValidatorDelegate 
+	private final OffenderRelationshipNoteFieldsValidatorDelegate
+		offenderRelationshipNoteFieldsValidatorDelegate;
+	
+	private final FamilyAssociationFieldsCreateValidatorDelegate 
 		familyAssociationFieldsCreateValidatorDelegate;
 	
-	private VisitationAssociationFieldsValidatorDelegate
-	visitationAssociationFieldsValidatorDelegate;
+	private final VisitationAssociationFieldsValidatorDelegate
+		visitationAssociationFieldsValidatorDelegate;
 	
 	/* Constructors. */
 	
@@ -53,6 +63,18 @@ public class CreateRelationshipsFormValidator implements Validator {
 	 * specified delegates.
 	 * 
 	 * @param personFieldsValidatorDelegate person fields validator delegate
+	 * @param addressFieldsValidatorDelegate address fields validator delegate
+	 * @param poBoxFieldsValidatorDelegate PO box fields validator delegate
+	 * @param telephoneNumberFieldsValidatorDelegate telephone number fields
+	 * validator delegate
+	 * @param onlineAccountFieldsValidatorDelegate online account fields
+	 * validator delegate
+	 * @param offenderRelationshipNoteFieldsValidatorDelegate offender
+	 * relationship note fields validator delegate
+	 * @param familyAssociationFieldsCreateValidatorDelegate family association
+	 * fields validator delegate
+	 * @param visitationAssociationFieldsValidatorDelegate visitation
+	 * association fields validator delegate
 	 */
 	public CreateRelationshipsFormValidator(
 			final PersonFieldsValidatorDelegate personFieldsValidatorDelegate,
@@ -63,21 +85,42 @@ public class CreateRelationshipsFormValidator implements Validator {
 				telephoneNumberFieldsValidatorDelegate,
 			final OnlineAccountFieldsValidatorDelegate 
 				onlineAccountFieldsValidatorDelegate,
+			final OffenderRelationshipNoteFieldsValidatorDelegate
+				offenderRelationshipNoteFieldsValidatorDelegate,
 			final FamilyAssociationFieldsCreateValidatorDelegate
 				familyAssociationFieldsCreateValidatorDelegate, 
 			final VisitationAssociationFieldsValidatorDelegate
 				visitationAssociationFieldsValidatorDelegate) {
-		this.personFieldsValidatorDelegate = personFieldsValidatorDelegate;
-		this.addressFieldsValidatorDelegate = addressFieldsValidatorDelegate;
-		this.poBoxFieldsValidatorDelegate = poBoxFieldsValidatorDelegate;
+		this.personFieldsValidatorDelegate = Objects.requireNonNull(
+				personFieldsValidatorDelegate,
+				"Delegate to validate person fields required");
+		this.addressFieldsValidatorDelegate = Objects.requireNonNull(
+				addressFieldsValidatorDelegate,
+				"Delegate to validate address fields required");
+		this.poBoxFieldsValidatorDelegate = Objects.requireNonNull(
+				poBoxFieldsValidatorDelegate,
+				"Delegate to validate PO box fields required");
 		this.telephoneNumberFieldsValidatorDelegate 
-			= telephoneNumberFieldsValidatorDelegate;
+				= Objects.requireNonNull(telephoneNumberFieldsValidatorDelegate,
+					"Delegate to validate telephone number fields required");
 		this.onlineAccountFieldsValidatorDelegate 
-			= onlineAccountFieldsValidatorDelegate;
+				= Objects.requireNonNull(onlineAccountFieldsValidatorDelegate,
+					"Delegate to validate online account fields required");
+		this.offenderRelationshipNoteFieldsValidatorDelegate
+				= Objects.requireNonNull(
+						offenderRelationshipNoteFieldsValidatorDelegate,
+						"Delegate to validate offender relationship note"
+								+ " fields required");
 		this.familyAssociationFieldsCreateValidatorDelegate 
-			= familyAssociationFieldsCreateValidatorDelegate;
+				= Objects.requireNonNull(
+						familyAssociationFieldsCreateValidatorDelegate,
+						"Delegate to validate family association"
+								+ " fields required");
 		this.visitationAssociationFieldsValidatorDelegate 
-			= visitationAssociationFieldsValidatorDelegate; 
+				= Objects.requireNonNull(
+						visitationAssociationFieldsValidatorDelegate,
+						"Delegate to validate visitation association"
+						+ " fields required"); 
 	}
 	
 	/** {@inheritDoc} */
@@ -91,9 +134,9 @@ public class CreateRelationshipsFormValidator implements Validator {
 	public void validate(final Object target, final Errors errors) {
 		CreateRelationshipsForm form = (CreateRelationshipsForm) target;
 		// At least one relationship is required
-		if(form.getCreateFamilyMember()!=true
-			&&form.getCreateVictim()!=true
-			&&form.getCreateVisitor()!=true){
+		if((form.getCreateFamilyMember() == null || !form.getCreateFamilyMember())
+			&& (form.getCreateVictim() == null || !form.getCreateVictim())
+			&& (form.getCreateVisitor() == null || !form.getCreateVisitor())) {
 			errors.rejectValue("createFamilyMember", "familyVictimVisitorSelection.empty");
 			errors.rejectValue("createVictim", "familyVictimVisitorSelection.empty");
 			errors.rejectValue("createVisitor", "familyVictimVisitorSelection.empty");
@@ -264,5 +307,56 @@ public class CreateRelationshipsFormValidator implements Validator {
 				}
 			}
 		}
-	}		
+		
+		// Validates note items
+		if (form.getNoteItems() != null) {
+			for (int noteItemIndex = 0;
+					noteItemIndex < form.getNoteItems().size();
+					noteItemIndex++) {
+				OffenderRelationshipNoteItem item
+					= form.getNoteItems().get(noteItemIndex);
+				
+				// Only validate items that are to be operated on (that is, not
+				// removed or ignored/null)
+				if (item.getOperation() != null
+						&& !OffenderRelationshipNoteItemOperation.REMOVE
+							.equals(item.getOperation())) {
+					this.offenderRelationshipNoteFieldsValidatorDelegate
+							.validate(
+								String.format(
+										"noteItems[%d].fields", noteItemIndex),
+								item.getFields(), errors);
+					
+					// Checks for duplicates
+					for (int innerNoteIndex = 0; innerNoteIndex < noteItemIndex;
+							innerNoteIndex++) {
+						OffenderRelationshipNoteItem innerItem
+							= form.getNoteItems().get(innerNoteIndex);
+						
+						// Only check for duplicates on items that are to be
+						// operated on (not removed or ignored/null)
+						if (innerItem.getOperation() != null
+								&& !OffenderRelationshipNoteItemOperation.REMOVE
+									.equals(innerItem.getOperation())) {
+							if (EqualityChecker.create(Serializable.class)
+									.add(item.getFields().getDate(),
+											innerItem.getFields().getDate())
+									.add(item.getFields().getCategory(),
+											innerItem.getFields().getCategory())
+									.add(item.getFields().getValue(),
+											innerItem.getFields().getValue())
+									.check()) {
+								errors.rejectValue(
+										String.format(
+												"noteItems[%d].fields",
+												noteItemIndex),
+										"offenderRelationshipNote.duplicate");
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 }

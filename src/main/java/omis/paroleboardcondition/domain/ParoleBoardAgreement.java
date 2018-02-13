@@ -1,15 +1,35 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.paroleboardcondition.domain;
 
 import omis.audit.domain.Creatable;
 import omis.audit.domain.Updatable;
+import omis.boardhearing.domain.BoardHearing;
 import omis.condition.domain.Agreement;
+import omis.hearinganalysis.domain.HearingAnalysis;
 
 /**
  * Parole Board Agreement.
  * 
- *@author Annie Wahl 
- *@version 0.1.0 (Dec 18, 2017)
- *@since OMIS 3.0
+ * @author Annie Wahl
+ * @author Josh Divine 
+ * @version 0.1.1 (Feb 6, 2018)
+ * @since OMIS 3.0
  *
  */
 public interface ParoleBoardAgreement extends Creatable, Updatable {
@@ -49,6 +69,34 @@ public interface ParoleBoardAgreement extends Creatable, Updatable {
 	 * @param category - ParoleBoardAgreementCategory
 	 */
 	void setCategory(ParoleBoardAgreementCategory category);
+	
+	/**
+	 * Returns the hearing analysis for the parole board agreement.
+	 * 
+	 * @return hearing analysis
+	 */
+	HearingAnalysis getHearingAnalysis();
+	
+	/**
+	 * Sets the hearing analysis for the parole board agreement.
+	 * 
+	 * @param hearingAnalysis hearing analysis
+	 */
+	void setHearingAnalysis(HearingAnalysis hearingAnalysis);
+	
+	/**
+	 * Returns the board hearing for the parole board agreement.
+	 * 
+	 * @return board hearing
+	 */
+	BoardHearing getBoardHearing();
+	
+	/**
+	 * Sets the board hearing for the parole board agreement.
+	 * 
+	 * @param boardHearing board hearing
+	 */
+	void setBoardHearing(BoardHearing boardHearing);
 	
 	/** Compares {@code this} and {@code obj} for equality.
 	 * <p>

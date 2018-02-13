@@ -31,6 +31,8 @@
   
   <import resource="applicationContext-cache.xml"/>
   
+  <import resource="applicationContext-chronologicalNote.xml"/>
+  
   <import resource="applicationContext-citation.xml"/>
   
   <import resource="applicationContext-citizenship.xml"/>
@@ -111,7 +113,11 @@
   
   <import resource="applicationContext-media.xml"/>
   
+  <import resource="applicationContext-medicalReview.xml"/>
+  
   <import resource="applicationContext-military.xml"/>
+  
+  <import resource="applicationContext-mentalHealthReview.xml"/>
   
   <import resource="applicationContext-need.xml"/>
   
@@ -138,6 +144,8 @@
   <import resource="applicationContext-paroleBoardMember.xml"/>
   
   <import resource="applicationContext-paroleEligibility.xml"/>
+  
+  <import resource="applicationContext-paroleReview.xml"/>
   
   <import resource="applicationContext-person.xml"/>
   
@@ -202,8 +210,6 @@
   <import resource="applicationContext-treatment.xml"/>
   
   <import resource="applicationContext-trackeddocument.xml"/>
-  
-  <import resource="applicationContext-unitManagerReview.xml"/>
   
   <import resource="applicationContext-user.xml"/>
   

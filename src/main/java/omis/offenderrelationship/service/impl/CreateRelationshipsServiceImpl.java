@@ -257,6 +257,7 @@ public class CreateRelationshipsServiceImpl
 	}
 
 	/** {@inheritDoc} */
+	@SuppressWarnings("deprecation")
 	@Override
 	public List<Address> findAddresses(final String addressQuery) {
 		return this.addressDelegate.findAddressesByValue(addressQuery);
@@ -533,9 +534,13 @@ public class CreateRelationshipsServiceImpl
 
 	/** {@inheritDoc} */
 	@Override
-	public RelationshipNote createNote(final Relationship relationship,
-			final RelationshipNoteCategory category, final String value,
-			final Date date) throws RelationshipNoteExistsException {
+	public RelationshipNote createNote(final Offender offender,
+			final Person relation, final RelationshipNoteCategory category,
+			final String value, final Date date)
+					throws RelationshipNoteExistsException,
+						ReflexiveRelationshipException {
+		Relationship relationship = this.relationshipDelegate
+				.findOrCreate(offender, relation);
 		return this.relationshipNoteDelegate.create(
 				relationship, category, value, date);
 	}

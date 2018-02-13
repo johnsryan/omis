@@ -13,7 +13,7 @@
         <bean id="criminalAssociationService"
         	class="omis.criminalassociation.service.impl.CriminalAssociationServiceImpl">
         	<constructor-arg name="criminalAssociationDao" ref="criminalAssociationDao"/>
-        	<constructor-arg name="criminalAssociationCategoryDao" ref="criminalAssociationCategoryDao"/>
+        	<constructor-arg name="criminalAssociationCategoryDelegate" ref="criminalAssociationCategoryDelegate"/>
         	<constructor-arg name="addressDao" ref="addressDao"/>
         	<constructor-arg name="personDao" ref="personDao"/>
         	<constructor-arg name="contactDao" ref="contactDao"/>
@@ -84,5 +84,11 @@
 	    	<constructor-arg name="auditComponentRetriever" ref="auditComponentRetriever"/>
 	    	<constructor-arg name="criminalAssociationDao" ref="criminalAssociationDao"/>
 	    	<constructor-arg name="relationshipDao" ref="relationshipDao"/>
+	  	</bean>
+	  	
+	  	<bean id="criminalAssociationCategoryDelegate"
+	  		class="omis.criminalassociation.service.delegate.CriminalAssociationCategoryDelegate">
+	  		<constructor-arg name="criminalAssociationCategoryDao" ref="criminalAssociationCategoryDao"/>
+	  		<constructor-arg name="criminalAssociationCategoryInstanceFactory" ref="criminalAssociationCategoryInstanceFactory"/>
 	  	</bean>
 </beans>        

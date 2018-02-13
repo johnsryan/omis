@@ -17,15 +17,15 @@
 */
 package omis.chronologicalnote.report.impl.hibernate;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.SessionFactory;
-
-import omis.chronologicalnote.domain.ChronologicalNote;
 import omis.chronologicalnote.domain.ChronologicalNoteCategory;
 import omis.chronologicalnote.report.ChronologicalNoteReportService;
 import omis.chronologicalnote.report.ChronologicalNoteSummary;
 import omis.offender.domain.Offender;
+
+import org.hibernate.SessionFactory;
 
 /**
  * Hibernate implementation of report service for chronological notes.
@@ -39,17 +39,17 @@ public class ChronologicalNoteReportServiceHibernateImpl
 	/* Query names. */
 	private static final String FIND_BY_OFFENDER_QUERY_NAME
 		= "findChronologicalNoteSummaryByOffender";
-	private static final String
-		FIND_BY_OFFENDER_AND_CATEGORIES_QUERY_NAME
-		= "findChronologicalNoteSummaryByOffenderAndCategories";
 	private static final String FIND_CATEGORIES_QUERY_NAME = "findCategories";
-	private static final String FIND_CATEGORY_NAME_BY_NOTE_QUERY_NAME
-		= "findCategoryNamesByNote";
+	private static final String FIND_CATEGORY_NAMES_BY_NOTE_ID_QUERY_NAME
+		= "findCategoryNamesByNoteId";
+	private static final String 
+		FIND_CATEGORY_NAMES_BY_NOTE_ID_AND_CATEGORIES_QUERY_NAME
+		= "findCategoryNamesByNoteIdAndCategories";
 	
 	/* Parameter names. */
 	private static final String OFFENDER_PARAM_NAME = "offender";
 	private static final String CATEGORIES_PARAM_NAME = "categories";
-	private static final String NOTE_PARAM_NAME = "note";
+	private static final String NOTE_ID_PARAM_NAME = "noteId";
 	
 	/* Resources. */
 	private final SessionFactory sessionFactory;
@@ -77,21 +77,35 @@ public class ChronologicalNoteReportServiceHibernateImpl
 			.getNamedQuery(FIND_BY_OFFENDER_QUERY_NAME)
 			.setParameter(OFFENDER_PARAM_NAME, offender)
 			.list();
+		for (ChronologicalNoteSummary summary : summaries) {
+			summary.getCategoryNames().addAll(this.findCategoryNamesByNoteId(
+				summary.getId()));
+		}
 		return summaries;
 	}
 	
 	/** {@inheritDoc} */
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<ChronologicalNoteSummary> findByOffenderAndCategories(
 		final Offender offender, 
 		final List<ChronologicalNoteCategory> categories) {
-		@SuppressWarnings("unchecked")
-		List<ChronologicalNoteSummary> summaries = this.sessionFactory
+			List<ChronologicalNoteSummary> summaries = this.sessionFactory
 			.getCurrentSession()
-			.getNamedQuery(FIND_BY_OFFENDER_AND_CATEGORIES_QUERY_NAME)
+			.getNamedQuery(FIND_BY_OFFENDER_QUERY_NAME)
 			.setParameter(OFFENDER_PARAM_NAME, offender)
-			.setParameter(CATEGORIES_PARAM_NAME, categories)
 			.list();
+		if(categories!=null){
+			for (ChronologicalNoteSummary summary : summaries) {
+				List<String> namesList = new ArrayList<String>();
+				namesList.addAll(findCategoryNamesByNoteIdAndCategories(
+					summary.getId(), categories));
+				if(!namesList.isEmpty()){
+					summary.getCategoryNames().addAll(
+					this.findCategoryNamesByNoteId(summary.getId()));
+				} 
+			}
+		} 
 		return summaries;
 	}
 	
@@ -106,14 +120,25 @@ public class ChronologicalNoteReportServiceHibernateImpl
 		return categories;
 	}
 	
-	/** {@inheritDoc} */
-	@Override
-	public List<String> findCategoryNamesByNote(final ChronologicalNote note) {
+	private List<String> findCategoryNamesByNoteId(final Long noteId) {
 		@SuppressWarnings("unchecked")
 		List<String> categoryNames = this.sessionFactory
 			.getCurrentSession()
-			.getNamedQuery(FIND_CATEGORY_NAME_BY_NOTE_QUERY_NAME)
-			.setParameter(NOTE_PARAM_NAME, note)
+			.getNamedQuery(FIND_CATEGORY_NAMES_BY_NOTE_ID_QUERY_NAME)
+			.setParameter(NOTE_ID_PARAM_NAME, noteId)
+			.list();
+		return categoryNames;
+	}
+	
+	private List<String> findCategoryNamesByNoteIdAndCategories(
+		final Long noteId, final List<ChronologicalNoteCategory> categories) {
+		@SuppressWarnings("unchecked")
+		List<String> categoryNames = this.sessionFactory
+			.getCurrentSession()
+			.getNamedQuery(
+				FIND_CATEGORY_NAMES_BY_NOTE_ID_AND_CATEGORIES_QUERY_NAME)
+			.setParameter(NOTE_ID_PARAM_NAME, noteId)
+			.setParameterList(CATEGORIES_PARAM_NAME, categories)
 			.list();
 		return categoryNames;
 	}

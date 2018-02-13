@@ -39,6 +39,13 @@
 				<a href="${pageContext.request.contextPath}/offenseTerm/courtCaseListingReport.html?person=${person.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="courtCaseListingReportLinkLabel" bundle="${offenseTermBundle}"/></a>
 			</li>
 		</sec:authorize>
+		<sec:authorize access="hasRole('OFFENSE_TERM_LIST') or hasRole('ADMIN')">
+			<c:if test="${not empty person}">
+			<li>
+				<a href="${pageContext.request.contextPath}/offenseTerm/courtCaseDetailListingReport.html?person=${person.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="courtCaseDetailListingReportLinkLabel" bundle="${offenseTermBundle}" /></a>
+			</li>
+			</c:if>
+		</sec:authorize>		
 	</c:if>
 	<c:if test="${not empty courtCase and not courtCase.flags.dismissed}">
 		<sec:authorize access="hasRole('OFFENSE_TERM_VIEW') or hasRole('ADMIN')">

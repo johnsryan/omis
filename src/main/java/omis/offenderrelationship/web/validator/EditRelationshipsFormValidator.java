@@ -1,4 +1,23 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.offenderrelationship.web.validator;
+
+import java.io.Serializable;
 
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -13,27 +32,33 @@ import omis.contact.web.validator.delegate.PoBoxFieldsValidatorDelegate;
 import omis.contact.web.validator.delegate.TelephoneNumberFieldsValidatorDelegate;
 import omis.offenderrelationship.web.controller.OffenderRelationshipAddressOperation;
 import omis.offenderrelationship.web.form.EditRelationshipsForm;
+import omis.offenderrelationship.web.form.OffenderRelationshipNoteItem;
+import omis.offenderrelationship.web.form.OffenderRelationshipNoteItemOperation;
 import omis.offenderrelationship.web.form.OnlineAccountContactItem;
 import omis.offenderrelationship.web.form.TelephoneNumberItem;
 import omis.person.web.validator.delegate.PersonFieldsValidatorDelegate;
+import omis.util.EqualityChecker;
 
 /**
  * Edit offender relationships form validator.
  * 
  * @author Yidong Li
  * @author Josh Divine
- * @version 0.1.1 (Oct 27, 2017)
+ * @author Stephen Abson
+ * @version 0.1.1 (Feb 12, 2018)
  * @since OMIS 3.0
  */
 public class EditRelationshipsFormValidator implements Validator {
 	/* Validator Delegates. */
-	private PersonFieldsValidatorDelegate personFieldsValidatorDelegate;
-	private AddressFieldsValidatorDelegate addressFieldsValidatorDelegate;
-	private PoBoxFieldsValidatorDelegate poBoxFieldsValidatorDelegate;
-	private TelephoneNumberFieldsValidatorDelegate 
+	private final PersonFieldsValidatorDelegate personFieldsValidatorDelegate;
+	private final AddressFieldsValidatorDelegate addressFieldsValidatorDelegate;
+	private final PoBoxFieldsValidatorDelegate poBoxFieldsValidatorDelegate;
+	private final TelephoneNumberFieldsValidatorDelegate 
 		telephoneNumberFieldsValidatorDelegate;
-	private OnlineAccountFieldsValidatorDelegate 
+	private final OnlineAccountFieldsValidatorDelegate 
 		onlineAccountFieldsValidatorDelegate;
+	private final OffenderRelationshipNoteFieldsValidatorDelegate
+		offenderRelationshipNoteFieldsValidatorDelegate;
 	
 	/* Constructors. */
 	/**
@@ -47,15 +72,19 @@ public class EditRelationshipsFormValidator implements Validator {
 	 * validator delegate
 	 * @param onlineAccountFieldsValidatorDelegate onlineAccountFields 
 	 * validator delegate
+	 * @param offenderRelationshipNoteFieldsValidatorDelegate delegate for
+	 * offender relationship note fields
 	 */
 	public EditRelationshipsFormValidator(
-		final PersonFieldsValidatorDelegate personFieldsValidatorDelegate,
-		final AddressFieldsValidatorDelegate addressFieldsValidatorDelegate,
-		final PoBoxFieldsValidatorDelegate poBoxFieldsValidatorDelegate,
-		final TelephoneNumberFieldsValidatorDelegate 
-			telephoneNumberFieldsValidatorDelegate,
-		final OnlineAccountFieldsValidatorDelegate 
-			onlineAccountFieldsValidatorDelegate) {
+			final PersonFieldsValidatorDelegate personFieldsValidatorDelegate,
+			final AddressFieldsValidatorDelegate addressFieldsValidatorDelegate,
+			final PoBoxFieldsValidatorDelegate poBoxFieldsValidatorDelegate,
+			final TelephoneNumberFieldsValidatorDelegate 
+				telephoneNumberFieldsValidatorDelegate,
+			final OnlineAccountFieldsValidatorDelegate 
+				onlineAccountFieldsValidatorDelegate,
+			final OffenderRelationshipNoteFieldsValidatorDelegate
+				offenderRelationshipNoteFieldsValidatorDelegate) {
 		this.personFieldsValidatorDelegate = personFieldsValidatorDelegate;
 		this.addressFieldsValidatorDelegate = addressFieldsValidatorDelegate;
 		this.poBoxFieldsValidatorDelegate = poBoxFieldsValidatorDelegate;
@@ -63,6 +92,8 @@ public class EditRelationshipsFormValidator implements Validator {
 			telephoneNumberFieldsValidatorDelegate;
 		this.onlineAccountFieldsValidatorDelegate 
 			= onlineAccountFieldsValidatorDelegate;
+		this.offenderRelationshipNoteFieldsValidatorDelegate
+			= offenderRelationshipNoteFieldsValidatorDelegate;
 	}
 	
 	/** {@inheritDoc} */
@@ -108,11 +139,11 @@ public class EditRelationshipsFormValidator implements Validator {
 								TelephoneNumberItemOperation.REMOVE))){
 					TelephoneNumberFields fields = telephoneItem
 							.getTelephoneNumberFields();
-					this.telephoneNumberFieldsValidatorDelegate
-						.validateTelephoneNumberFields(fields,
-								"telephoneNumberItems[" + index + 
-								"].telephoneNumberFields", errors);
 					if(fields != null){
+						this.telephoneNumberFieldsValidatorDelegate
+							.validateTelephoneNumberFields(fields,
+									"telephoneNumberItems[" + index + 
+									"].telephoneNumberFields", errors);
 						if(fields.getPrimary() != null && 
 								fields.getPrimary()) {
 							if (fields.getActive() != null &&
@@ -175,12 +206,12 @@ public class EditRelationshipsFormValidator implements Validator {
 						OnlineAccountContactItemOperation.REMOVE)){
 					OnlineAccountFields fields = accountItem
 							.getOnlineAccountFields();
-					this.onlineAccountFieldsValidatorDelegate
-					.validateOnlineAccountFields(fields, 
-							"onlineAccountContactItems[" + index + 
-							"].onlineAccountFields",
-							errors);
 					if(fields != null){
+						this.onlineAccountFieldsValidatorDelegate
+							.validateOnlineAccountFields(fields, 
+									"onlineAccountContactItems[" + index + 
+									"].onlineAccountFields",
+									errors);
 						if(fields.getPrimary() != null && 
 								fields.getPrimary().equals(true)){
 							if (fields.getActive() != null && 
@@ -226,6 +257,49 @@ public class EditRelationshipsFormValidator implements Validator {
 			if(!primaryOnlineAccountExists && nonRemoveCount > 0){
 				errors.rejectValue(
 					"onlineAccountContactItems", "onlineAccountPrimary.empty");
+			}
+		}
+		
+		// Validates notes
+		if (form.getNoteItems() != null) {
+			int index = 0;
+			for (OffenderRelationshipNoteItem noteItem : form.getNoteItems()) {
+				if (OffenderRelationshipNoteItemOperation.CREATE
+							.equals(noteItem.getOperation())
+						|| OffenderRelationshipNoteItemOperation.UPDATE
+							.equals(noteItem.getOperation())) {
+					this.offenderRelationshipNoteFieldsValidatorDelegate
+						.validate(
+								String.format("noteItems[%s].fields", index),
+								noteItem.getFields(), errors);
+				}
+				
+				// Checks for duplicates
+				for (int innerIndex = 0; innerIndex < index; innerIndex++) {
+					OffenderRelationshipNoteItem innerItem
+						= form.getNoteItems().get(innerIndex);
+					if (OffenderRelationshipNoteItemOperation.CREATE
+								.equals(noteItem.getOperation())
+							|| OffenderRelationshipNoteItemOperation.UPDATE
+								.equals(noteItem.getOperation())) {
+						if (noteItem.getFields() != null
+								&& innerItem.getFields() != null
+								&& EqualityChecker.create(Serializable.class)
+								.add(noteItem.getFields().getDate(),
+										innerItem.getFields().getDate())
+								.add(noteItem.getFields().getCategory(),
+										innerItem.getFields().getCategory())
+								.add(noteItem.getFields().getValue(),
+										innerItem.getFields().getValue())
+								.check()) {
+							errors.rejectValue(String.format(
+									"noteItems[%d].fields", index),
+								"offenderRelationshipNote.duplicate");
+							break;
+						}
+					}
+				}
+				index++;
 			}
 		}
 	}

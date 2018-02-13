@@ -24,6 +24,7 @@
 		<constructor-arg name="poBoxFieldsValidatorDelegate" ref="poBoxFieldsValidatorDelegate"/>
 		<constructor-arg name="telephoneNumberFieldsValidatorDelegate" ref="telephoneNumberFieldsValidatorDelegate"/>
 		<constructor-arg name="onlineAccountFieldsValidatorDelegate" ref="onlineAccountFieldsValidatorDelegate"/>
+		<constructor-arg name="offenderRelationshipNoteFieldsValidatorDelegate" ref="offenderRelationshipNoteFieldsValidatorDelegate"/>
 		<constructor-arg name="familyAssociationFieldsCreateValidatorDelegate" ref="familyAssociationFieldsCreateValidatorDelegate"/>
 		<constructor-arg name="visitationAssociationFieldsValidatorDelegate" ref="visitationAssociationFieldsValidatorDelegate"/>
 	</bean>     
@@ -33,6 +34,7 @@
 		<constructor-arg name="personFieldsValidatorDelegate" ref="personFieldsValidatorDelegate"/>
 		<constructor-arg name="telephoneNumberFieldsValidatorDelegate" ref="telephoneNumberFieldsValidatorDelegate"/>
 		<constructor-arg name="onlineAccountFieldsValidatorDelegate" ref="onlineAccountFieldsValidatorDelegate"/>
+		<constructor-arg name="offenderRelationshipNoteFieldsValidatorDelegate" ref="offenderRelationshipNoteFieldsValidatorDelegate"/>
 	</bean>
 	<bean id="createRelationshipsFromSearchFormValidator" 
 		class="omis.offenderrelationship.web.validator.CreateRelationshipsFromSearchFormValidator">
@@ -51,6 +53,8 @@
 		class="omis.offenderrelationship.web.controller.delegate.OffenderRelationshipSummaryModelDelegate">
 		<constructor-arg name="offenderRelationshipSummaryReportService" ref="offenderRelationshipSummaryReportService"/>
   </bean>      
+	
+  <bean id="offenderRelationshipNoteFieldsControllerDelegate" class="omis.offenderrelationship.web.controller.delegate.OffenderRelationshipNoteFieldsControllerDelegate"/>
 	
   <!-- Profile items. -->
   
@@ -89,4 +93,5 @@
       <aop:pointcut id="reportOffenderRelationshipControllerOperation" expression="execution(* omis.offenderrelationship.web.controller.ReportOffenderRelationshipController.*(..))"/>
       <aop:advisor advice-ref="transactionAdvice" pointcut-ref="reportOffenderRelationshipControllerOperation"/>
   </aop:config>
+  
 </beans>        

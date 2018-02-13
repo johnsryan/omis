@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="omis.medicalreview.report">
+	<query name="findMedicalReviewSummariesByOffender"><![CDATA[
+		select new omis.medicalreview.report.MedicalReviewSummary(
+			medicalReview.id,
+			medicalReview.date,
+			healthClassification.name,
+			name.lastName,
+			name.firstName,
+			name.middleName)
+		from
+			omis.medicalreview.domain.MedicalReview medicalReview
+		inner join
+			medicalReview.healthClassification healthClassification
+		inner join
+			medicalReview.updateSignature.userAccount userAccount
+		inner join
+			userAccount.user user
+		inner join
+			user.name name
+		inner join
+			medicalReview.offender offender
+		where
+			offender = :offender
+	]]></query>
+</hibernate-mapping>

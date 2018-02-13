@@ -75,7 +75,7 @@ import omis.web.form.FormOperation;
  * @author Stephen Abson
  * @author Ryan Johns
  * @author Josh Divine
- * @version 0.1.7 (Jan 31, 2018)
+ * @version 0.1.8 (Feb 6, 2018)
  * @since OMIS 3.0
  */
 @Controller
@@ -160,6 +160,8 @@ public class CourtCaseController {
 	private static final String HAS_CONVICTIONS_MODEL_KEY = "hasConvictions";
 	
 	private static final String OFFENSE_MODEL_KEY = "offense";
+	
+	private static final String EXISTING_DOCKETS_MODEL_KEY = "existingDockets";
 	
 	/* Message keys. */
 	
@@ -278,16 +280,22 @@ public class CourtCaseController {
 			throw new IllegalArgumentException("Defendant or docket required.");
 		}
 		CourtCaseForm courtCaseForm = new CourtCaseForm();
+		Person person = null;
 		if (docket != null) {
-			courtCaseForm.setAllowCourt(false);
 			courtCaseForm.setAllowDocket(false);
+			courtCaseForm.setAllowExistingDocket(false);
+			person = docket.getPerson();
 		} else {
-			courtCaseForm.setAllowCourt(true);
 			courtCaseForm.setAllowDocket(true);
+			courtCaseForm.setAllowExistingDocket(true);
+			person = defendant;
 		}
-			final ModelMap modelMap = this.prepareModel(courtCaseForm, 
-					redirectUrl, defendant, docket);
-			return new ModelAndView(EDIT_VIEW_NAME, modelMap);
+		List<Docket> existingDockets = this.courtCaseService
+				.findDocketsWithoutCourtCase(person);
+		final ModelMap modelMap = this.prepareModel(courtCaseForm, redirectUrl, 
+				defendant, docket);
+		modelMap.addAttribute(EXISTING_DOCKETS_MODEL_KEY, existingDockets);
+		return new ModelAndView(EDIT_VIEW_NAME, modelMap);
 	}
 	
 	/**
@@ -335,13 +343,13 @@ public class CourtCaseController {
 			modelDocket = crtCase.getDocket();
 		} else {
 			courtCaseForm = new CourtCaseForm();
-			courtCaseForm.setDocketValue(docket.getValue());
-			courtCaseForm.setCourt(docket.getCourt());
+			courtCaseForm.getDocketFields().setValue(docket.getValue());
+			courtCaseForm.getDocketFields().setCourt(docket.getCourt());
 			defendant = docket.getPerson();
 			modelDocket = docket;
 		}
-		courtCaseForm.setAllowCourt(false);
 		courtCaseForm.setAllowDocket(false);
+		courtCaseForm.setAllowExistingDocket(false);
 		final ModelMap modelMap = prepareModel(courtCaseForm, redirectUrl,
 				defendant, modelDocket);
 		modelMap.put(COURT_CASE_MODEL_KEY, crtCase);
@@ -353,7 +361,7 @@ public class CourtCaseController {
 			final List<Charge> charges, 
 			final List<CourtCaseNote> courtCaseNotes) {
 		final CourtCaseForm courtCaseForm = new CourtCaseForm();
-		courtCaseForm.setDocketValue(courtCase.getDocket().getValue());
+		courtCaseForm.getDocketFields().setValue(courtCase.getDocket().getValue());
 		courtCaseForm.setInterStateNumber(courtCase.getInterStateNumber());
 		courtCaseForm.setInterState(courtCase.getInterState());
 		courtCaseForm.setPronouncementDate(courtCase.getPronouncementDate());
@@ -361,7 +369,7 @@ public class CourtCaseController {
 				.getJurisdictionAuthority());
 		courtCaseForm.setDangerDesignator(courtCase.getDangerDesignator());
 		courtCaseForm.setSentenceReviewDate(courtCase.getSentenceReviewDate());
-		courtCaseForm.setCourt(courtCase.getDocket().getCourt());
+		courtCaseForm.getDocketFields().setCourt(courtCase.getDocket().getCourt());
 		courtCaseForm.setCriminallyConvictedYouth(courtCase.getFlags()
 				.getCriminallyConvictedYouth());
 		courtCaseForm.setYouthTransfer(courtCase.getFlags()
@@ -482,8 +490,18 @@ public class CourtCaseController {
 		// Performs validation
 		this.courtCaseFormValidator.validate(courtCaseForm, result);
 		if (result.hasErrors()) {
-			return this.prepareRedisplayMav(courtCaseForm, redirectUrl, result,
-					defendant, docket, null);
+			ModelAndView mav = this.prepareRedisplayMav(courtCaseForm, 
+					redirectUrl, result, defendant, docket, null);
+			Person person = null;
+			if (docket != null) {
+				person = docket.getPerson();
+			} else {
+				person = defendant;
+			}
+			List<Docket> existingDockets = this.courtCaseService
+					.findDocketsWithoutCourtCase(person);
+			mav.addObject(EXISTING_DOCKETS_MODEL_KEY, existingDockets);
+			return mav;
 		}
 		
 		// Creates initial court case with first charge
@@ -505,8 +523,14 @@ public class CourtCaseController {
 		courtCaseFlags.setDismissed(courtCaseForm.getDismissed());
 		
 		CourtCase courtCase;
+		Docket existingDocket = null;
 		if (docket != null) {
-			courtCase = this.courtCaseService.createFromDocket(docket, 
+			existingDocket = docket;
+		} else if (courtCaseForm.getExistingDocket() != null) {
+			existingDocket = courtCaseForm.getExistingDocket();
+		}
+		if (existingDocket != null) {
+			courtCase = this.courtCaseService.createFromDocket(existingDocket, 
 					courtCaseForm.getInterStateNumber(), 
 					courtCaseForm.getInterState(), 
 					courtCaseForm.getPronouncementDate(), 
@@ -519,7 +543,8 @@ public class CourtCaseController {
 					courtCaseForm.getComments());
 		} else {
 			courtCase = this.courtCaseService.create(defendant, 
-					courtCaseForm.getCourt(), courtCaseForm.getDocketValue(), 
+					courtCaseForm.getDocketFields().getCourt(), 
+					courtCaseForm.getDocketFields().getValue(), 
 					courtCaseForm.getInterStateNumber(),
 					courtCaseForm.getInterState(), 
 					courtCaseForm.getPronouncementDate(),
@@ -555,8 +580,9 @@ public class CourtCaseController {
 				url = LIST_REDIRECT_URL;
 				passDefend = true;
 			}
-			if (docket != null) {
-				return buildRedirectMav(url, passDefend, docket.getPerson());
+			if (existingDocket != null) {
+				return buildRedirectMav(url, passDefend, 
+						existingDocket.getPerson());
 			} else {
 				return buildRedirectMav(url, passDefend, defendant);	
 			}

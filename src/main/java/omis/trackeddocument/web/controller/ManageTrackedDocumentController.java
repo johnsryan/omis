@@ -22,28 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import omis.beans.factory.PropertyEditorFactory;
-import omis.beans.factory.spring.CustomDateEditorFactory;
-import omis.docket.domain.Docket;
-import omis.offender.beans.factory.OffenderPropertyEditorFactory;
-import omis.offender.domain.Offender;
-import omis.offender.web.controller.delegate.OffenderSummaryModelDelegate;
-import omis.person.domain.Person;
-import omis.report.ReportFormat;
-import omis.report.ReportRunner;
-import omis.report.web.controller.delegate.ReportControllerDelegate;
-import omis.tierdesignation.domain.OffenderTierDesignation;
-import omis.trackeddocument.domain.TrackedDocumentCategory;
-import omis.trackeddocument.domain.TrackedDocumentReceival;
-import omis.trackeddocument.exception.TrackedDocumentReceivalExistsException;
-import omis.trackeddocument.service.DocumentTrackingService;
-import omis.trackeddocument.web.form.TrackedDocumentForm;
-import omis.trackeddocument.web.form.TrackedDocumentReceivalItem;
-import omis.trackeddocument.web.form.TrackedDocumentReceivalItemOperation;
-import omis.trackeddocument.web.validator.TrackedDocumentFormValidator;
-import omis.user.domain.UserAccount;
-import omis.web.controller.delegate.BusinessExceptionHandlerDelegate;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
@@ -59,6 +37,27 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+
+import omis.beans.factory.PropertyEditorFactory;
+import omis.beans.factory.spring.CustomDateEditorFactory;
+import omis.docket.domain.Docket;
+import omis.offender.beans.factory.OffenderPropertyEditorFactory;
+import omis.offender.domain.Offender;
+import omis.offender.web.controller.delegate.OffenderSummaryModelDelegate;
+import omis.person.domain.Person;
+import omis.report.ReportFormat;
+import omis.report.ReportRunner;
+import omis.report.web.controller.delegate.ReportControllerDelegate;
+import omis.trackeddocument.domain.TrackedDocumentCategory;
+import omis.trackeddocument.domain.TrackedDocumentReceival;
+import omis.trackeddocument.exception.TrackedDocumentReceivalExistsException;
+import omis.trackeddocument.service.DocumentTrackingService;
+import omis.trackeddocument.web.form.TrackedDocumentForm;
+import omis.trackeddocument.web.form.TrackedDocumentReceivalItem;
+import omis.trackeddocument.web.form.TrackedDocumentReceivalItemOperation;
+import omis.trackeddocument.web.validator.TrackedDocumentFormValidator;
+import omis.user.domain.UserAccount;
+import omis.web.controller.delegate.BusinessExceptionHandlerDelegate;
 
 /**
  * Controller for tracked document.

@@ -104,6 +104,7 @@
     			<value>/WEB-INF/classes/omis/boardhearingdecision/msgs/form</value>
     			<value>/WEB-INF/classes/omis/caseload/msgs/form</value>
     			<value>/WEB-INF/classes/omis/caution/msgs/form</value>
+    			<value>/WEB-INF/classes/omis/chronologicalnote/msgs/form</value>
     			<value>/WEB-INF/classes/omis/citation/msgs/form</value>
     			<value>/WEB-INF/classes/omis/condition/msgs/form</value>
     			<value>/WEB-INF/classes/omis/conviction/msgs/form</value>
@@ -133,7 +134,9 @@
     			<value>/WEB-INF/classes/omis/grievance/msgs/form</value>
     			<value>/WEB-INF/classes/omis/location/msgs/form</value>
     			<value>/WEB-INF/classes/omis/locationterm/msgs/form</value>
+    			<value>/WEB-INF/classes/omis/mentalhealthreview/msgs/form</value>
     			<value>/WEB-INF/classes/omis/military/msgs/form</value>
+    			<value>/WEB-INF/classes/omis/medicalreview/msgs/form</value>
     			<value>/WEB-INF/classes/omis/need/msgs/form</value>
     			<value>/WEB-INF/classes/omis/offenderflag/msgs/form</value>
     			<value>/WEB-INF/classes/omis/offender/msgs/form</value>
@@ -144,6 +147,7 @@
     			<value>/WEB-INF/classes/omis/paroleboarditinerary/msgs/form</value>
     			<value>/WEB-INF/classes/omis/paroleboardmember/msgs/form</value>
     			<value>/WEB-INF/classes/omis/paroleeligibility/msgs/form</value>
+    			<value>/WEB-INF/classes/omis/parolereview/msgs/form</value>
     			<value>/WEB-INF/classes/omis/person/msgs/form</value>
     			<value>/WEB-INF/classes/omis/photo/msgs/form</value>
     			<value>/WEB-INF/classes/omis/physicalfeature/msgs/form</value>
@@ -169,7 +173,6 @@
     			<value>/WEB-INF/classes/omis/task/msgs/form</value>
     			<value>/WEB-INF/classes/omis/tierdesignation/msgs/form</value>
     			<value>/WEB-INF/classes/omis/trackeddocument/msgs/form</value>
-    			<value>/WEB-INF/classes/omis/unitmanagerreview/msgs/form</value>
     			<value>/WEB-INF/classes/omis/user/msgs/form</value>
     			<value>/WEB-INF/classes/omis/userpreference/msgs/form</value>
     			<value>/WEB-INF/classes/omis/victim/msgs/form</value>

@@ -33,6 +33,7 @@ import omis.report.web.controller.delegate.ReportControllerDelegate;
  * 
  * @author Joel Norris
  * @author Ryan Johns
+ * @author Sierra Rosales
  * @version 0.1.1 (Apr 18, 2016)
  * @since OMIS 3.0
  */
@@ -76,6 +77,9 @@ public class ReportCourtCaseController {
 	
 	private static final String COURT_CASE_LISTING_REPORT_NAME 
 		= "/Legal/CourtCase/Court_Case_Listing";
+	
+	private static final String COURT_CASE_DETAIL_LISTING_REPORT_NAME 
+	= "/Legal/CourtCase/Detailed_Court_Case_Listing";
 
 	private static final String COURT_CASE_DETAILS_REPORT_NAME 
 		= "/Legal/CourtCase/Court_Case_Details";
@@ -160,6 +164,31 @@ public class ReportCourtCaseController {
 				Long.toString(offender.getOffenderNumber()));
 		byte[] doc = this.reportRunner.runReport(
 				COURT_CASE_LISTING_REPORT_NAME,
+				reportParamMap, reportFormat);
+		return this.reportControllerDelegate.constructReportResponseEntity(
+				doc, reportFormat);
+	}
+	
+	/**
+	 * Returns the detailed report for the specified offenders court cases.
+	 * 
+	 * @param offender offender
+	 * @param reportFormat report format
+	 * @return response entity with report
+	 */
+	@RequestMapping(value = "/courtCaseDetailListingReport.html",
+			method = RequestMethod.GET)
+	@PreAuthorize("hasRole('COURT_CASE_LIST') or hasRole('ADMIN')")
+	public ResponseEntity<byte []> reportCourtCaseDetailListing(@RequestParam(
+			value = "offender", required = true)
+			final Offender offender,
+			@RequestParam(value = "reportFormat", required = true)
+			final ReportFormat reportFormat) {
+		Map<String, String> reportParamMap = new HashMap<String, String>();
+		reportParamMap.put(COURT_CASE_LISTING_ID_REPORT_PARAM_NAME,
+				Long.toString(offender.getOffenderNumber()));
+		byte[] doc = this.reportRunner.runReport(
+				COURT_CASE_DETAIL_LISTING_REPORT_NAME,
 				reportParamMap, reportFormat);
 		return this.reportControllerDelegate.constructReportResponseEntity(
 				doc, reportFormat);

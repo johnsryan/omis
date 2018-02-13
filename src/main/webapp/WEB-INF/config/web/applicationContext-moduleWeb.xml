@@ -38,6 +38,8 @@
   
   <import resource="applicationContext-citationWeb.xml"/>
   
+  <import resource="applicationContext-chronologicalNoteWeb.xml"/>
+  
   <import resource="applicationContext-commitStatusWeb.xml"/>
   
   <import resource="applicationContext-configWeb.xml"/>
@@ -102,6 +104,10 @@
   
   <import resource="applicationContext-mediaWeb.xml"/>
   
+  <import resource="applicationContext-medicalReviewWeb.xml"/>
+  
+  <import resource="applicationContext-mentalHealthReviewWeb.xml"/>
+  
   <import resource="applicationContext-militaryWeb.xml"/>
   
   <import resource="applicationContext-nocrWeb.xml"/>
@@ -131,6 +137,8 @@
   <import resource="applicationContext-paroleBoardMemberWeb.xml"/>
   
   <import resource="applicationContext-paroleEligibilityWeb.xml"/>
+  
+  <import resource="applicationContext-paroleReviewWeb.xml"/>
   
   <import resource="applicationContext-personFieldsWeb.xml"/>
   
@@ -188,8 +196,6 @@
   
   <import resource="applicationContext-trackedDocumentWeb.xml"/>
 
-  <import resource="applicationContext-unitManagerReviewWeb.xml"/>
-  
   <import resource="applicationContext-userWeb.xml"/>
   
   <import resource="applicationContext-userPreferenceWeb.xml"/>

@@ -32,9 +32,11 @@ import omis.contact.domain.OnlineAccountHost;
 import omis.contact.domain.TelephoneNumber;
 import omis.contact.domain.TelephoneNumberCategory;
 import omis.contact.domain.component.PoBox;
+import omis.contact.exception.ContactExistsException;
+import omis.contact.exception.OnlineAccountExistsException;
+import omis.contact.exception.TelephoneNumberExistsException;
 import omis.country.domain.Country;
 import omis.demographics.domain.Sex;
-import omis.exception.DuplicateEntityFoundException;
 import omis.offender.domain.Offender;
 import omis.person.domain.Person;
 import omis.person.domain.Suffix;
@@ -42,6 +44,7 @@ import omis.person.exception.PersonIdentityExistsException;
 import omis.person.exception.PersonNameExistsException;
 import omis.region.domain.City;
 import omis.region.domain.State;
+import omis.region.exception.CityExistsException;
 import omis.relationship.domain.Relationship;
 import omis.relationship.domain.RelationshipNote;
 import omis.relationship.domain.RelationshipNoteCategory;
@@ -180,10 +183,10 @@ public interface UpdateOffenderRelationService {
 	 * @param state State
 	 * @param country country
 	 * @return newly created city
-	 * @throws DuplicateEntityFoundException if city exists
+	 * @throws CityExistsException if city exists
 	 */
 	City createCity(String name, State state, Country country) 
-		throws DuplicateEntityFoundException;
+		throws CityExistsException;
 	
 	/**
 	 * Creates ZIP code.
@@ -204,10 +207,10 @@ public interface UpdateOffenderRelationService {
 	 * @param poBox PO box
 	 * @param mailingAddress mailing address
 	 * @return changed contact
-	 * @throws DuplicateEntityFoundException if contact exists
+	 * @throws ContactExistsException if contact exists
 	 */
 	Contact changeContact(Person relation, PoBox poBox, Address mailingAddress)
-		throws DuplicateEntityFoundException;
+		throws ContactExistsException;
 	
 	/**
 	 * Returns mailing address of relation.
@@ -251,12 +254,12 @@ public interface UpdateOffenderRelationService {
 	 * @param active whether active
 	 * @param category category
 	 * @return newly created telephone number for relation
-	 * @throws DuplicateEntityFoundException if telephone number exists
+	 * @throws TelephoneNumberExistsException if telephone number exists
 	 */
 	TelephoneNumber createTelephoneNumber(Person relation, Long value,
 			Integer extension, Boolean primary, Boolean active,
 			TelephoneNumberCategory category)
-		throws DuplicateEntityFoundException;
+		throws TelephoneNumberExistsException;
 	
 	/**
 	 * Updates telephone number.
@@ -268,12 +271,12 @@ public interface UpdateOffenderRelationService {
 	 * @param active whether active
 	 * @param category category
 	 * @return updated telephone number
-	 * @throws DuplicateEntityFoundException if telephone number exists
+	 * @throws TelephoneNumberExistsException if telephone number exists
 	 */
 	TelephoneNumber updateTelephoneNumber(TelephoneNumber telephoneNumber,
 			Long value, Integer extension, Boolean primary, Boolean active,
 			TelephoneNumberCategory category)
-		throws DuplicateEntityFoundException;
+		throws TelephoneNumberExistsException;
 	
 	/**
 	 * Removes telephone number.
@@ -291,11 +294,11 @@ public interface UpdateOffenderRelationService {
 	 * @param primary whether primary
 	 * @param active whether active
 	 * @return newly created online account
-	 * @throws DuplicateEntityFoundException if online account exists
+	 * @throws OnlineAccountExistsException if online account exists
 	 */
 	OnlineAccount createOnlineAccount(Person relation, String name,
 		OnlineAccountHost host, Boolean primary, Boolean active) 
-		throws DuplicateEntityFoundException;
+		throws OnlineAccountExistsException;
 	
 	/**
 	 * Updates online account.
@@ -306,11 +309,11 @@ public interface UpdateOffenderRelationService {
 	 * @param primary whether primary
 	 * @param active whether active
 	 * @return updated online account
-	 * @throws DuplicateEntityFoundException if online account exists
+	 * @throws OnlineAccountExistsException if online account exists
 	 */
 	OnlineAccount updateOnlineAccount(OnlineAccount onlineAccount, String name,
 		OnlineAccountHost host, Boolean primary, Boolean active) 
-		throws DuplicateEntityFoundException;
+		throws OnlineAccountExistsException;
 	
 	/**
 	 * Removes online account.

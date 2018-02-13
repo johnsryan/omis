@@ -54,6 +54,15 @@
 			<span class="offenderHeaderFieldValue"><fmt:formatDate value="${locationTermSummary.currentLocationStartDate}" pattern="M/d/YYYY"/></span>
 		</a>
 	</div>
+	
+	<%-- Remove this when placement is migrated - location term update screens should be used instead [Stephen Abson] --%>
+	<div class="headerCell">
+		<sec:authorize access="hasRole('LOCATION_TERM_EDIT') or hasRole('ADMIN')">
+	    	<c:if test="${not empty locationTermSummary.currentLocationName}">
+	    		<a href="${pageContext.request.contextPath}/locationTerm/endLocationTerm.html?offender=${offenderSummary.id}"><fmt:message key="endActiveLocationTermLink"/></a>
+	    	</c:if>
+    	</sec:authorize>
+	</div>
 </div>
 <c:if test="${not empty locationTermSummary.confidentialOffender}">
 <div class="offenderHeaderDetailsSection">

@@ -1,48 +1,76 @@
 <%--
+ - OMIS - Offender Management Information System
+ - Copyright (C) 2011 - 2017 State of Montana
+ -
+ - This program is free software: you can redistribute it and/or modify
+ - it under the terms of the GNU General Public License as published by
+ - the Free Software Foundation, either version 3 of the License, or
+ - (at your option) any later version.
+ -
+ - This program is distributed in the hope that it will be useful,
+ - but WITHOUT ANY WARRANTY; without even the implied warranty of
+ - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ - GNU General Public License for more details.
+ -
+ - You should have received a copy of the GNU General Public License
+ - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ --%>
+<%--
  - Form to edit court cases.
  -
  - Author: Stephen Abson
  - Author: Joel Norris
+ - Author: Josh Divine
  --%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <fmt:setBundle basename="omis.msgs.common" var="commonBundle"/>
+<fmt:setBundle var="docketBundle" basename="omis.docket.msgs.docket"/>
 <fmt:bundle basename="omis.courtcase.msgs.courtCase">
 <form:form commandName="courtCaseForm" class="editForm">
-	<fieldset>
-		<legend><fmt:message key="courtCaseLegendLabel"/></legend>
-		<form:hidden path="allowCourt"/>
-		<span class="fieldGroup">
-			<form:label path="court" class="fieldLabel">
-				<fmt:message key="courtLabel"/></form:label>
-			<c:choose>
-			<c:when test="${empty docket}">
-				<form:select path="court">
-					<form:option value="">...</form:option>
-					<form:options items="${courts}" itemLabel="name" itemValue="id"/>
+<fieldset>
+		<legend><fmt:message key="docketLabel" bundle="${docketBundle}"/></legend>
+		<form:hidden path="allowExistingDocket"/>
+		<c:if test="${courtCaseForm.allowExistingDocket}">
+			<span class="fieldGroup">
+				<form:label class="fieldLabel" path="existingDocket"><fmt:message key="existingDocketLabel"/></form:label>
+				<form:select path="existingDocket">
+					<form:option value=""><fmt:message key="createDocketLabel"/></form:option>
+					<c:forEach var="existingDocket" items="${existingDockets}">
+						<fmt:message var="docketLabel" key="docketText" bundle="${docketBundle}">
+							<fmt:param>${existingDocket.value}</fmt:param>
+							<fmt:param>${existingDocket.court.name}</fmt:param>
+						</fmt:message>
+						<c:choose>
+							<c:when test="${courtCaseForm.existingDocket eq existingDocket}">
+								<form:option value="${existingDocket.id}" selected="selected">${docketLabel}</form:option>
+							</c:when>
+							<c:otherwise>
+								<form:option value="${existingDocket.id}">${docketLabel}</form:option>
+							</c:otherwise>
+						</c:choose>
+					</c:forEach>
 				</form:select>
-				<form:errors path="court" cssClass="error"/>
+				<form:errors path="existingDocket" cssClass="error"/>
+			</span>
+		</c:if>
+		<form:hidden path="allowDocket"/>
+		<c:choose>
+			<c:when test="${courtCaseForm.allowDocket}">
+				<c:set var="docketFieldsEnabled" value="${empty courtCaseForm.existingDocket}" scope="request"/>
+				<c:set var="fieldsPropertyName" value="docketFields" scope="request"/>
+				<c:set var="docketFields" value="${courtCaseForm.docketFields}" scope="request"/>
+				<jsp:include page="/WEB-INF/views/docket/includes/docketFields.jsp"/>
 			</c:when>
 			<c:otherwise>
-				<span id="courtDisplay"><c:out value="${docket.court.name}"/></span>
+				<c:set var="docket" value="${docket}" scope="request"/>
+				<jsp:include page="/WEB-INF/views/docket/includes/docket.jsp"/>
 			</c:otherwise>
-			</c:choose>	
-		</span>
-		<form:hidden path="allowDocket"/>
-		<span class="fieldGroup">
-			<form:label path="docketValue" class="fieldLabel">
-				<fmt:message key="docketLabel"/></form:label>
-			<c:choose>
-				<c:when test="${empty docket}">
-					<form:input path="docketValue"/>
-					<form:errors path="docketValue" cssClass="error"/>
-				</c:when>
-				<c:otherwise>
-					<span id="docketDisplay"><c:out value="${docket.value}"/></span>
-				</c:otherwise>
-			</c:choose>
-		</span>
+		</c:choose>
+	</fieldset>
+	<fieldset>
+		<legend><fmt:message key="courtCaseLegendLabel"/></legend>
 		<span class="fieldGroup">
 			<form:label path="interStateNumber" class="fieldLabel">
 				<fmt:message key="interStateNumberLabel"/></form:label>

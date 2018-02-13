@@ -19,6 +19,10 @@ package omis.offenderrelationship.service.testng;
 
 import java.util.Date;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.testng.annotations.Test;
+
 import omis.country.domain.Country;
 import omis.country.service.delegate.CountryDelegate;
 import omis.demographics.domain.Sex;
@@ -32,17 +36,13 @@ import omis.region.domain.City;
 import omis.region.domain.State;
 import omis.region.service.delegate.CityDelegate;
 import omis.region.service.delegate.StateDelegate;
-import omis.relationship.exception.RelationshipNoteExistsException;
 import omis.testng.AbstractHibernateTransactionalTestNGSpringContextTests;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.testng.annotations.Test;
 
 /**
  * Test offender relationship creation. 
  *
  * @author Yidong Li
+ * @author Sheronda Vaughn
  * @version 0.0.1
  * @since OMIS 3.0
  */

@@ -19,6 +19,9 @@ package omis.chronologicalnote.service.delegate;
 
 import java.util.Date;
 
+import omis.audit.AuditComponentRetriever;
+import omis.audit.domain.CreationSignature;
+import omis.audit.domain.UpdateSignature;
 import omis.chronologicalnote.dao.ChronologicalNoteDao;
 import omis.chronologicalnote.domain.ChronologicalNote;
 import omis.chronologicalnote.exception.ChronologicalNoteExistsException;
@@ -40,15 +43,22 @@ public class ChronologicalNoteDelegate {
 	/*Property editor factories. */
 	private InstanceFactory<ChronologicalNote> chronologicalNoteInstanceFactory;
 	
+	/* Component retrievers. */
+	private AuditComponentRetriever auditComponentRetriever;
+	
 	/**
 	 * Instantiates a chronological note delegate with the specified data access object and instance factory.
 	 * 
 	 * @param chronologicalNoteDao chronological note data access object
+	 * @param chronologicalNoteInstanceFactory chronological note instance factory
+	 * @param auditComponentRetriever audit component retriever
 	 */
 	public ChronologicalNoteDelegate(final ChronologicalNoteDao chronologicalNoteDao,
-			final InstanceFactory<ChronologicalNote> chronologicalNoteInstanceFactory) {
+			final InstanceFactory<ChronologicalNote> chronologicalNoteInstanceFactory,
+			final AuditComponentRetriever auditComponentRetriever) {
 		this.chronologicalNoteDao = chronologicalNoteDao;
 		this.chronologicalNoteInstanceFactory = chronologicalNoteInstanceFactory;
+		this.auditComponentRetriever = auditComponentRetriever;
 	}
 	
 	/**
@@ -68,6 +78,9 @@ public class ChronologicalNoteDelegate {
 		ChronologicalNote note = this.populateNote(
 				this.chronologicalNoteInstanceFactory.createInstance(), date, narrative);
 		note.setOffender(offender);
+		note.setCreationSignature(new CreationSignature(
+					this.auditComponentRetriever.retrieveUserAccount(),
+					this.auditComponentRetriever.retrieveDate()));
 		return this.chronologicalNoteDao.makePersistent(note);
 	}
 	
@@ -110,6 +123,9 @@ public class ChronologicalNoteDelegate {
 	private ChronologicalNote populateNote(final ChronologicalNote note, final Date date, final String narrative) {
 		note.setDate(date);
 		note.setNarrative(narrative);
+		note.setUpdateSignature(new UpdateSignature(
+				this.auditComponentRetriever.retrieveUserAccount(),
+				this.auditComponentRetriever.retrieveDate()));
 		return note;
 	}
 }

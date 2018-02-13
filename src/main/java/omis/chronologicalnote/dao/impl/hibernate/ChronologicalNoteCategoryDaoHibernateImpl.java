@@ -37,10 +37,19 @@ import org.hibernate.SessionFactory;
 public class ChronologicalNoteCategoryDaoHibernateImpl
 		extends GenericHibernateDaoImpl<ChronologicalNoteCategory>
 		implements ChronologicalNoteCategoryDao {
+	
 	/* Query names. */
+	
 	private static final String FIND_CATEGORIES_QUERY_NAME
 		= "findChronologicalNoteCategories";
-	private static final String FIND_ALL_CATEGORIES_QUERY_NAME = "findValidChronologicalNoteCategories";
+	private static final String FIND_ALL_CATEGORIES_QUERY_NAME
+		= "findValidChronologicalNoteCategories";
+	private static final String FIND_CATEGORY_BY_NAME_QUERY_NAME
+		= "findChronologicalNoteCategoryByName";
+	
+	/* Parameter names. */
+	
+	private static final String NAME_PARAM_NAME = "name";
 	
 	/* Constructors. */
 	/**
@@ -70,9 +79,22 @@ public class ChronologicalNoteCategoryDaoHibernateImpl
 	@Override
 	public List<ChronologicalNoteCategory> findAll() {
 		@SuppressWarnings("unchecked")
-		List<ChronologicalNoteCategory> categories = this.getSessionFactory().getCurrentSession()
+		List<ChronologicalNoteCategory> categories = this.getSessionFactory()
+			.getCurrentSession()
 				.getNamedQuery(FIND_ALL_CATEGORIES_QUERY_NAME)
 				.list();
 		return categories;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public ChronologicalNoteCategory find(final String name) {
+		ChronologicalNoteCategory category = (ChronologicalNoteCategory)
+				this.getSessionFactory()
+				.getCurrentSession()
+				.getNamedQuery(FIND_CATEGORY_BY_NAME_QUERY_NAME)
+				.setParameter(NAME_PARAM_NAME, name)
+				.uniqueResult();
+		return category;
 	}
 }

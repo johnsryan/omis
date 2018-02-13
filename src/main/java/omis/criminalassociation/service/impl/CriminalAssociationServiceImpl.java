@@ -31,13 +31,13 @@ import omis.contact.dao.TelephoneNumberDao;
 import omis.contact.domain.Contact;
 import omis.contact.domain.TelephoneNumber;
 import omis.contact.exception.TelephoneNumberExistsException;
-import omis.criminalassociation.dao.CriminalAssociationCategoryDao;
 import omis.criminalassociation.dao.CriminalAssociationDao;
 import omis.criminalassociation.domain.CriminalAssociation;
 import omis.criminalassociation.domain.CriminalAssociationCategory;
 import omis.criminalassociation.domain.component.CriminalAssociationFlags;
 import omis.criminalassociation.exception.CriminalAssociationExistsException;
 import omis.criminalassociation.service.CriminalAssociationService;
+import omis.criminalassociation.service.delegate.CriminalAssociationCategoryDelegate;
 import omis.criminalassociation.service.delegate.CriminalAssociationServiceDelegate;
 import omis.datatype.DateRange;
 import omis.exception.DuplicateEntityFoundException;
@@ -68,9 +68,7 @@ public class CriminalAssociationServiceImpl
 
 	/* Data Access Objects */
 	
-	private final CriminalAssociationDao criminalAssociationDao;
-	
-	private final CriminalAssociationCategoryDao criminalAssociationCategoryDao;
+	private final CriminalAssociationDao criminalAssociationDao;	
 	
 	private final PersonDao personDao;
 	
@@ -82,6 +80,8 @@ public class CriminalAssociationServiceImpl
 	
 	private final CriminalAssociationServiceDelegate 
 		criminalAssociationServiceDelegate;
+	private final CriminalAssociationCategoryDelegate 
+		criminalAssociationCategoryDelegate;
 	
 	private final ResidenceTermDelegate residenceTermDelegate;
 	
@@ -108,7 +108,8 @@ public class CriminalAssociationServiceImpl
 	 * retriever.
 	 * 
 	 * @param criminalAssociationDao criminal association DAO
-	 * @param criminalAssociationCategoryDao criminal association category DAO
+	 * @param criminalAssociationCategoryDelegate 
+	 * criminal association category Delegate
 	 * @param personDao person DAO
 	 * @param addressDao address DAO
 	 * @param criminalAssociationServiceDelegate criminal association service 
@@ -123,8 +124,9 @@ public class CriminalAssociationServiceImpl
 	 * @param auditComponentRetriever audit component retriever
 	 */
 	public CriminalAssociationServiceImpl(final CriminalAssociationDao 
-		criminalAssociationDao,	 
-		final CriminalAssociationCategoryDao criminalAssociationCategoryDao,
+			criminalAssociationDao,	 
+		final CriminalAssociationCategoryDelegate 
+			criminalAssociationCategoryDelegate,
 		final AddressDao addressDao, final PersonDao personDao,
 		final ContactDao contactDao, 
 		final TelephoneNumberDao telephoneNumberDao,
@@ -138,13 +140,14 @@ public class CriminalAssociationServiceImpl
 		final InstanceFactory<TelephoneNumber> telephoneNumberInstanceFactory,
 		final AuditComponentRetriever auditComponentRetriever) {
 		this.criminalAssociationDao = criminalAssociationDao;
-		this.criminalAssociationCategoryDao = criminalAssociationCategoryDao;
+		this.criminalAssociationServiceDelegate 
+			= criminalAssociationServiceDelegate;
 		this.addressDao = addressDao;
 		this.personDao = personDao;
 		this.contactDao = contactDao;
 		this.telephoneNumberDao = telephoneNumberDao;
-		this.criminalAssociationServiceDelegate 
-			= criminalAssociationServiceDelegate;
+		this.criminalAssociationCategoryDelegate 
+			= criminalAssociationCategoryDelegate;
 		this.residenceTermDelegate = residenceTermDelegate;
 		this.personInstanceFactory = personInstanceFactory;
 		this.personNameInstanceFactory = personNameInstanceFactory;
@@ -190,7 +193,7 @@ public class CriminalAssociationServiceImpl
 	/**{@inheritDoc}*/
 	@Override
 	public List<CriminalAssociationCategory> findCategories() {
-		return this.criminalAssociationCategoryDao
+		return this.criminalAssociationCategoryDelegate
 			.findCriminalAssociationCategories();
 	}
 	

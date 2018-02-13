@@ -22,34 +22,58 @@ import omis.visitation.web.form.VisitationAssociationFields;
  * @author Joel Norris
  * @author Sheronda Vaughn
  * @author Yidong Li
+ * @author Stephen Abson
  * @version 0.1.0 (May 5, 2016)
  * @since OMIS 3.0
  */
 public class CreateRelationshipsForm implements Serializable {
+	
 	private static final long serialVersionUID = 1L;
+	
 	private PersonFields personFields;
+	
 	private AddressFields addressFields;
+	
 	private PoBoxFields poBoxFields;
+	
 	private OffenderRelationshipAddressOperation addressOperation;
+	
 	private Address address;
+	
 	private String addressQuery;
+	
 	private List<TelephoneNumberItem> telephoneNumberItems
 		= new ArrayList<TelephoneNumberItem>();
+	
 	private List<OnlineAccountContactItem> onlineAccountContactItems
 		= new ArrayList<OnlineAccountContactItem>();
-	private FamilyAssociationFields familyAssociationFields;
-	private VictimFields victimFields;
-	private VisitationAssociationFields visitationAssociationFields;
-	private UserAccount verifiedByUserAccount;
-	private Date verificationDate;
-	private Boolean verified;
-	private VerificationMethod verificationMethod;
-	private Boolean createFamilyMember;
-	private Boolean createVictim;
-	private Boolean createVisitor;
-	private Boolean enterAddress;
-	private Boolean enterPoBox;
 	
+	private List<OffenderRelationshipNoteItem> noteItems
+		= new ArrayList<OffenderRelationshipNoteItem>();
+	
+	private FamilyAssociationFields familyAssociationFields;
+	
+	private VictimFields victimFields;
+	
+	private VisitationAssociationFields visitationAssociationFields;
+	
+	private UserAccount verifiedByUserAccount;
+	
+	private Date verificationDate;
+	
+	private Boolean verified;
+	
+	private VerificationMethod verificationMethod;
+	
+	private Boolean createFamilyMember;
+	
+	private Boolean createVictim;
+	
+	private Boolean createVisitor;
+	
+	private Boolean enterAddress;
+	
+	private Boolean enterPoBox;
 	
 	/**
 	 * Instantiates a default instance of create relationships form.
@@ -199,6 +223,25 @@ public class CreateRelationshipsForm implements Serializable {
 	public void setOnlineAccountContactItems(
 			final List<OnlineAccountContactItem> onlineAccountContactItems) {
 		this.onlineAccountContactItems = onlineAccountContactItems;
+	}
+	
+	/**
+	 * Sets note items.
+	 * 
+	 * @param noteItems note items
+	 */
+	public void setNoteItems(
+			final List<OffenderRelationshipNoteItem> noteItems) {
+		this.noteItems  = noteItems;
+	}
+	
+	/**
+	 * Returns note items.
+	 * 
+	 * @return note items
+	 */
+	public List<OffenderRelationshipNoteItem> getNoteItems() {
+		return this.noteItems;
 	}
 	
 	/**

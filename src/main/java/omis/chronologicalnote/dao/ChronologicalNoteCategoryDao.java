@@ -39,4 +39,11 @@ public interface ChronologicalNoteCategoryDao extends GenericDao<ChronologicalNo
 	 * @return chronological note
 	 */
 	List<ChronologicalNoteCategory> findCategories();
+	
+	/**
+	 * Returns the chronological note with the specified name.
+	 * @param name
+	 * @return
+	 */
+	ChronologicalNoteCategory find(String name);
 }

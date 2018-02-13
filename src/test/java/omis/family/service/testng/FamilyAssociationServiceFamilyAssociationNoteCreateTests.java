@@ -26,7 +26,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.testng.annotations.Test;
 
 import omis.datatype.DateRange;
-import omis.exception.DuplicateEntityFoundException;
 import omis.family.domain.FamilyAssociation;
 import omis.family.domain.FamilyAssociationCategory;
 import omis.family.domain.FamilyAssociationCategoryClassification;
@@ -51,7 +50,7 @@ import omis.testng.AbstractHibernateTransactionalTestNGSpringContextTests;
 import omis.util.PropertyValueAsserter;
 
 /**
- * Tests family association note creation 
+ * Tests family association note creation.
  *
  * @author Yidong Li
  * @author Josh Divine
@@ -144,7 +143,7 @@ public class FamilyAssociationServiceFamilyAssociationNoteCreateTests
 	}
 	
 	/**
-	 * Tests {@code DuplicateEntityFoundException} is thrown.
+	 * Tests {@code FamilyAssociationNoteExistsException} is thrown.
 	 * 
 	 * @throws ReflexiveRelationshipException if relationship is between same 
 	 * person
@@ -157,7 +156,8 @@ public class FamilyAssociationServiceFamilyAssociationNoteCreateTests
 	public void testFamilyAssociationNoteExistsException() 
 		throws ReflexiveRelationshipException,
 		FamilyAssociationConflictException, FamilyAssociationExistsException, 
-		FamilyAssociationNoteExistsException, FamilyAssociationCategoryExistsException {
+		FamilyAssociationNoteExistsException, 
+		FamilyAssociationCategoryExistsException {
 		// Arrangement
 		Offender offender = this.offenderDelegate.createWithoutIdentity("Obama",
 				"Kevin", "Johns", "Mr.");

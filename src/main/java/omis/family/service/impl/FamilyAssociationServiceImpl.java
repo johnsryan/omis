@@ -493,6 +493,7 @@ public class FamilyAssociationServiceImpl implements FamilyAssociationService {
 	}
 	
 	/** {@inheritDoc} */
+	@SuppressWarnings("deprecation")
 	@Override
 	public List<Address> findAddresses(final String addressQuery) {
 		return this.addressDelegate.findAddressesByValue(addressQuery);

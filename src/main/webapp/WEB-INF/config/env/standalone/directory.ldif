@@ -3,23 +3,37 @@
 #
 # Author: Stephen Abson
 #
-dn: dc=omis
+version: 1
+
+#
+# Root
+#
+dn: dc=omis,dc=org
 objectclass: top
 objectclass: domain
 objectclass: extensibleObject
-dc: springframework
+dc: omis
 
-dn: ou=groups,dc=omis
+#
+# Groups
+#
+dn: ou=groups,dc=omis,dc=org
 objectclass: top
 objectclass: organizationalUnit
 ou: groups
 
-dn: ou=people,dc=omis
+#
+# People
+#
+dn: ou=people,dc=omis,dc=org
 objectclass: top
 objectclass: organizationalUnit
 ou: people
 
-dn: uid=admin,ou=people,dc=omis
+#
+# Admin user
+#
+dn: uid=ADMIN,ou=people,dc=omis,dc=org
 objectclass: top
 objectclass: person
 objectclass: organizationalPerson
@@ -29,16 +43,22 @@ sn: Administrator
 uid: ADMIN
 userPassword: password
 
-dn: cn=Admin,ou=groups,dc=omis
+#
+# Admin group
+#
+dn: cn=Admin,ou=groups,dc=omis,dc=org
 objectclass: top
 objectclass: groupOfUniqueNames
 cn: Admin
 ou: Admin
-uniqueMember: uid=ADMIN,ou=people,dc=omis
+uniqueMember: uid=ADMIN,ou=people,dc=omis,dc=org
 
-dn: cn=User,ou=groups,dc=omis
+#
+# User group
+#
+dn: cn=User,ou=groups,dc=omis,dc=org
 objectclass: top
 objectclass: groupOfUniqueNames
 cn: User
 ou: User
-uniqueMember: uid=ADMIN,ou=people,dc=omis
+uniqueMember: uid=ADMIN,ou=people,dc=omis,dc=org

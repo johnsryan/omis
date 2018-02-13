@@ -176,16 +176,16 @@ public class ReportOffenderVehiclesController {
 	/* Reports. */
 	
 	/**
-	 * Returns the report for the specified offenders vehicles.
+	 * Returns the report for chronological note listing.
 	 * 
 	 * @param offender offender
 	 * @param reportFormat report format
 	 * @return response entity with report
 	 */
-	@RequestMapping(value = "/vehicleListingReport.html",
+	@RequestMapping(value = "/chronologicalNoteListingReport.html",
 			method = RequestMethod.GET)
 	@PreAuthorize("hasRole('VEHICLE_VIEW') or hasRole('ADMIN')")
-	public ResponseEntity<byte []> reportVehicleListing(@RequestParam(
+	public ResponseEntity<byte []> reportChronologicalNoteListing(@RequestParam(
 			value = "offender", required = true)
 			final Offender offender,
 			@RequestParam(value = "reportFormat", required = true)

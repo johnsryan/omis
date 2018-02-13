@@ -23,4 +23,13 @@
 		from omis.victim.domain.VictimNoteCategory category
 		order by category.sortOrder, category.name
 	]]></query>
+	<query name="findVictimNoteCategory"><![CDATA[
+		select category
+		from
+			omis.victim.domain.VictimNoteCategory category
+		where
+			category.name = :name
+		order by
+			category.sortOrder
+	]]></query>
 </hibernate-mapping>

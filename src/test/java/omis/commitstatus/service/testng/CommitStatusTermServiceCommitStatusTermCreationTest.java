@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.commitstatus.service.testng;
 
 import java.util.Date;
@@ -16,12 +33,14 @@ import omis.exception.DuplicateEntityFoundException;
 import omis.offender.domain.Offender;
 import omis.offender.service.delegate.OffenderDelegate;
 import omis.testng.AbstractHibernateTransactionalTestNGSpringContextTests;
+import omis.util.PropertyValueAsserter;
 
 /**
  * Tests commit status term creation 
  *
  * @author Yidong Li
- * @version 0.0.1
+ * @author Josh Divine
+ * @version 0.0.2
  * @since OMIS 3.0
  */
 @Test(groups = {"commitstatus"})
@@ -50,7 +69,8 @@ public class CommitStatusTermServiceCommitStatusTermCreationTest
 	 * Tests the creation of commit status term.
 	 */
 	@Test
-	public void testCommitStatusTermCreation() throws DuplicateEntityFoundException {
+	public void testCommitStatusTermCreation() 
+			throws DuplicateEntityFoundException {
 		// Arrangement
 		Offender offender = this.offenderDelegate.createWithoutIdentity("Obama",
 			"Kevin", "Johns", "Mr.");
@@ -66,19 +86,12 @@ public class CommitStatusTermServiceCommitStatusTermCreationTest
 			status, dateRange);
 		
 		// Assertions
-		assert offender.equals(term.getOffender())
-		: String.format("Wrong offender: #%d expected; #%d found",
-			offender.getOffenderNumber(), 
-			term.getOffender().getOffenderNumber());
-		assert status.equals(term.getStatus())
-		: String.format("Wrong commit status: #%d expected; #%d found",
-			status.getName(),	term.getStatus().getName());
-		assert startDate.equals(term.getDateRange().getStartDate())
-		: String.format("Wrong start date: #%s expected; #%s found",
-			startDate, term.getDateRange().getStartDate());
-		assert endDate.equals(term.getDateRange().getEndDate())
-		: String.format("Wrong end date: #%s expected; #%s found",
-			endDate, term.getDateRange().getEndDate());
+		PropertyValueAsserter.create()
+			.addExpectedValue("offender", offender)
+			.addExpectedValue("status", status)
+			.addExpectedValue("dateRange.startDate", startDate)
+			.addExpectedValue("dateRange.endDate", endDate)
+			.performAssertions(term);
 	}
 	
 	/**
@@ -87,7 +100,8 @@ public class CommitStatusTermServiceCommitStatusTermCreationTest
 	 * @throws DuplicateEntityFoundException if duplicate term exists
 	 */
 	@Test(expectedExceptions = {DuplicateEntityFoundException.class})
-	public void testDuplicateCommitStatusCreate() throws DuplicateEntityFoundException {
+	public void testDuplicateCommitStatusCreate() 
+			throws DuplicateEntityFoundException {
 		// Arrangements
 		Offender offender = this.offenderDelegate.createWithoutIdentity("asfd",
 			"tjuty", "abedb", "Mr.");
@@ -98,7 +112,9 @@ public class CommitStatusTermServiceCommitStatusTermCreationTest
 		Date endDate = new Date(20000000);
 		dateRange.setStartDate(startDate);
 		dateRange.setEndDate(endDate);
-		this.commitStatusTermService.create(offender, status, dateRange);
+		this.commitStatusTermDelegate.create(offender, status, dateRange);
+		
+		// Action
 		this.commitStatusTermService.create(offender, status, dateRange);
 	}
 }

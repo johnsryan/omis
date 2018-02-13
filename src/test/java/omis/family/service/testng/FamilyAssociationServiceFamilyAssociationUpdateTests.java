@@ -24,22 +24,25 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.testng.annotations.Test;
 
 import omis.datatype.DateRange;
-import omis.exception.DuplicateEntityFoundException;
-import omis.family.exception.FamilyAssociationCategoryExistsException;
-import omis.family.exception.FamilyAssociationConflictException;
-import omis.family.exception.FamilyAssociationExistsException;
 import omis.family.domain.FamilyAssociation;
 import omis.family.domain.FamilyAssociationCategory;
 import omis.family.domain.FamilyAssociationCategoryClassification;
 import omis.family.domain.component.FamilyAssociationFlags;
+import omis.family.exception.FamilyAssociationCategoryExistsException;
+import omis.family.exception.FamilyAssociationConflictException;
+import omis.family.exception.FamilyAssociationExistsException;
 import omis.family.service.FamilyAssociationService;
 import omis.family.service.delegate.FamilyAssociationCategoryDelegate;
+import omis.family.service.delegate.FamilyAssociationDelegate;
 import omis.offender.domain.Offender;
 import omis.offender.service.delegate.OffenderDelegate;
 import omis.person.domain.Person;
 import omis.person.service.delegate.PersonDelegate;
+import omis.relationship.domain.Relationship;
 import omis.relationship.exception.ReflexiveRelationshipException;
+import omis.relationship.service.delegate.RelationshipDelegate;
 import omis.testng.AbstractHibernateTransactionalTestNGSpringContextTests;
+import omis.util.PropertyValueAsserter;
 
 /**
  * Tests "update" of family association
@@ -65,6 +68,14 @@ public class FamilyAssociationServiceFamilyAssociationUpdateTests
 	@Qualifier("familyAssociationCategoryDelegate")
 	private FamilyAssociationCategoryDelegate familyAssociationCategoryDelegate;
 	
+	@Autowired
+	@Qualifier("familyAssociationDelegate")
+	private FamilyAssociationDelegate familyAssociationDelegate;
+	
+	@Autowired
+	@Qualifier("relationshipDelegate")
+	private RelationshipDelegate relationshipDelegate;
+	
 	/* Service to test. */
 	@Autowired
 	@Qualifier("familyAssociationService")
@@ -72,12 +83,19 @@ public class FamilyAssociationServiceFamilyAssociationUpdateTests
 	
 	/**
 	 * Family association update.
-	 * @throws FamilyAssociationCategoryExistsException 
+	 *
+	 *
+	 * @throws FamilyAssociationExistsException family association exists
+	 * @throws ReflexiveRelationshipException reflexive relationship
+	 * @throws FamilyAssociationConflictException family association conflict
+	 * @throws FamilyAssociationCategoryExistsException family association 
+	 * category exists
 	 */
 	@Test
 	public void testFamilyAssociationUpdate() 
 			throws FamilyAssociationExistsException, 
-		ReflexiveRelationshipException, FamilyAssociationConflictException, FamilyAssociationCategoryExistsException{
+		ReflexiveRelationshipException, FamilyAssociationConflictException, 
+		FamilyAssociationCategoryExistsException {
 		// Arrangements
 		Offender offender = this.offenderDelegate.createWithoutIdentity(
 			"Obama", "Kevin", "Johns", "Mr.");
@@ -91,9 +109,9 @@ public class FamilyAssociationServiceFamilyAssociationUpdateTests
 		Person originalFamilyMember = personDelegate.create("Li", "Yidong", 
 			"CIC311", "Mr.");
 		FamilyAssociationCategory originalCategory 
-		= this.familyAssociationCategoryDelegate.create("originalCategory", 
-		(Boolean)true, new Short((short) 23), 
-		FamilyAssociationCategoryClassification.CHILD);
+			= this.familyAssociationCategoryDelegate.create("originalCategory", 
+				(Boolean) true, new Short((short) 23), 
+				FamilyAssociationCategoryClassification.CHILD);
 		FamilyAssociationFlags originalFlags = new FamilyAssociationFlags();
 		originalFlags.setCohabitant(true);
 		originalFlags.setDependent(true);
@@ -106,70 +124,52 @@ public class FamilyAssociationServiceFamilyAssociationUpdateTests
 		newDateRange.setEndDate(newEndDate);
 		Date newMarriageDate = new Date(105120000);
 		Date newDivorceDate = new Date(205120000);
+		Relationship relationship = this.relationshipDelegate.findOrCreate(
+				offender, originalFamilyMember);
 		FamilyAssociationCategory newCategory 
 			= this.familyAssociationCategoryDelegate.create("newCategory", 
-			(Boolean)true, new Short((short) 57), 
-			FamilyAssociationCategoryClassification.SIBLING);
+				(Boolean) true, new Short((short) 57), 
+				FamilyAssociationCategoryClassification.SIBLING);
 		FamilyAssociationFlags newFlags = new FamilyAssociationFlags();
 		newFlags.setCohabitant(false);
 		newFlags.setDependent(false);
 		newFlags.setEmergencyContact(false);
+		FamilyAssociation familyAssociation = this.familyAssociationDelegate
+				.create(originalDateRange, originalCategory, originalFlags, 
+						originalMarriageDate, originalDivorceDate, 
+						relationship);
 		
 		// Action
-		FamilyAssociation familyAssociation = this.familyAssociationService
-			.associate(offender, originalFamilyMember, originalDateRange, 
-			originalCategory, originalFlags, originalMarriageDate, 
-			originalDivorceDate);
-		this.familyAssociationService.update(familyAssociation, newDateRange, 
-			newCategory, newFlags, newMarriageDate, newDivorceDate);
+		
+		familyAssociation = this.familyAssociationService.update(
+				familyAssociation, newDateRange, newCategory, newFlags, 
+				newMarriageDate, newDivorceDate);
 		
 		// Assertions
-		assert newStartDate.equals(familyAssociation.getDateRange().getStartDate())
-		: String.format("Wrong start date: #%s expected; #%s found",
-			newStartDate, familyAssociation.getDateRange().getStartDate());
-		assert newEndDate.equals(familyAssociation.getDateRange().getEndDate())
-		: String.format("Wrong end date: #%s expected; #%s found",
-			newEndDate, familyAssociation.getDateRange().getEndDate());
-		assert newMarriageDate.equals(familyAssociation.getMarriageDate())
-		: String.format("Wrong marriage date: #%s expected; #%s found",
-			newMarriageDate, familyAssociation.getMarriageDate());
-		assert newDivorceDate.equals(familyAssociation.getDivorceDate())
-		: String.format("Wrong divorce date: #%s expected; #%s found",
-			newDivorceDate, familyAssociation.getDivorceDate());
-		assert newCategory.equals(familyAssociation.getCategory())
-		: String.format("Wrong category: #%s expected; #%s found",
-			newCategory.getName(),	familyAssociation.getCategory()
-			.getName());
-		assert newFlags.getCohabitant().equals(familyAssociation.getFlags()
-			.getCohabitant())
-			: String.format("Wrong cohabitant flag: #%s expected; #%s found",
-			newFlags.getCohabitant(),
-			familyAssociation.getFlags().getCohabitant());
-		assert newFlags.getDependent().equals(familyAssociation.getFlags()
-			.getDependent())
-			: String.format("Wrong dependent flag: #%s expected; #%s found",
-				newFlags.getDependent(),
-				familyAssociation.getFlags().getDependent());
-		assert newFlags.getEmergencyContact().equals(familyAssociation.getFlags()
-			.getEmergencyContact())
-			: String.format("Wrong emergency contact flag: #%s expected; #%s found",
-				newFlags.getEmergencyContact(),
-				familyAssociation.getFlags().getEmergencyContact());
+		PropertyValueAsserter.create()
+		.addExpectedValue("dateRange", newDateRange)
+		.addExpectedValue("category", newCategory)
+		.addExpectedValue("flags", newFlags)
+		.addExpectedValue("marriageDate", newMarriageDate)
+		.addExpectedValue("divorceDate", newDivorceDate)
+			.performAssertions(familyAssociation);
 	}
 	
 	/**
 	 * Tests duplicate family association on update.
 	 * 
-	 * @throws DuplicateEntityFoundException if duplicate term exists
-	 * @throws ReflexiveRelationshipException 
-	 * @throws FamilyAssociationCategoryExistsException 
+	 * @throws FamilyAssociationExistsException family association exists
+	 * @throws ReflexiveRelationshipException reflexive relationship
+	 * @throws FamilyAssociationConflictException family association conflict
+	 * @throws FamilyAssociationCategoryExistsException family association 
+	 * category exists 
 	 */
 	@Test(expectedExceptions = {FamilyAssociationExistsException.class, 
 		ReflexiveRelationshipException.class})
-	public void testDuplicateFamilyAssociationUpdate() 
-		throws FamilyAssociationExistsException, ReflexiveRelationshipException, 
-		FamilyAssociationConflictException, 
-		FamilyAssociationCategoryExistsException {
+	public void testFamilyAssociationExistsException() 
+		throws FamilyAssociationExistsException, ReflexiveRelationshipException,
+			FamilyAssociationConflictException, 
+			FamilyAssociationCategoryExistsException {
 		// Arrangements
 		Offender offender = this.offenderDelegate.createWithoutIdentity(
 			"Obama", "Kevin", "Johns", "Mr.");
@@ -183,16 +183,20 @@ public class FamilyAssociationServiceFamilyAssociationUpdateTests
 		Person familyMember1 = personDelegate.create("Li", "Yidong", 
 			"CIC311", "Mr.");
 		FamilyAssociationCategory category1 
-		= this.familyAssociationCategoryDelegate.create("category", 
-		(Boolean)true, new Short((short) 23), 
-		FamilyAssociationCategoryClassification.CHILD);
+			= this.familyAssociationCategoryDelegate.create("category", 
+				(Boolean) true, new Short((short) 23), 
+				FamilyAssociationCategoryClassification.CHILD);
 		FamilyAssociationFlags flags1 = new FamilyAssociationFlags();
 		flags1.setCohabitant(true);
 		flags1.setDependent(true);
 		flags1.setEmergencyContact(true);
+		Relationship relationship = this.relationshipDelegate.findOrCreate(
+				offender, familyMember1);
+		this.familyAssociationDelegate.create(dateRange1, category1, flags1, 
+				marriageDate1, divorceDate1, relationship);
 		this.familyAssociationService
 			.associate(offender, familyMember1, dateRange1, category1, flags1, 
-			marriageDate1, divorceDate1);
+					marriageDate1, divorceDate1);
 		
 		DateRange dateRange2 = new DateRange();
 		Date startDate2 = new Date(155120000);
@@ -202,32 +206,36 @@ public class FamilyAssociationServiceFamilyAssociationUpdateTests
 		Date marriageDate2 = new Date(175120000); 
 		Date divorceDate2 = new Date(275120000);
 		FamilyAssociationCategory category2 
-		= this.familyAssociationCategoryDelegate.create("newCategory", 
-		(Boolean)true, new Short((short) 23), 
-		FamilyAssociationCategoryClassification.PARENT);
+			= this.familyAssociationCategoryDelegate.create("newCategory", 
+					(Boolean) true, new Short((short) 23), 
+					FamilyAssociationCategoryClassification.PARENT);
 		FamilyAssociationFlags flags2 = new FamilyAssociationFlags();
 		flags2.setCohabitant(false);
 		flags2.setDependent(false);
 		flags2.setEmergencyContact(false);
-		FamilyAssociation familyAssociation1 = this.familyAssociationService.associate(offender, familyMember1, 
-			dateRange2, category2, flags2, marriageDate2, divorceDate2);
+		FamilyAssociation familyAssociation1 = this.familyAssociationService
+				.associate(offender, familyMember1, dateRange2, category2, 
+						flags2, marriageDate2, divorceDate2);
 		
 		// Action
-		this.familyAssociationService.update(familyAssociation1, dateRange2, category1, flags2, 
-				marriageDate2, divorceDate2);
+		this.familyAssociationService.update(familyAssociation1, dateRange2, 
+				category1, flags2, marriageDate2, divorceDate2);
 	}	
 	
 	/**
 	 * Tests overlapped family association on update.
 	 * 
-	 * @throws DuplicateEntityFoundException if duplicate term exists
-	 * @throws ReflexiveRelationshipException 
-	 * @throws FamilyAssociationCategoryExistsException 
+	 * @throws FamilyAssociationExistsException family association exists
+	 * @throws ReflexiveRelationshipException reflexive relationship
+	 * @throws FamilyAssociationConflictException family association conflict
+	 * @throws FamilyAssociationCategoryExistsException family association 
+	 * category exists 
 	 */
 	@Test(expectedExceptions = {FamilyAssociationConflictException.class})
 	public void testOverlappedFamilyAssociationUpdate() 
-		throws FamilyAssociationExistsException, ReflexiveRelationshipException, 
-		FamilyAssociationConflictException, FamilyAssociationCategoryExistsException {
+		throws FamilyAssociationExistsException, ReflexiveRelationshipException,
+			FamilyAssociationConflictException, 
+			FamilyAssociationCategoryExistsException {
 		// Arrangements
 		Offender offender = this.offenderDelegate.createWithoutIdentity(
 			"Obama", "Kevin", "Johns", "Mr.");
@@ -241,16 +249,16 @@ public class FamilyAssociationServiceFamilyAssociationUpdateTests
 		Person familyMember1 = personDelegate.create("Li", "Yidong", 
 			"CIC311", "Mr.");
 		FamilyAssociationCategory category1 
-		= this.familyAssociationCategoryDelegate.create("category1", 
-		(Boolean)true, new Short((short) 23), 
-		FamilyAssociationCategoryClassification.CHILD);
+			= this.familyAssociationCategoryDelegate.create("category1", 
+				(Boolean) true, new Short((short) 23), 
+				FamilyAssociationCategoryClassification.CHILD);
 		FamilyAssociationFlags flags1 = new FamilyAssociationFlags();
 		flags1.setCohabitant(true);
 		flags1.setDependent(true);
 		flags1.setEmergencyContact(true);
 		FamilyAssociation familyAssociation1 = this.familyAssociationService
 			.associate(offender, familyMember1, dateRange1, category1, flags1, 
-			marriageDate1, divorceDate1);
+					marriageDate1, divorceDate1);
 		
 		DateRange dateRange2 = new DateRange();
 		Date startDate2 = new Date(255120000);
@@ -260,9 +268,9 @@ public class FamilyAssociationServiceFamilyAssociationUpdateTests
 		Date marriageDate2 = new Date(255120000); 
 		Date divorceDate2 = new Date(305120000);
 		FamilyAssociationCategory category2 
-		= this.familyAssociationCategoryDelegate.create("category2", 
-		(Boolean)true, new Short((short) 23), 
-		FamilyAssociationCategoryClassification.PARENT);
+			= this.familyAssociationCategoryDelegate.create("category2", 
+				(Boolean) true, new Short((short) 23), 
+				FamilyAssociationCategoryClassification.PARENT);
 		FamilyAssociationFlags flags2 = new FamilyAssociationFlags();
 		flags2.setCohabitant(false);
 		flags2.setDependent(false);

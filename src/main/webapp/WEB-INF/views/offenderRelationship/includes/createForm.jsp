@@ -83,6 +83,14 @@
 			<c:set var="onlineAccountContactItems" value="${createRelationshipsForm.onlineAccountContactItems}" scope="request"/>
 				<jsp:include page="../../offenderRelationship/includes/create/createOnlineAccountTableBody.jsp"/>
 		</fieldset>
+		<fieldset id="offenderRelationshipNoteFields">
+			<legend><fmt:message key="offenderRelationshipNotesLabel"/></legend>
+			<form:errors cssClass="error" path="noteItems"/>
+			<c:set var="offenderRelationshipNoteItems" value="${createRelationshipsForm.noteItems}" scope="request"/>
+			<c:set var="offenderRelationshipNoteItemsFieldName" value="noteItems" scope="request"/>
+			<c:set var="baseUrl" value="${pageContext.request.contextPath}/offenderRelationship/create" scope="request"/>
+			<jsp:include page="offenderRelationshipNoteItemsTable.jsp"/>
+		</fieldset>
 	</c:if>
 	<sec:authorize access="hasRole('FAMILY_ASSOCIATION_CREATE') or hasRole('ADMIN')">
 		<fieldset id="familyAssociationFields">

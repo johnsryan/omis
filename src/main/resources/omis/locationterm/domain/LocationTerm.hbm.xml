@@ -162,4 +162,9 @@
 			    and f."LOCATION_ID" = loc."ID"
 		]]>
 	</sql-query>
+	
+	<!-- Ends legacy location -->
+	<sql-query name="endLegacyLocation"><![CDATA[
+		call legacy_end_location_prc(:offenderId, :effectiveDate)
+	]]></sql-query>
 </hibernate-mapping>

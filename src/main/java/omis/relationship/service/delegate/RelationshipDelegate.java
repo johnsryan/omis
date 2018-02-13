@@ -1,8 +1,24 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.relationship.service.delegate;
 
 import omis.audit.AuditComponentRetriever;
 import omis.audit.domain.CreationSignature;
-import omis.exception.DuplicateEntityFoundException;
 import omis.instance.factory.InstanceFactory;
 import omis.person.domain.Person;
 import omis.relationship.dao.RelationshipDao;
@@ -14,6 +30,7 @@ import omis.relationship.exception.RelationshipExistsException;
  * Delegate for relationships.
  *
  * @author Stephen Abson
+ * @author Sheronda Vaughn
  * @version 0.0.1 (Sep 1, 2015)
  * @since OMIS 3.0
  */
@@ -50,13 +67,14 @@ public class RelationshipDelegate {
 	 * @param secondPerson second person
 	 * @return relationship
 	 * @throws RelationshipExistsException if relationship exists
-	 * @param ReflexiveRelationshipException if first and second person are
+	 * @throws ReflexiveRelationshipException if first and second person are
 	 * equal
+	 * @throws ReflexiveRelationshipException 
 	 */
 	public Relationship create(
 			final Person firstPerson, final Person secondPerson)
-				throws RelationshipExistsException,
-					ReflexiveRelationshipException {
+				throws RelationshipExistsException, 
+				ReflexiveRelationshipException {
 		if (this.relationshipDao.findByPeople(
 				firstPerson, secondPerson) != null) {
 			throw new RelationshipExistsException("Relationship exists");
@@ -89,7 +107,7 @@ public class RelationshipDelegate {
 	 * @param firstPerson first person
 	 * @param secondPerson second person
 	 * @return relationship; never {@code null}
-	 * @param ReflexiveRelationshipException if first and second person are
+	 * @throws ReflexiveRelationshipException if first and second person are
 	 * equal
 	 */
 	public Relationship findOrCreate(
@@ -129,7 +147,7 @@ public class RelationshipDelegate {
 	 * 
 	 * @param relationship relationship	
 	 */
-	public void remove(final Relationship relationship){
+	public void remove(final Relationship relationship) {
 		this.relationshipDao.makeTransient(relationship);
 	}
 }

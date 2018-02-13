@@ -23,14 +23,12 @@ import omis.audit.AuditComponentRetriever;
 import omis.audit.domain.CreationSignature;
 import omis.audit.domain.UpdateSignature;
 import omis.document.domain.Document;
-import omis.exception.DuplicateEntityFoundException;
 import omis.instance.factory.InstanceFactory;
 import omis.person.domain.Person;
 import omis.victim.dao.VictimDocketDocumentAssociationDao;
 import omis.victim.domain.VictimDocketAssociation;
 import omis.victim.domain.VictimDocketDocumentAssociation;
 import omis.victim.exception.VictimDocketDocumentAssociationExistsException;
-import omis.victim.exception.VictimDocumentAssociationExistsException;
 
 /**
  * Victim docket document association delegate.

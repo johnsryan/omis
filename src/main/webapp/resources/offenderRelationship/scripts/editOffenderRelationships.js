@@ -63,6 +63,33 @@ window.onload = function() {
 		}
 	}
 	
+	function applyRelationshipNoteItemBehavior(offenderRelationshipNoteItemIndex) {
+		var noteItemDate = document.getElementById("noteItems[" + offenderRelationshipNoteItemIndex + "].fields.date");
+		applyDatePicker(noteItemDate);
+		var removeLink = document.getElementById("noteItems[" + offenderRelationshipNoteItemIndex + "].removeLink");
+		removeLink.onclick = function() {
+			var itemIndex = this.getAttribute("id").replace("noteItems[", "").replace("].removeLink", "");
+			var operation = document.getElementById("noteItems[" + itemIndex + "].operation");
+			var row = document.getElementById("noteItems[" + itemIndex + "].row");
+			if (operation.value == "CREATE") {
+				row.parentNode.removeChild(row);
+			} else if (operation.value == "UPDATE") {
+				if (!ui.hasClass(row, "removeRow")) {
+					ui.addClass(row, "removeRow");
+				}
+				operation.value = "REMOVE";
+			} else if (operation.value == "REMOVE") {
+				if (ui.hasClass(row, "removeRow")) {
+					ui.removeClass(row, "removeRow");
+				}
+				operation.value = "UPDATE";
+			} else {
+				alert("Unsupported operation: " + operation.value);
+			}
+			return false;
+		};
+	}
+	
 	function applyTelephoneNumberRowBehavior(telephoneNumberItemIndex) {
 		var newTelephoneNumberItemRemoveLink = document.getElementById("removeTelephoneNumber[" + telephoneNumberItemIndex + "]");
 		newTelephoneNumberItemRemoveLink.onclick = function() {
@@ -113,6 +140,12 @@ window.onload = function() {
 		}
 	}
 	
+	for (var currentIndex = 0; currentIndex < offenderRelationshipNoteItemIndex; currentIndex++) {
+		if (document.getElementById("noteItems[" + currentIndex + "].row") != null) {
+			applyRelationshipNoteItemBehavior(currentIndex);
+		}
+	}
+	
 	var personFields = "personFields";
 	var queryInput = document.getElementById("offenderRelationshipSearchAddressQuery");
 	var searchAddress = document.getElementById("searchAddress");
@@ -155,6 +188,24 @@ window.onload = function() {
 			alert("Error - status: " + request.status + "; URL: " + url);
 		}
 		return false;
+		};
+	});
+	
+	applyActionMenu(document.getElementById("noteItemsActionMenuLink"), function() {
+		createRelationshipNoteItemLink = document.getElementById("createRelationshipNoteItemLink");
+		createRelationshipNoteItemLink.onclick = function() {
+			var url = createRelationshipNoteItemLink.getAttribute("href") + "?offenderRelationshipNoteItemIndex=" + offenderRelationshipNoteItemIndex;
+			var request = new XMLHttpRequest();
+			request.open("GET", url, false);
+			request.send(null);
+			if (request.status == 200) {
+				ui.appendHtml(document.getElementById("relationshipNotesTableBody"), request.responseText);
+				applyRelationshipNoteItemBehavior(offenderRelationshipNoteItemIndex);
+				offenderRelationshipNoteItemIndex++;
+			} else {
+				alert("Error - status: " + request.status + "; URL: " + url);
+			}
+			return false;
 		};
 	});
 	

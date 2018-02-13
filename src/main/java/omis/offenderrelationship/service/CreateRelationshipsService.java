@@ -49,7 +49,6 @@ import omis.person.domain.Suffix;
 import omis.person.exception.PersonExistsException;
 import omis.region.domain.City;
 import omis.region.domain.State;
-import omis.relationship.domain.Relationship;
 import omis.relationship.domain.RelationshipNote;
 import omis.relationship.domain.RelationshipNoteCategory;
 import omis.relationship.exception.ReflexiveRelationshipException;
@@ -454,15 +453,19 @@ public interface CreateRelationshipsService {
 	/**
 	 * Creates note.
 	 * 
-	 * @param relationship relationship
+	 * @param offender offender
+	 * @param relation relation
 	 * @param category category
 	 * @param value value
 	 * @param date date
 	 * @return newly created relationship note
 	 * @throws RelationshipNoteExistsException if relationship note
 	 * category exists
+	 * @throws ReflexiveRelationshipException if offender and relation
+	 * are the same person
 	 */
-	RelationshipNote createNote(Relationship relationship,
+	RelationshipNote createNote(Offender offender, Person relation,
 			RelationshipNoteCategory category, String value, Date date)
-				throws RelationshipNoteExistsException;
+				throws RelationshipNoteExistsException,
+					ReflexiveRelationshipException;
 }

@@ -117,4 +117,15 @@ public interface LocationTermDao
 	 */
 	long countAfterDateExcluding(Offender offender, Date startDate, 
 			LocationTerm excludedLocationTerm);
+	
+	/**
+	 * Ends location term on date. 
+	 * 
+	 * @param offender offender
+	 * @param effectiveDate effective date
+	 * @return ended location term
+	 * @deprecated update location term instead
+	 */
+	@Deprecated
+	LocationTerm endLocationTerm(Offender offender, Date effectiveDate);
 }

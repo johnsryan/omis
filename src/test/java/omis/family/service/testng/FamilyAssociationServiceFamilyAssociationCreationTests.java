@@ -26,14 +26,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.testng.annotations.Test;
 
 import omis.datatype.DateRange;
-import omis.exception.DuplicateEntityFoundException;
-import omis.family.exception.FamilyAssociationCategoryExistsException;
-import omis.family.exception.FamilyAssociationConflictException;
-import omis.family.exception.FamilyAssociationExistsException;
 import omis.family.domain.FamilyAssociation;
 import omis.family.domain.FamilyAssociationCategory;
 import omis.family.domain.FamilyAssociationCategoryClassification;
 import omis.family.domain.component.FamilyAssociationFlags;
+import omis.family.exception.FamilyAssociationCategoryExistsException;
+import omis.family.exception.FamilyAssociationConflictException;
+import omis.family.exception.FamilyAssociationExistsException;
 import omis.family.service.FamilyAssociationService;
 import omis.family.service.delegate.FamilyAssociationCategoryDelegate;
 import omis.family.service.delegate.FamilyAssociationDelegate;
@@ -48,7 +47,7 @@ import omis.testng.AbstractHibernateTransactionalTestNGSpringContextTests;
 import omis.util.PropertyValueAsserter;
 
 /**
- * Tests family association creation 
+ * Tests family association creation.
  *
  * @author Yidong Li
  * @author Josh Divine
@@ -133,7 +132,7 @@ public class FamilyAssociationServiceFamilyAssociationCreationTests
 	}
 	
 	/**
-	 * Tests {@code DuplicateEntityFoundException} is thrown.
+	 * Tests {@code FamilyAssociationExistsException} is thrown.
 	 * 
 	 * @throws ReflexiveRelationshipException if relationship is between same 
 	 * person
@@ -141,8 +140,8 @@ public class FamilyAssociationServiceFamilyAssociationCreationTests
 	 * @throws FamilyAssociationExistsException 
 	 * @throws FamilyAssociationCategoryExistsException 
 	 */
-	@Test(expectedExceptions = {DuplicateEntityFoundException.class})
-	public void testDuplicateEntityFoundException() 
+	@Test(expectedExceptions = {FamilyAssociationExistsException.class})
+	public void testFamilyAssociationExistsException() 
 		throws ReflexiveRelationshipException,
 		FamilyAssociationConflictException, FamilyAssociationExistsException, 
 		FamilyAssociationCategoryExistsException {
@@ -210,6 +209,51 @@ public class FamilyAssociationServiceFamilyAssociationCreationTests
 		// Action
 		this.familyAssociationService.associate(offender, familyMember, 
 			dateRange, category, flags,	marriageDate, divorceDate);
+	}
+	
+	/**
+	 * Tests {@code FamilyAssociationCategoryExistsException} is thrown.
+	 * 
+	 * @throws ReflexiveRelationshipException if relationship is between same 
+	 * person
+	 * @throws FamilyAssociationConflictException if association overlaps
+	 * @throws FamilyAssociationExistsException 
+	 * @throws FamilyAssociationCategoryExistsException 
+	 */
+	@Test(expectedExceptions = {FamilyAssociationCategoryExistsException.class})
+	public void testFamilyAssociationCategoryExistsException() 
+		throws ReflexiveRelationshipException, 
+		FamilyAssociationConflictException, FamilyAssociationExistsException, 
+		FamilyAssociationCategoryExistsException {
+		// Arrangement
+		Offender offender = this.offenderDelegate.createWithoutIdentity("Obama",
+			"Kevin", "Johns", "Mr.");
+		Person familyMember = personDelegate.create("Li", "Yidong", "CIC311", 
+			"Mr.");
+		DateRange dateRange = new DateRange(this.parseDateText("01/01/2017"), 
+				this.parseDateText("12/01/2017"));
+		FamilyAssociationCategory category = this
+				.familyAssociationCategoryDelegate.create("testName", true, 
+						(short) 1, 
+						FamilyAssociationCategoryClassification.CHILD);
+		FamilyAssociationFlags flags = new FamilyAssociationFlags(true, true, 
+				true);
+		Date marriageDate = this.parseDateText("01/01/2017");
+		Date divorceDate = this.parseDateText("12/01/2017");
+		Relationship relationship = this.relationshipDelegate.findOrCreate(
+				offender, familyMember);
+		this.familyAssociationDelegate.create(dateRange, category, flags, 
+				marriageDate, divorceDate, relationship);
+		dateRange = new DateRange(this.parseDateText("05/01/2017"), 
+				this.parseDateText("12/31/2017"));
+		FamilyAssociationCategory newCategory = this
+				.familyAssociationCategoryDelegate.create("testName", true, 
+						(short) 1, 
+						FamilyAssociationCategoryClassification.CHILD);
+		
+		// Action
+		this.familyAssociationService.associate(offender, familyMember, 
+			dateRange, newCategory, flags,	marriageDate, divorceDate);
 	}
 	
 	// Parses date text

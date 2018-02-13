@@ -18,11 +18,15 @@
 package omis.chronologicalnote.report;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+
 /**
- * Chronologocal note summary.
+ * Chronological note summary.
  * 
  * @author Yidong Li
  * @version 0.1.0 (Jan 30, 2018)
@@ -39,6 +43,11 @@ public class ChronologicalNoteSummary implements Serializable {
 	private final String updateUserAccountName;
 	private final Date updateDate;
 
+	/* Services. */
+	@Autowired
+	@Qualifier("chronologicalNoteReportService")
+	private ChronologicalNoteReportService chronologicalNoteReportService;
+	
 	/**
 	 * Instantiates a chronologocal note summary with the
 	 * specified properties.
@@ -46,25 +55,41 @@ public class ChronologicalNoteSummary implements Serializable {
 	 * @param id id
 	 * @param date date
 	 * @param narrative narrative
-	 * @param categoryNames categoryNames
 	 * @param updateUserLastName updateUserLastName
 	 * @param updateUserFirstName updateUserFirstName
 	 * @param updateUserAccountName updateUserAccountName
 	 * @param updateDate updateDate
 	 */
 	public ChronologicalNoteSummary(final Long id, final Date date,
-		final String narrative, final List<String> categoryNames, 
+		final String narrative,
 		final String updateUserLastName,
 		final String updateUserFirstName,
 		final String updateUserAccountName, final Date updateDate) {
 		this.id = id;
 		this.narrative = narrative;
 		this.date = date;
-		this.categoryNames = categoryNames;
 		this.updateUserAccountName = updateUserAccountName;
 		this.updateUserFirstName = updateUserFirstName;
 		this.updateUserLastName = updateUserLastName;
 		this.updateDate = updateDate;
+		List<String> newCategoryNames = new ArrayList<String>();
+		this.categoryNames = newCategoryNames;
+	}
+	
+	public ChronologicalNoteSummary(final Long id,
+		final List<String> categoryNames, final Date date,
+		final String narrative,
+		final String updateUserLastName,
+		final String updateUserFirstName,
+		final String updateUserAccountName, final Date updateDate) {
+		this.id = id;
+		this.narrative = narrative;
+		this.date = date;
+		this.updateUserAccountName = updateUserAccountName;
+		this.updateUserFirstName = updateUserFirstName;
+		this.updateUserLastName = updateUserLastName;
+		this.updateDate = updateDate;
+		this.categoryNames = categoryNames;
 	}
 
 	/**

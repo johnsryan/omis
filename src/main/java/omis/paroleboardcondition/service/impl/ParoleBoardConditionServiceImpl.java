@@ -1,8 +1,26 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.paroleboardcondition.service.impl;
 
 import java.util.Date;
 import java.util.List;
 
+import omis.boardhearing.domain.BoardHearing;
 import omis.condition.domain.Agreement;
 import omis.condition.domain.AgreementAssociableDocument;
 import omis.condition.domain.AgreementCategory;
@@ -23,6 +41,7 @@ import omis.document.domain.DocumentTag;
 import omis.document.service.delegate.DocumentDelegate;
 import omis.document.service.delegate.DocumentTagDelegate;
 import omis.exception.DuplicateEntityFoundException;
+import omis.hearinganalysis.domain.HearingAnalysis;
 import omis.offender.domain.Offender;
 import omis.paroleboardcondition.domain.ParoleBoardAgreement;
 import omis.paroleboardcondition.domain.ParoleBoardAgreementCategory;
@@ -34,7 +53,8 @@ import omis.paroleboardcondition.service.delegate.ParoleBoardAgreementDelegate;
  * Parole Board Condition Service Implementation.
  * 
  * @author Annie Wahl
- * @version 0.1.0 (Dec 18, 2017)
+ * @author Josh Divine
+ * @version 0.1.1 (Feb 6, 2018)
  * @since OMIS 3.0
  *
  */
@@ -135,20 +155,34 @@ public class ParoleBoardConditionServiceImpl
 	@Override
 	public ParoleBoardAgreement createParoleBoardAgreement(
 			final Agreement agreement,
+			final BoardHearing boardHearing,
 			final ParoleBoardAgreementCategory category)
 			throws DuplicateEntityFoundException {
-		return this.paroleBoardAgreementDelegate.create(agreement, category);
+		return this.paroleBoardAgreementDelegate.create(agreement, boardHearing,
+				null, category);
+	}
+	
+	/** {@inheritDoc} */
+	@Override
+	public ParoleBoardAgreement createParoleBoardAgreement(
+			final Agreement agreement,
+			final HearingAnalysis hearingAnalysis,
+			final ParoleBoardAgreementCategory category)
+			throws DuplicateEntityFoundException {
+		return this.paroleBoardAgreementDelegate.create(agreement, null,
+				hearingAnalysis, category);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public ParoleBoardAgreement updateParoleBoardAgreement(
 			final ParoleBoardAgreement paroleBoardAgreement,
-			final Agreement agreement,
 			final ParoleBoardAgreementCategory category)
 			throws DuplicateEntityFoundException {
 		return this.paroleBoardAgreementDelegate.update(
-				paroleBoardAgreement, agreement, category);
+				paroleBoardAgreement, paroleBoardAgreement.getAgreement(), 
+				paroleBoardAgreement.getBoardHearing(), 
+				paroleBoardAgreement.getHearingAnalysis(), category);
 	}
 
 	/** {@inheritDoc} */
@@ -214,16 +248,6 @@ public class ParoleBoardConditionServiceImpl
 			throws DuplicateEntityFoundException {
 		return this.agreementAssociableDocumentDelegate
 				.create(agreement, document);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public AgreementAssociableDocument updateAgreementAssociableDocument(
-			final AgreementAssociableDocument agreementAssociableDocument,
-			final Agreement agreement, final Document document)
-			throws DuplicateEntityFoundException {
-		return this.agreementAssociableDocumentDelegate
-				.update(agreementAssociableDocument, agreement, document);
 	}
 
 	/** {@inheritDoc} */
