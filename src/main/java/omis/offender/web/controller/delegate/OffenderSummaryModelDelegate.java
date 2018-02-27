@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -55,6 +56,9 @@ public class OffenderSummaryModelDelegate {
 	private static final String IDENTIFICATION_SUMMARY_ITEM_REGISTRY_MODEL_KEY =
 			"identificationNumberSummaryItemRegistry";
 	
+	private static final String OFFENDER_PROFILE_ITEMS_PROPERTIES_MODEL_KEY =
+			"offenderProfileItemsProperties";
+	
 	/* Summary Item Registries */
 	
 	@Autowired
@@ -92,6 +96,10 @@ public class OffenderSummaryModelDelegate {
 	@Autowired
 	@Qualifier("dischargeDataSummaryItemRegistry")
 	private SummaryItemRegistry dischargeDataSummaryItemRegistry;
+
+	@Autowired
+	@Qualifier("offenderProfileItemsProperties")
+	private Properties offenderProfileItemsProperties;
 	
 	/* Constructors. */
 	
@@ -152,6 +160,8 @@ public class OffenderSummaryModelDelegate {
 				this.dischargeDataSummaryItemRegistry);
 		modelMap.put(BASIC_INFORMATION_SUMMARY_ITEM_REGISTRY_MODEL_KEY,
 				this.basicInformationSummaryItemRegistry);
+		modelMap.put(OFFENDER_PROFILE_ITEMS_PROPERTIES_MODEL_KEY,
+				this.offenderProfileItemsProperties);
 	}
 	
 	/**

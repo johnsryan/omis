@@ -17,7 +17,6 @@
  */
 package omis.paroleeligibility.report.impl.hibernate;
 
-import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 
 import omis.offender.domain.Offender;
@@ -27,7 +26,8 @@ import omis.paroleeligibility.report.ParoleEligibilityProfileItemReportService;
  * Hibernate implementation of parole eligibility profile item.
  *
  * @author Trevor Isles
- * @version 0.1.0 (Jan 9, 2018)
+ * @author Josh Divine
+ * @version 0.1.1 (Feb 14, 2018)
  * @since OMIS 3.0
  */
 public class ParoleEligibilityProfileItemReportServiceHibernateImpl 
@@ -53,10 +53,11 @@ public class ParoleEligibilityProfileItemReportServiceHibernateImpl
 	@Override
 	public Long findParoleEligibilityCountByEligibilities(
 			final Offender offender) {
-		Query q = this.sessionFactory.getCurrentSession().getNamedQuery(
-			FIND_PAROLE_ELIGIBILITY_COUNT_BY_ELIGIBILITIES_QUERY_NAME);
-		q.setEntity(OFFENDER_PARAM_NAME, offender);
-		return ((Long) q.uniqueResult());
+		return ((Long) this.sessionFactory.getCurrentSession()
+				.getNamedQuery(
+						FIND_PAROLE_ELIGIBILITY_COUNT_BY_ELIGIBILITIES_QUERY_NAME)
+				.setParameter(OFFENDER_PARAM_NAME, offender)
+				.setReadOnly(true)
+				.uniqueResult());
 	}
-	
 }

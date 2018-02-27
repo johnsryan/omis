@@ -1,0 +1,72 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/**
+ * Styles parole plan screens.
+ *
+ * @author: Josh Divine
+ * Version: 0.1.0 (Feb 13, 2018)
+ * Since: OMIS 3.0
+ */
+.addLink{
+	clear:both;
+	float:left;
+}
+
+.removeTag{
+	float:left;
+	margin-left: 10%;
+}
+
+.removeContent{
+	background-color: hsla(355, 100%, 50%, 0.3);
+}
+
+.documentTag{
+	clear:both;
+	float:left;
+	margin-left: 10%;
+	padding-top: 5px;
+	padding-bottom: 1px;
+}
+
+.personOption{
+	padding-top: 2em;
+}
+
+.tagError{
+	display: inherit;
+	margin-left: 25%;
+	font-size: 76%;
+	text-transform: uppercase;
+	font-weight: bold;
+	color: #D8000C;
+}
+
+.documentItem {
+	clear:both;
+	float:left;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	padding-left: 2%;
+	padding-right: 2%;
+	width: 65%;
+	border-style: solid;
+	border-width: 1px;
+	margin-bottom: 10px;
+}

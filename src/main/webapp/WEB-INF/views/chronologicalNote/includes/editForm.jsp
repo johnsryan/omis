@@ -53,7 +53,7 @@
 			</span>
 			<span class="fieldGroup">
 				<form:label path="narrative" class="fieldLabel"><fmt:message key="narrativeLabel"/></form:label>
-				<form:textarea path="narrative" maxLength="2048" rows="8"/>
+				<form:textarea path="narrative" class="narrative" maxLength="6000" rows="15"/>
 				<form:errors cssClass="error" path="narrative"/>
 				<span class="characterCounter" id="narrativeCharacterCounterContainer"></span>
 			</span>

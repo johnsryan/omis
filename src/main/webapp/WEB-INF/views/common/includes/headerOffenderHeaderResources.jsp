@@ -8,7 +8,7 @@
 	<jsp:include page="/WEB-INF/views/common/includes/toolsResources.jsp"/>
 	<c:if test="${empty offenderHeaderResources}">
 		<c:set var="offenderHeaderResources" value="true" scope="request"/>
-		<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/offender/style/offenderHeader.css?VERSION=8"/>
-		<script type="text/javascript" src="${pageContext.request.contextPath}/resources/offender/scripts/JQuery/jquery.omis.offenderHeader.js?VERSION=1"></script>
-		<script type="text/javascript" src="${pageContext.request.contextPath}/resources/offender/scripts/offenderHeader.js?VERSION=2"></script>
+		<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/offender/style/offenderHeader.css?VERSION=10"/>
+		<script type="text/javascript" src="${pageContext.request.contextPath}/resources/offender/scripts/JQuery/jquery.omis.offenderHeader.js?VERSION=3"></script>
+		<script type="text/javascript" src="${pageContext.request.contextPath}/resources/offender/scripts/offenderHeader.js?VERSION=5"></script>
 	</c:if>

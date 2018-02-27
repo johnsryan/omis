@@ -23,7 +23,7 @@ import org.hibernate.SessionFactory;
 import omis.dao.impl.hibernate.GenericHibernateDaoImpl;
 import omis.paroleboarditinerary.dao.ParoleBoardItineraryDao;
 import omis.paroleboarditinerary.domain.ParoleBoardItinerary;
-import omis.paroleboarditinerary.domain.ParoleBoardLocation;
+import omis.paroleboardlocation.domain.ParoleBoardLocation;
 
 /**
  * Hibernate implementation of the parole board itinerary data access object.

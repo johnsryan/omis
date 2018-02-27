@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ - OMIS - Offender Management Information System
+ - Copyright (C) 2011 - 2017 State of Montana
+ -
+ - This program is free software: you can redistribute it and/or modify
+ - it under the terms of the GNU General Public License as published by
+ - the Free Software Foundation, either version 3 of the License, or
+ - (at your option) any later version.
+ -
+ - This program is distributed in the hope that it will be useful,
+ - but WITHOUT ANY WARRANTY; without even the implied warranty of
+ - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ - GNU General Public License for more details.
+ -
+ - You should have received a copy of the GNU General Public License
+ - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="omis.paroleplan.domain">
+	<class	entity-name="omis.paroleplan.domain.ParolePlan"
+			proxy="omis.paroleplan.domain.ParolePlan"
+			name="omis.paroleplan.domain.impl.ParolePlanImpl"
+			table="`PAROLE_PLAN`">
+		<id name="id" type="java.lang.Long" column="`ID`">
+			<generator class="sequence">
+				<param name="sequence">`PAROLE_PLAN_SEQ`</param>
+			</generator>
+		</id>
+		<component name="evaluation">
+			<many-to-one name="staffAssignment" entity-name="omis.staff.domain.StaffAssignment" not-null="true" column="`EVALUATOR_STAFF_ASSIGNMENT_ID`"/>
+			<property name="description" column="`EVALUATION_DESCRIPTION`" not-null="true" type="java.lang.String"/>
+		</component>
+		<property name="vocationalPlan" column="`VOCATIONAL_PLAN`" type="java.lang.String"/>
+		<property name="residencePlan" column="`RESIDENCE_PLAN`" type="java.lang.String"/>
+		<property name="treatmentPlan" column="`TREATMENT_PLAN`" type="java.lang.String"/>
+		<many-to-one name="paroleEligibility" entity-name="omis.paroleeligibility.domain.ParoleEligibility" not-null="true" column="`PAROLE_ELIGIBILITY_ID`"/>
+		<component name="creationSignature">
+			<many-to-one name="userAccount" column="`CREATE_ACCOUNT_ID`"
+			             not-null="true"/>
+			<property name="date" column="`CREATE_DATE`" not-null="true"/>
+		</component>
+		<component name="updateSignature">
+			<many-to-one name="userAccount" column="`UPDATE_ACCOUNT_ID`"
+			             not-null="true"/>
+			<property name="date" column="`UPDATE_DATE`" not-null="true"/>
+		</component>
+	</class>
+	<query name="findParolePlan"><![CDATA[
+		select parolePlan
+		from omis.paroleplan.domain.ParolePlan parolePlan
+		where
+			parolePlan.paroleEligibility = :paroleEligibility
+	]]></query>
+	<query name="findParolePlanExcluding"><![CDATA[
+		select parolePlan
+		from omis.paroleplan.domain.ParolePlan parolePlan
+		where
+			parolePlan.paroleEligibility = :paroleEligibility
+		and
+			parolePlan <> :excludedParolePlan
+	]]></query>
+	<query name="findParolePlanByParoleEligibility"><![CDATA[
+		select parolePlan
+		from omis.paroleplan.domain.ParolePlan parolePlan
+		where
+			parolePlan.paroleEligibility = :paroleEligibility
+	]]></query>
+</hibernate-mapping>

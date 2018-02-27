@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.courtcasecondition.report.impl.hibernate;
 
 import java.util.Date;
@@ -18,8 +35,9 @@ import omis.offender.domain.Offender;
  * Hibernate implementation of the CourtCaseAgreement's report service.
  * 
  * @author Jonny Santy
- * @author Annie Jacques
- * @version 0.1.1 (Oct 10, 2017)
+ * @author Annie Wahl
+ * @author Josh Divine
+ * @version 0.1.2 (Feb 15, 2018)
  * @since OMIS 3.0
  */
 public class CourtCaseAgreementReportServiceHibernateImpl
@@ -68,6 +86,7 @@ public class CourtCaseAgreementReportServiceHibernateImpl
 				.getCurrentSession().getNamedQuery(SUMMARIZE_QUERY_NAME)
 				.setParameter(COURT_CASE_AGREEMENT_PARAM_NAME,
 						courtCaseAgreement)
+				.setReadOnly(true)
 				.uniqueResult();
 		return courtCaseAgreementSummary;
 	}
@@ -82,6 +101,7 @@ public class CourtCaseAgreementReportServiceHibernateImpl
 				.getNamedQuery(COURT_CASE_AGREEMENTS_BY_OFFENDER_QUERY_NAME)
 				.setParameter(OFFENDER_PARAM_NAME, offender)
 				.setTimestamp(EFFECTIVE_DATE_PARAM_NAME, effectiveDate)
+				.setReadOnly(true)
 				.list();
 		return courtCaseAgreementSummaries;
 	}
@@ -99,6 +119,7 @@ public class CourtCaseAgreementReportServiceHibernateImpl
 				.setParameter(OFFENDER_PARAM_NAME, offender)
 				.setDate(START_DATE_PARAM_NAME, startDate)
 				.setDate(END_DATE_PARAM_NAME, endDate)
+				.setReadOnly(true)
 				.list();
 		return courtCaseAgreementSummaries;
 	}
@@ -114,6 +135,7 @@ public class CourtCaseAgreementReportServiceHibernateImpl
 				.getNamedQuery(FIND_BY_AGREEMENT_AND_CATEGORY_QUERY_NAME)
 				.setParameter(AGREEMENT_PARAM_NAME, agreement)
 				.setParameter(CONDITION_CATEGORY_PARAM_NAME, conditionCategory)
+				.setReadOnly(true)
 				.list();
 		
 		return summaries;
@@ -129,6 +151,7 @@ public class CourtCaseAgreementReportServiceHibernateImpl
 				.getNamedQuery(FIND_BY_AGREEMENT_AND_GROUP_QUERY_NAME)
 				.setParameter(AGREEMENT_PARAM_NAME, agreement)
 				.setParameter(CONDITION_GROUP_PARAM_NAME, conditionGroup)
+				.setReadOnly(true)
 				.list();
 		
 		return summaries;

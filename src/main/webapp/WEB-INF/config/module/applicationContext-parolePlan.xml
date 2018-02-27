@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ - OMIS - Offender Management Information System
+ - Copyright (C) 2011 - 2017 State of Montana
+ -
+ - This program is free software: you can redistribute it and/or modify
+ - it under the terms of the GNU General Public License as published by
+ - the Free Software Foundation, either version 3 of the License, or
+ - (at your option) any later version.
+ -
+ - This program is distributed in the hope that it will be useful,
+ - but WITHOUT ANY WARRANTY; without even the implied warranty of
+ - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ - GNU General Public License for more details.
+ -
+ - You should have received a copy of the GNU General Public License
+ - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<!-- 
+  - Parole plan configuration.
+  -
+  - Author: Josh Divine
+  -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+        
+        <!-- Services -->
+        
+        <bean id="parolePlanService"
+        	class="omis.paroleplan.service.impl.ParolePlanServiceImpl">
+        	<constructor-arg name="parolePlanDelegate" ref="parolePlanDelegate"/>
+        	<constructor-arg name="parolePlanDocumentAssociationDelegate" ref="parolePlanDocumentAssociationDelegate"/>
+        	<constructor-arg name="parolePlanNoteDelegate" ref="parolePlanNoteDelegate"/>
+        	<constructor-arg name="documentDelegate" ref="documentDelegate"/>
+        	<constructor-arg name="documentTagDelegate" ref="documentTagDelegate"/>
+        </bean>        
+        
+        <!-- Delegates -->
+        
+        <bean id="parolePlanDelegate"
+        	class="omis.paroleplan.service.delegate.ParolePlanDelegate">
+        	<constructor-arg name="parolePlanDao" ref="parolePlanDao"/>
+        	<constructor-arg name="auditComponentRetriever" ref="auditComponentRetriever"/>
+        	<constructor-arg name="parolePlanInstanceFactory" ref="parolePlanInstanceFactory"/>
+        </bean>
+        
+        <bean id="parolePlanDocumentAssociationDelegate"
+        	class="omis.paroleplan.service.delegate.ParolePlanDocumentAssociationDelegate">
+        	<constructor-arg name="parolePlanDocumentAssociationDao" ref="parolePlanDocumentAssociationDao"/>
+        	<constructor-arg name="auditComponentRetriever" ref="auditComponentRetriever"/>
+        	<constructor-arg name="parolePlanDocumentAssociationInstanceFactory" ref="parolePlanDocumentAssociationInstanceFactory"/>
+        </bean>
+        
+        <bean id="parolePlanNoteDelegate"
+        	class="omis.paroleplan.service.delegate.ParolePlanNoteDelegate">
+        	<constructor-arg name="parolePlanNoteDao" ref="parolePlanNoteDao"/>
+        	<constructor-arg name="auditComponentRetriever" ref="auditComponentRetriever"/>
+        	<constructor-arg name="parolePlanNoteInstanceFactory" ref="parolePlanNoteInstanceFactory"/>
+        </bean>
+        
+        <!-- Data access objects -->
+        
+        <bean id="parolePlanDao"
+        	class="omis.paroleplan.dao.impl.hibernate.ParolePlanDaoHibernateImpl">
+    		<constructor-arg name="entityName" value="omis.paroleplan.domain.ParolePlan"/>
+    		<constructor-arg name="sessionFactory" ref="sessionFactory"/>
+  		</bean>
+  		
+  		<bean id="parolePlanDocumentAssociationDao"
+        	class="omis.paroleplan.dao.impl.hibernate.ParolePlanDocumentAssociationDaoHibernateImpl">
+    		<constructor-arg name="entityName" value="omis.paroleplan.domain.ParolePlanDocumentAssociation"/>
+    		<constructor-arg name="sessionFactory" ref="sessionFactory"/>
+  		</bean>
+  		
+  		<bean id="parolePlanNoteDao"
+        	class="omis.paroleplan.dao.impl.hibernate.ParolePlanNoteDaoHibernateImpl">
+    		<constructor-arg name="entityName" value="omis.paroleplan.domain.ParolePlanNote"/>
+    		<constructor-arg name="sessionFactory" ref="sessionFactory"/>
+  		</bean>
+  		
+  		<!-- Instance factories -->
+  		 
+		<bean id="parolePlanInstanceFactory"
+			class="omis.instance.factory.hibernate.impl.InstanceFactoryHibernateImpl">
+			<constructor-arg name="instanceFactoryDelegate" ref="instanceFactoryDelegate"/>
+			<constructor-arg name="entityName" value="omis.paroleplan.domain.ParolePlan"/>
+		</bean>
+		
+		<bean id="parolePlanDocumentAssociationInstanceFactory"
+			class="omis.instance.factory.hibernate.impl.InstanceFactoryHibernateImpl">
+			<constructor-arg name="instanceFactoryDelegate" ref="instanceFactoryDelegate"/>
+			<constructor-arg name="entityName" value="omis.paroleplan.domain.ParolePlanDocumentAssociation"/>
+		</bean>
+		
+		<bean id="parolePlanNoteInstanceFactory"
+			class="omis.instance.factory.hibernate.impl.InstanceFactoryHibernateImpl">
+			<constructor-arg name="instanceFactoryDelegate" ref="instanceFactoryDelegate"/>
+			<constructor-arg name="entityName" value="omis.paroleplan.domain.ParolePlanNote"/>
+		</bean>
+
+  		<!--Property editor factories -->
+ 		 
+ 		<bean id="parolePlanPropertyEditorFactory"
+       		class="omis.beans.factory.impl.hibernate.PropertyEditorFactoryHibernateImpl">
+ 			<constructor-arg name="entityName" value="omis.paroleplan.domain.ParolePlan"/>
+ 			<constructor-arg name="configuration" ref="hibernateConfiguration"/>
+  			<constructor-arg name="dao" ref="parolePlanDao"/>
+		</bean>
+		
+		<bean id="parolePlanDocumentAssociationPropertyEditorFactory"
+       		class="omis.beans.factory.impl.hibernate.PropertyEditorFactoryHibernateImpl">
+ 			<constructor-arg name="entityName" value="omis.paroleplan.domain.ParolePlanDocumentAssociation"/>
+ 			<constructor-arg name="configuration" ref="hibernateConfiguration"/>
+  			<constructor-arg name="dao" ref="parolePlanDocumentAssociationDao"/>
+		</bean>
+		
+		<bean id="parolePlanNotePropertyEditorFactory"
+       		class="omis.beans.factory.impl.hibernate.PropertyEditorFactoryHibernateImpl">
+ 			<constructor-arg name="entityName" value="omis.paroleplan.domain.ParolePlanNote"/>
+ 			<constructor-arg name="configuration" ref="hibernateConfiguration"/>
+  			<constructor-arg name="dao" ref="parolePlanNoteDao"/>
+		</bean>
+		
+		<!-- Document Beans -->
+		
+		<bean id="parolePlanDocumentPersister" class="omis.document.io.impl.SimpleDocumentPersisterImpl">
+			<constructor-arg name="fileLocator" ref="parolePlanDocumentLocator"/>
+		</bean>
+
+		<bean id="parolePlanDocumentRetriever" class="omis.document.io.impl.SimpleDocumentRetrieverImpl">
+			<constructor-arg name="fileLocator" ref="parolePlanDocumentLocator"/>
+			<constructor-arg name="defaultFilename" value="notFound"/>
+		</bean>
+
+		<bean id="parolePlanDocumentLocator" class="omis.io.impl.FileFromPathLocatorImpl">
+			<constructor-arg name="path" value="${application.resource.path}\Documents\ParolePlanDocuments"/>
+		</bean>
+		
+		<bean id="parolePlanDocumentRemover" class="omis.io.impl.SimpleFileRemoverImpl">
+			<constructor-arg name="fileLocator" ref="parolePlanDocumentLocator"/>
+		</bean>
+</beans>

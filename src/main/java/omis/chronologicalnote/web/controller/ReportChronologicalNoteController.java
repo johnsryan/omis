@@ -77,7 +77,6 @@ public class ReportChronologicalNoteController {
 	private static final String CATEGORIES_MODEL_KEY = "categories";
 	private static final String CHRONOLOGICAL_NOTE_FILTER_OPTIONS_FORM_MODEL_KEY
 		= "chronologicalNoteFilterOptionsForm";
-	private static final String INITIAL_MODEL_KEY = "Initial";
 		
 	/* Message bundles. */
 	
@@ -108,16 +107,16 @@ public class ReportChronologicalNoteController {
 	/* Report names. */
 	
 	private static final String CHRONOLOGICAL_NOTE_LISTING_REPORT_NAME 
-		= "/CaseManagement/ChronologicalNote/Chronological_Note_Listing";
+		= "/CaseManagement/Chronological_Notes/Chronological_Notes_Listing";
 	private static final String CHRONOLOGICAL_NOTE_DETAILS_REPORT_NAME
-		= "/CaseManagement/ChronologicalNote/Chronological_Note_Details";
+		= "/CaseManagement/Chronological_Notes/Chronological_Note_Details";
 
 	/* Report parameter names. */
 	
 	private static final String CHRONOLOGICAL_NOTE_LISTING_ID_REPORT_PARAM_NAME
 		= "DOC_ID";
 	private static final String CHRONOLOGICAL_NOTE_DETAILS_ID_REPORT_PARAM_NAME
-		= "NOTE_ID";	
+		= "CHRONO_NOTE_ID";	
 	
 	/* Report runners. */
 	@Autowired
@@ -160,7 +159,6 @@ public class ReportChronologicalNoteController {
 		ChronologicalNoteFilterOptionsForm form
 			= new ChronologicalNoteFilterOptionsForm();
 		mav.addObject(CHRONOLOGICAL_NOTE_FILTER_OPTIONS_FORM_MODEL_KEY, form);
-		mav.addObject(INITIAL_MODEL_KEY, true); 
 		this.offenderSummaryModelDelegate.add(mav.getModelMap(), offender);
 		return mav;
 	}
@@ -179,17 +177,15 @@ public class ReportChronologicalNoteController {
 		required = true) final Offender offender,
 		final ChronologicalNoteFilterOptionsForm form,
 		final BindingResult result) {
-		Boolean flag = false;
 		List<ChronologicalNoteSummary> chronologicalNoteSummaries
 			= new ArrayList<ChronologicalNoteSummary>();
-		if(form.getCategories()!=null){
+		if (form.getCategories() == null) {
 			chronologicalNoteSummaries.addAll(
-			this.chronologicalNoteReportService.findByOffenderAndCategories(
-			offender, form.getCategories()));
+				this.chronologicalNoteReportService.findByOffender(offender));
 		} else {
 			chronologicalNoteSummaries.addAll(
-			this.chronologicalNoteReportService.findByOffender(offender));
-			flag = true;
+				this.chronologicalNoteReportService.findByOffenderAndCategories(
+				offender, form.getCategories()));
 		}
 		ModelAndView mav = new ModelAndView(LIST_VIEW_NAME);
 		mav.addObject(CHRONOLOGICAL_NOTE_SUMMARIES_MODEL_KEY,
@@ -198,7 +194,6 @@ public class ReportChronologicalNoteController {
 		List<ChronologicalNoteCategory> categoryOptions
 			= this.chronologicalNoteReportService.findCategories();
 		mav.addObject(CATEGORIES_MODEL_KEY, categoryOptions);
-		mav.addObject(INITIAL_MODEL_KEY, flag);
 		this.offenderSummaryModelDelegate.add(mav.getModelMap(), offender);
 		return mav;
 	}
@@ -245,7 +240,7 @@ public class ReportChronologicalNoteController {
 	 */
 	@RequestMapping(value = "/chronologicalNoteListingReport.html",
 			method = RequestMethod.GET)
-	@PreAuthorize("hasRole('VEHICLE_VIEW') or hasRole('ADMIN')")
+	@PreAuthorize("hasRole('CHRONOLOGICAL_NOTE_VIEW') or hasRole('ADMIN')")
 	public ResponseEntity<byte []> reportChronologicalNoteListing(@RequestParam(
 		value = "offender", required = true)
 		final Offender offender,
@@ -270,9 +265,9 @@ public class ReportChronologicalNoteController {
 	 */
 	@RequestMapping(value = "/chronologicalNoteDetailsReport.html",
 			method = RequestMethod.GET)
-	@PreAuthorize("hasRole('TRACKED_DOCUMENT_VIEW') or hasRole('ADMIN')")
+	@PreAuthorize("hasRole('CHRONOLOGICAL_NOTE_VIEW') or hasRole('ADMIN')")
 	public ResponseEntity<byte []> reportTrackedDocumentDetails(@RequestParam(
-			value = "note", required = true)
+			value = "chronologicalNote", required = true)
 			final ChronologicalNote note,
 			@RequestParam(value = "reportFormat", required = true)
 			final ReportFormat reportFormat) {

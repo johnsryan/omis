@@ -52,6 +52,7 @@ import omis.residence.domain.ResidenceStatus;
 import omis.residence.domain.ResidenceTerm;
 import omis.residence.exception.PrimaryResidenceExistsException;
 import omis.residence.exception.ResidenceStatusConflictException;
+import omis.residence.exception.ResidenceTermExistsException;
 import omis.residence.service.delegate.ResidenceTermDelegate;
 
 /**
@@ -250,7 +251,8 @@ public class CriminalAssociationServiceImpl
 			final Address address) 
 					throws PrimaryResidenceExistsException, 
 					ResidenceStatusConflictException, 
-					DuplicateEntityFoundException {
+					DuplicateEntityFoundException,
+					ResidenceTermExistsException {
 		ResidenceTerm residenceTerm = this.residenceTermDelegate
 				.createResidenceTerm(person, null, ResidenceCategory.PRIMARY, 
 				address, ResidenceStatus.FOSTER_CARE, null, null, null);

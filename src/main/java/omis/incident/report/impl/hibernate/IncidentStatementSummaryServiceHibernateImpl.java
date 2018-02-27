@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.incident.report.impl.hibernate;
 
 import java.util.Date;
@@ -17,7 +34,8 @@ import org.hibernate.SessionFactory;
  * Hibernate implementation of incident report service.
  * 
  * @author Yidong Li
- * @version 0.1.0 (July 5, 2014)
+ * @author Josh Divine
+ * @version 0.1.1 (Feb 14, 2018)
  * @since OMIS 3.0
  */
 public class IncidentStatementSummaryServiceHibernateImpl
@@ -84,6 +102,7 @@ public class IncidentStatementSummaryServiceHibernateImpl
 			.getCurrentSession()
 			.getNamedQuery(FIND_INVOLVED_PARTIES_BY_CRITERIA_QUERY_NAME)
 			.setParameter(REPORT_ID_PARAM_NAME, id)
+			.setReadOnly(true)
 			.list();
 		return summaries;
 	}
@@ -108,6 +127,7 @@ public class IncidentStatementSummaryServiceHibernateImpl
 				this.sessionFactory.getClassMetadata(
 						INCIDENT_STATEMENT_ENTITY_NAME)
 				.getPropertyType(JURISDICTION_PROPERTY_NAME))
+			.setReadOnly(true)
 			.list();
 		return summaries;
 	}
@@ -131,6 +151,7 @@ public class IncidentStatementSummaryServiceHibernateImpl
 						this.sessionFactory.getClassMetadata(
 								INCIDENT_STATEMENT_ENTITY_NAME)
 						.getPropertyType(JURISDICTION_PROPERTY_NAME))
+				.setReadOnly(true)
 				.list();
 				return summaries;
 	}
@@ -144,6 +165,7 @@ public class IncidentStatementSummaryServiceHibernateImpl
 				.getNamedQuery(FIND_BY_DOCUMENTER)
 				.setParameter(DOCUMENTER_PARAM_NAME,
 						this.auditComponentRetriever.retrieveUserAccount())
+				.setReadOnly(true)
 				.list();
 		return summaries;
 	}

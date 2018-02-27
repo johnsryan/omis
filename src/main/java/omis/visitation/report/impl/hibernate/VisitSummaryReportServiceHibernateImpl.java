@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.visitation.report.impl.hibernate;
 
 import java.util.Date;
@@ -14,7 +31,8 @@ import org.hibernate.SessionFactory;
  * Visitor Report Service Hibernate Impl.
  * 
  * @author Joel Norris
- * @version 0.1.0 (Jul 30, 2013)
+ * @author Josh Divine
+ * @version 0.1.1 (Feb 14, 2018)
  * @since OMIS 3.0
  */
 public class VisitSummaryReportServiceHibernateImpl 
@@ -82,6 +100,7 @@ public class VisitSummaryReportServiceHibernateImpl
 				.getNamedQuery(FIND_BY_OFFENDER_ON_DATE_QUERY_NAME)
 				.setParameter(OFFENDER_PARAM_NAME, offender)
 				.setParameter(DATE_PARAM_NAME, date)
+				.setReadOnly(true)
 				.list();
 		return visitorLogSummaries;
 	}
@@ -98,6 +117,7 @@ public class VisitSummaryReportServiceHibernateImpl
 				.setParameter(OFFENDER_PARAM_NAME, offender)
 				.setDate(START_DATE_PARAM_NAME, startDate)
 				.setDate(END_DATE_PARAM_NAME, endDate)
+				.setReadOnly(true)
 				.list();
 		return visitorLogSummaries;
 	}
@@ -112,6 +132,7 @@ public class VisitSummaryReportServiceHibernateImpl
 				.getNamedQuery(FIND_BY_FACILITY_ON_DATE_QUERY_NAME)
 				.setParameter(FACILITY_PARAM_NAME, facility)
 				.setParameter(DATE_PARAM_NAME, date)
+				.setReadOnly(true)
 				.list();
 		return visitorLogSummaries;
 	}
@@ -127,8 +148,8 @@ public class VisitSummaryReportServiceHibernateImpl
 				.setParameter(FACILITY_PARAM_NAME, facility)
 				.setDate(START_DATE_PARAM_NAME, startDate)
 				.setDate(END_DATE_PARAM_NAME, endDate)
+				.setReadOnly(true)
 				.list();
 		return visitSummaries;
-				
 	}
 }

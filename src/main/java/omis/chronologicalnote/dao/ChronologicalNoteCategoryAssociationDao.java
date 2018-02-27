@@ -49,7 +49,7 @@ public interface ChronologicalNoteCategoryAssociationDao extends GenericDao<Chro
 	 * @param note chronological note
 	 * @return list of chronological note category association
 	 */
-	List<ChronologicalNoteCategoryAssociation> findByNote(ChronologicalNote note);
+	List<ChronologicalNoteCategoryAssociation> findChronologicalNoteCategoryAssociationsByNote(ChronologicalNote note);
 
 	/**
 	 * Returns the chronological note category association with the specified chronological note and chronological

@@ -38,6 +38,8 @@ public class ContactSummaryModelDelegate {
 	public void add(final Map<String, Object> modelMap, final Person person) {
 		ContactSummary contactSummary = this.contactReportService
 				.summarizeByPerson(person);
+		System.out.println(String.format("ContactSummary: %s, %s, %d", contactSummary.getPersonLastName(), contactSummary.getPersonFirstName(), contactSummary.getPersonId()));
 		modelMap.put(CONTACT_SUMMARY_MODEL_KEY, contactSummary);
+		System.out.println(String.format("ContactSummary: %s, %s, %d", contactSummary.getPersonLastName(), contactSummary.getPersonFirstName(), contactSummary.getPersonId()));
 	}
 }

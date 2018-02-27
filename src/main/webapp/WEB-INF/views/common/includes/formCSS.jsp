@@ -7,5 +7,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 	<c:if test="${empty formCSS}">
 		<c:set var="formCSS" value="true" scope="request"/>
-		<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/common/style/form.css?VERSION=2"/>
+		<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/common/style/form.css?VERSION=3"/>
 	</c:if>

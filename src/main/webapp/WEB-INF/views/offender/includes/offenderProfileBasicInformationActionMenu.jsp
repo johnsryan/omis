@@ -50,6 +50,13 @@
 			</li>
 			</c:if>
 		</sec:authorize>
+		<sec:authorize access="hasRole('OFFENDER_VIEW') or hasRole('ADMIN')">
+		    <c:if test="${not empty offender}">
+		    <li>
+		        <a href="${pageContext.request.contextPath}/offender/profileBasicInfocjinBackgroundCheckReport.rtf?offender=${offender.id}&reportFormat=RTF" class="reportLink"><fmt:message key="basicInfoCJINBackgroundCheckReportLinkLabel"/></a>
+            </li>
+            </c:if>
+        </sec:authorize>		
 		<sec:authorize access="(hasRole('OFFENDER_VIEW') and hasRole('OFFENDER_SSN_VIEW')) or hasRole('ADMIN')">
 			<c:if test="${not empty offender}">
 			<li>
@@ -63,7 +70,7 @@
 				<a href="${pageContext.request.contextPath}/offender/profileBasicInfoSheetRedactedReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="basicInformationSheetRedactedReportLinkLabel"/></a>
 			</li>
 			</c:if>
-		</sec:authorize>
+		</sec:authorize>		
 		<sec:authorize access="hasRole('OFFENDER_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty offender}">
 			<li>

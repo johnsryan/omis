@@ -25,7 +25,7 @@ import java.util.List;
  * Hearing analysis home form.
  *
  * @author Josh Divine
- * @version 0.1.0 (Dec 19, 2017)
+ * @version 0.1.1 (Feb 20, 2018)
  * @since OMIS 3.0
  */
 public class HearingAnalysisHomeForm implements Serializable {
@@ -35,6 +35,8 @@ public class HearingAnalysisHomeForm implements Serializable {
 	private List<HearingAnalysisTaskItem> analysisTaskItems = new ArrayList<>();
 	
 	private List<HearingAnalysisTaskItem> planningTaskItems = new ArrayList<>();
+	
+	private List<HearingAnalysisNoteItem> hearingAnalysisNoteItems;
 	
 	/**
 	 * Instantiates a default hearing analysis home form.
@@ -79,5 +81,24 @@ public class HearingAnalysisHomeForm implements Serializable {
 	public void setPlanningTaskItems(
 			final List<HearingAnalysisTaskItem> planningTaskItems) {
 		this.planningTaskItems = planningTaskItems;
+	}
+	
+	/**
+	 * Returns the list of hearing analysis note items.
+	 * 
+	 * @return list of hearing analysis note items
+	 */
+	public List<HearingAnalysisNoteItem> getHearingAnalysisNoteItems() {
+		return hearingAnalysisNoteItems;
+	}
+
+	/**
+	 * Sets the list of hearing analysis note items.
+	 *  
+	 * @param hearingAnalysisNoteItems list of hearing analysis note items
+	 */
+	public void setHearingAnalysisNoteItems(
+			final List<HearingAnalysisNoteItem> hearingAnalysisNoteItems) {
+		this.hearingAnalysisNoteItems = hearingAnalysisNoteItems;
 	}
 }

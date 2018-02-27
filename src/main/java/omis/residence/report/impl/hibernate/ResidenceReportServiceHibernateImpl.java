@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.residence.report.impl.hibernate;
 
 import java.util.ArrayList;
@@ -17,7 +34,8 @@ import org.hibernate.SessionFactory;
  * Hibernate implementation of the residence report service.
  * 
  * @author Sheronda Vaughn
- * @version 0.1.0 (Mar 9, 2015)
+ * @author Josh Divine
+ * @version 0.1.1 (Feb 14, 2018)
  * @since OMIS 3.0
  */
 public class ResidenceReportServiceHibernateImpl 
@@ -62,6 +80,7 @@ public class ResidenceReportServiceHibernateImpl
 				.getNamedQuery(FIND_RESIDENT_TERMS_BY_OFFENDER_QUERY_NAME)
 				.setParameter(OFFENDER_PARAMETER_NAME, offender)
 				.setDate(EFFECTIVE_PARAMETER_NAME, effectiveDate)
+				.setReadOnly(true)
 				.list();
 		@SuppressWarnings("unchecked")
 		List<ResidenceSummary> nonResidentTermSummaries = this.sessionFactory
@@ -69,6 +88,7 @@ public class ResidenceReportServiceHibernateImpl
 				.getNamedQuery(FIND_NON_RESIDENT_TERMS_BY_OFFENDER_QUERY_NAME)
 				.setParameter(OFFENDER_PARAMETER_NAME, offender)				
 				.setDate(EFFECTIVE_PARAMETER_NAME, effectiveDate)
+				.setReadOnly(true)
 				.list();
 		List<ResidenceSummary> residenceSummaries 
 				= new ArrayList<ResidenceSummary>();
@@ -80,7 +100,8 @@ public class ResidenceReportServiceHibernateImpl
 			public int compare(ResidenceSummary residentTermSummary, 
 					ResidenceSummary nonResidentTermSummary) {
 				final int result; 
-				if (residentTermSummary.getStartDate() != null && nonResidentTermSummary.getStartDate() != null) {
+				if (residentTermSummary.getStartDate() != null && 
+						nonResidentTermSummary.getStartDate() != null) {
 					result = residentTermSummary.getStartDate().compareTo(
 							nonResidentTermSummary.getStartDate());
 				} else {
@@ -123,6 +144,7 @@ public class ResidenceReportServiceHibernateImpl
 				this.sessionFactory.getCurrentSession()
 				.getNamedQuery(SUMMARIZE_BY_RESIDENCE_TERM)
 				.setParameter(RESIDENCE_TERM_PARAMETER_NAME, residenceTerm)
+				.setReadOnly(true)
 				.uniqueResult();
 		return residenceSummary;
 	}

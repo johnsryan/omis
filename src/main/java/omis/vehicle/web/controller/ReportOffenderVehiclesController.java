@@ -182,7 +182,7 @@ public class ReportOffenderVehiclesController {
 	 * @param reportFormat report format
 	 * @return response entity with report
 	 */
-	@RequestMapping(value = "/chronologicalNoteListingReport.html",
+	@RequestMapping(value = "/vehicleListingReport.html",
 			method = RequestMethod.GET)
 	@PreAuthorize("hasRole('VEHICLE_VIEW') or hasRole('ADMIN')")
 	public ResponseEntity<byte []> reportChronologicalNoteListing(@RequestParam(

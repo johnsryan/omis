@@ -22,7 +22,8 @@ public class ContactSummaryItem extends AbstractSummaryItem
 	
 	private static final long serialVersionUID = 1L;
 	
-	private static final String CONTACT_SUMMARY_MODEL_KEY = "contactSummary";
+	private static final String CONTACT_SUMMARY_MODEL_KEY =
+			"offenderContactSummary";
 	
 	private ContactSummaryItemReportService contactSummaryItemReportService;
 	

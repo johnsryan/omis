@@ -8,8 +8,8 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <fmt:bundle basename="omis.chronologicalnote.msgs.chronologicalNote">
 <form:form commandName = "chronologicalNoteFilterOptionsForm" id="chronologicalNoteFilterOptionsForm" method="POST" class="listForm">
-	<fieldset>
-			<legend class="chronologicalNote"><fmt:message key="chronologicalNoteFilterOptionsLabel"/></legend>
+	<fieldset class="foregroundUltraLight">
+			<legend class="chronologicalNote foregroundLight"><fmt:message key="chronologicalNoteFilterOptionsLabel"/></legend>
 		<span class="categoryListContainer">
 			<form:checkboxes items="${categories}" path="categories" itemLabel="name" itemValue="id"/>
 			<form:errors path="categories" cssClass="error"/>

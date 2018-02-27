@@ -35,7 +35,8 @@ import org.hibernate.SessionFactory;
  * Hibernate implementation of report service for grievances.
  *
  * @author Stephen Abson
- * @version 0.0.1 (Sep 22, 2015)
+ * @author Josh Divine
+ * @version 0.0.2 (Feb 15, 2018)
  * @since OMIS 3.0
  */
 public class GrievanceReportServiceHibernateImpl
@@ -96,6 +97,7 @@ public class GrievanceReportServiceHibernateImpl
 				.getNamedQuery(SUMMARIZE_BY_OFFENDER_QUERY_NAME)
 				.setParameter(OFFENDER_PARAM_NAME, offender)
 				.setTimestamp(EFFECTIVE_DATE_PARAM_NAME, effectiveDate)
+				.setReadOnly(true)
 				.list();
 		return summaries;
 	}
@@ -110,6 +112,7 @@ public class GrievanceReportServiceHibernateImpl
 				.getNamedQuery(SUMMARIZE_BY_LOCATION_QUERY_NAME)
 				.setParameter(LOCATION_PARAM_NAME, location)
 				.setTimestamp(EFFECTIVE_DATE_PARAM_NAME, effectiveDate)
+				.setReadOnly(true)
 				.list();
 		return summaries;
 	}

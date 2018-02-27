@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.visitation.report.impl.hibernate;
 
 import java.util.Date;
@@ -17,7 +34,8 @@ import omis.visitation.report.VisitSummary;
  * Facility visitation report service hibernate implementation.
  * 
  * @author Joel Norris
- * @version 0.1.0 (March 8, 2017)
+ * @author Josh Divine
+ * @version 0.1.1 (Feb 15, 2018)
  * @since OMIS 3.0
  */
 public class FacilityVisitationReportServiceHibernateImpl
@@ -100,6 +118,7 @@ implements FacilityVisitationReportService {
 				.getNamedQuery(SUMMARIZE_FACILITY_VISITATION_ON_DATE_QUERY_NAME)
 				.setParameter(LOCATION_PARAM_NAME, facility)
 				.setDate(DATE_PARAM_NAME, effectiveDate)
+				.setReadOnly(true)
 				.list();
 		return offenderSummaries;
 	}
@@ -118,6 +137,7 @@ implements FacilityVisitationReportService {
 				.setParameter(LOCATION_PARAM_NAME, facility)
 				.setDate(START_DATE_PARAM_NAME, startDate)
 				.setDate(END_DATE_PARAM_NAME, endDate)
+				.setReadOnly(true)
 				.list();
 		return offenderSummaries;
 	}
@@ -132,6 +152,7 @@ implements FacilityVisitationReportService {
 				.getNamedQuery(FIND_BY_OFFENDER_ON_DATE_QUERY_NAME)
 				.setParameter(OFFENDER_PARAM_NAME, offender)
 				.setParameter(DATE_PARAM_NAME, date)
+				.setReadOnly(true)
 				.list();
 		return visitSummaries;
 	}
@@ -155,6 +176,7 @@ implements FacilityVisitationReportService {
 						FIND_VISITING_OFFFENDERS_BY_LOCATION_ON_DATE_QUERY_NAME)
 				.setParameter(LOCATION_PARAM_NAME, location)
 				.setDate(DATE_PARAM_NAME, date)
+				.setReadOnly(true)
 				.list();
 		return offenders;
 	}
@@ -168,7 +190,8 @@ implements FacilityVisitationReportService {
 //				.setParameter(OFFENDER_PARAM_NAME, offender)
 //				.setDate(DATE_PARAM_NAME, date)
 //				.uniqueResult();
-		return this.bedPlacementLookupDelegate.findUnitNameByOffender(offender, date);
+		return this.bedPlacementLookupDelegate.findUnitNameByOffender(offender,
+				date);
 	}
 
 	/** {@inheritDoc} */
@@ -178,6 +201,7 @@ implements FacilityVisitationReportService {
 				.getCurrentSession()
 				.getNamedQuery(FIND_MUG_SHOT_ID_BY_OFFENDER_QUERY_NAME)
 				.setParameter(OFFENDER_PARAM_NAME, offender)
+				.setReadOnly(true)
 				.uniqueResult();
 		return photoId;
 	}

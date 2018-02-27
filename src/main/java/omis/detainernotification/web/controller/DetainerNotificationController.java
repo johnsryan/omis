@@ -1057,29 +1057,25 @@ public class DetainerNotificationController {
 		
 		DetainerAgency detainerAgency;
 		//creating new detainer agency
-		if(form.getCreatingDetainerAgency()){ 
+		if (form.getCreatingDetainerAgency()) { 
 			//using address
-			if(form.getUsingAddress()){
-				
-				
+			if (form.getUsingAddress()) {
 				City city;
-				if(form.getAddressFields().getNewCity()){
+				if (form.getAddressFields().getNewCity()) {
 					city = this.detainerService.createCity(
 							form.getAddressFields().getCityName(), true,
 							form.getAddressFields().getState(),
 							form.getAddressFields().getCountry());
-				}
-				else{
+				} else {
 					city = form.getAddressFields().getCity();
 				}
 				
 				ZipCode zipCode;
-				if(form.getAddressFields().getNewZipCode()){
-					zipCode =this.detainerService.createZipCode(
-							city, form.getAddressFields().getZipCodeValue(),
-							form.getAddressFields().getZipCodeExtension(), true);
-				}
-				else{
+				if (form.getAddressFields().getNewZipCode()) {
+					zipCode = this.detainerService.createZipCode(
+						city, form.getAddressFields().getZipCodeValue(),
+						form.getAddressFields().getZipCodeExtension(), true);
+				} else {
 					zipCode = form.getAddressFields().getZipCode();
 				}
 				
@@ -1091,19 +1087,18 @@ public class DetainerNotificationController {
 					form.getAgencyName(), true,
 					form.getTelephoneNumber(), 
 					address);
-			}
-			//not using address
-			else{
+			} else {
+				//not using address
 				detainerAgency = this.detainerService.createDetainerAgency(
 					form.getAgencyName(), true, 
 					form.getTelephoneNumber(), null);
 			}
-		}
-		else{//not creating detainer agency
+		} else {
+			//not creating detainer agency
 			detainerAgency = form.getDetainerAgency();
 		}
 		
-		if(detainer != null){
+		if (detainer != null) {
 			detainer = this.detainerService.update(detainer,
 					form.getAlternateOffenderId(), 
 					form.getOffenseDescription(), 
@@ -1113,8 +1108,7 @@ public class DetainerNotificationController {
 					form.getReceiveDate(), 
 					form.getIssueDate(),
 						form.getWarrantNumber());
-		}
-		else{
+		} else {
 			detainer = this.detainerService.create(
 					form.getOffender(), 
 					form.getAlternateOffenderId(), 
@@ -1122,8 +1116,8 @@ public class DetainerNotificationController {
 					form.getCourtCaseNumber(), 
 					form.getDetainerType(), detainerAgency,
 					form.getJurisdiction(), 
-				form.getReceiveDate(), 
-				form.getIssueDate(),
+					form.getReceiveDate(), 
+					form.getIssueDate(),
 					form.getWarrantNumber());
 		}
 		
@@ -1132,14 +1126,19 @@ public class DetainerNotificationController {
 				.findDetainerWarrantProcessingStatusByDetainer(detainer);
 		if (Boolean.TRUE.equals(form.getProcessed())) {
 			final String facilityName;
-			if (form.getDetainerWarrantProcessingStatusFields() != null && form.getDetainerWarrantProcessingStatusFields()
-					.getOtherFacility()) {
-				facilityName = form.getDetainerWarrantProcessingStatusFields()
-						.getFacilityName();
+			if (form.getDetainerWarrantProcessingStatusFields() != null) {
+				if (form.getDetainerWarrantProcessingStatusFields()
+					.getOtherFacility() != null) {
+					facilityName =
+							form.getDetainerWarrantProcessingStatusFields()
+								.getFacilityName();
+				} else {
+					facilityName = null;
+				}
 			} else {
 				facilityName = null;
 			}
-			if(detainerWarrantProcessingStatus != null){
+			if (detainerWarrantProcessingStatus != null) {
 				this.detainerService.updateDetainerWarrantProcessingStatus(
 						detainerWarrantProcessingStatus, 
 					form.getDetainerWarrantProcessingStatusFields()
@@ -1164,84 +1163,85 @@ public class DetainerNotificationController {
 						.getRefusedToSignComment(),
 					form.getDetainerWarrantProcessingStatusFields()
 						.getWaiverRequiredComment(), facilityName);
-			} else if (form.getDetainerWarrantProcessingStatusFields() != null){
-						this.detainerService
-							.createDetainerWarrantProcessingStatus(detainer, 
-						form.getDetainerWarrantProcessingStatusFields()
-							.getSentToFacilityDate(), 
-						form.getDetainerWarrantProcessingStatusFields()
-							.getFacility(), 
-						form.getDetainerWarrantProcessingStatusFields()
-							.getUnit(),
-						form.getDetainerWarrantProcessingStatusFields()
-							.getComplex(),
-						form.getDetainerWarrantProcessingStatusFields()
-							.getInmateServedDate(), 
-						form.getDetainerWarrantProcessingStatusFields()
-							.getRefusedToSign(), 
-						form.getDetainerWarrantProcessingStatusFields()
-							.getWaiverRequired(), 
-						form.getDetainerWarrantProcessingStatusFields()
-							.getCancellation().getDate(), 
-						form.getDetainerWarrantProcessingStatusFields()
-							.getCancellation().getReason(), 
-						form.getDetainerWarrantProcessingStatusFields()
-							.getRefusedToSignComment(),
-						form.getDetainerWarrantProcessingStatusFields()
-							.getWaiverRequiredComment(), facilityName);
+			} else if (form.getDetainerWarrantProcessingStatusFields()
+					!= null) {
+				this.detainerService
+					.createDetainerWarrantProcessingStatus(detainer, 
+					form.getDetainerWarrantProcessingStatusFields()
+						.getSentToFacilityDate(), 
+					form.getDetainerWarrantProcessingStatusFields()
+						.getFacility(), 
+					form.getDetainerWarrantProcessingStatusFields()
+						.getUnit(),
+					form.getDetainerWarrantProcessingStatusFields()
+						.getComplex(),
+					form.getDetainerWarrantProcessingStatusFields()
+						.getInmateServedDate(), 
+					form.getDetainerWarrantProcessingStatusFields()
+						.getRefusedToSign(), 
+					form.getDetainerWarrantProcessingStatusFields()
+						.getWaiverRequired(), 
+					form.getDetainerWarrantProcessingStatusFields()
+						.getCancellation().getDate(), 
+					form.getDetainerWarrantProcessingStatusFields()
+						.getCancellation().getReason(), 
+					form.getDetainerWarrantProcessingStatusFields()
+						.getRefusedToSignComment(),
+					form.getDetainerWarrantProcessingStatusFields()
+						.getWaiverRequiredComment(), facilityName);
 			}
 		} else {
-			if(detainerWarrantProcessingStatus != null){
+			if (detainerWarrantProcessingStatus != null) {
 				this.detainerService.removeDetainerWarrantProcessingStatus(
 						detainerWarrantProcessingStatus);
 			}
 		}
-		if(form.getUsingInterstateAgreementDetainer()){
+		if (form.getUsingInterstateAgreementDetainer()) {
 			InterstateAgreementDetainer interstateAgreementDetainer =
 					this.detainerService
 					.findInterstateAgreementDetainerByDetainer(detainer);
-			if(interstateAgreementDetainer != null){
+			if (interstateAgreementDetainer != null) {
 				//if updating interstate agency detainer
 				this.detainerService.updateInterstateAgreementDetainer(
 						detainerService
-							.findInterstateAgreementDetainerByDetainer(detainer),
+						.findInterstateAgreementDetainerByDetainer(detainer),
 					form.getProsecutorReceivedDate(),
 						form.getInitiatedBy());
-			}
-			else{
+			} else {
 				//creating a new Interstate Agreement Detainer
 				interstateAgreementDetainer =
-					this.detainerService.createInterstateAgreementDetainer(detainer,
-					form.getProsecutorReceivedDate(),
-					form.getInitiatedBy());
+					this.detainerService.createInterstateAgreementDetainer(
+							detainer, form.getProsecutorReceivedDate(),
+							form.getInitiatedBy());
 			}
 			
-			if(form.getInterstateDetainerActivityItems() != null){
+			if (form.getInterstateDetainerActivityItems() != null) {
 				this.processItems(form.getInterstateDetainerActivityItems(),
 						interstateAgreementDetainer);
 			}
-		}
-		else{//"usingInterstateAgreementDetainer" unchecked
-			//removing interstate agreement detainer if detainer originally had one
-			if(detainerService
-				.findInterstateAgreementDetainerByDetainer(detainer) != null){
+		} else {
+			//"usingInterstateAgreementDetainer" unchecked
+			//removing interstate agreement detainer if detainer originally
+			//                                                         had one
+			if (detainerService
+				.findInterstateAgreementDetainerByDetainer(detainer) != null) {
 				
 				InterstateAgreementDetainer interstateAgreementDetainer =
 						this.detainerService
 						.findInterstateAgreementDetainerByDetainer(detainer);
 				
-				if(form.getInterstateDetainerActivityItems() != null){
+				if (form.getInterstateDetainerActivityItems() != null) {
 					List<InterstateDetainerActivityItem> items =
 							new ArrayList<InterstateDetainerActivityItem>();
 					List<DocumentTagItem> tagItems =
 							new ArrayList<DocumentTagItem>();
-					for(InterstateDetainerActivityItem item
-							: form.getInterstateDetainerActivityItems()){
-						if(item.getDocumentTagItems() != null){
-							for(DocumentTagItem tagItem
-									: item.getDocumentTagItems()){
+					for (InterstateDetainerActivityItem item
+							: form.getInterstateDetainerActivityItems()) {
+						if (item.getDocumentTagItems() != null) {
+							for (DocumentTagItem tagItem
+									: item.getDocumentTagItems()) {
 								tagItem.setItemOperation(
-										DetainerNotificationItemOperation.REMOVE);
+									DetainerNotificationItemOperation.REMOVE);
 								tagItems.add(tagItem);
 							}
 							item.setDocumentTagItems(tagItems);

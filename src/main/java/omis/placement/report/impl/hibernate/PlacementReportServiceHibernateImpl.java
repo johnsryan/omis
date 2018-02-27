@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.placement.report.impl.hibernate;
 
 import java.util.Date;
@@ -31,7 +48,8 @@ import org.hibernate.transform.Transformers;
  * Hibernate implementation of report service for placement. 
  *
  * @author Stephen Abson
- * @version 0.0.1 (Nov 17, 2014)
+ * @author Josh Divine
+ * @version 0.0.2 (Feb 14, 2018)
  * @since OMIS 3.0
  */
 public class PlacementReportServiceHibernateImpl
@@ -122,6 +140,7 @@ public class PlacementReportServiceHibernateImpl
 					FIND_PLACEMENT_SUMMARY_QUERY_NAME)
 				.setParameter(OFFENDER_PARAM_NAME, offender)
 				.setTimestamp(EFFECTIVE_DATE_PARAM_NAME, effectiveDate)
+				.setReadOnly(true)
 				.uniqueResult();
 		return summary;
 	}
@@ -140,6 +159,7 @@ public class PlacementReportServiceHibernateImpl
 				.setTimestamp(START_DATE_PARAM_NAME, startDate)
 				.setTimestamp(END_DATE_PARAM_NAME, endDate)
 				.setTimestamp(EFFECTIVE_DATE_PARAM_NAME, effectiveDate)
+				.setReadOnly(true)
 				.list();
 		return summaries;
 	}
@@ -158,6 +178,7 @@ public class PlacementReportServiceHibernateImpl
 			.setTimestamp(START_DATE_PARAM_NAME, startDate)
 			.setTimestamp(END_DATE_PARAM_NAME, endDate)
 			.setTimestamp(EFFECTIVE_DATE_PARAM_NAME, effectiveDate)
+			.setReadOnly(true)
 			.list();
 		return summaries;
 	}
@@ -200,7 +221,9 @@ public class PlacementReportServiceHibernateImpl
 				= this.sessionFactory.getCurrentSession().getNamedQuery(
 			FIND_CHANGE_SUMMARIES_ALLOWED_FROM_CORRECTIONAL_STATUS_QUERY_NAME)
 					.setParameter(CORRECTIONAL_STATUS_PARAM_NAME,
-							correctionalStatus).list();
+							correctionalStatus)
+					.setReadOnly(true)
+					.list();
 		return summaries;
 	}
 	
@@ -214,7 +237,9 @@ public class PlacementReportServiceHibernateImpl
 				= this.sessionFactory.getCurrentSession().getNamedQuery(
 FIND_LOCATION_TERM_CHANGE_ACTION_SUMMARIES_BY_CORRECTIONAL_STATUS_QUERY_NAME)                                                                       
 					.setParameter(CORRECTIONAL_STATUS_PARAM_NAME,
-							correctionalStatus).list();
+							correctionalStatus)
+					.setReadOnly(true)
+					.list();
 		return summaries;
 	}
 	
@@ -228,7 +253,9 @@ FIND_LOCATION_TERM_CHANGE_ACTION_SUMMARIES_BY_CORRECTIONAL_STATUS_QUERY_NAME)
 				.getCurrentSession().getNamedQuery(
 				FIND_CORRECTIONAL_STATUS_TERM_FOR_OFFENDER_ON_DATE_QUERY_NAME)
 				.setParameter(OFFENDER_PARAM_NAME, offender)
-				.setTimestamp(DATE_PARAM_NAME, date).uniqueResult();
+				.setTimestamp(DATE_PARAM_NAME, date)
+				.setReadOnly(true)
+				.uniqueResult();
 		if (term != null) {
 			return term.getCorrectionalStatus();
 		} else {
@@ -244,6 +271,7 @@ FIND_LOCATION_TERM_CHANGE_ACTION_SUMMARIES_BY_CORRECTIONAL_STATUS_QUERY_NAME)
 				.getNamedQuery(COUNT_PLACEMENTS_BY_OFFENDER_ON_DATE_QUERY_NAME)                        
 				.setParameter(OFFENDER_PARAM_NAME, offender)
 				.setParameter(EFFECTIVE_DATE_PARAM_NAME, effectiveDate)
+				.setReadOnly(true)
 				.uniqueResult() > 0;
 	}
 	
@@ -287,6 +315,7 @@ FIND_LOCATION_TERM_CHANGE_ACTION_SUMMARIES_BY_CORRECTIONAL_STATUS_QUERY_NAME)
 						offender.getOffenderNumber()));
 		q.setResultTransformer(Transformers.aliasToBean(
 						OffenderPlacementSummaryImpl.class));
+		q.setReadOnly(true);
 		return (OffenderPlacementSummaryImpl) q.uniqueResult();
 	}
 	
@@ -330,6 +359,7 @@ FIND_LOCATION_TERM_CHANGE_ACTION_SUMMARIES_BY_CORRECTIONAL_STATUS_QUERY_NAME)
 						offender.getOffenderNumber()));
 		q.setResultTransformer(Transformers.aliasToBean(
 						LegacyOffenderPlacementSummaryImpl.class));
+		q.setReadOnly(true);
 		return (LegacyOffenderPlacementSummaryImpl) q.uniqueResult();
 	}
 	
@@ -348,6 +378,7 @@ FIND_LOCATION_TERM_CHANGE_ACTION_SUMMARIES_BY_CORRECTIONAL_STATUS_QUERY_NAME)
 						correctionalStatus)
 				.setParameter(SUPERVISORY_ORGANIZATION_PARAM_NAME,
 						supervisoryOrganization)
+				.setReadOnly(true)
 				.list();
 		return summaries;
 	}

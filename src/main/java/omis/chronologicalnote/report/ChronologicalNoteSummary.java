@@ -76,6 +76,19 @@ public class ChronologicalNoteSummary implements Serializable {
 		this.categoryNames = newCategoryNames;
 	}
 	
+	/**
+	 * Instantiates a chronologocal note summary  with the
+	 * specified properties.
+	 * 
+	 * @param id id
+	 * @param categoryNames category names
+	 * @param date date
+	 * @param narrative narrative
+	 * @param updateUserLastName updateUserLastName
+	 * @param updateUserFirstName updateUserFirstName
+	 * @param updateUserAccountName updateUserAccountName
+	 * @param updateDate updateDate
+	 */
 	public ChronologicalNoteSummary(final Long id,
 		final List<String> categoryNames, final Date date,
 		final String narrative,

@@ -1,61 +1,174 @@
-/*
- * Styling for offender profile.
- *
- * Author: Stephen Abson
- * Version: 0.1.0 (Nov 18, 2014)
- * Since: OMIS 3.0
- */
- 
-div.profileContainer {
-    display: inline-block;
-    vertical-align: top;
-    margin:3px;
-    border:1px solid #000;
+/* Profile Items Container */
+div.offenderProfile {
+	width: 95%;
+	margin: 0 auto;
 }
 
-@media only screen and (max-width:899px) {
-	div.profileContainer {
-		width: calc(100% - 10px);
-	}
+div.profileItems {
+	display: inline-block;
+	margin: 0 auto;
+	float: left;
+	width: 41%;
 }
 
-@media only screen and (min-width:900px) and (max-width:1199px) {
-	div.profileContainer {
-		width: calc(50% - 10px);
-	}
+div.profileItems:nth-child(2n+1) {
+	clear: left;
 }
 
-
-@media only screen and (min-width:1200px ) {
-	div.profileContainer {
-		width: calc(33% - 9px);
-	}
+div.profileItems {
+	display: inline-block;
+	padding-top: 4px;
+	margin: 3px;
+	float: left;
+	width: calc(50% - 6px);
 }
 
-div#profileItems {
+div.profileItemsWrapper {
+	padding: 4px;
+	width: 90%;
+}
+
+div.profileItemsInnerWrapper {
+	margin: 4px;
+}
+
+/* Profile Item Container */
+div.profileItemContainer {
+	margin-left: 5px;
+	/* border-radius: 5px; */
+	display: inline-block;
+	margin-bottom: 2px;
+	text-align: center;
+	height: auto;
+	vertical-align: top;
+}
+
+div.profileItemContainer:hover {
+	opacity: .7;
+}
+
+.profileActionMenuItem {
 	display: inline-block;
 }
 
+/* Profile Item (Button Links) */
 div.profileItem {
-    display: inline-block;
-    vertical-align: top;
-    width: 48%;
-    padding-left:3px;
+	display: contents;
+	width: 100%;
+	padding: 2px;
 }
 
+
 div.profileItem a {
-	width:96%;
-	margin:1px;
-	padding-left:5px;
-	padding-right:5px;
-	padding-top:1px;
-	padding-bottom:1px;
-	text-decoration:none;
-	display:inline-block;
+	width: 90%;
+	margin: 1px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	padding-right: 4px;
+	padding-left: 4px;
+	text-decoration: none;
+	color: inherit;
 }
-div.profileItem:not(.inactive) a:hover {
-	padding-top:0px;
-	padding-bottom:0px;
-	padding-right:4px;
-	padding-left:4px;
+
+div.profileItem:not(.inactive ) a:hover {
+	/* The following is specifically to override the styling in colors.jsp, 
+	I should either change class names in this and the new profileHeader (which would involve 
+	changing the profileItem.jsp's themselves!) or remove the styling from colors.jsp.
+	*/
+	border: 0;
+	margin: 1px;
+	background-color: inherit;
+	
+}
+
+/* Profile Action Menu */
+div.profileActionMenuItemContainer{
+	float: left;
+}
+
+/* Profile Details Container */
+div.profileDetailsWrapper{
+	margin-left: 45%;
+}
+
+div.profileDetailsWrapper span{
+	display: inline-block;
+	margin: 0 auto;
+	float: left;
+	width: 50%;
+}
+
+/* Profile Detail Item */
+div.profileDetailsItem{
+	margin-bottom: 4px;
+}
+
+div.profileDetailsItem h1{
+	font-size: large;
+	color: inherit;
+}
+
+div.profileDetailsItem label{
+	float: left;
+	clear: both;
+	font-weight: bold;
+	margin-right: 20px;
+	width: 40%;
+	text-align: right;
+}
+
+div.profileDetailsItem label + span{
+	display: -ms-grid;
+	display: grid;
+}
+
+div.profileDetailsItem label::after{
+	content: ':';
+}
+
+@media only screen and (min-width:900px) and (max-width:1199px) {
+	
+	div.profileItemContainer, div.profileDetailsWrapper span{
+		width: calc(40% - 10px);
+		margin-left: 10%;
+	}
+	div.profileItem, div.profileDetailsWrapper span{
+		font-size: 1vw;
+	}4
+}
+
+@media only screen and (min-width:1200px ) {
+	div.profileItemContainer {
+		width: 30%;
+	}
+	div.profileItem, div.profileDetailsWrapper span{
+		font-size: .75vw;
+	}
+}
+
+@media only screen and (min-width:1600px ) {
+	div.profileItems {
+		width: 30%;
+	}
+	div.profileDetailsWrapper{
+		margin-left: 35%;
+	}
+	div.profileItem, div.profileDetailsWrapper span{
+		font-size: .55vw;
+	}
+	div.profileDetailsWrapper {
+		width: 35%;
+	}
+	div.profileItems:nth-child(2n+1) {
+		clear: none;
+	}
+	div.profileItems:nth-child(3n+1) {
+		clear: left;
+	}
+}
+
+@media only screen and (min-width:2100px ) {
+	div.profileItem, div.profileDetailsWrapper span{
+		font-size: small;
+	}
 }

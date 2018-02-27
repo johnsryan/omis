@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.employment.report.impl.hibernate;
 
 import java.util.Date;
@@ -14,7 +31,8 @@ import omis.region.domain.State;
  * Implementation of employer summary report service.
  *
  * @author Sheronda Vaughn
- * @version 0.1.0 (Apr 4, 2016)
+ * @author Josh Divine
+ * @version 0.1.1 (Feb 14, 2018)
  * @since OMIS 3.0
  */
 public class EmployerSearchSummaryReportServiceHibernateImpl 
@@ -35,6 +53,7 @@ public class EmployerSearchSummaryReportServiceHibernateImpl
 		List<City> cities = this.sessionFactory.getCurrentSession()
 				.getNamedQuery("findEmployerCitiesByState")
 				.setParameter("state", state)
+				.setReadOnly(true)
 				.list();
 		return cities;
 	}
@@ -45,6 +64,7 @@ public class EmployerSearchSummaryReportServiceHibernateImpl
 		@SuppressWarnings("unchecked")
 		List<State> states = this.sessionFactory.getCurrentSession()
 				.getNamedQuery("findAllStates")
+				.setReadOnly(true)
 				.list();
 		return states;
 	}
@@ -63,6 +83,7 @@ public class EmployerSearchSummaryReportServiceHibernateImpl
 				.setParameter("city", city)
 				.setParameter("state", state)
 				.setDate("effectiveDate", effectiveDate)
+				.setReadOnly(true)
 				.list();
 		
 		return employerSummaries;

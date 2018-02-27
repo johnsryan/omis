@@ -1,10 +1,26 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.staff.report.impl.hibernate;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 
 import omis.organization.domain.OrganizationDivision;
@@ -14,11 +30,15 @@ import omis.staff.report.StaffSearchSummary;
 import omis.staff.report.StaffSearchSummaryReportService;
 import omis.supervision.domain.SupervisoryOrganization;
 
-/** Implementation of staff person summary report service.
+/** 
+ * Implementation of staff person summary report service.
+ * 
  * @author Ryan Johns
  * @author Sheronda Vaughn
- * @version 0.1.0 (Jul 16, 2014)
- * @since OMIS 3.0 */
+ * @author Josh Divine
+ * @version 0.1.1 (Feb 14, 2018)
+ * @since OMIS 3.0 
+ */
 public class StaffSearchSummaryReportServiceHibernateImpl
 		implements StaffSearchSummaryReportService {
 	private final SessionFactory sessionFactory;
@@ -56,10 +76,11 @@ public class StaffSearchSummaryReportServiceHibernateImpl
 	/** {@inheritDoc} */
 	@Override
 	public StaffSearchResult findById(final Long id) {
-		final Query q = this.sessionFactory.getCurrentSession().getNamedQuery(
-				FIND_STAFF_SUMMARY_BY_ID_QUERY_NAME);
-
-		return (StaffSearchResult) q.setLong(ID_PARAM_NAME, id).uniqueResult();
+		return (StaffSearchResult) this.sessionFactory.getCurrentSession()
+				.getNamedQuery(FIND_STAFF_SUMMARY_BY_ID_QUERY_NAME)
+				.setLong(ID_PARAM_NAME, id)
+				.setReadOnly(true)
+				.uniqueResult();
 	}
 
 	/** {@inheritDoc} */
@@ -99,14 +120,15 @@ public class StaffSearchSummaryReportServiceHibernateImpl
 	@Override
 	public List<StaffSearchResult> findPersonNamesByNameSearch(
 			final String name1, final String name2, final Date date) {
-		final Query q = this.sessionFactory.getCurrentSession().getNamedQuery(
-				FIND_STAFF_SUMMARY_BY_FIRST_LAST_QUERY_NAME);
-
 		@SuppressWarnings("unchecked")
 		final List<StaffSearchResult> results = (List<StaffSearchResult>)
-			q.setParameter(NAME1_PARAM_NAME, name1).setParameter(
-					NAME2_PARAM_NAME, name2)
-			.setTimestamp(DATE_PARAM_NAME, date).list();
+				this.sessionFactory.getCurrentSession()
+				.getNamedQuery(FIND_STAFF_SUMMARY_BY_FIRST_LAST_QUERY_NAME)
+				.setParameter(NAME1_PARAM_NAME, name1)
+				.setParameter(NAME2_PARAM_NAME, name2)
+				.setTimestamp(DATE_PARAM_NAME, date)
+				.setReadOnly(true)
+				.list();
 
 		return results;
 	}
@@ -116,15 +138,16 @@ public class StaffSearchSummaryReportServiceHibernateImpl
 	public List<StaffSearchResult> findPersonNamesByNameSearch(
 			final String first, final String middle, final String last,
 			final Date date) {
-		final Query q = this.sessionFactory.getCurrentSession().getNamedQuery(
-				FIND_STAFF_SUMMARY_BY_FULL_NAME_QUERY_NAME);
-
 		@SuppressWarnings("unchecked")
 		final List<StaffSearchResult> results = (List<StaffSearchResult>)
-			q.setParameter(FIRST_NAME_PARAM_NAME, first).setParameter(
-					MIDDLE_NAME_PARAM_NAME, middle).setParameter(
-							LAST_NAME_PARAM_NAME, last).setTimestamp(
-									DATE_PARAM_NAME, date).list();
+				this.sessionFactory.getCurrentSession()
+				.getNamedQuery(FIND_STAFF_SUMMARY_BY_FULL_NAME_QUERY_NAME)
+				.setParameter(FIRST_NAME_PARAM_NAME, first)
+				.setParameter(MIDDLE_NAME_PARAM_NAME, middle)
+				.setParameter(LAST_NAME_PARAM_NAME, last)
+				.setTimestamp(DATE_PARAM_NAME, date)
+				.setReadOnly(true)
+				.list();
 		return results;
 	}
 
@@ -132,13 +155,14 @@ public class StaffSearchSummaryReportServiceHibernateImpl
 	@Override
 	public List<StaffSearchResult> findPersonNamesByLastName(final String name,
 			final Date date) {
-		final Query q = this.sessionFactory.getCurrentSession().getNamedQuery(
-				FIND_STAFF_SUMMARY_BY_LAST_NAME_QUERY_NAME);
-
 		@SuppressWarnings("unchecked")
 		final List<StaffSearchResult> results = (List<StaffSearchResult>)
-			q.setParameter(LAST_NAME_PARAM_NAME, name).setTimestamp(
-					DATE_PARAM_NAME, date).list();
+				this.sessionFactory.getCurrentSession()
+				.getNamedQuery(FIND_STAFF_SUMMARY_BY_LAST_NAME_QUERY_NAME)
+				.setParameter(LAST_NAME_PARAM_NAME, name)
+				.setTimestamp(DATE_PARAM_NAME, date)
+				.setReadOnly(true)
+				.list();
 
 		return results;
 	}
@@ -147,13 +171,12 @@ public class StaffSearchSummaryReportServiceHibernateImpl
 	@Override
 	public StaffSearchResult findPersonNameByUsername(final String username, 
 			final Date date) {
-		final Query q = this.sessionFactory.getCurrentSession().getNamedQuery(
-				FIND_STAFF_SUMMARY_BY_USERNAME_QUERY_NAME);
-		
-		q.setString(USERNAME_PARAM_NAME, username)
-		.setTimestamp(DATE_PARAM_NAME, date);
-		
-		return (StaffSearchResult) q.uniqueResult();
+		return (StaffSearchResult) this.sessionFactory.getCurrentSession()
+				.getNamedQuery(FIND_STAFF_SUMMARY_BY_USERNAME_QUERY_NAME)
+				.setString(USERNAME_PARAM_NAME, username)
+				.setTimestamp(DATE_PARAM_NAME, date)
+				.setReadOnly(true)
+				.uniqueResult();
 	}
 
 	/** {@inheritDoc} */
@@ -170,6 +193,7 @@ public class StaffSearchSummaryReportServiceHibernateImpl
 				.setParameter("lastName", lastName)
 				.setParameter("organization", organization)
 				.setParameter("division", division)
+				.setReadOnly(true)
 				.list();
 		
 		return staffSearchSummaries;
@@ -182,6 +206,7 @@ public class StaffSearchSummaryReportServiceHibernateImpl
 		List<SupervisoryOrganization> organizations = this.sessionFactory
 				.getCurrentSession()
 				.getNamedQuery("findAllSupervisoryOrganizations")
+				.setReadOnly(true)
 				.list();
 		return organizations;
 	}
@@ -193,6 +218,7 @@ public class StaffSearchSummaryReportServiceHibernateImpl
 		List<OrganizationDivision> divisions = this.sessionFactory
 				.getCurrentSession()
 				.getNamedQuery("findAllOrganizationDivisions")
+				.setReadOnly(true)
 				.list();
 		return divisions;
 	}

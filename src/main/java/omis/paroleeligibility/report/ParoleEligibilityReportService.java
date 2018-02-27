@@ -19,17 +19,36 @@ package omis.paroleeligibility.report;
 
 import java.util.List;
 
+import omis.hearinganalysis.domain.HearingAnalysis;
 import omis.offender.domain.Offender;
+import omis.paroleeligibility.domain.ParoleEligibility;
 
 /**
  * Report service for parole eligibilities.
  *
  * @author Trevor Isles
- * @version 0.1.0 (Dec 19, 2017)
+ * @author Josh Divine
+ * @version 0.1.1 (Feb 20, 2018)
  * @since OMIS 3.0
  */
 public interface ParoleEligibilityReportService {
 	
+	/**
+	 * Returns a list of parole eligibility summaries for the specified 
+	 * offender.
+	 * 
+	 * @param offender offender
+	 * @return list of parole eligibility summaries
+	 */
 	List<ParoleEligibilitySummary> findByOffender(Offender offender);
+	
+	/**
+	 * Finds the hearing analysis for the specified parole eligibility.
+	 * 
+	 * @param eligibility parole eligibility
+	 * @return hearing analysis
+	 */
+	HearingAnalysis findHearingAnalysisByParoleEligibility(
+			ParoleEligibility eligibility);
 
 }

@@ -29,7 +29,7 @@ import omis.parolereview.report.ParoleReviewSummaryReportService;
  * Hibernate implementation of the parole review summary report service.
  * 
  * @author Josh Divine
- * @version 0.1.0 (Jan 29, 2018)
+ * @version 0.1.1 (Feb 14, 2018)
  * @since OMIS 3.0
  */
 public class ParoleReviewSummaryReportServiceHibernateImpl 
@@ -67,6 +67,7 @@ public class ParoleReviewSummaryReportServiceHibernateImpl
 				.getCurrentSession()
 				.getNamedQuery(FIND_BY_OFFENDER_QUERY_NAME)
 				.setParameter(OFFENDER_PARAMETER_NAME, offender)
+				.setReadOnly(true)
 				.list();
 		return summaries;
 	}

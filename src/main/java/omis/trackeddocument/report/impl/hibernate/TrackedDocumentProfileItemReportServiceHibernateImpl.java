@@ -19,7 +19,6 @@ package omis.trackeddocument.report.impl.hibernate;
 
 import java.util.Date;
 
-import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 
 import omis.offender.domain.Offender;
@@ -29,7 +28,8 @@ import omis.trackeddocument.report.TrackedDocumentProfileItemReportService;
  * Hibernate implementation of tracked document profile item.
  *
  * @author Sheronda Vaughn
- * @version 0.1.0 (Jan 16, 2018)
+ * @author Josh Divine
+ * @version 0.1.0 (Feb 14, 2018)
  * @since OMIS 3.0
  */
 public class TrackedDocumentProfileItemReportServiceHibernateImpl 
@@ -56,10 +56,12 @@ public class TrackedDocumentProfileItemReportServiceHibernateImpl
 	@Override
 	public Integer findTrackedDocumentsCountByOffenderAndDate(
 			final Offender offender, final Date effectiveDate) {
-		Query q = this.sessionFactory.getCurrentSession().getNamedQuery(
-				FIND_TRACKED_DOCUMENT_COUNT_BY_OFFENDER_AND_DATE_QUERY_NAME);
-		q.setEntity(OFFENDER_PARAM_NAME, offender);
-		q.setDate(EFFECTIVE_DATE_PARAM_NAME, effectiveDate);
-		return ((Long) q.uniqueResult()).intValue();
+		return ((Long) this.sessionFactory.getCurrentSession()
+				.getNamedQuery(
+						FIND_TRACKED_DOCUMENT_COUNT_BY_OFFENDER_AND_DATE_QUERY_NAME)
+				.setParameter(OFFENDER_PARAM_NAME, offender)
+				.setDate(EFFECTIVE_DATE_PARAM_NAME, effectiveDate)
+				.setReadOnly(true)
+				.uniqueResult()).intValue();
 	}
 }

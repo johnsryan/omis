@@ -20,7 +20,7 @@
 			</a>
 		</li>
 		</sec:authorize>
-		<sec:authorize access="hasRole('ADA_ACCOMMODATION_CREATE') or hasRole('ADA_ACCOMMODATION_VIEW') or hasRole('ADMIN')">
+		<sec:authorize access="hasRole('ADA_ACCOMMODATION_ISSUANCE_LIST') or hasRole('ADA_ACCOMMODATION_LIST') or hasRole('ADMIN')">
 			<c:if test="${not empty offender}">
 			<li>
 				<a href="${pageContext.request.contextPath}/adaAccommodation/adaAccommodationListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="adaAccommodationListingReportLinkLabel"/></a>

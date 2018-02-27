@@ -30,6 +30,7 @@ import omis.residence.domain.ResidenceStatus;
 import omis.residence.domain.ResidenceTerm;
 import omis.residence.exception.PrimaryResidenceExistsException;
 import omis.residence.exception.ResidenceStatusConflictException;
+import omis.residence.exception.ResidenceTermExistsException;
 import omis.residence.service.ResidenceService;
 import omis.residence.service.delegate.AllowedResidentialLocationRuleDelegate;
 import omis.residence.service.delegate.NonResidenceTermDelegate;
@@ -295,7 +296,8 @@ public class ResidenceServiceImpl implements ResidenceService {
 			final Boolean confirmed, final String notes,
 			final VerificationSignature verificationSignature)
 			throws DuplicateEntityFoundException, 
-			PrimaryResidenceExistsException, ResidenceStatusConflictException { 
+			PrimaryResidenceExistsException, ResidenceStatusConflictException,
+			ResidenceTermExistsException { 
 		final ResidenceCategory residenceCategory;
 		final ResidenceStatus residenceStatus;
 		if (primary) {	
@@ -362,8 +364,8 @@ public class ResidenceServiceImpl implements ResidenceService {
 			final Address address, final Boolean fosterCare, 
 			final Boolean confirmed, final String notes,
 			final VerificationSignature verificationSignature)
-			throws DuplicateEntityFoundException, 
-					PrimaryResidenceExistsException {
+			throws DuplicateEntityFoundException, ResidenceTermExistsException,
+				PrimaryResidenceExistsException{
 		final ResidenceCategory residenceCategory;
 		final ResidenceStatus residenceStatus;
 		if (primary) {	

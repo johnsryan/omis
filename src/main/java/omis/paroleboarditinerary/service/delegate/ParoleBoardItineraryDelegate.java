@@ -27,7 +27,7 @@ import omis.exception.DuplicateEntityFoundException;
 import omis.instance.factory.InstanceFactory;
 import omis.paroleboarditinerary.dao.ParoleBoardItineraryDao;
 import omis.paroleboarditinerary.domain.ParoleBoardItinerary;
-import omis.paroleboarditinerary.domain.ParoleBoardLocation;
+import omis.paroleboardlocation.domain.ParoleBoardLocation;
 
 /**
  * Parole board itinerary delegate.

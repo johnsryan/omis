@@ -19,7 +19,7 @@
 
 <%--
  - Author: Josh Divine
- - Version: 0.1.0 (Jan 17, 2018)
+ - Version: 0.1.1 (Feb 20, 2018)
  - Since: OMIS 3.0
  --%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
@@ -37,7 +37,12 @@
 	<jsp:include page="/WEB-INF/views/common/includes/headerOffenderFormResources.jsp"/>
 	<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/hearingAnalysis/style/hearingAnalysis.css?VERSION=2" />
 	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/hearingAnalysis/scripts/JQuery/jquery.omis.hearingAnalysisHome.js?VERSION=1" ></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/hearingAnalysis/scripts/JQuery/jquery.omis.hearingAnalysis.js?VERSION=1" ></script>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/hearingAnalysis/scripts/hearingAnalysisHome.js?VERSION=1" ></script>
+	<script type="text/javascript">
+		//Track current indexes
+		var currentHearingAnalysisNoteIndex = ${hearingAnalysisNoteIndex};
+    </script>
 </head>
 <body>
 	<jsp:include page="/WEB-INF/views/offender/includes/offenderHeader.jsp"/>

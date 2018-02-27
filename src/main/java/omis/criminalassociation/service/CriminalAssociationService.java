@@ -35,6 +35,7 @@ import omis.relationship.exception.ReflexiveRelationshipException;
 import omis.residence.domain.ResidenceTerm;
 import omis.residence.exception.PrimaryResidenceExistsException;
 import omis.residence.exception.ResidenceStatusConflictException;
+import omis.residence.exception.ResidenceTermExistsException;
 
 /**
  * Services for association.
@@ -147,7 +148,8 @@ public interface CriminalAssociationService {
 	ResidenceTerm createResidenceTerm(Person person, Address address) 
 		throws DuplicateEntityFoundException, 
 		PrimaryResidenceExistsException, 
-		ResidenceStatusConflictException;
+		ResidenceStatusConflictException,
+		ResidenceTermExistsException;
 	
 	/**
 	 * Add telephone number.

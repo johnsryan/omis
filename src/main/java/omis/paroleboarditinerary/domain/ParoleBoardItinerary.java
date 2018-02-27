@@ -3,6 +3,7 @@ package omis.paroleboarditinerary.domain;
 import omis.audit.domain.Creatable;
 import omis.audit.domain.Updatable;
 import omis.datatype.DateRange;
+import omis.paroleboardlocation.domain.ParoleBoardLocation;
 
 /**
  * Parole board itinerary.

@@ -9,7 +9,7 @@ import omis.paroleboarditinerary.domain.BoardAttendee;
 import omis.paroleboarditinerary.domain.BoardMeetingSite;
 import omis.paroleboarditinerary.domain.ParoleBoardItinerary;
 import omis.paroleboarditinerary.domain.ParoleBoardItineraryNote;
-import omis.paroleboarditinerary.domain.ParoleBoardLocation;
+import omis.paroleboardlocation.domain.ParoleBoardLocation;
 import omis.paroleboardmember.domain.ParoleBoardMember;
 
 /**

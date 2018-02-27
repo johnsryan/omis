@@ -27,7 +27,7 @@ import omis.hearinganalysis.report.HearingAnalysisSummaryService;
  * Hibernate implementation of the hearing analysis summary report service.
  * 
  * @author Josh Divine
- * @version 0.1.0 (Nov 21, 2017)
+ * @version 0.1.1 (Feb 14, 2018)
  * @since OMIS 3.0
  */
 public class HearingAnalysisSummaryServiceHibernateImpl 
@@ -64,8 +64,8 @@ public class HearingAnalysisSummaryServiceHibernateImpl
 				.sessionFactory.getCurrentSession()
 				.getNamedQuery(SUMMARIZE_QUERY_NAME)
 				.setParameter(HEARING_ANALYSIS_PARAMETER_NAME, hearingAnalysis)
+				.setReadOnly(true)
 				.uniqueResult();
 		return summary;
 	}
-
 }

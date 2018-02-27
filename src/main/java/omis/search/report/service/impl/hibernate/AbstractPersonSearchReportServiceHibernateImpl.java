@@ -1,19 +1,39 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.search.report.service.impl.hibernate;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.SessionFactory;
+
 import omis.search.report.PersonSearchResult;
 import omis.search.util.PersonRegexUtility;
 
-import org.hibernate.Query;
-import org.hibernate.SessionFactory;
-
-/** provides search operations for persons features.
+/** 
+ * Provides search operations for persons features.
+ * 
  * @author Ryan Johns
- * @version 0.1.0 (Apr 24, 2013)
+ * @author Josh Divine
+ * @version 0.1.1 (Feb 15, 2018)
  * @since OMIS 3.0
- * @param <T> personSearchResult */
+ * @param <T> personSearchResult 
+ */
 public abstract class AbstractPersonSearchReportServiceHibernateImpl
 	<T extends PersonSearchResult> {
 
@@ -90,15 +110,16 @@ public abstract class AbstractPersonSearchReportServiceHibernateImpl
 	 * @return list of person names. */
 	public List<T> findPersonNamesByNameSearch(final String name1,
 			final String name2) {
-		final Query q = this.sessionFactory.getCurrentSession()
-				.getNamedQuery(this.getFindByFirstLastNameSearchQuery());
-
-		q.setParameter(this.getFindByFirstLastNameSearchParams()[0], name1);
-		q.setParameter(this.getFindByFirstLastNameSearchParams()[1], name2);
-
 		@SuppressWarnings("unchecked")
 		final
-		List<T> result = q.list();
+		List<T> result = this.sessionFactory.getCurrentSession()
+				.getNamedQuery(this.getFindByFirstLastNameSearchQuery())
+				.setParameter(this.getFindByFirstLastNameSearchParams()[0], 
+						name1)
+				.setParameter(this.getFindByFirstLastNameSearchParams()[1], 
+						name2)
+				.setReadOnly(true)
+				.list();
 
 		return result;
 	}
@@ -110,19 +131,18 @@ public abstract class AbstractPersonSearchReportServiceHibernateImpl
 	 * @return list of person names. */
 	public List<T> findPersonNamesByNameSearch(final String first,
 			final String middle, final String last) {
-		final Query q = this.sessionFactory.getCurrentSession()
-				.getNamedQuery(this.getFindByFirstMiddleLastNameSearchQuery());
-
-		q.setParameter(this.getFindByFirstMiddleLastNameSearchParams()[0],
-				first);
-		q.setParameter(this.getFindByFirstMiddleLastNameSearchParams()[1],
-				middle);
-		q.setParameter(this.getFindByFirstMiddleLastNameSearchParams()[2],
-				last);
-
 		@SuppressWarnings("unchecked")
 		final
-		List<T> result = q.list();
+		List<T> result = this.sessionFactory.getCurrentSession()
+				.getNamedQuery(this.getFindByFirstMiddleLastNameSearchQuery())
+				.setParameter(this.getFindByFirstMiddleLastNameSearchParams()[0],
+						first)
+				.setParameter(this.getFindByFirstMiddleLastNameSearchParams()[1],
+						middle)
+				.setParameter(this.getFindByFirstMiddleLastNameSearchParams()[2],
+						last)
+				.setReadOnly(true)
+				.list();
 
 		return result;
 	}
@@ -131,15 +151,14 @@ public abstract class AbstractPersonSearchReportServiceHibernateImpl
 	 * @param name name.
 	 * @return list of person names. */
 	public List<T> findPersonNamesByLastName(final String name) {
-		final Query q = this.sessionFactory.getCurrentSession()
-				.getNamedQuery(this.getFindPersonNameByNameSearchQuery());
-
-		q.setString(this.getFindPersonNameByNameSearchParam(), name);
-
 		@SuppressWarnings("unchecked")
 		final
-		List<T> result = q.list();
+		List<T> result = this.sessionFactory.getCurrentSession()
+				.getNamedQuery(this.getFindPersonNameByNameSearchQuery())
+				.setString(this.getFindPersonNameByNameSearchParam(), name)
+				.setReadOnly(true)
+				.list();
 
 		return result;
 	}
-} //PersonSearchService
+}

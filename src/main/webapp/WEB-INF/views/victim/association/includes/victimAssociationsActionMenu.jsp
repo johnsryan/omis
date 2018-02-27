@@ -105,6 +105,20 @@
 		<sec:authorize access="(hasRole('VICTIM_ASSOCIATION_VIEW') and hasRole('OFFENDER_SSN_VIEW')) or hasRole('ADMIN')">
 			<c:if test="${not empty victimAssociation}">
 			<li>
+				<a href="${pageContext.request.contextPath}/victim/association/victimAssocDetailsReport.html?victimAssociation=${victimAssociation.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="victimAssocDetailsReportLinkLabel"/></a>
+			</li>
+			</c:if>
+		</sec:authorize>
+		<sec:authorize access="hasRole('VICTIM_ASSOCIATION_VIEW') or hasRole('ADMIN')">
+			<c:if test="${not empty victimAssociation}">
+			<li>
+				<a href="${pageContext.request.contextPath}/victim/association/victimAssocDetailsRedactedReport.html?victimAssociation=${victimAssociation.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="victimAssocDetailsRedactedReportLinkLabel"/></a>
+			</li>
+			</c:if>
+		</sec:authorize>
+		<sec:authorize access="(hasRole('VICTIM_ASSOCIATION_VIEW') and hasRole('OFFENDER_SSN_VIEW')) or hasRole('ADMIN')">
+			<c:if test="${not empty victimAssociation}">
+			<li>
 				<a href="${pageContext.request.contextPath}/victim/association/victimDetailsReport.html?victimAssociation=${victimAssociation.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="victimDetailsReportLinkLabel"/></a>
 			</li>
 			</c:if>
@@ -115,6 +129,6 @@
 				<a href="${pageContext.request.contextPath}/victim/association/victimDetailsRedactedReport.html?victimAssociation=${victimAssociation.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="victimDetailsRedactedReportLinkLabel"/></a>
 			</li>
 			</c:if>
-		</sec:authorize>
+		</sec:authorize>		
 	</ul>
 </fmt:bundle>

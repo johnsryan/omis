@@ -124,11 +124,17 @@ public class ReportVictimAssociationsController {
 	private static final String VICTIM_LISTING_LEGACY_REPORT_NAME 
 	= "/Relationships/Victims/Victim_Listing_Legacy";
 
-	private static final String VICTIM_DETAILS_REPORT_NAME 
-		= "/Relationships/Victims/Victims_Details";
+	private static final String VICTIM_PERS_DETAILS_REPORT_NAME 
+		= "/Relationships/Victims/Victim_Personal_Details";
 	
-	private static final String VICTIM_DETAILS_REDACTED_REPORT_NAME 
-		= "/Relationships/Victims/Victims_Details_Redacted";
+	private static final String VICTIM_PERS_DETAILS_REDACTED_REPORT_NAME 
+		= "/Relationships/Victims/Victim_Personal_Details_Redacted";
+	
+	private static final String VICTIM_ASSOC_DETAILS_REPORT_NAME 
+	= "/Relationships/Victims/Victim_Association_Details";
+
+    private static final String VICTIM_ASSOC_DETAILS_REDACTED_REPORT_NAME 
+	= "/Relationships/Victims/Victim_Association_Details_Redacted";	
 
 	private static final String VICTIM_IMPACT_REPORT_NAME 
 	    ="/Relationships/Victims/Victim_Impact_Statement";
@@ -323,7 +329,7 @@ public class ReportVictimAssociationsController {
 		reportParamMap.put(VICTIM_DETAILS_ID_REPORT_PARAM_NAME,
 				Long.toString(victimAssociation.getId()));
 		byte[] doc = this.reportRunner.runReport(
-				VICTIM_DETAILS_REPORT_NAME,
+				VICTIM_PERS_DETAILS_REPORT_NAME,
 				reportParamMap, reportFormat);
 		return this.reportControllerDelegate.constructReportResponseEntity(
 				doc, reportFormat);
@@ -348,7 +354,58 @@ public class ReportVictimAssociationsController {
 		reportParamMap.put(VICTIM_DETAILS_ID_REPORT_PARAM_NAME,
 				Long.toString(victimAssociation.getId()));
 		byte[] doc = this.reportRunner.runReport(
-				VICTIM_DETAILS_REDACTED_REPORT_NAME,
+				VICTIM_PERS_DETAILS_REDACTED_REPORT_NAME,
+				reportParamMap, reportFormat);
+		return this.reportControllerDelegate.constructReportResponseEntity(
+				doc, reportFormat);
+	}
+	
+	/**
+	 * Returns the report for the specified victim association.
+	 * 
+	 * @param victimAssociation victim association
+	 * @param reportFormat report format
+	 * @return response entity with report
+	 */
+	@RequestMapping(value = "/victimAssocDetailsReport.html",
+			method = RequestMethod.GET)
+	@PreAuthorize("(hasRole('VICTIM_ASSOCIATION_VIEW') and "
+			+ "hasRole('OFFENDER_SSN_VIEW')) or hasRole('ADMIN')")
+	public ResponseEntity<byte []> reportVictimAssocDetails(@RequestParam(
+			value = "victimAssociation", required = true)
+			final VictimAssociation victimAssociation,
+			@RequestParam(value = "reportFormat", required = true)
+			final ReportFormat reportFormat) {
+		Map<String, String> reportParamMap = new HashMap<String, String>();
+		reportParamMap.put(VICTIM_DETAILS_ID_REPORT_PARAM_NAME,
+				Long.toString(victimAssociation.getId()));
+		byte[] doc = this.reportRunner.runReport(
+				VICTIM_ASSOC_DETAILS_REPORT_NAME,
+				reportParamMap, reportFormat);
+		return this.reportControllerDelegate.constructReportResponseEntity(
+				doc, reportFormat);
+	}
+
+	/**
+	 * Returns the redacted report for the specified victim association.
+	 * 
+	 * @param victimAssociation victim association
+	 * @param reportFormat report format
+	 * @return response entity with report
+	 */
+	@RequestMapping(value = "/victimAssocDetailsRedactedReport.html",
+			method = RequestMethod.GET)
+	@PreAuthorize("hasRole('VICTIM_ASSOCIATION_VIEW') or hasRole('ADMIN')")
+	public ResponseEntity<byte []> reportVictimAssocDetailsRedacted(@RequestParam(
+			value = "victimAssociation", required = true)
+			final VictimAssociation victimAssociation,
+			@RequestParam(value = "reportFormat", required = true)
+			final ReportFormat reportFormat) {
+		Map<String, String> reportParamMap = new HashMap<String, String>();
+		reportParamMap.put(VICTIM_DETAILS_ID_REPORT_PARAM_NAME,
+				Long.toString(victimAssociation.getId()));
+		byte[] doc = this.reportRunner.runReport(
+				VICTIM_ASSOC_DETAILS_REDACTED_REPORT_NAME,
 				reportParamMap, reportFormat);
 		return this.reportControllerDelegate.constructReportResponseEntity(
 				doc, reportFormat);

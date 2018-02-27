@@ -20,7 +20,6 @@ import org.springframework.web.servlet.ModelAndView;
 import omis.beans.factory.PropertyEditorFactory;
 import omis.beans.factory.spring.CustomDateEditorFactory;
 import omis.datatype.DateRange;
-import omis.exception.DuplicateEntityFoundException;
 import omis.location.domain.Location;
 import omis.locationterm.domain.LocationTerm;
 import omis.offender.beans.factory.OffenderPropertyEditorFactory;
@@ -31,6 +30,7 @@ import omis.program.domain.ProgramPlacement;
 import omis.program.exception.ProgramPlacementConflictException;
 import omis.program.exception.ProgramPlacementExistsAfterException;
 import omis.program.exception.ProgramPlacementExistsBeforeException;
+import omis.program.exception.ProgramPlacementExistsException;
 import omis.program.service.ProgramPlacementService;
 import omis.program.web.form.ProgramPlacementForm;
 import omis.program.web.validator.ProgramPlacementFormValidator;
@@ -205,7 +205,7 @@ public class ManageProgramPlacementController {
 	 * @param programPlacementForm form for program placements
 	 * @param result result
 	 * @return redirect to list program placements for offender
-	 * @throws DuplicateEntityFoundException if program placement exists
+	 * @throws ProgramPlacementExistsException if program placement exists
 	 * @throws ProgramPlacementConflictException if conflict program placement
 	 * exists
 	 * @throws ProgramPlacementExistsBeforeException if program placement
@@ -230,7 +230,7 @@ public class ManageProgramPlacementController {
 				final String defaultEffectiveTime,
 			final ProgramPlacementForm programPlacementForm,
 			final BindingResult result)
-					throws DuplicateEntityFoundException,
+					throws ProgramPlacementExistsException,
 						ProgramPlacementConflictException,
 						ProgramPlacementExistsBeforeException,
 						ProgramPlacementExistsAfterException, OffenderNotUnderSupervisionException {
@@ -333,7 +333,7 @@ public class ManageProgramPlacementController {
 	 * @param programPlacementForm form for program placement
 	 * @param result binding result
 	 * @return redirect to list program placements for offender
-	 * @throws DuplicateEntityFoundException if program placement exists
+	 * @throws ProgramPlacementExistsException if program placement exists
 	 * @throws ProgramPlacementConflictException if conflict program placement
 	 * exists
 	 * @throws ProgramPlacementExistsBeforeException if program placement
@@ -350,7 +350,7 @@ public class ManageProgramPlacementController {
 				final ProgramPlacement programPlacement,
 			final ProgramPlacementForm programPlacementForm,
 			final BindingResult result)
-				throws DuplicateEntityFoundException,
+				throws ProgramPlacementExistsException,
 					ProgramPlacementConflictException,
 					ProgramPlacementExistsBeforeException,
 					ProgramPlacementExistsAfterException, OffenderNotUnderSupervisionException {
@@ -427,14 +427,14 @@ public class ManageProgramPlacementController {
 	/* Exception handlers. */
 	
 	/**
-	 * Handles {@code DuplicateEntityFoundException}. 
+	 * Handles {@code ProgramPlacementExistsException}. 
 	 * 
 	 * @param exception exception thrown
-	 * @return screen to handle {@code DuplicateEntityFoundException}
+	 * @return screen to handle {@code ProgramPlacementExistsException}
 	 */
 	@ExceptionHandler
-	public ModelAndView handleDuplicateEntityFoundException(
-			final DuplicateEntityFoundException exception) {
+	public ModelAndView handleProgramPlacementExistsException(
+			final ProgramPlacementExistsException exception) {
 		return this.businessExceptionHandlerDelegate
 				.prepareModelAndView(DUPLICATE_ENTITY_FOUND_MESSAGE_KEY,
 						ERROR_BUNDLE, exception);

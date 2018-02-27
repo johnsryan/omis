@@ -395,6 +395,12 @@ ul.tabs li span a, span.tab a {
 	color:#000;
 }
 
+/* Module Group */
+
+.moduleGroupLinkContainer > a {
+	background-color: hsla(${accentHue}, ${accentSaturation}%, 40%, 1);
+	color: white;
+}
 
 /* Panels */
 .horizontalPanel {

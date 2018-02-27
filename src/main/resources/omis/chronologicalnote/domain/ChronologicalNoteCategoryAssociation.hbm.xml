@@ -45,7 +45,7 @@
 		</component>
 	</class>
 	
-	<query name="findByNote"><![CDATA[
+	<query name="findChronologicalNoteCategoryAssociationsByNote"><![CDATA[
 		select association
 		from
 			omis.chronologicalnote.domain.ChronologicalNoteCategoryAssociation association

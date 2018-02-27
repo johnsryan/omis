@@ -9,7 +9,7 @@
 	<div id="${addressFieldsPropertyName}Snippet">
 		<span class="fieldGroup">
 			<label class="fieldLabel" for="${addressFieldsPropertyName}.value"><fmt:message key="addressFieldsValueLabel"/></label>
-			<input type="text" name="${addressFieldsPropertyName}.value" id="${addressFieldsPropertyName}Value" value="${addressFields.value}"/>
+			<input type="text" name="${addressFieldsPropertyName}.value" id="${addressFieldsPropertyName}Value" value="${addressFields.value}" class="large"/>
 			<form:errors cssClass="error" path="${addressFieldsPropertyName}.value"/>
 		</span>
 		<span class="fieldGroup">

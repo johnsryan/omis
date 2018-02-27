@@ -1,5 +1,21 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.questionnaire.report.impl.hibernate;
-
 
 import java.util.List;
 
@@ -19,9 +35,10 @@ import omis.questionnaire.report.AdministeredQuestionnaireSectionSummary;
 /**
  * QuestionnaireReportServiceHibernateImpl.java
  * 
- *@author Annie Jacques 
- *@version 0.1.0 (Sep 12, 2016)
- *@since OMIS 3.0
+ * @author Annie Wahl
+ * @author Josh Divine
+ * @version 0.1.1 (Feb 15, 2018)
+ * @since OMIS 3.0
  *
  */
 public class AdministeredQuestionnaireReportServiceHibernateImpl
@@ -97,8 +114,8 @@ public class AdministeredQuestionnaireReportServiceHibernateImpl
 			= this.sessionFactory.getCurrentSession()
 			.getNamedQuery(FIND_QUESTIONNAIRE_SUMMARIES_BY_ANSWERER_QUERY_NAME)
 			.setParameter(ANSWERER_PARAM_NAME, answerer)
+			.setReadOnly(true)
 			.list();
-		
 		
 		return administeredQuestionnaireSummaries;
 	}
@@ -115,8 +132,8 @@ public class AdministeredQuestionnaireReportServiceHibernateImpl
 	FIND_QUESTIONNAIRE_SUMMARIES_BY_ANSWERER_AND_QUESTIONNAIRE_TYPE_QUERY_NAME)
 			.setParameter(ANSWERER_PARAM_NAME, answerer)
 			.setParameter(QUESTIONNAIRE_TYPE_PARAM_NAME, questionnaireType)
+			.setReadOnly(true)
 			.list();
-		
 		
 		return administeredQuestionnaireSummaries;
 	}
@@ -131,6 +148,7 @@ public class AdministeredQuestionnaireReportServiceHibernateImpl
 				.getNamedQuery(QUESTIONNAIRE_SUMMARIZE_QUERY_NAME)
 				.setParameter(ADMINISTERED_QUESTIONNAIRE_PARAM_NAME, 
 						administeredQuestionnaire)
+				.setReadOnly(true)
 				.uniqueResult();
 			
 		return administeredQuestionnaireSummary;
@@ -143,6 +161,7 @@ public class AdministeredQuestionnaireReportServiceHibernateImpl
 				.getCurrentSession()
 				.getNamedQuery(QUESTION_SUMMARIZE_QUERY_NAME)
 				.setParameter(ALLOWED_QUESTION_PARAM_NAME, allowedQuestion)
+				.setReadOnly(true)
 				.uniqueResult();
 		
 		return questionSummary;
@@ -154,12 +173,14 @@ public class AdministeredQuestionnaireReportServiceHibernateImpl
 		findAdministeredQuestionnaireSectionSummariesByAdministeredQuestionnaire(
 			final AdministeredQuestionnaire administeredQuestionnaire) {
 		@SuppressWarnings("unchecked")
-		List<AdministeredQuestionnaireSectionSummary> questionnaireSectionSummaries = 
+		List<AdministeredQuestionnaireSectionSummary> 
+			questionnaireSectionSummaries =
 			this.sessionFactory.getCurrentSession()
 			.getNamedQuery(
-			FIND_QUESTIONNAIRE_SECTION_SUMMARIES_BY_QUESTIONNAIRE_QUERY_NAME)
+					FIND_QUESTIONNAIRE_SECTION_SUMMARIES_BY_QUESTIONNAIRE_QUERY_NAME)
 			.setParameter(ADMINISTERED_QUESTIONNAIRE_PARAM_NAME, 
 					administeredQuestionnaire)
+			.setReadOnly(true)
 			.list();
 		
 		return questionnaireSectionSummaries;
@@ -175,6 +196,7 @@ public class AdministeredQuestionnaireReportServiceHibernateImpl
 			.getNamedQuery(
 					FIND_QUESTION_SUMMARIES_BY_QUESTIONNAIRE_SECTION_QUERY_NAME)
 			.setParameter(QUESTIONNAIRE_SECTION_PARAM_NAME, questionnaireSection)
+			.setReadOnly(true)
 			.list();
 		
 		return questionSummaries;
@@ -190,9 +212,9 @@ public class AdministeredQuestionnaireReportServiceHibernateImpl
 			.getNamedQuery(
 					FIND_ANSWER_VALUE_SUMMARIES_BY_ALLOWED_QUESTION_QUERY_NAME)
 			.setParameter(ALLOWED_QUESTION_PARAM_NAME, allowedQuestion)
+			.setReadOnly(true)
 			.list();
 		
 		return answerValueSummaries;
 	}
-
 }

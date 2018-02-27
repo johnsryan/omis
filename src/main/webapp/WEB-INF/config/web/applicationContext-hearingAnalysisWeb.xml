@@ -39,6 +39,9 @@
   <bean id="hearingAnalysisFormValidator"
         class="omis.hearinganalysis.web.validator.HearingAnalysisFormValidator"/>
         
+  <bean id="hearingAnalysisHomeFormValidator"
+        class="omis.hearinganalysis.web.validator.HearingAnalysisHomeFormValidator"/>
+        
   <bean id="hearingAnalysisTaskFormValidator"
   	class="omis.hearinganalysis.web.validator.HearingAnalysisTaskFormValidator">
 	<constructor-arg name="taskFieldsValidatorDelegate" ref="taskFieldsValidatorDelegate" />

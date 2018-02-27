@@ -19,17 +19,20 @@ package omis.supervision.report.impl.hibernate;
 
 import java.util.Date;
 
+import org.hibernate.SessionFactory;
+
 import omis.offender.domain.Offender;
 import omis.supervision.report.SupervisionSummary;
 import omis.supervision.report.SupervisionSummaryReportService;
 
-import org.hibernate.Query;
-import org.hibernate.SessionFactory;
-
-/** Hibernate implementation of supervision summary report service.
+/** 
+ * Hibernate implementation of supervision summary report service.
+ * 
  * @author Ryan Johns
- * @version 0.1.0 (Jul 28, 2015)
- * @since OMIS 3.0 */
+ * @author Josh Divine
+ * @version 0.1.1 (Feb 14, 2018)
+ * @since OMIS 3.0 
+ */
 public class SupervisionSummaryReportServiceHibernateImpl 
 	implements SupervisionSummaryReportService {
 	private static final String 
@@ -46,16 +49,16 @@ public class SupervisionSummaryReportServiceHibernateImpl
 		this.sessionFactory = sessionFactory;
 	}
 	
-	
-	
 	/** {@inheritDoc} */
 	@Override
 	public SupervisionSummary findByOffenderAndDate(final Offender offender,
 			final Date date) {
-		Query q = this.sessionFactory.getCurrentSession().getNamedQuery(
-				FIND_SUPERVISION_SUMMARY_BY_OFFENDER_AND_DATE_QUERY_NAME);
-		q.setTimestamp(DATE_PARAM_NAME, date);
-		q.setEntity(OFFENDER_PARAM_NAME, offender);
-		return (SupervisionSummary) q.setMaxResults(1).uniqueResult();
+		return (SupervisionSummary) this.sessionFactory.getCurrentSession()
+				.getNamedQuery(
+						FIND_SUPERVISION_SUMMARY_BY_OFFENDER_AND_DATE_QUERY_NAME)
+				.setParameter(OFFENDER_PARAM_NAME, offender)
+				.setTimestamp(DATE_PARAM_NAME, date)
+				.setReadOnly(true)
+				.setMaxResults(1).uniqueResult();
 	}
 }

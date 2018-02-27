@@ -1,7 +1,26 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.caseload.report.impl.hibernate;
 
 import java.util.Date;
 import java.util.List;
+
+import org.hibernate.SessionFactory;
 
 import omis.caseload.domain.CaseWorkerAssignment;
 import omis.caseload.domain.Caseload;
@@ -17,18 +36,17 @@ import omis.search.util.PersonRegexUtility;
 import omis.user.domain.UserAccount;
 import omis.user.service.delegate.UserAccountDelegate;
 
-import org.hibernate.Query;
-import org.hibernate.SessionFactory;
-
 /**
  * Hibernate implementation of the caseload report service.
  *
  * @author Sheronda Vaughn
- * @version 0.1.0 (Aug 2, 2016)
+ * @author Josh Divine
+ * @version 0.1.1 (Feb 15, 2018)
  * @since OMIS 3.0
  */
 public class CaseloadReportServiceHibernateImpl 
 				implements CaseloadReportService {
+	
 	/* Queries. */
 	private static final String FIND_BY_CASELOAD_CATEGORY_OFFENDER_AND_DATE
 					= "findCaseWorkerAssignmentByCaseloadCategoryOffenderDate";
@@ -54,6 +72,9 @@ public class CaseloadReportServiceHibernateImpl
 	private static final String
 					FIND_CASE_WRKR_SUMMRS_BY_FIRST_MIDDLE_LAST_QUERY_NAME
 					= "findCaseWorkerSummariesByFirstMiddleLastName";
+	private static final String COUNT_CASELOAD_CONTACTS_QUERY_NAME = 
+			"countCaseloadContacts";
+	
 	/* Parameters. */
 	private static final String PERSON_PARAMETER_NAME = "worker";
 
@@ -67,12 +88,17 @@ public class CaseloadReportServiceHibernateImpl
 	private static final String USERNAME_PARAM_NAME = "username";
 	private static final String OFFENDER_PARAM_NAME = "offender";
 	private static final String CASEWORK_CATEGORY_PARAM_NAME = "category";
+	private static final String OFFENDER_CASE_ASSIGNMENT_PARAM_NAME = 
+			"offenderCaseAssignment";
+	
 	/* REGEX */
 	private static final String WHITE_SPACE = "[\\s,]+";
+	
 	/* Members. */
 	private final SessionFactory sessionFactory;
 	private final UserAccountDelegate userAccountDelegate;
 	private final CaseWorkerAssignmentDelegate caseWorkerAssignmentDelegate;
+	
 	/**
 	 * Constructor.
 	 * @param caseWorkerAssignmentDelegate - case worker assignment delegate.
@@ -90,21 +116,20 @@ public class CaseloadReportServiceHibernateImpl
 		this.userAccountDelegate = userAccountDelegate;
 	}
 
-	
-
 	/** {@inheritDoc} */
 	@Override
 	public List<CaseworkSummary> findByCaseWorkerAndDate(final Person person, 
 					final Date effectiveDate) {
 		@SuppressWarnings("unchecked")
 		List<CaseworkSummary> summaries = this.sessionFactory
-							.getCurrentSession()
-							.getNamedQuery(
+						.getCurrentSession()
+						.getNamedQuery(
 								FIND_CSE_WRK_BY_CSE_WRKRS_EFFCTVE_DTE_QRY_NAME)
-							.setParameter(PERSON_PARAMETER_NAME, person)
-							.setDate(EFFECTIVE_DATE_PARAMETER_NAME, 
-									effectiveDate)
-							.list();
+						.setParameter(PERSON_PARAMETER_NAME, person)
+						.setDate(EFFECTIVE_DATE_PARAMETER_NAME, 
+								effectiveDate)
+						.setReadOnly(true)
+						.list();
 		return summaries;
 	}
 
@@ -116,7 +141,8 @@ public class CaseloadReportServiceHibernateImpl
 						this.sessionFactory.getCurrentSession()
 						.getNamedQuery(SUMMARIZE_CASE_WORK_QUERY_NAME)
 						.setParameter(CASE_WORKER_ASSIGNMENT_PARAMETER_NAME, 
-						caseWorkerAssignment)
+								caseWorkerAssignment)
+						.setReadOnly(true)
 						.uniqueResult();
 		return caseWorkSummary;
 	}
@@ -127,12 +153,13 @@ public class CaseloadReportServiceHibernateImpl
 					findOffenderCaseAssignmentSummariesByCaseloadAndDate(
 							final Caseload caseload, final Date effectiveDate) {
 		@SuppressWarnings("unchecked")
-		List<OffenderCaseAssignmentSummary> offenderCaseAssignmentSummary
-						= this.sessionFactory.getCurrentSession()
+		List<OffenderCaseAssignmentSummary> offenderCaseAssignmentSummary = 
+						this.sessionFactory.getCurrentSession()
 						.getNamedQuery(FIND_OFFENDER_CASE_ASSIGNMENT_QUERY_NAME)
 						.setParameter(CASELOAD_PARAMETER_NAME, caseload)
 						.setParameter(EFFECTIVE_DATE_PARAMETER_NAME, 
 								effectiveDate)
+						.setReadOnly(true)
 						.list();
 		return offenderCaseAssignmentSummary;
 	}
@@ -142,14 +169,13 @@ public class CaseloadReportServiceHibernateImpl
 	public Boolean hasCaseloadContact(
 					final OffenderCaseAssignment offenderCaseAssignment) {
 		final Boolean query = (Boolean) this.sessionFactory.getCurrentSession()
-						.getNamedQuery("countCaseloadContacts")
-						.setParameter("offenderCaseAssignment", 
+						.getNamedQuery(COUNT_CASELOAD_CONTACTS_QUERY_NAME)
+						.setParameter(OFFENDER_CASE_ASSIGNMENT_PARAM_NAME, 
 								offenderCaseAssignment)
+						.setReadOnly(true)
 						.uniqueResult();
 		return query;
 	}
-
-	
 
 	/** {@inheritDoc} */
 	@Override
@@ -159,10 +185,11 @@ public class CaseloadReportServiceHibernateImpl
 		final List<CaseworkSummary> summaries = this.sessionFactory
 						.getCurrentSession()
 						.getNamedQuery(
-						FIND_CASE_WORKER_SUMMARIES_BY_CASELOAD_NAME_QUERY_NAME)
+								FIND_CASE_WORKER_SUMMARIES_BY_CASELOAD_NAME_QUERY_NAME)
 						.setParameter(CASELOAD_PARAMETER_NAME, caseload)
 						.setParameter(EFFECTIVE_DATE_PARAMETER_NAME, 
 								effectiveDate)
+						.setReadOnly(true)
 						.list();
 				
 		return summaries;
@@ -173,9 +200,6 @@ public class CaseloadReportServiceHibernateImpl
 	public UserAccount findUserAccountByUsername(final String username) {
 		return this.userAccountDelegate.findByUsername(username);
 	}
-
-	
-		
 	
 	@Override
 	public CaseWorkerAssignment findSupervisoryCaseWorkerAssignmentBy(
@@ -185,21 +209,19 @@ public class CaseloadReportServiceHibernateImpl
 							effectiveDate);
 	}
 
-	
-	
 	/** {@inheritDoc} */
 	@Override
 	public CaseworkSummary 
 					findSupervisoryCaseWorkerAssignmentByOffenderAndDate(
 						final Offender offender, final Date effectiveDate) {
-		final Query q = this.sessionFactory.getCurrentSession()
-						.getNamedQuery(
-								FIND_BY_CASELOAD_CATEGORY_OFFENDER_AND_DATE);
-		q.setParameter(CASEWORK_CATEGORY_PARAM_NAME, 
-						CaseworkCategory.SUPERVISORY);
-		q.setDate(EFFECTIVE_DATE_PARAMETER_NAME, effectiveDate);
-		q.setEntity(OFFENDER_PARAM_NAME, offender);
-		return (CaseworkSummary) q.uniqueResult();
+		return (CaseworkSummary) this.sessionFactory.getCurrentSession()
+				.getNamedQuery(FIND_BY_CASELOAD_CATEGORY_OFFENDER_AND_DATE)
+				.setParameter(CASEWORK_CATEGORY_PARAM_NAME, 
+						CaseworkCategory.SUPERVISORY)
+				.setDate(EFFECTIVE_DATE_PARAMETER_NAME, effectiveDate)
+				.setParameter(OFFENDER_PARAM_NAME, offender)
+				.setReadOnly(true)
+				.uniqueResult();
 	}
 	
 	/** {@inheritDoc} */
@@ -233,7 +255,8 @@ public class CaseloadReportServiceHibernateImpl
 								FIND_CASE_WORK_SUMMARY_BY_USER_NAME_QUERY_NAME)
 						.setParameter(USERNAME_PARAM_NAME, username)
 						.setDate(EFFECTIVE_DATE_PARAMETER_NAME, effectiveDate)
-							.list();
+						.setReadOnly(true)
+						.list();
 		return summaries;
 	}
 	
@@ -241,37 +264,44 @@ public class CaseloadReportServiceHibernateImpl
 	@Override
 	public List<CaseworkSummary> findCasewokerAssignmentsByOffenderAndDate(
 			final Offender offender, final Date effectiveDate) {
-		Query q = this.sessionFactory.getCurrentSession().getNamedQuery(
-				FIND_CASE_WORK_SUMMARY_BY_OFFENDER_DATE_QUERY_NAME);
-		q.setEntity(OFFENDER_PARAM_NAME, offender);
-		q.setDate(EFFECTIVE_DATE_PARAMETER_NAME, effectiveDate);
-		return this.cast(q.list());
+		return this.cast(this.sessionFactory.getCurrentSession()
+				.getNamedQuery(
+						FIND_CASE_WORK_SUMMARY_BY_OFFENDER_DATE_QUERY_NAME)
+				.setParameter(OFFENDER_PARAM_NAME, offender)
+				.setDate(EFFECTIVE_DATE_PARAMETER_NAME, effectiveDate)
+				.setReadOnly(true)
+				.list());
 	}
 	
 	
 	private List<CaseworkSummary> findCaseworkerSummariesByFirstLast(
 					final String firstName, final String lastName, 
 					final Date effectiveDate) {
-		Query q = this.sessionFactory.getCurrentSession().getNamedQuery(
-						FIND_CASE_WRKR_SUMMARIES_BY_FRST_LAST_NAME_QUERY_NAME);
-		q.setString(FIRST_NAME_PARAM_NAME, firstName);
-		q.setString(LAST_NAME_PARAM_NAME, lastName);
-		q.setDate(EFFECTIVE_DATE_PARAMETER_NAME, effectiveDate);
-		List<CaseworkSummary> caseworkSummaries = this.cast(q.list());
+		List<CaseworkSummary> caseworkSummaries = this.cast(this.sessionFactory
+				.getCurrentSession()
+				.getNamedQuery(
+						FIND_CASE_WRKR_SUMMARIES_BY_FRST_LAST_NAME_QUERY_NAME)
+				.setString(FIRST_NAME_PARAM_NAME, firstName)
+				.setString(LAST_NAME_PARAM_NAME, lastName)
+				.setDate(EFFECTIVE_DATE_PARAMETER_NAME, effectiveDate)
+				.setReadOnly(true)
+				.list());
 		return caseworkSummaries;
 	} 
 	
 	private List<CaseworkSummary> findCaseworkerSummariesByFirstMiddleLast(
 					final String firstName, final String middleName, 
 					final String lastName, final Date effectiveDate) {
-		final List<CaseworkSummary> caseworkSummaries;
-		final Query q = this.sessionFactory.getCurrentSession().getNamedQuery(
-						FIND_CASE_WRKR_SUMMRS_BY_FIRST_MIDDLE_LAST_QUERY_NAME);
-		q.setString(FIRST_NAME_PARAM_NAME, firstName);
-		q.setString(MIDDLE_NAME_PARAM_NAME, middleName);
-		q.setString(LAST_NAME_PARAM_NAME, lastName);
-		q.setDate(EFFECTIVE_DATE_PARAMETER_NAME, effectiveDate);
-		caseworkSummaries = this.cast(q.list());
+		final List<CaseworkSummary> caseworkSummaries = this.cast(this
+				.sessionFactory.getCurrentSession()
+				.getNamedQuery(
+						FIND_CASE_WRKR_SUMMRS_BY_FIRST_MIDDLE_LAST_QUERY_NAME)
+				.setString(FIRST_NAME_PARAM_NAME, firstName)
+				.setString(MIDDLE_NAME_PARAM_NAME, middleName)
+				.setString(LAST_NAME_PARAM_NAME, lastName)
+				.setDate(EFFECTIVE_DATE_PARAMETER_NAME, effectiveDate)
+				.setReadOnly(true)
+				.list());
 		return caseworkSummaries;
 	}
 	
@@ -280,11 +310,6 @@ public class CaseloadReportServiceHibernateImpl
 	private <T> List<T> cast(final List<?> objs) {
 		return  (List<T>) objs;
 	}
-	
-	
-	
-	
-	
 	
 	/*private static final String FIND_SUPERVISOR_CASE_WORK_QUERY_NAME
 					= "findSupervisoryCaseWorkByCaseWorkerAndDate";*/
@@ -364,8 +389,6 @@ public class CaseloadReportServiceHibernateImpl
 		
 		return summaries;
 	} */
-	
-	
 
 	/**  
 	@Override
@@ -384,8 +407,6 @@ public class CaseloadReportServiceHibernateImpl
 		
 		return summaries;
 	} */
-
-	
 
 	/**  
 	@Override
@@ -437,10 +458,6 @@ public class CaseloadReportServiceHibernateImpl
 		return summaries;
 	} */
 	
-	 
-	
-	 
-	
 	/** 
 	@Override
 	public List<CaseWorkerAssignment> 
@@ -450,6 +467,4 @@ public class CaseloadReportServiceHibernateImpl
 				.findCaseWorkerAssignmentsByCaseload(
 				caseload, effectiveDate);
 	} */
-	
-	 
 }

@@ -1,0 +1,58 @@
+
+#assessmentHeader {
+	margin-top: 0px;
+	margin-bottom: 0px;
+	margin-left: 0px;
+	margin-right: 0px;
+	padding-left: 25px;
+	padding-right: 10px;
+	padding-bottom: 10px;
+	padding-top: 0px;
+	border-width: 0px;
+}
+
+#assessmentHeader fieldset {
+	padding: 23px;
+	margin: 2px;
+	border-width: 2px;
+	border-style: solid;
+	margin-bottom: 12px;
+	clear: left;
+	
+}
+
+#assessmentHeader fieldset legend {
+	padding: 5px;
+	padding-left: 9px;
+	padding-right: 9px;
+}
+
+#assessmentHeader span.oneline{
+	text-align:right;
+	width: 100%;
+	float: left;
+	clear: both;
+}
+
+#assessmentHeader span.onelineHalf{
+	width: 45%;
+}
+
+#assessmentHeader span.oneline label {
+	width: 20%;
+	white-space: nowrap;
+	margin-right: 2%;
+	float:left;
+	font-weight: bold;
+}
+
+#assessmentHeader span.oneline label::after{
+	content: ":";
+}
+
+#assessmentHeader span.oneline span.detail{
+	float: left;
+	width: 20%;
+	margin-bottom: 2px;
+	text-align: left;
+}

@@ -18,11 +18,14 @@
 				<a href="${pageContext.request.contextPath}/offender/profileInternalExternalMovementReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="internalExternalMovementReportLinkLabel"/></a>
 			</span>	
 			<span>
+				<a href="${pageContext.request.contextPath}/offender/profileOffenderLocationHistoryReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="offenderLocationHistoryReportLinkLabel"/></a>
+			</span>	
+			<span>
 				<omis:reportPro reportPath="/Placement/BedAssignment/Locked_Housing_Check_In_Check_Out&DOC_ID=${offender.offenderNumber}" decorate="no" title="" className="newTab reportLink"><fmt:message key="lockedHousingCheckInCheckOutReportLinkLabel"/></omis:reportPro>
 			</span>
 			<span>
 				<a href="${pageContext.request.contextPath}/offender/profilePhttpDoorCardReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="phttpDoorCardReportLinkLabel"/></a>
-			</span>			
+			</span>						
 		</c:if>	
 	</sec:authorize>
 	<sec:authorize access="(hasRole('OFFENDER_VIEW') and hasRole('OFFENDER_SSN_VIEW')) or hasRole('ADMIN')">

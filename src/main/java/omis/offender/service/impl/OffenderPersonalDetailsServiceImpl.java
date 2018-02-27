@@ -82,10 +82,8 @@ public class OffenderPersonalDetailsServiceImpl
 	public PersonName updateName(final Offender offender, final String lastName,
 			final String firstName, final String middleName, 
 			final String suffix) throws PersonNameExistsException {
-		Offender updatedOffender = this.offenderDelegate.updateOffender(
-				offender, offender.getName(), offender.getIdentity());
 		return this.personNameDelegate
-				.update(updatedOffender.getName(), lastName, firstName,
+				.update(offender.getName(), lastName, firstName,
 						middleName, suffix);
 	}
 

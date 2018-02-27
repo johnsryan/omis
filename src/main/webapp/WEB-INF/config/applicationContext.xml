@@ -145,8 +145,10 @@
     			<value>/WEB-INF/classes/omis/offenseterm/msgs/form</value>
     			<value>/WEB-INF/classes/omis/paroleboardcondition/msgs/form</value>
     			<value>/WEB-INF/classes/omis/paroleboarditinerary/msgs/form</value>
+    			<value>/WEB-INF/classes/omis/paroleboardlocation/msgs/form</value>
     			<value>/WEB-INF/classes/omis/paroleboardmember/msgs/form</value>
     			<value>/WEB-INF/classes/omis/paroleeligibility/msgs/form</value>
+    			<value>/WEB-INF/classes/omis/paroleplan/msgs/form</value>
     			<value>/WEB-INF/classes/omis/parolereview/msgs/form</value>
     			<value>/WEB-INF/classes/omis/person/msgs/form</value>
     			<value>/WEB-INF/classes/omis/photo/msgs/form</value>

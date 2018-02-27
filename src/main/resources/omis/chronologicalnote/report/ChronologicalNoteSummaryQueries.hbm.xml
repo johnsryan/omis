@@ -44,10 +44,20 @@
     	inner join userAccount.user user
     	inner join user.name name
     where offender = :offender
+    order by note.date desc
 	]]></query>
-	
-	<query name="findChronologicalNoteSummaryByOffenderAndCategories"><![CDATA[ 
-	select new omis.chronologicalnote.report.ChronologicalNoteSummary(
+    
+    <query name="findCategoryNamesByNoteId"><![CDATA[   
+	select category.name
+	from
+		omis.chronologicalnote.domain.ChronologicalNoteCategoryAssociation association
+		inner join association.category category
+	where
+		association.note.id = :noteId
+    ]]></query>
+    
+    <query name="findChronologicalNoteSummaryByOffenderAndCategories"><![CDATA[  
+    select new omis.chronologicalnote.report.ChronologicalNoteSummary(
 		note.id,
 		note.date,
 		note.narrative,
@@ -57,42 +67,17 @@
 		note.updateSignature.date
       ) 
     from 
-    	omis.chronologicalnote.domain.ChronologicalNoteCategoryAssociation association
-    	inner join association.note note
-    	inner join association.category category
+    	omis.chronologicalnote.domain.ChronologicalNote note
     	inner join note.offender offender
     	inner join note.updateSignature.userAccount userAccount
     	inner join userAccount.user user
     	inner join user.name name
-    where offender = :offender
-    and category in (:categories)
-	]]></query>
-    
-    <query name="findCategories"><![CDATA[   
-	select category
-		from
-			omis.chronologicalnote.domain.ChronologicalNoteCategory category
-		order by category.name
-    ]]></query>
-    
-    <query name="findCategoryNamesByNoteIdAndCategories"><![CDATA[   
-	select distinct category.name
-	from
-		omis.chronologicalnote.domain.ChronologicalNoteCategoryAssociation association
-		inner join association.category category
-		inner join association.note note
-	where
-		note.id = :noteId
-		and category in (:categories)
-    ]]></query>
-    
-    <query name="findCategoryNamesByNoteId"><![CDATA[   
-	select distinct category.name
-	from
-		omis.chronologicalnote.domain.ChronologicalNoteCategoryAssociation association
-		inner join association.category category
-		inner join association.note note
-	where
-		note.id = :noteId
+    where exists (select category
+					from omis.chronologicalnote.domain.ChronologicalNoteCategoryAssociation association
+					inner join association.category category  
+				  where category in (:categories)
+			      and association.note = note)
+		  and offender = :offender
+	order by note.date desc
     ]]></query>
 </hibernate-mapping>

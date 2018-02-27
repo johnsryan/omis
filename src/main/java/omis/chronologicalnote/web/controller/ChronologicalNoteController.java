@@ -51,12 +51,15 @@ public class ChronologicalNoteController {
 	/* View names. */
 	
 	private static final String EDIT_VIEW_NAME = "chronologicalNote/edit";
+	private static final String CHRONOLOGICAL_NOTE_ACTION_MENU_VIEW_NAME = "chronologicalNote/includes/chronologicalNoteActionMenu";
+	private static final String BOOLEAN_VIEW_NAME = "common/json/booleanValue";
 	
 	/* Model keys. */
 	
 	private static final String CHRONOLOGICAL_NOTE_FORM_MODEL_KEY = "chronologicalNoteForm";
 	private static final String OFFENDER_MODEL_KEY = "offender";
 	private static final String CHRONOLOGICAL_NOTE_MODEL_KEY = "chronologicalNote";
+	private static final String BOOLEAN_VALUE_MODEL_KEY = "booleanValue";
 	
 	/* Services. */
 	
@@ -196,6 +199,44 @@ public class ChronologicalNoteController {
 		this.chronologicalNoteService.update(note, form.getDate(), form.getNarrative());
 		this.processCategoryItems(form.getItems(), note);
 		return new ModelAndView(String.format(CHRONOLOGICAL_NOTE_LIST_REDIRECT_URL, note.getOffender().getId()));
+	}
+	
+	/**
+	 * Remove note
+	 * @param note
+	 * @return to list screen
+	 */
+	@RequestMapping(value="/remove.html", method=RequestMethod.GET)
+	@PreAuthorize("hasRole('ADMIN') or hasRole('CHRONOLOGICAL_NOTE_REMOVE')")
+	public ModelAndView remove(@RequestParam(value="chronologicalNote",
+		required= true) final ChronologicalNote note) {
+		for (ChronologicalNoteCategory category
+				: this.chronologicalNoteService.findAssociatedCategories(note)) {
+			this.chronologicalNoteService.dissociateCategory(note, category);
+		}
+		this.chronologicalNoteService.remove(note);
+		return new ModelAndView(String.format(
+			CHRONOLOGICAL_NOTE_LIST_REDIRECT_URL, note.getOffender().getId()));
+	}
+	
+	@RequestMapping(value = "/chronologicalNoteActionMenu.html", method = RequestMethod.GET)
+	public ModelAndView displayChronologicalNoteActionMenu(@RequestParam(value = "offender", required = true)
+			final Offender offender) {
+		ModelMap map = new ModelMap();
+		map.addAttribute(OFFENDER_MODEL_KEY, offender);
+		return new ModelAndView(CHRONOLOGICAL_NOTE_ACTION_MENU_VIEW_NAME, map);
+	}
+	
+	/**
+	 * Reserved for extending session.
+	 * 
+	 * @return boolean
+	 */
+	@RequestMapping(value = "/extendSession.html", method = RequestMethod.GET)
+	public ModelAndView extendSession() {
+		ModelMap map = new ModelMap();
+		map.addAttribute(BOOLEAN_VALUE_MODEL_KEY, true);
+		return new ModelAndView(BOOLEAN_VIEW_NAME, map);
 	}
 	
 	/* Helper methods. */

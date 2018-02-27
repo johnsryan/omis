@@ -32,7 +32,7 @@
 	<c:set var="addressFieldsPropertyName" value="addressFields" scope="request"/>
 	<c:set var="poBoxFields" value="${familyAssociationForm.poBoxFields}" scope="request"/>
 	<c:set var="poBoxFieldsPropertyName" value="poBoxFields" scope="request"/>
-	<c:if test="${not empty familyMember and createFlag eq true}">
+	<c:if test="${not empty familyMember}">
 		<fieldset><c:set value="${existingContactSummary}" var="contactSummary" scope="request"/>
 		<jsp:include page="/WEB-INF/views/contact/includes/contactSummary.jsp"/></fieldset>
 	</c:if>
@@ -65,7 +65,7 @@
 			<div id="familyCreateScreenAddressContainer" <c:if test="${not familyAssociationForm.enterAddress}">hidden=true</c:if>>
 					<c:if test="${familyAssociationForm.addressOperation eq 'EXISTING'}">
 						<form:radiobutton path="addressOperation" id="newAddressNo" value="EXISTING" checked ="checked"/><label class="fieldValueLabel" for="newAddressNo"><fmt:message key="newAddressNoLabel"/></label>
-						<form:input path="addressQuery" id="familySearchAddressQuery" />
+						<form:input path="addressQuery" id="familySearchAddressQuery" class="large"/>
 						<form:errors path="addressQuery" cssClass="error"/>
 						<form:hidden path="address" id="searchAddress"/>
 						<br>
@@ -73,7 +73,7 @@
 					</c:if>
 					<c:if test="${familyAssociationForm.addressOperation eq 'NEW'}">
 						<form:radiobutton path="addressOperation" id="newAddressNo" value="EXISTING"/><label class="fieldValueLabel" for="newAddressNo"><fmt:message key="newAddressNoLabel"/></label>
-						<form:input path="addressQuery" id="familySearchAddressQuery" />
+						<form:input path="addressQuery" id="familySearchAddressQuery" class="large"/>
 						<form:errors path="addressQuery" cssClass="error"/>
 						<form:hidden path="address" id="searchAddress"/>
 						<br>
@@ -81,7 +81,7 @@
 					</c:if>
 					<c:if test="${familyAssociationForm.addressOperation eq 'CURRENT'}">
 						<form:radiobutton path="addressOperation" id="newAddressNo" value="EXISTING"/><label class="fieldValueLabel" for="newAddressNo"><fmt:message key="newAddressNoLabel"/></label>
-						<form:input path="addressQuery" id="familySearchAddressQuery" />
+						<form:input path="addressQuery" id="familySearchAddressQuery" class="large"/>
 						<form:errors path="addressQuery" cssClass="error"/>
 						<form:hidden path="address" id="searchAddress"/>
 						<br>

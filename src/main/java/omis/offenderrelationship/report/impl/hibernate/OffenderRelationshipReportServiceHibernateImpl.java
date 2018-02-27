@@ -1,4 +1,22 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.offenderrelationship.report.impl.hibernate;
+
 import java.util.Date;
 import java.util.List;
 import omis.offenderrelationship.report.OffenderRelationshipReportService;
@@ -11,7 +29,8 @@ import org.hibernate.SessionFactory;
  *
  * @author Stephen Abson
  * @author Yidong Li
- * @version 0.0.1 (Jun 30, 2015)
+ * @author Josh Divine
+ * @version 0.0.2 (Feb 14, 2018)
  * @since OMIS 3.0
  */
 public class OffenderRelationshipReportServiceHibernateImpl
@@ -124,6 +143,7 @@ public class OffenderRelationshipReportServiceHibernateImpl
 					.setParameter(LAST_NAME_PARAM_NAME, lastName)
 					.setParameter(FIRST_NAME_PARAM_NAME, firstName)
 					.setTimestamp(EFFECTIVE_DATE_PARAM_NAME, effectiveDate)
+					.setReadOnly(true)
 					.list();
 				return summaries;
 			} else if ((lastName != null && !lastName.isEmpty())
@@ -135,6 +155,7 @@ public class OffenderRelationshipReportServiceHibernateImpl
 					.getCurrentSession().getNamedQuery(queryName)
 					.setParameter(LAST_NAME_PARAM_NAME, lastName)
 					.setTimestamp(EFFECTIVE_DATE_PARAM_NAME, effectiveDate)
+					.setReadOnly(true)
 					.list();
 				return summaries;
 			} else {
@@ -145,6 +166,7 @@ public class OffenderRelationshipReportServiceHibernateImpl
 					.getCurrentSession().getNamedQuery(queryName)
 					.setParameter(FIRST_NAME_PARAM_NAME, firstName)
 					.setTimestamp(EFFECTIVE_DATE_PARAM_NAME, effectiveDate)
+					.setReadOnly(true)
 					.list();
 				return summaries;
 			}
@@ -159,6 +181,7 @@ public class OffenderRelationshipReportServiceHibernateImpl
 					.setParameter(LAST_NAME_PARAM_NAME, lastName)
 					.setParameter(FIRST_NAME_PARAM_NAME, firstName)
 					.setTimestamp(EFFECTIVE_DATE_PARAM_NAME, effectiveDate)
+					.setReadOnly(true)
 					.list();
 				return summaries;
 			} else if	((lastName != null && !lastName.isEmpty())
@@ -170,6 +193,7 @@ public class OffenderRelationshipReportServiceHibernateImpl
 					.getCurrentSession().getNamedQuery(queryName)
 					.setParameter(LAST_NAME_PARAM_NAME, lastName)
 					.setTimestamp(EFFECTIVE_DATE_PARAM_NAME, effectiveDate)
+					.setReadOnly(true)
 					.list();
 				return summaries;
 			} else {
@@ -180,6 +204,7 @@ public class OffenderRelationshipReportServiceHibernateImpl
 					.getCurrentSession().getNamedQuery(queryName)
 					.setParameter(FIRST_NAME_PARAM_NAME, firstName)
 					.setTimestamp(EFFECTIVE_DATE_PARAM_NAME, effectiveDate)
+					.setReadOnly(true)
 					.list();
 				return summaries;
 			}
@@ -196,6 +221,7 @@ public class OffenderRelationshipReportServiceHibernateImpl
 					SUMMARIZE_BY_OFFENDER_NUMBER_QUERY_NAME)
 			.setParameter(OFFENDER_NUMBER_PARAM_NAME, offenderNumber)
 			.setTimestamp(EFFECTIVE_DATE_PARAM_NAME, effectiveDate)
+			.setReadOnly(true)
 			.list();
 		return summaries;
 	}
@@ -211,6 +237,7 @@ public class OffenderRelationshipReportServiceHibernateImpl
 			.setParameter(SOCIAL_SECURITY_NUMBER_PARAM_NAME,
 					socialSecurityNumber)
 			.setTimestamp(EFFECTIVE_DATE_PARAM_NAME, effectiveDate)
+			.setReadOnly(true)
 			.list();
 		return summaries;
 	}
@@ -225,6 +252,7 @@ public class OffenderRelationshipReportServiceHibernateImpl
 					SUMMARIZE_BY_BIRTH_DATE_QUERY_NAME)
 			.setTimestamp(BIRTH_DATE_PARAM_NAME, birthDate)
 			.setTimestamp(EFFECTIVE_DATE_PARAM_NAME, effectiveDate)
+			.setReadOnly(true)
 			.list();
 		return summaries;
 	}
@@ -242,6 +270,7 @@ public class OffenderRelationshipReportServiceHibernateImpl
 					.getCurrentSession().getNamedQuery(queryName)
 					.setParameter(LAST_NAME_PARAM_NAME, lastName)
 					.setParameter(FIRST_NAME_PARAM_NAME, firstName)
+					.setReadOnly(true)
 					.uniqueResult();
 				return count.intValue();
 			} else if ((lastName != null && !lastName.isEmpty())
@@ -251,6 +280,7 @@ public class OffenderRelationshipReportServiceHibernateImpl
 					.getCurrentSession().getNamedQuery(
 						COUNT_APPROPRIMATE_BY_LASTNAME_QUERY_NAME)
 					.setParameter(LAST_NAME_PARAM_NAME, lastName)
+					.setReadOnly(true)
 					.uniqueResult();
 				return count.intValue();
 			} else {
@@ -258,6 +288,7 @@ public class OffenderRelationshipReportServiceHibernateImpl
 				Long count = (Long) this.sessionFactory
 					.getCurrentSession().getNamedQuery(queryName)
 					.setParameter(FIRST_NAME_PARAM_NAME, firstName)
+					.setReadOnly(true)
 					.uniqueResult();
 				return count.intValue();
 			}
@@ -269,6 +300,7 @@ public class OffenderRelationshipReportServiceHibernateImpl
 					.getCurrentSession().getNamedQuery(queryName)
 					.setParameter(LAST_NAME_PARAM_NAME, lastName)
 					.setParameter(FIRST_NAME_PARAM_NAME, firstName)
+					.setReadOnly(true)
 					.uniqueResult();
 				return count.intValue();
 			} else if ((lastName != null && !lastName.isEmpty())
@@ -277,6 +309,7 @@ public class OffenderRelationshipReportServiceHibernateImpl
 				Long count = (Long) this.sessionFactory
 					.getCurrentSession().getNamedQuery(queryName)
 					.setParameter(LAST_NAME_PARAM_NAME, lastName)
+					.setReadOnly(true)
 					.uniqueResult();
 				return count.intValue();
 			} else {
@@ -284,6 +317,7 @@ public class OffenderRelationshipReportServiceHibernateImpl
 				Long count = (Long) this.sessionFactory
 					.getCurrentSession().getNamedQuery(queryName)
 					.setParameter(FIRST_NAME_PARAM_NAME, firstName)
+					.setReadOnly(true)
 					.uniqueResult();
 				return count.intValue();
 			}

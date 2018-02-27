@@ -18,7 +18,7 @@
 
 <%-- 
  - Author: Josh Divine
- - Version: 0.1.0 (Dec 20, 2017)
+ - Version: 0.1.1 (Feb 20, 2018)
  - Since: OMIS 3.0
  --%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
@@ -30,6 +30,12 @@
 			<li>
 				<a class="listLink" href="${pageContext.request.contextPath}/paroleEligibility/list.html?offender=${offender.id}">
 				<span class="visibleLinkLabel"><fmt:message key="listParoleEligibilitiesLink"/></span></a>
+			</li>
+		</sec:authorize>
+		<sec:authorize access="hasRole('PAROLE_BOARD_ITINERARY_LIST') or hasRole('ADMIN')">
+			<li>
+				<a class="listLink" href="${pageContext.request.contextPath}/paroleBoardItinerary/list.html">
+				<span class="visibleLinkLabel"><fmt:message key="listParoleBoardItinerariesLink"/></span></a>
 			</li>
 		</sec:authorize>
 	</ul>

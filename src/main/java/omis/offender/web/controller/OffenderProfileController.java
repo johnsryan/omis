@@ -40,7 +40,7 @@ import omis.web.profile.ProfileItemRegistry;
  * @author Josh Divine
  * @author Annie Wahl
  * @author Sierra Rosales
- * @version 0.1.3 (Nov 1, 2017)
+ * @version 0.1.4 (Feb 8, 2018)
  * @since OMIS 3.0
  */
 @Controller
@@ -51,9 +51,6 @@ public class OffenderProfileController {
 	/* Views. */
 	
 	private static final String PROFILE_VIEW_NAME = "offender/profile";
-	
-	private static final String PROFILE_ITEM_VIEW_NAME =
-			"offender/includes/profileItem";
 	
 	private static final String PROFILE_SAFETY_ACTION_MENU_VIEW_NAME
 		= "offender/includes/offenderProfileSafetyActionMenu";
@@ -75,11 +72,42 @@ public class OffenderProfileController {
 	
 	/* Model keys. */
 	
-	private static final String PROFILE_ITEM_REGISTRY_MODEL_KEY =
-			"profileItemRegistry";
+	private static final String 
+		BASIC_INFORMATION_PROFILE_ITEM_REGISTRY_MODEL_KEY
+				= "basicInformationProfileItemRegistry";
 	
-	private static final String REPORTS_LIST_VIEW_NAME_MODEL_KEY =
-			"reportsListView";
+	private static final String 
+		PLACEMENT_PROFILE_ITEM_REGISTRY_MODEL_KEY
+			= "placementProfileItemRegistry";
+	
+	private static final String 
+		LEGAL_PROFILE_ITEM_REGISTRY_MODEL_KEY
+			= "legalProfileItemRegistry";
+	
+	private static final String 
+		CASE_MANAGEMENT_PROFILE_ITEM_REGISTRY_MODEL_KEY
+			= "caseManagementProfileItemRegistry";
+	
+	private static final String 
+		SAFETY_PROFILE_ITEM_REGISTRY_MODEL_KEY
+			= "safetyProfileItemRegistry";
+	
+	private static final String
+		COMPLIANCE_PROFILE_ITEM_REGISTRY_MODEL_KEY
+			= "complianceProfileItemRegistry";
+	
+	private static final String 
+		HEALTH_PROFILE_ITEM_REGISTRY_MODEL_KEY
+			= "healthProfileItemRegistry";
+	
+	private static final String 
+		RELATIONSHIPS_PROFILE_ITEM_REGISTRY_MODEL_KEY
+			= "relationshipsProfileItemRegistry";
+	
+	private static final String
+		BOPP_PROFILE_ITEM_REGISTRY_MODEL_KEY
+			= "boardOfPardonsAndParoleProfileItemRegistry";
+	
 	
 	// TODO - Pass this to action menu for module groups and remove "unused"
 	// warning suppression - SA
@@ -88,9 +116,6 @@ public class OffenderProfileController {
 			= "offenderProfileItemsProperties";
 	
 	private static final String OFFENDER_MODEL_KEY = "offender";
-	
-//	private static final String ACTIVITY_SUMMARIES_MODEL_KEY =
-//			"activitySummaries";
 	
 	/* Report names. */
 	
@@ -127,7 +152,7 @@ public class OffenderProfileController {
 					+ "Basic_Information_Sheet_Probation_Parole_Redacted";
 	
 	private static final String CJIN_BACKGROUND_CHECK_REPORT_NAME 
-        = "/Specialty/Background_Check/CJIN_Background_Check_Request";
+		= "/Specialty/Background_Check/CJIN_Background_Check_Request";
 	
 	private static final String WANTED_POSTER_REPORT_NAME 
 		= "/BasicInformation/Demographics/Wanted_Poster";
@@ -165,8 +190,11 @@ public class OffenderProfileController {
 	private static final String PHTTP_DOOR_CARD_REPORT_NAME 
 		= "/Placement/BedAssignment/PHTTP_Door_Card";
 	
+	private static final String OFFENDER_LOCATION_HISTORY_REPORT_NAME 
+		= "/Placement/LocationTerms/Offender_Location_Term_History";
+
 	private static final String PRISON_INTAKE_REPORT_NAME 
-		= "/Placement/Intake/Prison_Intake_Report";
+	    = "/Placement/Intake/Prison_Intake_Report";
 	
 	private static final String INTERNAL_EXTERNAL_MOVEMENT_REPORT_NAME 
 		= "/Placement/Internal_and_External_Movements";
@@ -273,260 +301,65 @@ public class OffenderProfileController {
 				final Offender offender) {
 		ModelMap map = new ModelMap();
 		this.offenderSummaryModelDelegate.add(map, offender);
+		Date currentDate = new Date();
+		UserAccount userAccount = this.userAccountService.findByUsername(
+				SecurityContextHolder.getContext()
+					.getAuthentication().getName());
+		
+		this.buildProfileItems(basicInformationProfileItemRegistry, map, 
+				offender, userAccount, currentDate);
+		this.buildProfileItems(basicInformationProfileItemRegistry, map, 
+				offender, userAccount, currentDate);
+		this.buildProfileItems(placementProfileItemRegistry, map,
+				offender, userAccount, currentDate);
+		this.buildProfileItems(legalProfileItemRegistry, map,
+				offender, userAccount, currentDate);
+		this.buildProfileItems(caseManagementProfileItemRegistry, map,
+				offender, userAccount, currentDate);
+		this.buildProfileItems(safetyProfileItemRegistry, map, 
+				offender, userAccount, currentDate);
+		this.buildProfileItems(complianceProfileItemRegistry, map, 
+				offender, userAccount, currentDate);
+		this.buildProfileItems(healthProfileItemRegistry, map,
+				offender, userAccount, currentDate);
+		this.buildProfileItems(relationshipsProfileItemRegistry, map,
+				offender, userAccount, currentDate);
+		this.buildProfileItems(this.boardOfPardonsAndParoleProfileItemRegistry,
+				map, offender, userAccount, currentDate);
+		
+		map.addAttribute(
+				BASIC_INFORMATION_PROFILE_ITEM_REGISTRY_MODEL_KEY,
+				this.basicInformationProfileItemRegistry);
+		map.addAttribute(
+				PLACEMENT_PROFILE_ITEM_REGISTRY_MODEL_KEY,
+				this.placementProfileItemRegistry);
+		map.addAttribute(
+				LEGAL_PROFILE_ITEM_REGISTRY_MODEL_KEY,
+				this.legalProfileItemRegistry);
+		map.addAttribute(
+				CASE_MANAGEMENT_PROFILE_ITEM_REGISTRY_MODEL_KEY,
+				this.caseManagementProfileItemRegistry);
+		map.addAttribute(
+				SAFETY_PROFILE_ITEM_REGISTRY_MODEL_KEY,
+				this.safetyProfileItemRegistry);
+		map.addAttribute(
+				COMPLIANCE_PROFILE_ITEM_REGISTRY_MODEL_KEY,
+				this.complianceProfileItemRegistry);
+		map.addAttribute(
+				HEALTH_PROFILE_ITEM_REGISTRY_MODEL_KEY,
+				this.healthProfileItemRegistry);
+		map.addAttribute(
+				RELATIONSHIPS_PROFILE_ITEM_REGISTRY_MODEL_KEY,
+				this.relationshipsProfileItemRegistry);
+		map.addAttribute(
+				BOPP_PROFILE_ITEM_REGISTRY_MODEL_KEY,
+				this.boardOfPardonsAndParoleProfileItemRegistry);
+		
+		map.addAttribute(OFFENDER_MODEL_KEY, offender);
+		
 		return new ModelAndView(PROFILE_VIEW_NAME, map);
 	}
 	
-	/* AJAX views */
-	
-	/**
-	 * Displays the view for the Basic Information Profile for the specified
-	 * Offender.
-	 * 
-	 * @param offender - Offender
-	 * @return ModelAndView - view for the Basic Information Profile for the
-	 * specified Offender 
-	 */
-	@RequestMapping(value = "/basicInformationProfile.html",
-			method = RequestMethod.GET)
-	public ModelAndView displayBasicInformationProfileItem(@RequestParam(
-			value = "offender", required = true)
-			final Offender offender) {
-		ModelMap map = new ModelMap();
-		Date currentDate = new Date();
-		UserAccount userAccount = this.userAccountService.findByUsername(
-				SecurityContextHolder.getContext()
-					.getAuthentication().getName());
-		this.buildProfileItems(basicInformationProfileItemRegistry, map, 
-				offender, userAccount, currentDate);
-		map.addAttribute(PROFILE_ITEM_REGISTRY_MODEL_KEY,
-				this.basicInformationProfileItemRegistry);
-		map.addAttribute(OFFENDER_MODEL_KEY, offender);
-		map.addAttribute(REPORTS_LIST_VIEW_NAME_MODEL_KEY,
-				"profileBasicInformationReportsList");
-		
-		return new ModelAndView(PROFILE_ITEM_VIEW_NAME, map);
-	}
-	
-	/**
-	 * Displays the view for Placement profile for the specified offender.
-	 * 
-	 * @param offender - Offender
-	 * @return ModelAndView - view for Placement profile for the specified
-	 * offender
-	 */
-	@RequestMapping(value = "/placementProfile.html",
-			method = RequestMethod.GET)
-	public ModelAndView displayPlacementProfileItem(@RequestParam(
-			value = "offender", required = true)
-			final Offender offender) {
-		ModelMap map = new ModelMap();
-		Date currentDate = new Date();
-		UserAccount userAccount = this.userAccountService.findByUsername(
-				SecurityContextHolder.getContext()
-					.getAuthentication().getName());
-		this.buildProfileItems(this.placementProfileItemRegistry, map, 
-				offender, userAccount, currentDate);
-		map.addAttribute(PROFILE_ITEM_REGISTRY_MODEL_KEY,
-				this.placementProfileItemRegistry);
-		map.addAttribute(OFFENDER_MODEL_KEY, offender);
-		map.addAttribute(REPORTS_LIST_VIEW_NAME_MODEL_KEY,
-				"profilePlacementReportsList");
-		
-		return new ModelAndView(PROFILE_ITEM_VIEW_NAME, map);
-	}
-	
-	/**
-	 * Displays the view for Legal profile for the specified Offender.
-	 * 
-	 * @param offender - Offender
-	 * @return ModelAndView - view for Legal profile for the specified Offender
-	 */
-	@RequestMapping(value = "/legalProfile.html",
-			method = RequestMethod.GET)
-	public ModelAndView displayLegalProfileItem(@RequestParam(
-			value = "offender", required = true)
-			final Offender offender) {
-		ModelMap map = new ModelMap();
-		Date currentDate = new Date();
-		UserAccount userAccount = this.userAccountService.findByUsername(
-				SecurityContextHolder.getContext()
-					.getAuthentication().getName());
-		this.buildProfileItems(this.legalProfileItemRegistry, map, 
-				offender, userAccount, currentDate);
-//		map.addAttribute(ACTIVITY_SUMMARIES_MODEL_KEY,
-//				this.activitySummaryReportService
-//				.findLegalActivitySummariesByOffender(offender));
-		map.addAttribute(PROFILE_ITEM_REGISTRY_MODEL_KEY,
-				this.legalProfileItemRegistry);
-		map.addAttribute(OFFENDER_MODEL_KEY, offender);
-		map.addAttribute(REPORTS_LIST_VIEW_NAME_MODEL_KEY,
-				"profileLegalReportsList");
-		
-		return new ModelAndView(PROFILE_ITEM_VIEW_NAME, map);
-	}
-	
-	/**
-	 * Displays the view for Case Management profile for the specified Offender.
-	 * 
-	 * @param offender - Offender
-	 * @return ModelAndView - view for Case Management profile for the specified
-	 * Offender
-	 */
-	@RequestMapping(value = "/caseManagementProfile.html",
-			method = RequestMethod.GET)
-	public ModelAndView displayCaseManagementProfileItem(@RequestParam(
-			value = "offender", required = true)
-			final Offender offender) {
-		ModelMap map = new ModelMap();
-		Date currentDate = new Date();
-		UserAccount userAccount = this.userAccountService.findByUsername(
-				SecurityContextHolder.getContext()
-					.getAuthentication().getName());
-		this.buildProfileItems(this.caseManagementProfileItemRegistry, map, 
-				offender, userAccount, currentDate);
-		map.addAttribute(PROFILE_ITEM_REGISTRY_MODEL_KEY,
-				this.caseManagementProfileItemRegistry);
-		map.addAttribute(OFFENDER_MODEL_KEY, offender);
-		map.addAttribute(REPORTS_LIST_VIEW_NAME_MODEL_KEY,
-				"profileCaseManagementReportsList");
-		
-		return new ModelAndView(PROFILE_ITEM_VIEW_NAME, map);
-	}
-	
-	/**
-	 * Displays the view for Safety profile for the specified Offender.
-	 * 
-	 * @param offender - Offender
-	 * @return ModelAndView - view for Safety profile for the specified Offender
-	 */
-	@RequestMapping(value = "/safetyProfile.html",
-			method = RequestMethod.GET)
-	public ModelAndView displaySafetyProfileItem(@RequestParam(
-			value = "offender", required = true)
-			final Offender offender) {
-		ModelMap map = new ModelMap();
-		Date currentDate = new Date();
-		UserAccount userAccount = this.userAccountService.findByUsername(
-				SecurityContextHolder.getContext()
-					.getAuthentication().getName());
-		this.buildProfileItems(this.safetyProfileItemRegistry, map, 
-				offender, userAccount, currentDate);
-		map.addAttribute(PROFILE_ITEM_REGISTRY_MODEL_KEY,
-				this.safetyProfileItemRegistry);
-		map.addAttribute(OFFENDER_MODEL_KEY, offender);
-		map.addAttribute(REPORTS_LIST_VIEW_NAME_MODEL_KEY,
-				"profileSafetyReportsList");
-		
-		return new ModelAndView(PROFILE_ITEM_VIEW_NAME, map);
-	}
-	
-	/**
-	 * Displays the view for Compliance profile for the specified Offender.
-	 * 
-	 * @param offender - Offender
-	 * @return ModelAndView - view for Compliance profile for the specified
-	 * Offender
-	 */
-	@RequestMapping(value = "/complianceProfile.html",
-			method = RequestMethod.GET)
-	public ModelAndView displayComplianceProfileItem(@RequestParam(
-			value = "offender", required = true)
-			final Offender offender) {
-		ModelMap map = new ModelMap();
-		Date currentDate = new Date();
-		UserAccount userAccount = this.userAccountService.findByUsername(
-				SecurityContextHolder.getContext()
-					.getAuthentication().getName());
-		this.buildProfileItems(this.complianceProfileItemRegistry, map, 
-				offender, userAccount, currentDate);
-		map.addAttribute(PROFILE_ITEM_REGISTRY_MODEL_KEY,
-				this.complianceProfileItemRegistry);
-		map.addAttribute(OFFENDER_MODEL_KEY, offender);
-		
-		return new ModelAndView(PROFILE_ITEM_VIEW_NAME, map);
-	}
-	
-	/**
-	 * Displays the view for Health profile for the specified Offender.
-	 * 
-	 * @param offender - Offender
-	 * @return ModelAndView - view for Health profile for the specified Offender
-	 */
-	@RequestMapping(value = "/healthProfile.html",
-			method = RequestMethod.GET)
-	public ModelAndView displayHealthProfileItem(@RequestParam(
-			value = "offender", required = true)
-			final Offender offender) {
-		ModelMap map = new ModelMap();
-		Date currentDate = new Date();
-		UserAccount userAccount = this.userAccountService.findByUsername(
-				SecurityContextHolder.getContext()
-					.getAuthentication().getName());
-		this.buildProfileItems(this.healthProfileItemRegistry, map, 
-				offender, userAccount, currentDate);
-		map.addAttribute(PROFILE_ITEM_REGISTRY_MODEL_KEY,
-				this.healthProfileItemRegistry);
-		map.addAttribute(OFFENDER_MODEL_KEY, offender);
-		map.addAttribute(REPORTS_LIST_VIEW_NAME_MODEL_KEY,
-				"profileHealthReportsList");
-		
-		return new ModelAndView(PROFILE_ITEM_VIEW_NAME, map);
-	}
-	
-	/**
-	 * Displays the view for Relationships profile for the specified Offender.
-	 * 
-	 * @param offender - Offender
-	 * @return ModelAndView - view for Relationships profile for the specified
-	 * Offender
-	 */
-	@RequestMapping(value = "/relationshipsProfile.html",
-			method = RequestMethod.GET)
-	public ModelAndView displayRelationshipsProfileItem(@RequestParam(
-			value = "offender", required = true)
-			final Offender offender) {
-		ModelMap map = new ModelMap();
-		Date currentDate = new Date();
-		UserAccount userAccount = this.userAccountService.findByUsername(
-				SecurityContextHolder.getContext()
-					.getAuthentication().getName());
-		this.buildProfileItems(this.relationshipsProfileItemRegistry, map, 
-				offender, userAccount, currentDate);
-		map.addAttribute(PROFILE_ITEM_REGISTRY_MODEL_KEY,
-				this.relationshipsProfileItemRegistry);
-		map.addAttribute(OFFENDER_MODEL_KEY, offender);
-		
-		return new ModelAndView(PROFILE_ITEM_VIEW_NAME, map);
-	}
-	
-	/**
-	 * Displays the view for Board of Pardons And Parole profile for the
-	 * specified Offender.
-	 * 
-	 * @param offender - Offender
-	 * @return ModelAndView - view for Board of Pardons And Parole profile for
-	 * the specified Offender
-	 */
-	@RequestMapping(value = "/boardOfPardonsAndParoleProfile.html",
-			method = RequestMethod.GET)
-	public ModelAndView displayBoardPardonsParoleProfileItem(@RequestParam(
-			value = "offender", required = true)
-			final Offender offender) {
-		ModelMap map = new ModelMap();
-		Date currentDate = new Date();
-		UserAccount userAccount = this.userAccountService.findByUsername(
-				SecurityContextHolder.getContext()
-					.getAuthentication().getName());
-		this.buildProfileItems(this.boardOfPardonsAndParoleProfileItemRegistry,
-				map, offender, userAccount, currentDate);
-		map.addAttribute(PROFILE_ITEM_REGISTRY_MODEL_KEY,
-				this.boardOfPardonsAndParoleProfileItemRegistry);
-		map.addAttribute(OFFENDER_MODEL_KEY, offender);
-		
-		return new ModelAndView(PROFILE_ITEM_VIEW_NAME, map);
-	}
-	
-	//TODO: remove action menus
 	/* Action Menus */
 	
 	/**
@@ -889,36 +722,37 @@ public class OffenderProfileController {
 				doc, reportFormat);
 	}
 	
-		/**
-		 * Returns the cjin background check report for the
-		 * specified offender.
-		 * @param offender offender
-		 * @param reportFormat report format
-		 * @return response entity with report
-		 */
-		@RequestMapping(value =
-					"/profileBasicInfocjinBackgroundCheckReport.rtf",
-					method = RequestMethod.GET)
-		@PreAuthorize("(hasRole('OFFENDER_VIEW') and hasRole('OFFENDER_SSN_VIEW')) "
-				+ "or hasRole('ADMIN')")
-		public ResponseEntity<byte []>
-			reportProfileBasicInfoCJINBackgroundCheck(
-				@RequestParam(value = "offender", required = true)
-				final Offender offender,
-				@RequestParam(value = "reportFormat", required = true)
-				final ReportFormat reportFormat) {
-				UserAccount userAccount = this.findCurrentUserAccount();
-			Map<String, String> reportParamMap = new HashMap<String, String>();
-			reportParamMap.put(DOC_ID_REPORT_PARAM_NAME,
-					Long.toString(offender.getOffenderNumber()));
-			reportParamMap.put(USER_ID_REPORT_PARAM_NAME, 
-					Long.toString(userAccount.getId()));
-			byte[] doc = this.reportRunner.runReport(
-					CJIN_BACKGROUND_CHECK_REPORT_NAME,
-					reportParamMap, reportFormat);
-			return this.reportControllerDelegate.constructReportResponseEntity(
-					doc, reportFormat);
-			}
+	/**
+	 * Returns the cjin background check report for the
+	 * specified offender.
+	 * @param offender offender
+	 * @param reportFormat report format
+	 * @return response entity with report
+	 */
+	@RequestMapping(value =
+				"/profileBasicInfocjinBackgroundCheckReport.rtf",
+				method = RequestMethod.GET)
+	@PreAuthorize("(hasRole('OFFENDER_VIEW') and "
+			+ "hasRole('OFFENDER_SSN_VIEW')) "
+			+ "or hasRole('ADMIN')")
+	public ResponseEntity<byte []>
+		reportProfileBasicInfoCJINBackgroundCheck(
+			@RequestParam(value = "offender", required = true)
+			final Offender offender,
+			@RequestParam(value = "reportFormat", required = true)
+			final ReportFormat reportFormat) {
+		UserAccount userAccount = this.findCurrentUserAccount();
+		Map<String, String> reportParamMap = new HashMap<String, String>();
+		reportParamMap.put(DOC_ID_REPORT_PARAM_NAME,
+				Long.toString(offender.getOffenderNumber()));
+		reportParamMap.put(USER_ID_REPORT_PARAM_NAME, 
+				Long.toString(userAccount.getId()));
+		byte[] doc = this.reportRunner.runReport(
+				CJIN_BACKGROUND_CHECK_REPORT_NAME,
+				reportParamMap, reportFormat);
+		return this.reportControllerDelegate.constructReportResponseEntity(
+				doc, reportFormat);
+	}
 	
 	/**
 	 * Returns the offender contact report for the specified offender.
@@ -953,7 +787,7 @@ public class OffenderProfileController {
 	 * @param reportFormat report format
 	 * @return response entity with report
 	 */
-	@RequestMapping(value = "/profileInstitutionalCasePlanReport.html",
+	@RequestMapping(value = "/profileInstitutionalCasePlanReport.rtf",
 			method = RequestMethod.GET)
 	@PreAuthorize("hasRole('OFFENDER_VIEW') or hasRole('ADMIN')")
 	public ResponseEntity<byte []> reportProfileInstitutionalCasePlan(
@@ -979,7 +813,7 @@ public class OffenderProfileController {
 	 * @param reportFormat report format
 	 * @return response entity with report
 	 */
-	@RequestMapping(value = "/profileTransitionalCasePlanReport.html",
+	@RequestMapping(value = "/profileTransitionalCasePlanReport.rtf",
 			method = RequestMethod.GET)
 	@PreAuthorize("hasRole('OFFENDER_VIEW') or hasRole('ADMIN')")
 	public ResponseEntity<byte []> reportProfileTransitionalCasePlan(
@@ -1199,6 +1033,31 @@ public class OffenderProfileController {
 	}
 	
 	/**
+	 * Returns the offender location history report for the specified offender.
+	 * 
+	 * @param offender offender
+	 * @param reportFormat report format
+	 * @return response entity with report
+	 */
+	@RequestMapping(value = "/profileOffenderLocationHistoryReport.html",
+			method = RequestMethod.GET)
+	@PreAuthorize("hasRole('OFFENDER_VIEW') or hasRole('ADMIN')")
+	public ResponseEntity<byte []> reportProfileOffenderLocationHistory(
+			@RequestParam(value = "offender", required = true)
+			final Offender offender,
+			@RequestParam(value = "reportFormat", required = true)
+			final ReportFormat reportFormat) {
+		Map<String, String> reportParamMap = new HashMap<String, String>();
+		reportParamMap.put(DOC_ID_REPORT_PARAM_NAME,
+				Long.toString(offender.getOffenderNumber()));
+		byte[] doc = this.reportRunner.runReport(
+				OFFENDER_LOCATION_HISTORY_REPORT_NAME,
+				reportParamMap, reportFormat);
+		return this.reportControllerDelegate.constructReportResponseEntity(
+				doc, reportFormat);
+	}
+	
+	/**
 	 * Returns the prison intake report for the specified offender.
 	 * 
 	 * @param offender offender
@@ -1222,8 +1081,7 @@ public class OffenderProfileController {
 				reportParamMap, reportFormat);
 		return this.reportControllerDelegate.constructReportResponseEntity(
 				doc, reportFormat);
-	}
-	
+	}	
 	/**
 	 * Returns the internal and external movement report for the specified
 	 * offender.
@@ -1282,7 +1140,7 @@ public class OffenderProfileController {
 	}
 	
 	private UserAccount findCurrentUserAccount() {
-	      return this.userAccountService.findByUsername(
+		return this.userAccountService.findByUsername(
 			SecurityContextHolder.getContext().getAuthentication()
 			.getName());
 	}

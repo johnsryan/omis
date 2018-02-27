@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.paroleboarditinerary.report.impl.hibernate;
 
 import java.util.Date;
@@ -15,7 +32,7 @@ import omis.paroleboarditinerary.report.ParoleBoardItinerarySummaryReportService
  * service.
  * 
  * @author Josh Divine
- * @version 0.1.0 (Nov 21, 2017)
+ * @version 0.1.1 (Feb 14, 2018)
  * @since OMIS 3.0
  */
 public class ParoleBoardItinerarySummaryReportServiceHibernateImpl 
@@ -71,6 +88,7 @@ public class ParoleBoardItinerarySummaryReportServiceHibernateImpl
 				.getCurrentSession()
 				.getNamedQuery(FIND_BOARD_ITINERARIES_BY_DATE_QUERY_NAME)
 				.setTimestamp(EFFECTIVE_DATE_PARAMETER_NAME, effectiveDate)
+				.setReadOnly(true)
 				.list();
 		return itineraries;
 	}
@@ -86,6 +104,7 @@ public class ParoleBoardItinerarySummaryReportServiceHibernateImpl
 				.getNamedQuery(FIND_BOARD_ITINERARIES_BY_DATE_RANGE_QUERY_NAME)
 				.setTimestamp(START_DATE_PARAMETER_NAME, startDate)
 				.setTimestamp(END_DATE_PARAMETER_NAME, endDate)
+				.setReadOnly(true)
 				.list();
 		return itineraries;
 	}
@@ -99,6 +118,7 @@ public class ParoleBoardItinerarySummaryReportServiceHibernateImpl
 				.getNamedQuery(SUMMARIZE_BY_BOARD_ITINERARY_QUERY_NAME)
 				.setParameter(BOARD_ITINERARY_PARAMETER_NAME, 
 						paroleBoardItinerary)
+				.setReadOnly(true)
 				.uniqueResult();
 		return summary;
 	}
@@ -115,6 +135,7 @@ public class ParoleBoardItinerarySummaryReportServiceHibernateImpl
 						FIND_BOARD_ATTENDEES_BY_BOARD_ITINERARY_QUERY_NAME)
 				.setParameter(BOARD_ITINERARY_PARAMETER_NAME,
 						paroleBoardItinerary)
+				.setReadOnly(true)
 				.list();
 		return summaries;
 	}

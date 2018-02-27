@@ -29,7 +29,8 @@ import org.hibernate.SessionFactory;
  * Hibernate implementation of report service for docket document tracking.
  *
  * @author Yidong Li
- * @version 0.0.1 (Dec 12, 2017)
+ * @author Josh Divine
+ * @version 0.0.2 (Feb 15, 2018)
  * @since OMIS 3.0
  */
 public class DocketDocumentTrackingReportServiceHibernateImpl
@@ -66,6 +67,7 @@ public class DocketDocumentTrackingReportServiceHibernateImpl
 			.getCurrentSession()
 			.getNamedQuery(SUMMARIZE_BY_DEFENDANT_QUERY_NAME)
 			.setParameter(DEFENDANT_PARAM_NAME, defendant)
+			.setReadOnly(true)
 			.list();
 		return summaries;
 	}

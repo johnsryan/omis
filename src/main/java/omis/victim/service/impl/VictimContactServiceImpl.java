@@ -45,7 +45,6 @@ import omis.contact.service.delegate.OnlineAccountHostDelegate;
 import omis.contact.service.delegate.TelephoneNumberDelegate;
 import omis.country.domain.Country;
 import omis.country.service.delegate.CountryDelegate;
-import omis.exception.DuplicateEntityFoundException;
 import omis.person.domain.Person;
 import omis.region.domain.City;
 import omis.region.domain.State;
@@ -55,6 +54,7 @@ import omis.region.service.delegate.StateDelegate;
 import omis.residence.domain.ResidenceCategory;
 import omis.residence.domain.ResidenceStatus;
 import omis.residence.domain.ResidenceTerm;
+import omis.residence.exception.ResidenceTermExistsException;
 import omis.residence.service.delegate.ResidenceTermDelegate;
 import omis.victim.service.VictimContactService;
 
@@ -182,7 +182,7 @@ public class VictimContactServiceImpl
 	@Override
 	public ResidenceTerm updateResidenceTerm(
 			final Person victim, final Address address) 
-					throws DuplicateEntityFoundException {
+					throws ResidenceTermExistsException {
 		
 		// Assumes on primary residence address per person
 		// Do nothing if a residence term reflecting this exists
@@ -195,7 +195,7 @@ public class VictimContactServiceImpl
 					.createResidenceTerm(victim, null,
 							ResidenceCategory.PRIMARY, address,
 							ResidenceStatus.RESIDENT, null, null, null);
-			} catch (ContactExistsException exception) {
+			} catch (ResidenceTermExistsException exception) {
 				throw new AssertionError(exception.getMessage());
 			}
 		}

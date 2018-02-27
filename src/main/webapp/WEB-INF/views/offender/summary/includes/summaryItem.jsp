@@ -15,15 +15,18 @@
 <div class="itemsContainer" id="badgeItemsContainer" >
 <div class="offenderHeaderDetailsSection">
 	<div class="headerCell">
+		<c:if test="${hasOffenderModulesAccess}">
+			<a href="${pageContext.request.contextPath}/offender/modules.html?offender=${offenderSummary.id}" title="<fmt:message key='offenderModulesLink'/>" class="offenderModulesLink"><span class="linkLabel"><fmt:message key='offenderModulesLink'/></span></a>
+		</c:if>
 		<c:choose>
-		<c:when test="${hasOffenderModulesAccess}">
-			<a href="${pageContext.request.contextPath}/offender/modules.html?offender=${offenderSummary.id}" title="<fmt:message key='offenderModulesLink'/>">
+			<c:when test="${hasOffenderProfileAccess}">
+				<a href="${pageContext.request.contextPath}/offender/profile.html?offender=${offenderSummary.id}" title="<fmt:message key='gotoProfileLink'/>">
+					<span class="offenderHeaderFieldValue offenderNameValue"><c:out value="${offenderSummary.lastName}, ${offenderSummary.firstName} "/><c:if test="${not empty offenderSummary.middleName}"><c:out value="${offenderSummary.middleName} "/></c:if><c:if test="${not empty offenderSummary.suffix}"> <c:out value="${offenderSummary.suffix} "/></c:if></span>
+				</a>
+			</c:when>
+			<c:otherwise>
 				<span class="offenderHeaderFieldValue offenderNameValue"><c:out value="${offenderSummary.lastName}, ${offenderSummary.firstName} "/><c:if test="${not empty offenderSummary.middleName}"><c:out value="${offenderSummary.middleName} "/></c:if><c:if test="${not empty offenderSummary.suffix}"> <c:out value="${offenderSummary.suffix} "/></c:if></span>
-			</a>
-		</c:when>
-		<c:otherwise>
-			<span class="offenderHeaderFieldValue offenderNameValue"><c:out value="${offenderSummary.lastName}, ${offenderSummary.firstName} "/><c:if test="${not empty offenderSummary.middleName}"><c:out value="${offenderSummary.middleName} "/></c:if><c:if test="${not empty offenderSummary.suffix}"> <c:out value="${offenderSummary.suffix} "/></c:if></span>
-		</c:otherwise>
+			</c:otherwise>
 		</c:choose>
 	</div>
 	<div class="headerCell">

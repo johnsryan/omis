@@ -17,7 +17,6 @@
  */
 package omis.paroleboardcondition.report.impl.hibernate;
 
-import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 
 import omis.offender.domain.Offender;
@@ -27,7 +26,8 @@ import omis.paroleboardcondition.report.ParoleBoardAgreementProfileItemService;
  * Hibernate implementation of parole board agreement profile item.
  *
  * @author Trevor Isles
- * @version 0.1.0 (Jan 18, 2018)
+ * @author Josh Divine
+ * @version 0.1.1 (Feb 14, 2018)
  * @since OMIS 3.0
  */
 public class ParoleBoardAgreementProfileItemServiceHibernateImpl 
@@ -51,10 +51,12 @@ public class ParoleBoardAgreementProfileItemServiceHibernateImpl
 	@Override
 	public Long findParoleBoardAgreementCountByOffender(
 			final Offender offender) {
-		Query q = this.sessionFactory.getCurrentSession().getNamedQuery(
-				FIND_PAROLE_BOARD_AGREEMENT_COUNT_BY_OFFENDER_QUERY_NAME);
-		q.setEntity(OFFENDER_PARAM_NAME, offender);
-		return ((Long) q.uniqueResult());
+		return ((Long) this.sessionFactory.getCurrentSession()
+				.getNamedQuery(
+						FIND_PAROLE_BOARD_AGREEMENT_COUNT_BY_OFFENDER_QUERY_NAME)
+				.setParameter(OFFENDER_PARAM_NAME, offender)
+				.setReadOnly(true)
+				.uniqueResult());
 	}
 
 }

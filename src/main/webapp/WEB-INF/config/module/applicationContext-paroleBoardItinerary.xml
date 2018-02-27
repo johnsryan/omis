@@ -1,4 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+ - OMIS - Offender Management Information System
+ - Copyright (C) 2011 - 2017 State of Montana
+ -
+ - This program is free software: you can redistribute it and/or modify
+ - it under the terms of the GNU General Public License as published by
+ - the Free Software Foundation, either version 3 of the License, or
+ - (at your option) any later version.
+ -
+ - This program is distributed in the hope that it will be useful,
+ - but WITHOUT ANY WARRANTY; without even the implied warranty of
+ - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ - GNU General Public License for more details.
+ -
+ - You should have received a copy of the GNU General Public License
+ - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<!-- 
+  - Parole board itinerary configuration.
+  -
+  - Author: Josh Divine
+  -->
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:context="http://www.springframework.org/schema/context"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -58,11 +80,6 @@
         	<constructor-arg name="boardMeetingSiteInstanceFactory" ref="boardMeetingSiteInstanceFactory"/>
         </bean>
         
-        <bean id="paroleBoardLocationDelegate" class="omis.paroleboarditinerary.service.delegate.ParoleBoardLocationDelegate">
-			<constructor-arg name="paroleBoardLocationDao" ref="paroleBoardLocationDao" />
-			<constructor-arg name="paroleBoardLocationInstanceFactory" ref="paroleBoardLocationInstanceFactory" />
-		</bean>
-        
         <!-- Data access objects -->
         
         <bean id="paroleBoardItineraryDao"
@@ -89,11 +106,6 @@
     		<constructor-arg name="sessionFactory" ref="sessionFactory"/>
   		</bean>
   		
-  		<bean id="paroleBoardLocationDao" class="omis.paroleboarditinerary.dao.impl.hibernate.ParoleBoardLocationDaoHibernateImpl">
-			<constructor-arg name="sessionFactory" ref="sessionFactory" />
-			<constructor-arg name="entityName" value="omis.paroleboarditinerary.domain.ParoleBoardLocation" />
-		</bean>
-  		
   		<!-- Instance factories -->
   		 
 		<bean id="paroleBoardItineraryInstanceFactory"
@@ -119,15 +131,10 @@
 			<constructor-arg name="instanceFactoryDelegate" ref="instanceFactoryDelegate"/>
 			<constructor-arg name="entityName" value="omis.paroleboarditinerary.domain.BoardMeetingSite"/>
 		</bean>
-		
-		<bean id="paroleBoardLocationInstanceFactory" class="omis.instance.factory.hibernate.impl.InstanceFactoryHibernateImpl">
-			<constructor-arg name="instanceFactoryDelegate" ref="instanceFactoryDelegate" />
-			<constructor-arg name="entityName" value="omis.paroleboarditinerary.domain.ParoleBoardLocation" />
-		</bean>
 	
-  		 <!--Property editor factories -->
+  		<!--Property editor factories -->
  		 
- 		 <bean id="paroleBoardItineraryPropertyEditorFactory"
+ 		<bean id="paroleBoardItineraryPropertyEditorFactory"
        		class="omis.beans.factory.impl.hibernate.PropertyEditorFactoryHibernateImpl">
  			<constructor-arg name="entityName" value="omis.paroleboarditinerary.domain.ParoleBoardItinerary"/>
  			<constructor-arg name="configuration" ref="hibernateConfiguration"/>
@@ -153,14 +160,6 @@
  			<constructor-arg name="entityName" value="omis.paroleboarditinerary.domain.BoardMeetingSite"/>
  			<constructor-arg name="configuration" ref="hibernateConfiguration"/>
   			<constructor-arg name="dao" ref="boardMeetingSiteDao"/>
-		</bean>
-		
-		<bean id="paroleBoardLocationPropertyEditorFactory"
-		class="omis.beans.factory.impl.hibernate.PropertyEditorFactoryHibernateImpl">
-			<constructor-arg name="dao" ref="paroleBoardLocationDao" />
-			<constructor-arg name="entityName"
-				value="omis.paroleboarditinerary.domain.ParoleBoardLocation" />
-			<constructor-arg name="configuration" ref="hibernateConfiguration" />
 		</bean>
 		
 </beans>

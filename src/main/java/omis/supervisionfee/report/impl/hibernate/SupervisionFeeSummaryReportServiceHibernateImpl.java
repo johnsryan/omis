@@ -1,10 +1,26 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.supervisionfee.report.impl.hibernate;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 
 import omis.offender.domain.Offender;
@@ -17,7 +33,8 @@ import omis.supervisionfee.report.SupervisionFeeSummaryReportService;
  * Hibernate implementation of the supervision fee report service.
  * 
  * @author Sheronda Vaughn
- * @version 0.1.0 (Sep 8, 2014)
+ * @author Josh Divine
+ * @version 0.1.1 (Feb 14, 2018)
  * @since OMIS 3.0
  */
 public class SupervisionFeeSummaryReportServiceHibernateImpl 
@@ -80,13 +97,15 @@ public class SupervisionFeeSummaryReportServiceHibernateImpl
 					findSupervisionFeeRequirementsBySupervisionFee(
 					final MonthlySupervisionFee monthlySupervisionFee,
 					final Date effectiveDate) {
-		final Query query = this.sessionFactory.getCurrentSession()
-						.getNamedQuery(
-						FIND_SUPERVISION_FEE_REQUIREMENTS_BY_SUPERVISION_FEE);
-		query.setParameter(MONTHLY_SUPERVISION_FEE, monthlySupervisionFee);
-		query.setParameter(EFFECTIVE_DATE_PARAM_NAME, effectiveDate);
 		@SuppressWarnings("unchecked")
-		List<SupervisionFeeRequirementSummary> list = query.list();
+		List<SupervisionFeeRequirementSummary> list = this.sessionFactory
+				.getCurrentSession()
+				.getNamedQuery(
+						FIND_SUPERVISION_FEE_REQUIREMENTS_BY_SUPERVISION_FEE)
+				.setParameter(MONTHLY_SUPERVISION_FEE, monthlySupervisionFee)
+				.setParameter(EFFECTIVE_DATE_PARAM_NAME, effectiveDate)
+				.setReadOnly(true)
+				.list();
 		return list;
 	}
 	
@@ -94,11 +113,13 @@ public class SupervisionFeeSummaryReportServiceHibernateImpl
 	@Override
 	public List<MonthlySupervisionFee> findSupervisionFeesBy(
 					final Offender offender) {
-		final Query query = this.sessionFactory.getCurrentSession()
-						.getNamedQuery(FIND_SUPERVISION_FEES_BY);
-		query.setParameter(OFFENDER_PARAM_NAME, offender);
 		@SuppressWarnings("unchecked")
-		List<MonthlySupervisionFee> list = query.list();
+		List<MonthlySupervisionFee> list = this.sessionFactory
+				.getCurrentSession()
+				.getNamedQuery(FIND_SUPERVISION_FEES_BY)
+				.setParameter(OFFENDER_PARAM_NAME, offender)
+				.setReadOnly(true)
+				.list();
 		return list;
 	}
 }

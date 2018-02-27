@@ -3,7 +3,8 @@ package omis.paroleboarditinerary.web.form;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-import omis.paroleboarditinerary.domain.ParoleBoardLocation;
+
+import omis.paroleboardlocation.domain.ParoleBoardLocation;
 import omis.paroleboardmember.domain.ParoleBoardMember;
 
 /**

@@ -43,14 +43,18 @@ import omis.beans.factory.PropertyEditorFactory;
 import omis.beans.factory.spring.CustomDateEditorFactory;
 import omis.exception.DuplicateEntityFoundException;
 import omis.hearinganalysis.domain.HearingAnalysis;
+import omis.hearinganalysis.domain.HearingAnalysisNote;
 import omis.hearinganalysis.domain.HearingAnalysisTaskAssociation;
 import omis.hearinganalysis.domain.ParoleHearingAnalysisTaskSource;
 import omis.hearinganalysis.domain.ParoleHearingTaskGroup;
 import omis.hearinganalysis.report.HearingAnalysisSummaryService;
 import omis.hearinganalysis.service.HearingAnalysisTaskService;
 import omis.hearinganalysis.web.form.HearingAnalysisHomeForm;
+import omis.hearinganalysis.web.form.HearingAnalysisNoteItem;
+import omis.hearinganalysis.web.form.HearingAnalysisNoteItemOperation;
 import omis.hearinganalysis.web.form.HearingAnalysisTaskItem;
 import omis.hearinganalysis.web.form.HearingAnalysisTaskItemOperation;
+import omis.hearinganalysis.web.validator.HearingAnalysisHomeFormValidator;
 import omis.offender.domain.Offender;
 import omis.offender.web.controller.delegate.OffenderSummaryModelDelegate;
 import omis.paroleeligibility.domain.ParoleEligibility;
@@ -65,7 +69,7 @@ import omis.web.controller.delegate.BusinessExceptionHandlerDelegate;
  * Controller for hearing analysis home.
  *
  * @author Josh Divine
- * @version 0.1.0 (Jan 16, 2018)
+ * @version 0.1.1 (Feb 20, 2018)
  * @since OMIS 3.0
  */
 @Controller
@@ -98,6 +102,9 @@ public class HearingAnalysisHomeController {
 
 	private static final String USER_ACCOUNT_MODEL_KEY =
 			"AuditComponentRetrieverSpringMvcImpl#auditUserAccount";
+	
+	private static final String HEARING_ANALYSIS_NOTE_INDEX_MODEL_KEY = 
+			"hearingAnalysisNoteIndex";
 	
 	/* Message keys. */
 	
@@ -134,6 +141,16 @@ public class HearingAnalysisHomeController {
 	private PropertyEditorFactory 
 			hearingAnalysisTaskAssociationPropertyEditorFactory;
 	
+	@Autowired
+	@Qualifier("hearingAnalysisNotePropertyEditorFactory")
+	private PropertyEditorFactory hearingAnalysisNotePropertyEditorFactory;
+
+	/* Validators. */
+
+	@Autowired
+	@Qualifier("hearingAnalysisHomeFormValidator")
+	private HearingAnalysisHomeFormValidator hearingAnalysisHomeFormValidator;
+	
 	/* Helpers. */
 
 	@Autowired
@@ -153,6 +170,13 @@ public class HearingAnalysisHomeController {
 	
 	/* URL invokable methods. */
 	
+	/**
+	 * Shows hearing analysis home screen.
+	 * 
+	 * @param hearingAnalysis hearing analysis
+	 * @return hearing analysis home screen
+	 * @throws DuplicateEntityFoundException if duplicate entity exists
+	 */
 	@RequestMapping(value = "/home.html", method = RequestMethod.GET)
 	@PreAuthorize("hasRole('HEARING_ANALYSIS_TASK_VIEW') or hasRole('ADMIN')")
 	public ModelAndView home(
@@ -190,9 +214,31 @@ public class HearingAnalysisHomeController {
 		HearingAnalysisHomeForm form = new HearingAnalysisHomeForm();
 		form.setAnalysisTaskItems(analysisTaskItems);
 		form.setPlanningTaskItems(planningTaskItems);
+		List<HearingAnalysisNote> notes = this.hearingAnalysisTaskService
+				.findHearingAnalysisNotesByHearingAnalysis(hearingAnalysis);
+		List<HearingAnalysisNoteItem> noteItems = 
+				new ArrayList<HearingAnalysisNoteItem>();
+		for (HearingAnalysisNote note : notes) {
+			HearingAnalysisNoteItem noteItem = new HearingAnalysisNoteItem();
+			noteItem.setHearingAnalysisNote(note);
+			noteItem.setDate(note.getDate());
+			noteItem.setValue(note.getDescription());
+			noteItem.setOperation(HearingAnalysisNoteItemOperation.EDIT);
+			noteItems.add(noteItem);
+		}
+		form.setHearingAnalysisNoteItems(noteItems);
 		return prepareMav(hearingAnalysis, form);
 	}
 	
+	/**
+	 * Updates hearing analysis tasks.
+	 * 
+	 * @param hearingAnalysis hearing analysis
+	 * @param form hearing analysis home form
+	 * @param bindingResult binding result
+	 * @return redirect to hearing analysis home screen
+	 * @throws DuplicateEntityFoundException if duplicate entity exists
+	 */
 	@RequestMapping(value = "/home.html", method = RequestMethod.POST)
 	@PreAuthorize("hasRole('HEARING_ANALYSIS_TASK_EDIT') or hasRole('ADMIN')")
 	public ModelAndView update(
@@ -201,6 +247,7 @@ public class HearingAnalysisHomeController {
 			final HearingAnalysisHomeForm form,
 			final BindingResult bindingResult) 
 					throws DuplicateEntityFoundException {
+		this.hearingAnalysisHomeFormValidator.validate(form, bindingResult);
 		if (bindingResult.hasErrors()) {
 			return this.prepareRedisplay(form, hearingAnalysis, bindingResult);
 		}
@@ -219,14 +266,22 @@ public class HearingAnalysisHomeController {
 						task.getOriginationDate(), new Date());
 			}
 		}
+		processHearingAnalysisNoteItems(hearingAnalysis,
+				form.getHearingAnalysisNoteItems());
 		
 		return new ModelAndView(String.format(HOME_REDIRECT, 
 				hearingAnalysis.getId()));
 	}
 	
+	/**
+	 * Displays action menu for hearing analysis home screen.
+	 * 
+	 * @param hearingAnalysis hearing analysis
+	 * @return action menu for hearing analysis home screen
+	 */
 	@RequestMapping(value = "/homeActionMenu.html",
 			method = RequestMethod.GET)
-	public ModelAndView displayHomeActionMenu(
+	public ModelAndView showHomeActionMenu(
 			@RequestParam(value = "hearingAnalysis", required = true)
 			final HearingAnalysis hearingAnalysis) {
 		ModelMap map = new ModelMap();
@@ -246,6 +301,9 @@ public class HearingAnalysisHomeController {
 		map.addAttribute(HEARING_ANALYSIS_SUMMARY_MODEL_KEY, 
 				this.hearingAnalysisSummaryService.summarize(hearingAnalysis));
 		map.addAttribute(FORM_MODEL_KEY, form);
+		map.addAttribute(HEARING_ANALYSIS_NOTE_INDEX_MODEL_KEY, 
+				form.getHearingAnalysisNoteItems() != null ? 
+						form.getHearingAnalysisNoteItems().size() : 0);
 		return new ModelAndView(HOME_VIEW_NAME, map);
 	}
 	
@@ -259,8 +317,9 @@ public class HearingAnalysisHomeController {
 				bindingResult);
 		return mav;
 	}
-		
-	private void checkTasks(HearingAnalysis hearingAnalysis) 
+	
+	// Creates missing task pieces if necessary
+	private void checkTasks(final HearingAnalysis hearingAnalysis) 
 			throws DuplicateEntityFoundException {
 		ParoleHearingTaskGroup taskGroup = this.hearingAnalysisTaskService
 				.findParoleHearingTaskGroupByHearingAnalysisCategory(
@@ -360,7 +419,33 @@ public class HearingAnalysisHomeController {
 		editor.setValue(date);
 		return editor.getAsText();
 	}
-		
+	
+	// Process hearing analysis notes
+	private void processHearingAnalysisNoteItems(
+			final HearingAnalysis hearingAnalysis,
+			final List<HearingAnalysisNoteItem> hearingAnalysisNoteItems) 
+					throws DuplicateEntityFoundException {
+		if (hearingAnalysisNoteItems != null) {
+			for (HearingAnalysisNoteItem noteItem : hearingAnalysisNoteItems) {
+				if (HearingAnalysisNoteItemOperation.CREATE.equals(
+						noteItem.getOperation())) {
+					this.hearingAnalysisTaskService.createHearingAnalysisNote(
+							hearingAnalysis, noteItem.getValue(), 
+							noteItem.getDate());
+				} else if (HearingAnalysisNoteItemOperation.EDIT.equals(
+						noteItem.getOperation())) {
+					this.hearingAnalysisTaskService.updateHearingAnalysisNote(
+							noteItem.getHearingAnalysisNote(), 
+							noteItem.getValue(), noteItem.getDate());
+				} else if (HearingAnalysisNoteItemOperation.REMOVE.equals(
+						noteItem.getOperation())) {
+					this.hearingAnalysisTaskService.removeHearingAnalysisNote(
+							noteItem.getHearingAnalysisNote());
+				}
+			}
+		}
+	}
+	
 	/* Exception handler methods. */
 	
 	/**
@@ -392,5 +477,8 @@ public class HearingAnalysisHomeController {
 		binder.registerCustomEditor(HearingAnalysisTaskAssociation.class, 
 				this.hearingAnalysisTaskAssociationPropertyEditorFactory
 					.createPropertyEditor());
+		binder.registerCustomEditor(HearingAnalysisNote.class,
+				this.hearingAnalysisNotePropertyEditorFactory
+				.createPropertyEditor());
 	}
 }

@@ -19,17 +19,20 @@ package omis.supervision.report.impl.hibernate;
 
 import java.util.Date;
 
-import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 
 import omis.offender.domain.Offender;
 import omis.supervision.report.PlacementTermProfileItemReportService;
 
-/** Hibernate implementation of placement term profile item report service.
+/** 
+ * Hibernate implementation of placement term profile item report service.
+ * 
  * @author Ryan Johns
  * @author Stephen Abson
- * @version 0.1.0 (Mar 17, 2016)
- * @since OMIS 3.0 */
+ * @author Josh Divine
+ * @version 0.1.1 (Feb 14, 2018)
+ * @since OMIS 3.0 
+ */
 public class PlacementTermProfileItemReportServiceHibernateImpl 
 	implements PlacementTermProfileItemReportService {
 	private static final String 
@@ -48,15 +51,16 @@ public class PlacementTermProfileItemReportServiceHibernateImpl
 		this.sessionFactory = sessionFactory;
 	}
 	
-	
 	/** {@inheritDoc} */
 	@Override
 	public boolean findPlacementTermExistsByOffenderOnDate(
 			final Offender offender, final Date effectiveDate) {
-		Query q = this.sessionFactory.getCurrentSession().getNamedQuery(
-				FIND_PLACEMENT_TERM_BY_OFFENDER_ON_DATE_QUERY_NAME);
-		q.setEntity(OFFENDER_PARAM_NAME, offender);
-		q.setDate(EFFECTIVE_DATE_PARAM_NAME, effectiveDate);
-		return (!q.list().isEmpty());
+		return (!this.sessionFactory.getCurrentSession()
+				.getNamedQuery(
+						FIND_PLACEMENT_TERM_BY_OFFENDER_ON_DATE_QUERY_NAME)
+				.setParameter(OFFENDER_PARAM_NAME, offender)
+				.setDate(EFFECTIVE_DATE_PARAM_NAME, effectiveDate)
+				.setReadOnly(true)
+				.list().isEmpty());
 	}
 }

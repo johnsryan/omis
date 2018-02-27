@@ -18,7 +18,7 @@
 
 <%--
  - Author: Josh Divine
- - Version: 0.1.0 (Dec 20, 2017)
+ - Version: 0.1.0 (Feb 20, 2018)
  - Since: OMIS 3.0
  --%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
@@ -34,7 +34,8 @@
 		</tr>
 	</thead>
 	<tbody id="hearingAnalysisNotes">
-	<c:forEach var="hearingAnalysisNote" items="${hearingAnalysisForm.hearingAnalysisNoteItems}" varStatus="status">
+	<c:forEach var="hearingAnalysisNote" items="${hearingAnalysisNoteItems}" varStatus="status">
+		<c:set var="hearingAnalysisNote" value="${hearingAnalysisNote}" scope="request"/>
 		<c:set var="hearingAnalysisNoteIndex" value="${status.index}" scope="request"/>
 		<c:set var="operation" value="${hearingAnalysisNote.operation}" scope="request"/>
 		<c:if test="${not empty hearingAnalysisNote.operation}">

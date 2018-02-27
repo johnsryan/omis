@@ -21,7 +21,10 @@ import java.util.List;
 
 import org.hibernate.SessionFactory;
 
+import omis.hearinganalysis.domain.HearingAnalysis;
+import omis.hearinganalysis.service.delegate.HearingAnalysisDelegate;
 import omis.offender.domain.Offender;
+import omis.paroleeligibility.domain.ParoleEligibility;
 import omis.paroleeligibility.report.ParoleEligibilityReportService;
 import omis.paroleeligibility.report.ParoleEligibilitySummary;
 
@@ -29,7 +32,8 @@ import omis.paroleeligibility.report.ParoleEligibilitySummary;
  * Hibernate implementation of the parole eligibility report service.
  *
  * @author Trevor Isles
- * @version 0.1.0 (Dec 19, 2017)
+ * @author Josh Divine
+ * @version 0.1.2 (Feb 20, 2018)
  * @since OMIS 3.0
  */
 public class ParoleEligibilityReportServiceHibernateImpl 
@@ -44,9 +48,13 @@ public class ParoleEligibilityReportServiceHibernateImpl
 	
 	private static final String OFFENDER_PARAM_NAME = "offender";
 	
-	
 	/* Members. */
+	
 	private final SessionFactory sessionFactory;
+
+	/* Delegates. */
+	
+	private final HearingAnalysisDelegate hearingAnalysisDelegate;
 	
 	/**
 	 * Constructor.
@@ -54,8 +62,10 @@ public class ParoleEligibilityReportServiceHibernateImpl
 	 * @param sessionFactory session factory
 	 */
 	public ParoleEligibilityReportServiceHibernateImpl(
-			final SessionFactory sessionFactory) {
+			final SessionFactory sessionFactory,
+			final HearingAnalysisDelegate hearingAnalysisDelegate) {
 		this.sessionFactory = sessionFactory;
+		this.hearingAnalysisDelegate = hearingAnalysisDelegate;
 	}
 	
 	/** {@inheritDoc} */
@@ -67,8 +77,16 @@ public class ParoleEligibilityReportServiceHibernateImpl
 				.getCurrentSession()
 				.getNamedQuery(FIND_PAROLE_ELIGIBILITIES_BY_OFFENDER_QUERY_NAME)
 				.setParameter(OFFENDER_PARAM_NAME, offender)
+				.setReadOnly(true)
 				.list();
 		return summaries;
 	}
 
+	/** {@inheritDoc} */
+	@Override
+	public HearingAnalysis findHearingAnalysisByParoleEligibility(
+			final ParoleEligibility eligibility) {
+		return this.hearingAnalysisDelegate.findByParoleEligibility(
+				eligibility);
+	}
 }

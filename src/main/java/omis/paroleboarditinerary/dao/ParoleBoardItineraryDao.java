@@ -21,7 +21,7 @@ import java.util.Date;
 import java.util.List;
 import omis.dao.GenericDao;
 import omis.paroleboarditinerary.domain.ParoleBoardItinerary;
-import omis.paroleboarditinerary.domain.ParoleBoardLocation;
+import omis.paroleboardlocation.domain.ParoleBoardLocation;
 
 /**
  * Data access object for parole board itinerary.

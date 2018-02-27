@@ -12,9 +12,7 @@
         <bean id="familyAssociationService"
         	class="omis.family.service.impl.FamilyAssociationServiceImpl">
         	<constructor-arg name="familyAssociationCategoryDelegate" ref="familyAssociationCategoryDelegate"/>
-        	<constructor-arg name="relationshipDao" ref="relationshipDao"/>
         	<constructor-arg name="familyAssociationNoteDelegate" ref="familyAssociationNoteDelegate"/>
-        	<constructor-arg name="residenceTermDao" ref="residenceTermDao"/>
         	<constructor-arg name="auditComponentRetriever" ref="auditComponentRetriever"/>
         	<constructor-arg name="relationshipInstanceFactory" ref="relationshipInstanceFactory"/>
         	<constructor-arg name="familyAssociationNoteInstanceFactory" ref="familyAssociationNoteInstanceFactory"/>
@@ -31,12 +29,8 @@
         	<constructor-arg name="zipCodeDelegate" ref="zipCodeDelegate"/>
         	<constructor-arg name="personDelegate" ref="personDelegate"/>
         	<constructor-arg name="countryDelegate" ref="countryDelegate"/>
-        	<constructor-arg name="streetSuffixDelegate" ref="streetSuffixDelegate"/>
-        	<constructor-arg name="addressUnitDesignatorDelegate" ref="addressUnitDesignatorDelegate"/>
         	<constructor-arg name="personIdentityDelegate" ref="personIdentityDelegate"/>
         	<constructor-arg name="familyAssociationNoteDelegate" ref="familyAssociationNoteDelegate"/>
-        	<constructor-arg name="personDao" ref="personDao"/>
-        	<constructor-arg name="suffixDao" ref="suffixDao"/>
         	<constructor-arg name="suffixDelegate" ref="suffixDelegate"/>
         </bean>
         

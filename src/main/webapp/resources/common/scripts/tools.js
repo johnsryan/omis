@@ -228,3 +228,89 @@ function applySessionExtender(elt, url, increment) {
 				}, increment);
 	elt.onblur = function() {clearInterval(refresh)};
 }
+
+/*
+ * Applies a module group iframe displayer.
+ * 
+ * elt - div or span element with link children
+ * nextElt - optional, element in which the links within elt will source into,
+ * leave null to have one created.
+ *
+ * example:
+ * <div id="elt" class="linkstuff">
+ *	<a href="somewhere.to/link.html">go to link</a>
+ *  <a href="somewhere.to/otherLink.html">go to other</a>
+ * </div>
+ * JS: applyModuleGroup(elt);
+ * - in the above, a div will be created dynamically placed after "elt" in which
+ * the iframes will be displayed
+ *
+ * other example:
+ * <div id="elt">
+ *	<a href="somewhere.to/link.html">go to link</a>
+ *  <a href="somewhere.to/otherLink.html">go to other</a>
+ * </div>
+ * <div id="nextElt"></div>
+ * JS: applyModuleGroup(elt, nextElt);
+ * - in the above, the iframes will be displayed within "nextElt", this will
+ * allow for styling freedom.
+ */
+function applyModuleGroup(elt, nextElt) {
+	if (!elt) {
+		console.error("No element provided to apply module group.");
+		return false;
+	}
+	if (!nextElt) {
+		nextElt = document.createElement('div');
+		nextElt.classList.add("moduleGroupDisplayContainer");
+		insertAfter(elt, nextElt);
+	}
+	var links = elt.getElementsByTagName('a');
+	var iframes = [];
+	var refresh = document.createElement('span');
+	refresh.classList.add("moduleGroupLinkRefresh");
+	refresh.setAttribute("title", "Reset Current Page");
+	if(links.length) {
+		elt.insertBefore(refresh, links[0]);
+	} else {
+		console.error("No links provided to apply module group.");
+		return false;
+	}
+	
+	for (var i = 0; i < links.length; i++) {
+		iframes[i] = document.createElement('iframe');
+		iframes[i].setAttribute("frameborder", 0);
+		iframes[i].classList.add("hidden");
+		iframes[i].classList.add("moduleGroupDisplayContent");
+		iframes[i].setAttribute("src", links[i].getAttribute("href"));
+		nextElt.appendChild(iframes[i]);
+		links[i].onclick = function(e) {
+			for (var j = 0; j < iframes.length; j++) {
+				if (iframes[j].getAttribute("src") == e.target
+						.getAttribute("href")) {
+					iframes[j].classList.remove("hidden");
+				} else {
+					iframes[j].classList.add("hidden");
+				}
+			}
+			for (var j = 0; j < links.length; j++) {
+				links[j].classList.remove("activeModuleGroupLink");
+			}
+			e.target.classList.add("activeModuleGroupLink");
+			e.preventDefault();
+		};
+	}
+	if(iframes[0]) {
+		iframes[0].classList.remove("hidden");
+		links[0].classList.add("activeModuleGroupLink");
+	}
+	refresh.onclick = function(e) {
+		var linkHref = elt.getElementsByClassName("activeModuleGroupLink")[0].getAttribute("href");
+		for (var j = 0; j < iframes.length; j++) {
+			if (iframes[j].getAttribute("src") == linkHref) {
+				iframes[j].src = linkHref;
+			}
+		}
+	}
+}
+

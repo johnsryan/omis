@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.program.service;
 
 import java.util.Date;
@@ -13,6 +30,7 @@ import omis.program.domain.ProgramPlacement;
 import omis.program.exception.ProgramPlacementConflictException;
 import omis.program.exception.ProgramPlacementExistsAfterException;
 import omis.program.exception.ProgramPlacementExistsBeforeException;
+import omis.program.exception.ProgramPlacementExistsException;
 import omis.supervision.domain.PlacementTerm;
 import omis.supervision.domain.SupervisoryOrganization;
 import omis.supervision.exception.OffenderNotUnderSupervisionException;
@@ -21,6 +39,7 @@ import omis.supervision.exception.OffenderNotUnderSupervisionException;
  * Service for program placements.
  *
  * @author Stephen Abson
+ * @author Sheronda Vaughn
  * @version 0.0.1
  * @since OMIS 3.0
  */
@@ -48,7 +67,7 @@ public interface ProgramPlacementService {
 	ProgramPlacement create(
 			Offender offender, PlacementTerm placementTerm,
 			LocationTerm locationTerm, DateRange dateRange, Program program)
-					throws DuplicateEntityFoundException,
+					throws ProgramPlacementExistsException,
 					 	ProgramPlacementConflictException,
 					 	ProgramPlacementExistsBeforeException,
 					 	ProgramPlacementExistsAfterException,
@@ -74,7 +93,7 @@ public interface ProgramPlacementService {
 	ProgramPlacement update(
 			ProgramPlacement programPlacement, DateRange dateRange,
 			Program program)
-					throws DuplicateEntityFoundException,
+					throws ProgramPlacementExistsException,
 						ProgramPlacementConflictException,
 						ProgramPlacementExistsBeforeException,
 						ProgramPlacementExistsAfterException,

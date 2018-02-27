@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.program.service.impl;
 
 import java.util.ArrayList;
@@ -5,7 +22,6 @@ import java.util.Date;
 import java.util.List;
 
 import omis.datatype.DateRange;
-import omis.exception.DuplicateEntityFoundException;
 import omis.location.domain.Location;
 import omis.locationterm.domain.LocationTerm;
 import omis.locationterm.service.delegate.LocationTermDelegate;
@@ -15,6 +31,7 @@ import omis.program.domain.ProgramPlacement;
 import omis.program.exception.ProgramPlacementConflictException;
 import omis.program.exception.ProgramPlacementExistsAfterException;
 import omis.program.exception.ProgramPlacementExistsBeforeException;
+import omis.program.exception.ProgramPlacementExistsException;
 import omis.program.service.ProgramPlacementService;
 import omis.program.service.delegate.ProgramDelegate;
 import omis.program.service.delegate.ProgramPlacementDelegate;
@@ -27,6 +44,7 @@ import omis.supervision.service.delegate.PlacementTermDelegate;
  * Implementation of service for program placements.
  *
  * @author Stephen Abson
+ * @author Sheronda Vaughn
  * @version 0.0.1
  * @since OMIS 3.0
  */
@@ -66,14 +84,14 @@ public class ProgramPlacementServiceImpl
 			final Offender offender, final PlacementTerm placementTerm,
 			final LocationTerm locationTerm, final DateRange dateRange,
 			final Program program)
-					throws DuplicateEntityFoundException,
+					throws ProgramPlacementExistsException,
 						ProgramPlacementConflictException,
 						ProgramPlacementExistsBeforeException,
 						ProgramPlacementExistsAfterException, 
 						OffenderNotUnderSupervisionException {
 		if (this.programPlacementDelegate.find(offender, dateRange, program) 
 				!= null) {
-			throw new DuplicateEntityFoundException("Program placement already "
+			throw new ProgramPlacementExistsException("Program placement already "
 					+ "exists");
 		}
 		if (placementTerm == null) {
@@ -143,7 +161,7 @@ public class ProgramPlacementServiceImpl
 	public ProgramPlacement update(
 			final ProgramPlacement programPlacement, final DateRange dateRange,
 			final Program program)
-					throws DuplicateEntityFoundException,
+					throws ProgramPlacementExistsException,
 						ProgramPlacementConflictException,
 						ProgramPlacementExistsBeforeException,
 						ProgramPlacementExistsAfterException,
@@ -151,8 +169,8 @@ public class ProgramPlacementServiceImpl
 		if (this.programPlacementDelegate.findExcluding(
 				programPlacement.getOffender(), dateRange, program, 
 				programPlacement) != null) {
-			throw new DuplicateEntityFoundException("Program placement already "
-					+ "exists.");
+			throw new ProgramPlacementExistsException(
+					"Program placement already exists.");
 		}
 		long existingCount = this.programPlacementDelegate.countExcluding(
 				programPlacement.getOffender(), 
@@ -174,7 +192,7 @@ public class ProgramPlacementServiceImpl
 							+ "exist after the updated program placement.");
 			}
 		}
-		return this.programPlacementDelegate.update(programPlacement, dateRange, 
+		return this.programPlacementDelegate.update(programPlacement, dateRange,
 				program, programPlacement.getPlacementTerm(), 
 				programPlacement.getLocationTerm());
 	}

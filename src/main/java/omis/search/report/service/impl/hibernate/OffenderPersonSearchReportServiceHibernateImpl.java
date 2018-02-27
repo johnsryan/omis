@@ -1,19 +1,39 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.search.report.service.impl.hibernate;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.SessionFactory;
+
 import omis.search.report.OffenderSearchResult;
 import omis.search.report.service.OffenderPersonSearchReportService;
 import omis.search.util.PersonRegexUtility;
 
-import org.hibernate.Query;
-import org.hibernate.SessionFactory;
-
-/** Offender search report service.
+/** 
+ * Offender search report service.
+ * 
  * @author Ryan Johns
- * @version 0.1.0 (May 29, 2013)
- * @since OMIS 3.0 */
+ * @author Josh Divine
+ * @version 0.1.1 (Feb 14, 2018)
+ * @since OMIS 3.0 
+ */
 public class OffenderPersonSearchReportServiceHibernateImpl
 	extends AbstractPersonSearchReportServiceHibernateImpl<OffenderSearchResult>
 	implements OffenderPersonSearchReportService {
@@ -55,18 +75,16 @@ public class OffenderPersonSearchReportServiceHibernateImpl
 		super(sessionFactory);
 	}
 
-
 	/** {@inheritDoc} */
 	@Override
 	public OffenderSearchResult findById(final Long id) {
-		final Query q = this.getSessionFactory().getCurrentSession()
-				.getNamedQuery(FIND_PERSON_SEARCH_BY_ID);
-
-		q.setParameter(FIND_PERSON_SEARCH_BY_ID_PARAM, id);
-
-		return (OffenderSearchResult) q.uniqueResult();
+		return (OffenderSearchResult) this.getSessionFactory()
+				.getCurrentSession()
+				.getNamedQuery(FIND_PERSON_SEARCH_BY_ID)
+				.setParameter(FIND_PERSON_SEARCH_BY_ID_PARAM, id)
+				.setReadOnly(true)
+				.uniqueResult();
 	}
-
 
 	/** {@inheritDoc} */
 	@Override
@@ -109,14 +127,14 @@ public class OffenderPersonSearchReportServiceHibernateImpl
 	 * @return list of person names. */
 	public List<OffenderSearchResult> findPersonNamesByOffenderNumberSearch(
 			final Long offenderNumber) {
-		final Query q = this.getSessionFactory().getCurrentSession()
-				.getNamedQuery(FIND_PERSON_NAME_BY_OFFENDER_NUMBER);
-
-		q.setLong(FIND_PERSON_NAME_BY_OFFENDER_NUMBER_PARAMS, offenderNumber);
-
 		@SuppressWarnings("unchecked")
 		final
-		List<OffenderSearchResult> result = q.list();
+		List<OffenderSearchResult> result = this.getSessionFactory().getCurrentSession()
+				.getNamedQuery(FIND_PERSON_NAME_BY_OFFENDER_NUMBER)
+				.setLong(FIND_PERSON_NAME_BY_OFFENDER_NUMBER_PARAMS, 
+						offenderNumber)
+				.setReadOnly(true)
+				.list();
 
 		return result;
 	}

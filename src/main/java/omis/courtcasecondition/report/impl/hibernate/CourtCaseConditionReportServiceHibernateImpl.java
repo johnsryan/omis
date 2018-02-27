@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.courtcasecondition.report.impl.hibernate;
 
 import java.util.Date;
@@ -16,7 +33,8 @@ import omis.util.StringUtility;
  * Hibernate implementation of report service for court case conditions.
  *
  * @author Trevor Isles
- * @version 0.1.0 (August 3, 2017)
+ * @author Josh Divine
+ * @version 0.1.1 (Feb 15, 2018)
  * @since OMIS 3.0
  */
 public class CourtCaseConditionReportServiceHibernateImpl 
@@ -67,6 +85,7 @@ public class CourtCaseConditionReportServiceHibernateImpl
 				.getNamedQuery(SUMMARIZE_BY_OFFENDER_QUERY_NAME)
 				.setParameter(OFFENDER_PARAM_NAME, offender)
 				.setTimestamp(EFFECTIVE_DATE_PARAM_NAME, effectiveDate)
+				.setReadOnly(true)
 				.list();
 		return summaries;
 	}
@@ -81,5 +100,4 @@ public class CourtCaseConditionReportServiceHibernateImpl
 			return this.offenderReportDelegate.summarizeByNameQuery(query);
 		}
 	}
-
 }

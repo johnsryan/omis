@@ -488,8 +488,8 @@ public class LocationTermController {
 				.findLocationsAllowedForPlacementInState(state);
 		LocationTermForm locationTermForm = new LocationTermForm();
 		locationTermForm.setState(state);
-		locationTermForm.setAllowLocation(true);
-		locationTermForm.setAllowState(true);
+		locationTermForm.setAllowLocation(false);
+		locationTermForm.setAllowState(false);
 		locationTermForm.setLocation(locationTerm.getLocation());
 		if (locationTerm.getDateRange() != null) {
 			locationTermForm.setStartDate(
@@ -852,7 +852,7 @@ public class LocationTermController {
 			}
 		}
 		this.locationTermService.update(locationTerm,
-				locationTermForm.getLocation(), dateRange);
+				locationTerm.getLocation(), dateRange);
 		return new ModelAndView(String.format(LIST_REDIRECT,
 				locationTerm.getOffender().getId()));
 	}

@@ -25,9 +25,14 @@
 	<jsp:include page="/WEB-INF/views/common/includes/jQueryResources.jsp"/>
 	<jsp:include page="/WEB-INF/views/common/includes/toolsResources.jsp"/>
 	<jsp:include page="/WEB-INF/views/common/includes/interactiveImageResources.jsp"/>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/offender/scripts/offenderProfile.js"> </script>
+	<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/offender/style/profile.css?VERSION=13"/>
 </head>
 <body>
-	<jsp:include page="includes/offenderHeader.jsp"/>
+	<div id="offenderHeader">
+		<jsp:include page="includes/offenderHeaderSummaryContent.jsp"/>
+	</div>
+	<jsp:include page="includes/profileContent.jsp"/>
 </body>
 </fmt:bundle>
 </html>

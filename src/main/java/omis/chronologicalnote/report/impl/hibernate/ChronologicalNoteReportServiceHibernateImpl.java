@@ -17,7 +17,6 @@
 */
 package omis.chronologicalnote.report.impl.hibernate;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import omis.chronologicalnote.domain.ChronologicalNoteCategory;
@@ -39,17 +38,17 @@ public class ChronologicalNoteReportServiceHibernateImpl
 	/* Query names. */
 	private static final String FIND_BY_OFFENDER_QUERY_NAME
 		= "findChronologicalNoteSummaryByOffender";
-	private static final String FIND_CATEGORIES_QUERY_NAME = "findCategories";
+	private static final String FIND_CATEGORIES_QUERY_NAME
+		= "findChronologicalNoteCategories";
 	private static final String FIND_CATEGORY_NAMES_BY_NOTE_ID_QUERY_NAME
 		= "findCategoryNamesByNoteId";
-	private static final String 
-		FIND_CATEGORY_NAMES_BY_NOTE_ID_AND_CATEGORIES_QUERY_NAME
-		= "findCategoryNamesByNoteIdAndCategories";
+	private static final String FIND_BY_OFFENDER_AND_CATEGORIES_QUERY_NAME
+		= "findChronologicalNoteSummaryByOffenderAndCategories";
 	
 	/* Parameter names. */
 	private static final String OFFENDER_PARAM_NAME = "offender";
-	private static final String CATEGORIES_PARAM_NAME = "categories";
 	private static final String NOTE_ID_PARAM_NAME = "noteId";
+	private static final String CATEGORIES_PARAM_NAME = "categories";
 	
 	/* Resources. */
 	private final SessionFactory sessionFactory;
@@ -76,6 +75,7 @@ public class ChronologicalNoteReportServiceHibernateImpl
 			.getCurrentSession()
 			.getNamedQuery(FIND_BY_OFFENDER_QUERY_NAME)
 			.setParameter(OFFENDER_PARAM_NAME, offender)
+			.setReadOnly(true)
 			.list();
 		for (ChronologicalNoteSummary summary : summaries) {
 			summary.getCategoryNames().addAll(this.findCategoryNamesByNoteId(
@@ -85,27 +85,22 @@ public class ChronologicalNoteReportServiceHibernateImpl
 	}
 	
 	/** {@inheritDoc} */
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<ChronologicalNoteSummary> findByOffenderAndCategories(
 		final Offender offender, 
 		final List<ChronologicalNoteCategory> categories) {
-			List<ChronologicalNoteSummary> summaries = this.sessionFactory
-			.getCurrentSession()
-			.getNamedQuery(FIND_BY_OFFENDER_QUERY_NAME)
-			.setParameter(OFFENDER_PARAM_NAME, offender)
-			.list();
-		if(categories!=null){
-			for (ChronologicalNoteSummary summary : summaries) {
-				List<String> namesList = new ArrayList<String>();
-				namesList.addAll(findCategoryNamesByNoteIdAndCategories(
-					summary.getId(), categories));
-				if(!namesList.isEmpty()){
-					summary.getCategoryNames().addAll(
-					this.findCategoryNamesByNoteId(summary.getId()));
-				} 
-			}
-		} 
+		@SuppressWarnings("unchecked")
+		List<ChronologicalNoteSummary> summaries = this.sessionFactory
+		.getCurrentSession()
+		.getNamedQuery(FIND_BY_OFFENDER_AND_CATEGORIES_QUERY_NAME)
+		.setParameter(OFFENDER_PARAM_NAME, offender)
+		.setParameterList(CATEGORIES_PARAM_NAME, categories)
+		.setReadOnly(true)
+		.list();
+		for (ChronologicalNoteSummary summary : summaries) {
+			summary.getCategoryNames().addAll(
+			this.findCategoryNamesByNoteId(summary.getId()));
+		}
 		return summaries;
 	}
 	
@@ -116,6 +111,7 @@ public class ChronologicalNoteReportServiceHibernateImpl
 		List<ChronologicalNoteCategory> categories = this.sessionFactory
 			.getCurrentSession()
 			.getNamedQuery(FIND_CATEGORIES_QUERY_NAME)
+			.setReadOnly(true)
 			.list();
 		return categories;
 	}
@@ -126,19 +122,7 @@ public class ChronologicalNoteReportServiceHibernateImpl
 			.getCurrentSession()
 			.getNamedQuery(FIND_CATEGORY_NAMES_BY_NOTE_ID_QUERY_NAME)
 			.setParameter(NOTE_ID_PARAM_NAME, noteId)
-			.list();
-		return categoryNames;
-	}
-	
-	private List<String> findCategoryNamesByNoteIdAndCategories(
-		final Long noteId, final List<ChronologicalNoteCategory> categories) {
-		@SuppressWarnings("unchecked")
-		List<String> categoryNames = this.sessionFactory
-			.getCurrentSession()
-			.getNamedQuery(
-				FIND_CATEGORY_NAMES_BY_NOTE_ID_AND_CATEGORIES_QUERY_NAME)
-			.setParameter(NOTE_ID_PARAM_NAME, noteId)
-			.setParameterList(CATEGORIES_PARAM_NAME, categories)
+			.setReadOnly(true)
 			.list();
 		return categoryNames;
 	}

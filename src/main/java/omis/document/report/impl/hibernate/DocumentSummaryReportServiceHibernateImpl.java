@@ -1,18 +1,38 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.document.report.impl.hibernate;
 
 import java.util.List;
+
+import org.hibernate.SessionFactory;
 
 import omis.document.report.DocumentSummary;
 import omis.document.report.DocumentSummaryReportService;
 import omis.offender.domain.Offender;
 
-import org.hibernate.Query;
-import org.hibernate.SessionFactory;
-
-/** Hibernate implementation of document summary report service.
+/** 
+ * Hibernate implementation of document summary report service.
+ * 
  * @author Ryan Johns
- * @version 0.1.0 (Dec 9, 2015)
- * @since OMIS 3.0 */
+ * @author Josh Divine
+ * @version 0.1.1 (Feb 14, 2018)
+ * @since OMIS 3.0 
+ */
 public class DocumentSummaryReportServiceHibernateImpl 
 	implements DocumentSummaryReportService {
 	/* Queries */
@@ -34,10 +54,11 @@ public class DocumentSummaryReportServiceHibernateImpl
 	/** {@inheritDoc} */
 	@Override
 	public List<DocumentSummary> findByOffender(final Offender offender) {
-		Query q = this.sessionFactory.getCurrentSession().getNamedQuery(
-				FIND_DOCUMENT_SUMMARIES_BY_OFFENDER_QUERY_NAME);
-		q.setEntity(OFFENDER_PARAM_NAME, offender);
-		return this.cast(q.list());
+		return this.cast(this.sessionFactory.getCurrentSession()
+				.getNamedQuery(FIND_DOCUMENT_SUMMARIES_BY_OFFENDER_QUERY_NAME)
+				.setParameter(OFFENDER_PARAM_NAME, offender)
+				.setReadOnly(true)
+				.list());
 	}
 	
 	/* casts to document summaries. */
@@ -45,5 +66,4 @@ public class DocumentSummaryReportServiceHibernateImpl
 	private List<DocumentSummary> cast(final List<?> objs) {
 		return (List<DocumentSummary>) objs;
 	}
-
 }

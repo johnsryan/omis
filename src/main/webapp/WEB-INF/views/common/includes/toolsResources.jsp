@@ -9,6 +9,7 @@
 <jsp:include page="/WEB-INF/views/common/includes/serverConfigResources.jsp"/>
 <c:if test="${empty toolsResources}">
 	<c:set var="toolsResources" value="true" scope="request"/>
+	<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/common/style/moduleGroup.css?VERSION=1"/>
 	<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/common/style/actionMenu.css?VERSION=3"/>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/common/scripts/JQuery/jquery.omis.tools.js?VERSION=6"></script>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/common/scripts/tools.js?VERSION=6"></script>

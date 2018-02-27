@@ -134,7 +134,7 @@ public class ParoleEligibilityServiceUpdateTests
 					new ParoleEligibilityStatus(statusDate, statusComment, 
 					statusCategory, statusReason), appearanceCategory);
 		AppearanceCategory newAppearanceCategory = this
-				.appearanceCategoryDelegate.create("Initial", false);
+				.appearanceCategoryDelegate.create("Initial2", true);
 
 		// Action
 		paroleEligibility = this.paroleEligibilityService
@@ -275,8 +275,8 @@ public class ParoleEligibilityServiceUpdateTests
 					new ParoleEligibilityStatus(statusDate, statusComment, 
 					statusCategory, statusReason), appearanceCategory);
 		EligibilityStatusReason newStatusReason 
-			= eligibilityStatusReasonDelegate.create("Programming incomplete", 
-					false);
+			= eligibilityStatusReasonDelegate.create("Programming complete", 
+					true);
 
 		// Action
 		paroleEligibility = this.paroleEligibilityService

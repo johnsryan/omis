@@ -3,41 +3,41 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <fmt:bundle basename="omis.offendercontact.msgs.summary">
-<c:if test="${not empty contactSummary}">
+<c:if test="${not empty offenderContactSummary}">
 <div class="offenderHeaderDetailsSection">
-	<c:if test="${contactSummary.address}">
+	<c:if test="${offenderContactSummary.address}">
 		<div class="headerCell">
 			<span class="offenderHeaderFieldLabel"><fmt:message key="mailingAddressLabel"/></span>
 			<a href="${pageContext.request.contextPath}/offenderContact/edit.html?offender=${offenderSummary.id}">
 				<span class="offenderHeaderFieldValue">
-					<c:out value=" ${contactSummary.addressValue} ${contactSummary.addressCityName}, ${contactSummary.addressStateAbbreviation} ${contactSummary.addressZipCodeValue}" />
+					<c:out value=" ${offenderContactSummary.addressValue} ${offenderContactSummary.addressCityName}, ${offenderContactSummary.addressStateAbbreviation} ${offenderContactSummary.addressZipCodeValue}" />
 				</span>
 			</a>
 		</div>
 	</c:if>
 	
-	<c:if test="${contactSummary.poBox}">
+	<c:if test="${offenderContactSummary.poBox}">
 		<div class="headerCell">
 			<span class="offenderHeaderFieldLabel"><fmt:message key="poBoxLabel"/></span>
 			<a href="${pageContext.request.contextPath}/offenderContact/edit.html?offender=${offenderSummary.id}">
-				<span class="offenderHeaderFieldValue"><c:out value=" ${contactSummary.poBoxValue} ${contactSummary.poBoxCityName}, ${contactSummary.poBoxStateAbbreviation} ${contactSummary.poBoxZipCodeValue}" /></span>
+				<span class="offenderHeaderFieldValue"><c:out value=" ${offenderContactSummary.poBoxValue} ${offenderContactSummary.poBoxCityName}, ${offenderContactSummary.poBoxStateAbbreviation} ${offenderContactSummary.poBoxZipCodeValue}" /></span>
 			</a>
 		</div>
 	</c:if>
 	
-	<c:if test="${contactSummary.telephoneNumber}">
+	<c:if test="${offenderContactSummary.telephoneNumber}">
 		<div class="headerCell">
 			<span class="offenderHeaderFieldLabel"><fmt:message key="telephoneNumberLabel"/></span>
 			<a href="${pageContext.request.contextPath}/offenderContact/edit.html?offender=${offenderSummary.id}">
-				<span class="offenderHeaderFieldValue"><c:out value="${contactSummary.telephoneNumberValue}" /></span>
+				<span class="offenderHeaderFieldValue"><c:out value="${offenderContactSummary.telephoneNumberValue}" /></span>
 			</a>
 		</div>
 	</c:if>
-	<c:if test="${contactSummary.onlineAccount}">
+	<c:if test="${offenderContactSummary.onlineAccount}">
 		<div class="headerCell">
 			<span class="offenderHeaderFieldLabel"><fmt:message key="onlineAccountLabel"/></span>
 			<a href="${pageContext.request.contextPath}/offenderContact/edit.html?offender=${offenderSummary.id}">
-				<span class="offenderHeaderFieldValue"><c:out value="${contactSummary.onlineAccountName}" /></span>
+				<span class="offenderHeaderFieldValue"><c:out value="${offenderContactSummary.onlineAccountName}" /></span>
 			</a>
 		</div>
 	</c:if>

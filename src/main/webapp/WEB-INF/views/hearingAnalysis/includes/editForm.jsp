@@ -18,7 +18,7 @@
 
 <%--
  - Author: Josh Divine
- - Version: 0.1.0 (Dec 20, 2017)
+ - Version: 0.1.1 (Feb 20, 2018)
  - Since: OMIS 3.0
  --%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
@@ -105,6 +105,7 @@
 </fieldset>
 <fieldset id="hearingAnalysisNotesHolder">
 	<legend><fmt:message key="hearingAnalysisNotesTitle"/></legend>
+	<c:set var="hearingAnalysisNoteItems" value="${hearingAnalysisForm.hearingAnalysisNoteItems}" scope="request"/>
 	<jsp:include page="hearingAnalysisNotesTable.jsp"/>
 	<form:errors path="hearingAnalysisNoteItems" cssClass="error"/>
 </fieldset>

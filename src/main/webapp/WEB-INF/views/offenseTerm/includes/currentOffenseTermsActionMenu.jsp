@@ -69,11 +69,13 @@
 			</li>
 		</sec:authorize>
 	</c:if>
+	<%-- temporarily removed per request by Jason Nelson -SR 02/16/18
 	<c:if test="${not empty sentence}">
 		<sec:authorize access="hasRole('OFFENSE_TERM_VIEW') or hasRole('ADMIN')">
 			<li>
 				<a href="${pageContext.request.contextPath}/offenseTerm/reportOfViolationReport.rtf?courtCase=${sentence.conviction.courtCase.id}&reportFormat=RTF" class="reportLink"><fmt:message key="reportOfViolationReportLinkLabel" bundle="${offenseTermBundle}"/></a>
 			</li>
 		</sec:authorize>
-	</c:if>		
+	</c:if>	
+	 --%>	
 </ul>

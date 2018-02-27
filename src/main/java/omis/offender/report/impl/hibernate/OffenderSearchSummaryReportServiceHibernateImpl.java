@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.offender.report.impl.hibernate;
 
 import java.util.Date;
@@ -18,7 +35,8 @@ import omis.supervision.domain.SupervisoryOrganization;
  * Implementation of offender search summary service.
  *
  * @author Sheronda Vaughn
- * @version 0.1.0 (Mar 7, 2016)
+ * @author Josh Divine
+ * @version 0.1.1 (Feb 14, 2018)
  * @since OMIS 3.0
  */
 public class OffenderSearchSummaryReportServiceHibernateImpl 
@@ -28,9 +46,12 @@ public class OffenderSearchSummaryReportServiceHibernateImpl
 	
 	/* Query names. */
 	
-	private static final String FIND_ALTERNATE_NAME_SUMMARIES_QUERY_NAME = "findAlternateNameSummariesByOffender";
-	private static final String SEARCHING_FOR_OFFENDER_QUERY_NAME = "searchingForOffender";
-	private static final String SEARCH_FOR_OFFENDER_QUERY_NAME = "searchForOffender";
+	private static final String FIND_ALTERNATE_NAME_SUMMARIES_QUERY_NAME = 
+			"findAlternateNameSummariesByOffender";
+	private static final String SEARCHING_FOR_OFFENDER_QUERY_NAME = 
+			"searchingForOffender";
+	private static final String SEARCH_FOR_OFFENDER_QUERY_NAME = 
+			"searchForOffender";
 	
 	/* Parameter names. */
 	
@@ -42,7 +63,8 @@ public class OffenderSearchSummaryReportServiceHibernateImpl
 	private static final String LOCATION_PARAM_NAME = "location";
 	private static final String SEX_PARAM_NAME = "sex";
 	private static final String DATE_OF_BIRTH_PARAM_NAME = "dateOfBirth";
-	private static final String SOCIAL_SECURITY_NUMBER_PARAM_NAME = "socialSecurityNumber";
+	private static final String SOCIAL_SECURITY_NUMBER_PARAM_NAME = 
+			"socialSecurityNumber";
 	private static final String EFFECTIVE_DATE_PARAM_NAME = "effectiveDate";
 	private static final String ACTIVE_PARAM_NAME = "active";
 	
@@ -76,6 +98,7 @@ public class OffenderSearchSummaryReportServiceHibernateImpl
 				.setParameter(SOCIAL_SECURITY_NUMBER_PARAM_NAME, socialSecurityNumber)
 				.setDate(EFFECTIVE_DATE_PARAM_NAME, effectiveDate)
 				.setBoolean(ACTIVE_PARAM_NAME, active)
+				.setReadOnly(true)
 				.list();
 
 		return offenderSearchSummaries;
@@ -99,6 +122,7 @@ public class OffenderSearchSummaryReportServiceHibernateImpl
 				.setParameter(SEX_PARAM_NAME, sex)
 				.setDate(DATE_OF_BIRTH_PARAM_NAME, dateOfBirth)
 				.setParameter(SOCIAL_SECURITY_NUMBER_PARAM_NAME, socialSecurityNumber)
+				.setReadOnly(true)
 				.list();
 
 		return offenderSearchSummaries;
@@ -112,6 +136,7 @@ public class OffenderSearchSummaryReportServiceHibernateImpl
 				.getCurrentSession()
 				.getNamedQuery(FIND_ALTERNATE_NAME_SUMMARIES_QUERY_NAME)
 				.setParameter(OFFENDER_PARAM_NAME, offender)
+				.setReadOnly(true)
 				.list();
 		return summaries;
 	}
@@ -134,7 +159,8 @@ public class OffenderSearchSummaryReportServiceHibernateImpl
 
 	/** {@inheritDoc} */
 	@Override
-	public Location findLocationByOffenderOnDate(final Offender offender, final Date date) {
+	public Location findLocationByOffenderOnDate(final Offender offender, 
+			final Date date) {
 		// TODO Auto-generated method stub
 		return null;
 	}

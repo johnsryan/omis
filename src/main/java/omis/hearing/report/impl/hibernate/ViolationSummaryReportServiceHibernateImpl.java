@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.hearing.report.impl.hibernate;
 
 import java.util.HashMap;
@@ -16,10 +33,10 @@ import omis.violationevent.domain.DisciplinaryCodeViolation;
 /**
  * ViolationSummaryReportServiceHibernateImpl.java
  * 
- *@author Annie Jacques 
- *@version 0.1.0 (Apr 18, 2017)
- *@since OMIS 3.0
- *
+ * @author Annie Wahl
+ * @author Josh Divine 
+ * @version 0.1.1 (Feb 14, 2018)
+ * @since OMIS 3.0
  */
 public class ViolationSummaryReportServiceHibernateImpl
 	implements ViolationSummaryReportService {
@@ -101,6 +118,7 @@ private static final String
 			.getNamedQuery(
 					FIND_UNRESOLVED_DISCIPLINARY_VIOLATION_SUMMARIES_QUERY_NAME)
 			.setParameter(OFFENDER_PARAM_NAME, offender)
+			.setReadOnly(true)
 			.list();
 		
 		summaries.addAll(this.sessionFactory
@@ -108,6 +126,7 @@ private static final String
 				.getNamedQuery(
 						FIND_UNRESOLVED_CONDITION_VIOLATION_SUMMARIES_QUERY_NAME)
 				.setParameter(OFFENDER_PARAM_NAME, offender)
+				.setReadOnly(true)
 				.list());
 		
 		return summaries;
@@ -127,6 +146,7 @@ private static final String
 				.getNamedQuery(
 						FIND_UNADJUDICATED_HEARINGS_BY_OFFENDER_QUERY_NAME)
 				.setParameter(OFFENDER_PARAM_NAME, offender)
+				.setReadOnly(true)
 				.list();
 		
 		for(HearingSummary hearingSummary : hearingSummaries){
@@ -136,6 +156,7 @@ private static final String
 					FIND_UNRESOLVED_DISCIPLINARY_VIOLATION_SUMMARIES_BY_HEARING_QUERY_NAME)
 					.setParameter(HEARING_ID_PARAM_NAME,
 							hearingSummary.getHearingId())
+					.setReadOnly(true)
 					.list();
 			violationSummaries.addAll(
 					this.sessionFactory.getCurrentSession()
@@ -143,6 +164,7 @@ private static final String
 				FIND_UNRESOLVED_CONDITION_VIOLATION_SUMMARIES_BY_HEARING_QUERY_NAME)
 					.setParameter(HEARING_ID_PARAM_NAME,
 							hearingSummary.getHearingId())
+					.setReadOnly(true)
 					.list());
 			
 			summaries.put(hearingSummary, violationSummaries);
@@ -161,12 +183,14 @@ private static final String
 				.getNamedQuery(
 					FIND_DISCIPLINARY_VIOLATION_SUMMARIES_BY_HEARING_QUERY_NAME)
 				.setParameter(HEARING_PARAM_NAME, hearing)
+				.setReadOnly(true)
 				.list();
 		summaries.addAll(
 				this.sessionFactory.getCurrentSession()
 				.getNamedQuery(
 						FIND_CONDITION_VIOLATION_SUMMARIES_BY_HEARING_QUERY_NAME)
 				.setParameter(HEARING_PARAM_NAME, hearing)
+				.setReadOnly(true)
 				.list());
 		
 		return summaries;
@@ -183,6 +207,7 @@ private static final String
 			.getNamedQuery(
 					FIND_UNRESOLVED_DISCIPLINARY_VIOLATION_SUMMARIES_QUERY_NAME)
 			.setParameter(OFFENDER_PARAM_NAME, offender)
+			.setReadOnly(true)
 			.list();
 		
 		return summaries;
@@ -199,6 +224,7 @@ private static final String
 			.getNamedQuery(
 					FIND_UNRESOLVED_CONDITION_VIOLATION_SUMMARIES_QUERY_NAME)
 			.setParameter(OFFENDER_PARAM_NAME, offender)
+			.setReadOnly(true)
 			.list();
 		
 		return summaries;
@@ -213,11 +239,13 @@ private static final String
 			.getCurrentSession()
 			.getNamedQuery(FIND_RESOLVED_DISCIPLINARY_CODE_VIOLATION_SUMMARIES_QUERY_NAME)
 			.setParameter(OFFENDER_PARAM_NAME, offender)
+			.setReadOnly(true)
 			.list();
 		summaries.addAll(this.sessionFactory
 			.getCurrentSession()
 			.getNamedQuery(FIND_RESOLVED_CONDITION_VIOLATION_SUMMARIES_QUERY_NAME)
 			.setParameter(OFFENDER_PARAM_NAME, offender)
+			.setReadOnly(true)
 			.list());
 		return summaries;
 	}
@@ -229,6 +257,7 @@ private static final String
 				.getCurrentSession()
 				.getNamedQuery(SUMMARIZE_CONDITION_VIOLATION_QUERY_NAME)
 				.setParameter(CONDITION_VIOLATION_PARAM_NAME, conditionViolation)
+				.setReadOnly(true)
 				.uniqueResult();
 		
 		return summary;
@@ -243,9 +272,9 @@ private static final String
 				.getNamedQuery(SUMMARIZE_DISCIPLINARY_CODE_VIOLATION_QUERY_NAME)
 				.setParameter(DISCIPLINARY_CODE_VIOLATION_PARAM_NAME,
 						disciplinaryCodeViolation)
+				.setReadOnly(true)
 				.uniqueResult();
 		
 		return summary;
 	}
-
 }

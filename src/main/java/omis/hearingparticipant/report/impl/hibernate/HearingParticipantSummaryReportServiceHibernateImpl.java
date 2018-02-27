@@ -26,9 +26,10 @@ import omis.hearingparticipant.report.HearingParticipantSummaryReportService;
 /**
  * Hearing Participant Summary Report Service Hibernate Implementation.
  * 
- *@author Annie Wahl 
- *@version 0.1.0 (Jan 17, 2018)
- *@since OMIS 3.0
+ * @author Annie Wahl
+ * @author Josh Divine
+ * @version 0.1.1 (Feb 14, 2018)
+ * @since OMIS 3.0
  *
  */
 public class HearingParticipantSummaryReportServiceHibernateImpl
@@ -58,6 +59,7 @@ public class HearingParticipantSummaryReportServiceHibernateImpl
 		List<HearingParticipantSummary> summaries = this.sessionFactory
 				.getCurrentSession().getNamedQuery(FIND_BY_HEARING_QUERY_NAME)
 				.setParameter(BOARD_HEARING_PARAM_NAME, boardHearing)
+				.setReadOnly(true)
 				.list();
 		
 		return summaries;

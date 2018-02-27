@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.visitation.service.testng;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +38,7 @@ import omis.region.service.delegate.StateDelegate;
 import omis.residence.domain.ResidenceTerm;
 import omis.residence.exception.PrimaryResidenceExistsException;
 import omis.residence.exception.ResidenceStatusConflictException;
+import omis.residence.exception.ResidenceTermExistsException;
 import omis.residence.service.delegate.NonResidenceTermDelegate;
 import omis.residence.service.delegate.ResidenceTermDelegate;
 import omis.testng.AbstractHibernateTransactionalTestNGSpringContextTests;
@@ -31,6 +49,7 @@ import omis.visitation.service.VisitationAssociationService;
  * Tests method to create residence terms.
  *
  * @author Josh Divine
+ * @author Yidong Li
  * @version 0.0.1
  * @since OMIS 3.0
  */
@@ -95,7 +114,8 @@ public class VisitationAssociationServiceCreateResidenceTermTests
 	 */
 	@Test
 	public void testCreateResidenceTerm() throws DuplicateEntityFoundException, 
-			ResidenceStatusConflictException, PrimaryResidenceExistsException {
+			ResidenceStatusConflictException, PrimaryResidenceExistsException,
+			ResidenceTermExistsException {
 		// Arrangements
 		Person person = this.personDelegate.create("Smith", "John", "Jay", 
 				null);

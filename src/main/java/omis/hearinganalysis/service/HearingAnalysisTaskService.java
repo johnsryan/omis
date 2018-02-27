@@ -23,6 +23,7 @@ import java.util.List;
 import omis.exception.DuplicateEntityFoundException;
 import omis.hearinganalysis.domain.HearingAnalysis;
 import omis.hearinganalysis.domain.HearingAnalysisCategory;
+import omis.hearinganalysis.domain.HearingAnalysisNote;
 import omis.hearinganalysis.domain.HearingAnalysisTaskAssociation;
 import omis.hearinganalysis.domain.ParoleHearingAnalysisTaskSource;
 import omis.hearinganalysis.domain.ParoleHearingTaskGroup;
@@ -38,7 +39,7 @@ import omis.user.domain.UserAccount;
  * Service for hearing analysis task.
  * 
  * @author Josh Divine
- * @version 0.1.0 (Jan 8, 2018)
+ * @version 0.1.1 (Feb 20, 2018)
  * @since OMIS 3.0
  */
 public interface HearingAnalysisTaskService {
@@ -255,4 +256,47 @@ public interface HearingAnalysisTaskService {
 	 * @return user account
 	 */
 	UserAccount findUserAccountByUsername(String username);
+	
+	/**
+	 * Creates a new hearing analysis note.
+	 * 
+	 * @param hearingAnalysis hearing analysis
+	 * @param description description
+	 * @param date date
+	 * @return hearing analysis note
+	 * @throws DuplicateEntityFoundException if duplicate entity exists
+	 */
+	HearingAnalysisNote createHearingAnalysisNote(
+			HearingAnalysis hearingAnalysis, String description, Date date) 
+					throws DuplicateEntityFoundException;
+	
+	/**
+	 * Updates an existing hearing analysis note.
+	 * 
+	 * @param hearingAnalysisNote hearing analysis note
+	 * @param description description
+	 * @param date date
+	 * @return hearing analysis note
+	 * @throws DuplicateEntityFoundException if duplicate entity exists
+	 */
+	HearingAnalysisNote updateHearingAnalysisNote(
+			HearingAnalysisNote hearingAnalysisNote, String description, 
+			Date date) throws DuplicateEntityFoundException;
+	
+	/**
+	 * Removes a hearing analysis note.
+	 * 
+	 * @param hearingAnalysisNote hearing analysis note
+	 */
+	void removeHearingAnalysisNote(HearingAnalysisNote hearingAnalysisNote);
+	
+	/**
+	 * Returns a list of hearing analysis notes for the specified hearing 
+	 * analysis.
+	 * 
+	 * @param hearingAnalysis hearing analysis
+	 * @return list of hearing analysis notes
+	 */
+	List<HearingAnalysisNote> findHearingAnalysisNotesByHearingAnalysis(
+			HearingAnalysis hearingAnalysis);
 }

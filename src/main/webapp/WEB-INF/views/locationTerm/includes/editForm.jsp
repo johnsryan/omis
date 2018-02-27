@@ -48,6 +48,11 @@
 				</span>
 			</c:when>
 			<c:otherwise>
+				<span class="fieldGroup">
+					<form:label path="location" class="fieldLabel">
+						<fmt:message key="locationLabel" bundle="${locationBundle}"/></form:label>
+					<span class="fieldValueLabel"><c:out value="${locationTerm.location.organization.name}"/></span>
+				</span>
 				<form:hidden path="location"/>
 			</c:otherwise>
 		</c:choose>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ - OMIS - Offender Management Information System
+ - Copyright (C) 2011 - 2017 State of Montana
+ -
+ - This program is free software: you can redistribute it and/or modify
+ - it under the terms of the GNU General Public License as published by
+ - the Free Software Foundation, either version 3 of the License, or
+ - (at your option) any later version.
+ -
+ - This program is distributed in the hope that it will be useful,
+ - but WITHOUT ANY WARRANTY; without even the implied warranty of
+ - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ - GNU General Public License for more details.
+ -
+ - You should have received a copy of the GNU General Public License
+ - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<!--
+ - Hibernate configuration for parole board locations.
+ -
+ - Author: Annie Wahl
+ - Author: Josh Divine
+ - Version: 0.1.1 (Feb 21, 2018)
+ - Since: OMIS 3.0
+ -->
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="omis.paroleboardlocation.domain">
+	<class entity-name="omis.paroleboardlocation.domain.ParoleBoardLocation"
+			proxy="omis.paroleboardlocation.domain.ParoleBoardLocation"
+			name="omis.paroleboardlocation.domain.impl.ParoleBoardLocationImpl"
+			table="`PAROLE_BOARD_LOCATION`">
+			<id name="id" column="`ID`" type="java.lang.Long">
+				<generator class="sequence">
+					<param name="sequence">`PAROLE_BOARD_LOCATION_SEQ`</param>
+				</generator>
+			</id>
+			<many-to-one name="location" column="`LOCATION_ID`" entity-name="omis.location.domain.Location" not-null="true" />
+			<property name="videoConferenceCapable" column="`VIDEO_CONFERENCE_CAPABLE`" type="yes_no" not-null="true" />
+	</class>
+	<query name="findParoleBoardLocation"><![CDATA[
+		select paroleBoardLocation
+		from omis.paroleboardlocation.domain.ParoleBoardLocation paroleBoardLocation
+		where
+			paroleBoardLocation.location = :location
+	]]></query>
+	<query name="findParoleBoardLocationExcluding"><![CDATA[
+		select paroleBoardLocation
+		from omis.paroleboardlocation.domain.ParoleBoardLocation paroleBoardLocation
+		where
+			paroleBoardLocation.location = :location
+		and
+			paroleBoardLocation <> :excludedParoleBoardLocation
+	]]></query>
+	<query name="findUnassociatedSupervisoryOrganizationLocations"><![CDATA[
+		select location
+		from omis.location.domain.Location location
+		inner join fetch location.organization organization
+		where
+			location not in (select paroleBoardLocation.location 
+							 from omis.paroleboardlocation.domain.ParoleBoardLocation paroleBoardLocation
+							 where paroleBoardLocation <> :excludedParoleBoardLocation)
+		and
+			TYPE(organization) = omis.supervision.domain.SupervisoryOrganization
+		order by organization.name asc
+	]]></query>
+</hibernate-mapping>

@@ -151,8 +151,11 @@ public class WorkAssignmentController {
 	
 	/* Report names. */
 	
+	private static final String OFFENDER_WORK_ASSIGNMENT_HISTORY_REPORT_NAME 
+		= "/Placement/WorkAssignments/Offender_Work_Assignment_History";
+	
 	private static final String WORK_ASSIGNMENTS_LISTING_REPORT_NAME 
-		= "/Placement/WorkAssignments/Work_Assignments_Listing";
+		= "/Placement/WorkAssignments/Work_Assignments_Listing";	
 
 	private static final String WORK_ASSIGNMENTS_DETAILS_REPORT_NAME 
 		= "/Placement/WorkAssignments/Work_Assignments_Details";
@@ -544,6 +547,31 @@ public class WorkAssignmentController {
 	
 
 	/* Reports. */
+
+	/**
+	 * Returns the report for the specified offenders work assignments for offender distribution.
+	 * 
+	 * @param offender offender
+	 * @param reportFormat report format
+	 * @return response entity with report
+	 */
+	@RequestMapping(value = "/offenderWorkAssignmentHistoryReport.html",
+			method = RequestMethod.GET)
+	@PreAuthorize("hasRole('WORK_ASSIGNMENT_VIEW') or hasRole('ADMIN')")
+	public ResponseEntity<byte []> reportOffenderWorkAssignmentsHistory(@RequestParam(
+			value = "offender", required = true)
+			final Offender offender,
+			@RequestParam(value = "reportFormat", required = true)
+			final ReportFormat reportFormat) {
+		Map<String, String> reportParamMap = new HashMap<String, String>();
+		reportParamMap.put(WORK_ASSIGNMENTS_LISTING_ID_REPORT_PARAM_NAME,
+				Long.toString(offender.getOffenderNumber()));
+		byte[] doc = this.reportRunner.runReport(
+				OFFENDER_WORK_ASSIGNMENT_HISTORY_REPORT_NAME,
+				reportParamMap, reportFormat);
+		return this.reportControllerDelegate.constructReportResponseEntity(
+				doc, reportFormat);
+	}
 	
 	/**
 	 * Returns the report for the specified offenders work assignments.

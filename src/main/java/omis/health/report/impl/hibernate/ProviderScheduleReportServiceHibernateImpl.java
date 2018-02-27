@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.health.report.impl.hibernate;
 
 import java.util.ArrayList;
@@ -5,6 +22,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+
+import org.hibernate.SessionFactory;
 
 import omis.datatype.DateRange;
 import omis.facility.domain.Facility;
@@ -14,33 +33,34 @@ import omis.health.domain.ProviderAssignmentCategory;
 import omis.health.report.DailyProviderScheduleSummary;
 import omis.health.report.ProviderScheduleReportService;
 
-import org.hibernate.Query;
-import org.hibernate.SessionFactory;
-
-/** Implementation of daily provider schedule summary.
+/** 
+ * Implementation of daily provider schedule summary.
+ * 
  * @author Ryan Johns
- * @version 0.1.0 (Apr 10, 2014)
- * @since OMIS 3.0 */
+ * @author Josh Divine
+ * @version 0.1.1 (Feb 14, 2018)
+ * @since OMIS 3.0 
+ */
 public class ProviderScheduleReportServiceHibernateImpl
 		implements ProviderScheduleReportService {
+	
+	/* Query names. */
+	
 	private static final String FIND_PROVIDER_DAILY_SCHEDULE_ON_DATE_QUERY =
 			"findProviderDailyScheduleOnDate";
 	private static final String
-	FIND_PROVIDER_DAILY_SCHEDULES_BY_FACILITY_ON_DATE_QUERY =
-			"findProviderDailySchedulesByFacilityOnDate";
+			FIND_PROVIDER_DAILY_SCHEDULES_BY_FACILITY_ON_DATE_QUERY =
+					"findProviderDailySchedulesByFacilityOnDate";
 	private static final String
-	FIND_PROVIDER_DAILY_SCHEDULES_BY_PROVIDER_DURING_DATE_RANGE_QUERY =
-			"findProviderDailySchedulesByProviderDuringDateRange";
+			FIND_PROVIDER_DAILY_SCHEDULES_BY_PROVIDER_DURING_DATE_RANGE_QUERY =
+					"findProviderDailySchedulesByProviderDuringDateRange";
 	private static final String
-	FIND_PROVIDER_DAILY_SCHEDULES_BY_FACILITY_DURING_DATE_RANGE_QUERY =
-			"findProviderDailySchedulesByFacilityDuringDateRange";
-	private static final String
-	FIND_PROVIDER_APPOINTMENT_COUNT_BY_DATE =
+			FIND_PROVIDER_DAILY_SCHEDULES_BY_FACILITY_DURING_DATE_RANGE_QUERY =
+					"findProviderDailySchedulesByFacilityDuringDateRange";
+	private static final String FIND_PROVIDER_APPOINTMENT_COUNT_BY_DATE =
 			"findProviderAppointmentCountByDate";
-
-	private static final String
-	FIND_IRREGULAR_SCHEDULE_DAY_BY_DATE =
-		"findIrregularScheduleDayByDate";
+	private static final String FIND_IRREGULAR_SCHEDULE_DAY_BY_DATE =
+			"findIrregularScheduleDayByDate";
 
 	private static final int SUNDAY_INDEX = 0;
 	private static final int MONDAY_INDEX = 1;
@@ -59,9 +79,19 @@ public class ProviderScheduleReportServiceHibernateImpl
 	private static final int SECONDS_PER_MINUTE = 60;
 	private static final int MILLISECONDS_PER_SECOND = 1000;
 
+	/* Parameter names. */
+	
+	private final static String PROVIDER_ASSIGNMENT_PARAM_NAME = 
+			"providerAssignment";
+	private final static String FACILITY_PARAM_NAME = "facility";
+	private final static String DAY_PARAM_NAME = "day";
+	private final static String START_DATE_PARAM_NAME = "startDate";
+	private final static String END_DATE_PARAM_NAME = "endDate";
+	private final static String DATE_PARAM_NAME = "date";
+	
+	/* Resources. */
+	
 	private final SessionFactory sessionFactory;
-
-
 
 	/** Constructor.
 	 * @param sessionFactory session factory. */
@@ -74,26 +104,28 @@ public class ProviderScheduleReportServiceHibernateImpl
 	@Override
 	public DailyProviderScheduleSummary findOnDate(
 			final ProviderAssignment providerAssignment, final Date day) {
-		final Query q = this.sessionFactory.getCurrentSession().getNamedQuery(
-				FIND_PROVIDER_DAILY_SCHEDULE_ON_DATE_QUERY);
-
-		q.setParameter("providerAssignment", providerAssignment);
 		return this.summarize(day, providerAssignment,
-				(Object[]) q.uniqueResult());
+				(Object[]) this.sessionFactory.getCurrentSession()
+				.getNamedQuery(FIND_PROVIDER_DAILY_SCHEDULE_ON_DATE_QUERY)
+				.setParameter(PROVIDER_ASSIGNMENT_PARAM_NAME, 
+						providerAssignment)
+				.setReadOnly(true)
+				.uniqueResult());
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public List<DailyProviderScheduleSummary> findByFacilityOnDate(
 			final Facility facility, final Date day) {
-		final Query q = this.sessionFactory.getCurrentSession().getNamedQuery(
-				FIND_PROVIDER_DAILY_SCHEDULES_BY_FACILITY_ON_DATE_QUERY);
-
-		q.setParameter("facility", facility);
-		q.setTimestamp("day", day);
-
 		@SuppressWarnings("unchecked")
-		final List<Object[]> objectList = (List<Object[]>) q.list();
+		final List<Object[]> objectList = (List<Object[]>) this.sessionFactory
+				.getCurrentSession()
+				.getNamedQuery(
+						FIND_PROVIDER_DAILY_SCHEDULES_BY_FACILITY_ON_DATE_QUERY)
+				.setParameter(FACILITY_PARAM_NAME, facility)
+				.setTimestamp(DAY_PARAM_NAME, day)
+				.setReadOnly(true)
+				.list();
 
 		return this.summarize(day, objectList);
 	}
@@ -103,15 +135,15 @@ public class ProviderScheduleReportServiceHibernateImpl
 	public List<DailyProviderScheduleSummary> findDuringDateRange(
 			final ProviderAssignment providerAssignment,
 			final DateRange dateRange) {
-		final Query q = this.sessionFactory.getCurrentSession().getNamedQuery(
-			FIND_PROVIDER_DAILY_SCHEDULES_BY_PROVIDER_DURING_DATE_RANGE_QUERY);
-
-		q.setParameter("providerAssignment", providerAssignment);
-		//q.setTimestamp("startDate", dateRange.getStartDate());
-		//q.setTimestamp("endDate", dateRange.getEndDate());
-
 		@SuppressWarnings("unchecked")
-		final List<Object[]> objectList = (List<Object[]>) q.list();
+		final List<Object[]> objectList = (List<Object[]>) this.sessionFactory
+				.getCurrentSession()
+				.getNamedQuery(
+						FIND_PROVIDER_DAILY_SCHEDULES_BY_PROVIDER_DURING_DATE_RANGE_QUERY)
+				.setParameter(PROVIDER_ASSIGNMENT_PARAM_NAME, 
+						providerAssignment)
+				.setReadOnly(true)
+				.list();
 
 		return this.summarize(dateRange, objectList);
 	}
@@ -120,15 +152,16 @@ public class ProviderScheduleReportServiceHibernateImpl
 	@Override
 	public List<DailyProviderScheduleSummary> findByFacilityDuringDateRange(
 			final Facility facility, final DateRange dateRange) {
-		final Query q = this.sessionFactory.getCurrentSession().getNamedQuery(
-			FIND_PROVIDER_DAILY_SCHEDULES_BY_FACILITY_DURING_DATE_RANGE_QUERY);
-
-		q.setParameter("facility", facility);
-		q.setTimestamp("startDate", dateRange.getStartDate());
-		q.setTimestamp("endDate", dateRange.getEndDate());
-
 		@SuppressWarnings("unchecked")
-		final List<Object[]> objectList = (List<Object[]>) q.list();
+		final List<Object[]> objectList = (List<Object[]>) this.sessionFactory
+				.getCurrentSession()
+				.getNamedQuery(
+						FIND_PROVIDER_DAILY_SCHEDULES_BY_FACILITY_DURING_DATE_RANGE_QUERY)
+				.setParameter(FACILITY_PARAM_NAME, facility)
+				.setTimestamp(START_DATE_PARAM_NAME, dateRange.getStartDate())
+				.setTimestamp(END_DATE_PARAM_NAME, dateRange.getEndDate())
+				.setReadOnly(true)
+				.list();
 
 		return this.summarize(dateRange, objectList);
 	}
@@ -251,13 +284,13 @@ public class ProviderScheduleReportServiceHibernateImpl
 	 * @return count of appointments. */
 	private int countAppointmentsByDate(final ProviderAssignment providerAssignment,
 			final Date date) {
-		final Query q = this.sessionFactory.getCurrentSession().getNamedQuery(
-				FIND_PROVIDER_APPOINTMENT_COUNT_BY_DATE);
-
-		q.setParameter("providerAssignment", providerAssignment);
-		q.setDate("date", date);
-
-		return q.list().size();
+		return this.sessionFactory.getCurrentSession()
+				.getNamedQuery(FIND_PROVIDER_APPOINTMENT_COUNT_BY_DATE)
+				.setParameter(PROVIDER_ASSIGNMENT_PARAM_NAME, 
+						providerAssignment)
+				.setDate(DATE_PARAM_NAME, date)
+				.setReadOnly(true)
+				.list().size();
 	}
 
 	/** find irregular day schedule.
@@ -265,13 +298,12 @@ public class ProviderScheduleReportServiceHibernateImpl
 	 * @return irregularScheduleDay irregular schedule day. */
 	private IrregularScheduleDay findIrregularScheduleDayByDate(final Date date,
 			final ProviderAssignment providerAssignment) {
-		final Query q = this.sessionFactory.getCurrentSession().getNamedQuery(
-				FIND_IRREGULAR_SCHEDULE_DAY_BY_DATE);
-
-		q.setDate("date", date);
-		q.setParameter("providerAssignment", providerAssignment);
-
-		return (IrregularScheduleDay)q.uniqueResult();
-
+		return (IrregularScheduleDay) this.sessionFactory.getCurrentSession()
+				.getNamedQuery(FIND_IRREGULAR_SCHEDULE_DAY_BY_DATE)
+				.setParameter(PROVIDER_ASSIGNMENT_PARAM_NAME, 
+						providerAssignment)
+				.setDate(DATE_PARAM_NAME, date)
+				.setReadOnly(true)
+				.uniqueResult();
 	}
 }

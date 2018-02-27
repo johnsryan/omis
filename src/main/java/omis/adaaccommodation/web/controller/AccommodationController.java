@@ -1003,7 +1003,8 @@ public class AccommodationController {
 	 */
 	@RequestMapping(value = "/adaAccommodationListingReport.html",
 			method = RequestMethod.GET)
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasRole('ADA_ACCOMMODATION_LIST') "
+			+ "or hasRole('ADA_ACCOMMODATION_ISSUANCE_LIST')"+ "or hasRole('ADMIN')")
 	public ResponseEntity<byte []> reportAccomidationListing(@RequestParam(
 			value = "offender", required = true)
 			final Offender offender,
@@ -1028,7 +1029,7 @@ public class AccommodationController {
 	 */
 	@RequestMapping(value = "/adaAccommodationDetailsFullReport.html",
 			method = RequestMethod.GET)
-	@PreAuthorize("hasRole('ADA_ACCOMMODATION_ISSUANCE_VIEW') or hasRole('ADMIN')")
+	@PreAuthorize("hasRole('ADA_ACCOMMODATION_CREATE') or hasRole('ADMIN')")
 	public ResponseEntity<byte []> reportAccomidationDetailsFull(@RequestParam(
 			value = "accommodation", required = true)
 			final Accommodation accommodation,
@@ -1045,7 +1046,7 @@ public class AccommodationController {
 	}
 	
 	/**
-	 * Returns the report for the specified caution.
+	 * Returns the report for the specified ada accommodation.
 	 * 
 	 * @param accommodation offender caution
 	 * @param reportFormat report format
@@ -1053,7 +1054,7 @@ public class AccommodationController {
 	 */
 	@RequestMapping(value = "/adaAccommodationDetailsRedcatedReport.html",
 			method = RequestMethod.GET)
-	@PreAuthorize("hasRole('ADA_ACCOMMODATION_ISSUANCE_VIEW') or hasRole('ADA_ACCOMMODATION_CREATE') or hasRole('ADMIN')")
+	@PreAuthorize("hasRole('ADA_ACCOMMODATION_ISSUANCE_LIST') or hasRole('ADA_ACCOMMODATION_LIST') or hasRole('ADMIN')")
 	public ResponseEntity<byte []> reportAccomidationDetailsRedacted(@RequestParam(
 			value = "accommodation", required = true)
 			final Accommodation accommodation,

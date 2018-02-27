@@ -51,15 +51,6 @@
 				}
 			}, 25);
 		parent["scrollLeft"] = from;
-		
-		/*for(var i = 0, scrollDot; scrollDot = scrollDots[i]; i++) {
-			scrollDot.classList.remove("activeScrollDot");
-		}
-		for(var i = 0, anchor; anchor = anchors[i]; i++) {
-			anchor.classList.remove("currentItem");
-		}
-		scrollDots[[].indexOf.call(anchors, target)].className += " activeScrollDot";
-		target.className += " currentItem";*/
 	}
 	
 	function arrowScroll(direction){
@@ -86,84 +77,87 @@
 		scrollTo(target);
 	}
 	
-	var scrollDistance = ((document.getElementsByClassName('navBarItem')[0].offsetWidth) + padding); 
-	var navBar = document.getElementById('navBar');
-	document.getElementById('navRightArrow').onclick = function(e) {
-		navBarScroll("right");
-		e.preventDefault();
-	}
-	document.getElementById('navLeftArrow').onclick = function(e) {
-		navBarScroll("left");
-		e.preventDefault();
-	}
-	
-	function navBarScroll(direction){
-		var to;
-		if(direction == 'left'){
-			to = (navBar.scrollLeft - scrollDistance);
-		}
-		else if(direction == 'right'){
-			to = (navBar.scrollLeft + scrollDistance);
-		}
-		else{
-			throw new exception("Incompatible Direction Given.")
-		}
-		var from = navBar.scrollLeft,
-		time = 200,
-		start = new Date().getTime(),
-		timer = setInterval(function () {
-			var step = Math.min(1, (new Date().getTime() - start) / time);
-			navBar["scrollLeft"] = (from + step * (to - from));
-			if (step === 1) {
-				clearInterval(timer);
-			}
-		}, 25);
-		navBar["scrollLeft"] = from;
-	}
-	
-	var navItems = document.getElementsByClassName("navBarItem");
-	var navContentItems = document.getElementsByClassName("navContent");
-	for(var i = 0, navItem; navItem = navItems[i]; i++) {
-		navItem.onclick = function(event) {
-			event.preventDefault();
-			event.target.classList.toggle("activeNavItem");
-			var profileId = event.target.id;
-			var contentId = profileId + "Content";
-			var navContentTarget = document.getElementById(contentId);
-			applyShowProfile(profileId, navContentTarget);
-			
-			navContentTarget.classList.toggle("navContentShow");
-			for(var j = 0, navContentItem; navContentItem = navContentItems[j]; j++) {
-				if(navContentItem != navContentTarget){
-					navContentItem.classList.remove("navContentShow");
-				}
-			}
-			for(var j = 0, navItem; navItem = navItems[j]; j++) {
-				if(navItem != event.target){
-					navItem.classList.remove("activeNavItem");
-				}
-			}
-		};
-	}
-	
-	var timeout;
-	document.getElementById("offenderProfileHeader").onmouseleave = function(event) {
-		clearTimeout(timeout);
-		timeout = setTimeout(function(){
-			for(var j = 0, navContentItem; navContentItem = navContentItems[j]; j++) {
-				navContentItem.classList.remove("navContentShow");
-			}
-			for(var j = 0, navItem; navItem = navItems[j]; j++) {
-					navItem.classList.remove("activeNavItem");
-			}
-		}, 500);
-	}
-	document.getElementById("offenderProfileHeader").onmouseenter = function(event) {
-		clearTimeout(timeout);
-	}
-	
 	var fieldValues = document.getElementsByClassName("offenderHeaderFieldValue");
 	for(var i = 0, fieldValue; fieldValue = fieldValues[i]; i++) {
 		fieldValue.setAttribute('title', fieldValue.innerHTML.trim());
+	}
+	
+	if(document.getElementById('navBar')){
+		var scrollDistance = ((document.getElementsByClassName('navBarItem')[0].offsetWidth) + padding); 
+		var navBar = document.getElementById('navBar');
+		document.getElementById('navRightArrow').onclick = function(e) {
+			navBarScroll("right");
+			e.preventDefault();
+		}
+		document.getElementById('navLeftArrow').onclick = function(e) {
+			navBarScroll("left");
+			e.preventDefault();
+		}
+		
+		function navBarScroll(direction){
+			var to;
+			if(direction == 'left'){
+				to = (navBar.scrollLeft - scrollDistance);
+			}
+			else if(direction == 'right'){
+				to = (navBar.scrollLeft + scrollDistance);
+			}
+			else{
+				throw new exception("Incompatible Direction Given.")
+			}
+			var from = navBar.scrollLeft,
+			time = 200,
+			start = new Date().getTime(),
+			timer = setInterval(function () {
+				var step = Math.min(1, (new Date().getTime() - start) / time);
+				navBar["scrollLeft"] = (from + step * (to - from));
+				if (step === 1) {
+					clearInterval(timer);
+				}
+			}, 25);
+			navBar["scrollLeft"] = from;
+		}
+		
+		var navItems = document.getElementsByClassName("navBarItem");
+		var navContentItems = document.getElementsByClassName("navContent");
+		for(var i = 0, navItem; navItem = navItems[i]; i++) {
+			navItem.onclick = function(event) {
+				event.preventDefault();
+				event.target.classList.toggle("activeNavItem");
+				var contentId = event.target.id + "Content";
+				var navContentTarget = document.getElementById(contentId);
+				
+				navContentTarget.classList.toggle("navContentShow");
+				for(var j = 0, navContentItem; navContentItem = navContentItems[j]; j++) {
+					if(navContentItem != navContentTarget){
+						navContentItem.classList.remove("navContentShow");
+					}
+				}
+				for(var j = 0, navItem; navItem = navItems[j]; j++) {
+					if(navItem != event.target){
+						navItem.classList.remove("activeNavItem");
+					}
+				}
+
+				setContentPosition(event.target, navContentTarget);
+				
+			};
+		}
+		
+		var timeout;
+		document.getElementById("offenderNavHeader").onmouseleave = function(event) {
+			clearTimeout(timeout);
+			timeout = setTimeout(function(){
+				for(var j = 0, navContentItem; navContentItem = navContentItems[j]; j++) {
+					navContentItem.classList.remove("navContentShow");
+				}
+				for(var j = 0, navItem; navItem = navItems[j]; j++) {
+						navItem.classList.remove("activeNavItem");
+				}
+			}, 500);
+		}
+		document.getElementById("offenderNavHeader").onmouseenter = function(event) {
+			clearTimeout(timeout);
+		}
 	}
 });

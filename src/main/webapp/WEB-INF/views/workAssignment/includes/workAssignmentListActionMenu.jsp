@@ -21,6 +21,13 @@
 		<sec:authorize access="hasRole('WORK_ASSIGNMENT_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty offender}">
 			<li>
+				<a href="${pageContext.request.contextPath}/workAssignment/offenderWorkAssignmentHistoryReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="offenderWorkAssignmentHistoryReportLinkLabel"/></a>
+			</li>
+		</c:if>
+		</sec:authorize>		
+		<sec:authorize access="hasRole('WORK_ASSIGNMENT_VIEW') or hasRole('ADMIN')">
+			<c:if test="${not empty offender}">
+			<li>
 				<a href="${pageContext.request.contextPath}/workAssignment/workAssignmentsListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="workAssignmentsListingReportLinkLabel"/></a>
 			</li>
 		</c:if>

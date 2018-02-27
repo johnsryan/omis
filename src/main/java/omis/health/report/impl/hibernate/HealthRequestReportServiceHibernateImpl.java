@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.health.report.impl.hibernate;
 
 import java.lang.reflect.Field;
@@ -18,7 +35,8 @@ import org.hibernate.SessionFactory;
  * Hibernate implementation of service to report health requests.
  *
  * @author Stephen Abson
- * @version 0.1.0 (Apr 13, 2014)
+ * @author Josh Divine
+ * @version 0.1.1 (Feb 15, 2018)
  * @since OMIS 3.0
  */
 public class HealthRequestReportServiceHibernateImpl
@@ -92,7 +110,9 @@ public class HealthRequestReportServiceHibernateImpl
 						FIND_BY_CATEGORY_AND_STATUS_QUERY_NAME)
 				.setParameter(FACILITY_PARAM_NAME, facility)
 				.setParameter(STATUS_PARAM_NAME, HealthRequestStatus.OPEN)
-				.setParameterList(CATEGORIES_PARAM_NAME, categories).list();
+				.setParameterList(CATEGORIES_PARAM_NAME, categories)
+				.setReadOnly(true)
+				.list();
 		addUnits(summaries, effectiveDate);
 		return summaries;
 	}
@@ -105,7 +125,9 @@ public class HealthRequestReportServiceHibernateImpl
 		final List<HealthRequestSummary> summaries = this.sessionFactory
 				.getCurrentSession().getNamedQuery(FIND_BY_STATUS_QUERY_NAME)
 				.setParameter(STATUS_PARAM_NAME, HealthRequestStatus.OPEN)
-				.setParameter(FACILITY_PARAM_NAME, facility).list();
+				.setParameter(FACILITY_PARAM_NAME, facility)
+				.setReadOnly(true)
+				.list();
 		addUnits(summaries, effectiveDate);
 		return summaries;
 	}
@@ -119,7 +141,9 @@ public class HealthRequestReportServiceHibernateImpl
 				.getCurrentSession().getNamedQuery(
 						FIND_BY_OFFENDER_STATUS_QUERY_NAME)
 				.setParameter(STATUS_PARAM_NAME, HealthRequestStatus.OPEN)
-				.setParameter(OFFENDER_PARAM_NAME, offender).list();
+				.setParameter(OFFENDER_PARAM_NAME, offender)
+				.setReadOnly(true)
+				.list();
 		addUnits(summaries, effectiveDate);
 		return summaries;
 	}
@@ -136,7 +160,9 @@ public class HealthRequestReportServiceHibernateImpl
 						FIND_BY_CATEGORY_EXCLUDING_STATUS_QUERY_NAME)
 				.setParameter(FACILITY_PARAM_NAME, facility)
 				.setParameter(STATUS_PARAM_NAME, HealthRequestStatus.OPEN)
-				.setParameterList(CATEGORIES_PARAM_NAME, categories).list();
+				.setParameterList(CATEGORIES_PARAM_NAME, categories)
+				.setReadOnly(true)
+				.list();
 		addUnits(summaries, effectiveDate);
 		return summaries;
 	}
@@ -150,7 +176,9 @@ public class HealthRequestReportServiceHibernateImpl
 				.getCurrentSession().getNamedQuery(
 						FIND_BY_EXCLUDING_STATUS_QUERY_NAME)
 				.setParameter(STATUS_PARAM_NAME, HealthRequestStatus.OPEN)
-				.setParameter(FACILITY_PARAM_NAME, facility).list();
+				.setParameter(FACILITY_PARAM_NAME, facility)
+				.setReadOnly(true)
+				.list();
 		addUnits(summaries, effectiveDate);
 		return summaries;
 	}
@@ -166,7 +194,9 @@ public class HealthRequestReportServiceHibernateImpl
 				.getCurrentSession().getNamedQuery(
 						FIND_BY_CATEGORY_QUERY_NAME)
 				.setParameter(FACILITY_PARAM_NAME, facility)
-				.setParameterList(CATEGORIES_PARAM_NAME, categories).list();
+				.setParameterList(CATEGORIES_PARAM_NAME, categories)
+				.setReadOnly(true)
+				.list();
 		addUnits(summaries, effectiveDate);
 		return summaries;
 	}
@@ -178,7 +208,9 @@ public class HealthRequestReportServiceHibernateImpl
 		@SuppressWarnings("unchecked")
 		final List<HealthRequestSummary> summaries = this.sessionFactory
 				.getCurrentSession().getNamedQuery(FIND_QUERY_NAME)
-				.setParameter(FACILITY_PARAM_NAME, facility).list();
+				.setParameter(FACILITY_PARAM_NAME, facility)
+				.setReadOnly(true)
+				.list();
 		addUnits(summaries, effectiveDate);
 		return summaries;
 	}

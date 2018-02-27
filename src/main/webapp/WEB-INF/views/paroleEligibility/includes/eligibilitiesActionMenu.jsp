@@ -47,6 +47,10 @@
 		<c:if test="${not empty eligibility}"><li><a class="viewEditLink" href="${pageContext.request.contextPath}/hearingAnalysis/edit.html?eligibility=${eligibility.id}"><span class="visibleLinkLabel"><fmt:message key="viewHearingAnalysisLink"/></span></a></li>
 		</c:if>
 	</sec:authorize>
+	<sec:authorize access="hasRole('HEARING_ANALYSIS_VIEW') or hasRole('ADMIN')">
+		<c:if test="${not empty hearingAnalysis}"><li><a class="viewEditLink" href="${pageContext.request.contextPath}/hearingAnalysis/home.html?hearingAnalysis=${hearingAnalysis.id}"><span class="visibleLinkLabel"><fmt:message key="workHearingAnalysisLink"/></span></a></li>
+		</c:if>
+	</sec:authorize>
 	<sec:authorize access="hasRole('PAROLE_ELIGIBILITY_VIEW') or hasRole('ADMIN')">
 		<c:if test="${not empty eligibility}">
 		<li>

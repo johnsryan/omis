@@ -35,12 +35,12 @@ import omis.contact.domain.component.PoBox;
 import omis.contact.exception.OnlineAccountExistsException;
 import omis.contact.exception.TelephoneNumberExistsException;
 import omis.country.domain.Country;
-import omis.exception.DuplicateEntityFoundException;
 import omis.person.domain.Person;
 import omis.region.domain.City;
 import omis.region.domain.State;
 import omis.region.exception.CityExistsException;
 import omis.residence.domain.ResidenceTerm;
+import omis.residence.exception.ResidenceTermExistsException;
 
 /**
  * Service for victim contacts.
@@ -94,10 +94,10 @@ public interface VictimContactService {
 	 * @param victim victim the contact of whom to update
 	 * @param address address
 	 * @return updated - or newly created - victim contact
-	 * @throws DuplicateEntityFoundException 
+	 * @throws ResidenceTermExistsException residence term exists exception 
 	 */
 	ResidenceTerm updateResidenceTerm(Person victim, Address address) 
-			throws DuplicateEntityFoundException;
+			throws ResidenceTermExistsException;
 	
 	/**
 	 * Adds telephone number.

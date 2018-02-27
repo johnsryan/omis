@@ -24,6 +24,8 @@
   
   <import resource="applicationContext-alertWeb.xml"/>
   
+  <import resource="applicationContext-assessmentWeb.xml"/>
+  
   <import resource="applicationContext-bedPlacementWeb.xml"/>
   
   <import resource="applicationContext-biographicAndContactSectionWeb.xml"/>
@@ -134,9 +136,13 @@
   
   <import resource="applicationContext-paroleBoardItineraryWeb.xml"/>
   
+  <import resource="applicationContext-paroleBoardLocationWeb.xml"/>
+  
   <import resource="applicationContext-paroleBoardMemberWeb.xml"/>
   
   <import resource="applicationContext-paroleEligibilityWeb.xml"/>
+  
+  <import resource="applicationContext-parolePlanWeb.xml"/>
   
   <import resource="applicationContext-paroleReviewWeb.xml"/>
   

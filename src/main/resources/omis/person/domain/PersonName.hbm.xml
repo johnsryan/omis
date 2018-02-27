@@ -52,9 +52,11 @@
 		and
 			name.lastName = :lastName
 		and
-			name.middleName = :middleName
+			(name.middleName = :middleName
+			 or (name.middleName is null and :middleName is null))
 		and
-			name.suffix = :suffix
+			(name.suffix = :suffix
+			 or (name.suffix is null and :suffix is null))
 	]]></query>
 	<query name="findPersonNameExcluding"><![CDATA[
 		select
@@ -74,9 +76,11 @@
 		and
 			name.lastName = :lastName
 		and
-			name.middleName = :middleName
+			(name.middleName = :middleName
+			 or (name.middleName is null and :middleName is null))
 		and
-			name.suffix = :suffix
+			(name.suffix = :suffix
+			 or (name.suffix is null and :suffix is null))
 		and
 			name <> :name
 	]]></query>

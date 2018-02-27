@@ -26,10 +26,10 @@ import omis.offender.domain.Offender;
 /**
  * Medical Review Summary Report Service Hibernate Implementation.
  * 
- *@author Annie Wahl 
- *@version 0.1.0 (Jan 31, 2018)
- *@since OMIS 3.0
- *
+ * @author Annie Wahl
+ * @author Josh Divine 
+ * @version 0.1.1 (Feb 14, 2018)
+ * @since OMIS 3.0
  */
 public class MedicalReviewSummaryReportServiceHibernateImpl
 		implements MedicalReviewSummaryReportService {
@@ -57,6 +57,7 @@ public class MedicalReviewSummaryReportServiceHibernateImpl
 		List<MedicalReviewSummary> summaries = this.sessionFactory
 				.getCurrentSession().getNamedQuery(FIND_BY_OFFENDER_QUERY_NAME)
 				.setParameter(OFFENDER_PARAM_NAME, offender)
+				.setReadOnly(true)
 				.list();
 		
 		return summaries;

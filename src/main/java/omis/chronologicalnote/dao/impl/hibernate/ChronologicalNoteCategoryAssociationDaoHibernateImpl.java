@@ -42,7 +42,7 @@ public class ChronologicalNoteCategoryAssociationDaoHibernateImpl
 	private static final String FIND_BY_NOTE_CATEGORY_QUERY_NAME
 		= "findByNoteAndCategory";
 	private static final String FIND_BY_NOTE_QUERY_NAME
-		= "findByNote";
+		= "findChronologicalNoteCategoryAssociationsByNote";
 	private static final String FIND_QUERY_NAME
 		= "findChronologicalNoteCategoryAssociation";
 	private static final String FIND_ASSOCIATED_CATEGORIES_QUERY_NAME
@@ -86,7 +86,7 @@ public class ChronologicalNoteCategoryAssociationDaoHibernateImpl
 	
 	/** {@inheritDoc} */
 	@Override
-	public List<ChronologicalNoteCategoryAssociation> findByNote(final
+	public List<ChronologicalNoteCategoryAssociation> findChronologicalNoteCategoryAssociationsByNote(final
 		ChronologicalNote note) {
 		@SuppressWarnings("unchecked")
 		List<ChronologicalNoteCategoryAssociation> 

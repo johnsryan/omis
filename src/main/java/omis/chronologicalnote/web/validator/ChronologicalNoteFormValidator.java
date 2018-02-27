@@ -17,6 +17,8 @@
  */
 package omis.chronologicalnote.web.validator;
 
+import java.util.Date;
+
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
@@ -36,7 +38,16 @@ public class ChronologicalNoteFormValidator implements Validator {
 
 	/* Helpers. */
 	
+	/*
+	 * TODO: Use String length checks object once database unique key issue for chronological notes
+	 * is resolved. - JN
+	 */
+	@SuppressWarnings("unused")
 	private final StringLengthChecks stringLengthChecks;
+	
+	/* Manual logic value assignments */
+	
+	private final int NARRATIVE_MAX_LENGTH = 6000;
 	
 	/**
 	 * Instantiates a chronological note form validator with the specified string length checks.
@@ -60,21 +71,30 @@ public class ChronologicalNoteFormValidator implements Validator {
 		if(form.getNarrative() == null || form.getNarrative().isEmpty()) {
 			errors.rejectValue("narrative", "chronologicalNote.narrative.empty");
 		} else {
-			this.stringLengthChecks.getHugeCheck().check(
-					"narrative", form.getNarrative(), errors);
+			//FIXME: Use document check once data tier issue is resolved.
+			if(form.getNarrative().length() > NARRATIVE_MAX_LENGTH) {
+				errors.rejectValue("narrative", "chronologicalNote.narrative.lengthExceeded");
+			}
+//			this.stringLengthChecks.getDocumentCheck().check(
+//					"narrative", form.getNarrative(), errors);
 		}
 		if (form.getDate() == null) {
 			errors.rejectValue("date", "chronologicalNote.date.empty");
+		} else {
+			if (form.getDate().getTime() > new Date().getTime()) {
+				errors.rejectValue("date", "chronologicalNote.date.futureDate");
+			}
 		}
 		boolean categorized = false;
 		for (ChronologicalNoteCategoryItem item : form.getItems()) {
-			if(item.getAssociated() || ChronologicalNoteCategoryItemOperation.ASSOCIATE.equals(item.getOperation())) {
+			if((item.getAssociated() && !ChronologicalNoteCategoryItemOperation.DISSOCIATE.equals(item.getOperation())) || ChronologicalNoteCategoryItemOperation.ASSOCIATE.equals(item.getOperation())) {
 				categorized = true;
 			}
 		}
 		if (!categorized) {
 			errors.rejectValue("items", "chronologicalNote.items.unassociated");
 		}
+		
 	}
 
 }

@@ -13,7 +13,7 @@
 <div id="offenderHeader">
 	<jsp:include page="offenderHeaderSummaryContent.jsp"/>
 </div>
-<div id="offenderProfileHeader">
-	<jsp:include page="offenderHeaderProfileContent.jsp"/>
+<div id="offenderNavHeader">
+	<jsp:include page="offenderHeaderNavContent.jsp"/>
 </div>
 </fmt:bundle>

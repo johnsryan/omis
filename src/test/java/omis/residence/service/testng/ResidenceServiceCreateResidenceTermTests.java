@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.residence.service.testng;
 
 import java.text.ParseException;
@@ -34,6 +51,7 @@ import omis.residence.domain.ResidenceStatus;
 import omis.residence.domain.ResidenceTerm;
 import omis.residence.exception.PrimaryResidenceExistsException;
 import omis.residence.exception.ResidenceStatusConflictException;
+import omis.residence.exception.ResidenceTermExistsException;
 import omis.residence.service.ResidenceService;
 import omis.residence.service.delegate.AllowedResidentialLocationRuleDelegate;
 import omis.residence.service.delegate.NonResidenceTermDelegate;
@@ -46,6 +64,7 @@ import omis.util.PropertyValueAsserter;
  * Tests method to create residence terms.
  *
  * @author Josh Divine
+ * @author Yidong Li
  * @version 0.0.1
  * @since OMIS 3.0
  */
@@ -128,7 +147,8 @@ public class ResidenceServiceCreateResidenceTermTests
 	@Test
 	public void testCreateResidenceTerm() 
 			throws DuplicateEntityFoundException, 
-			ResidenceStatusConflictException, PrimaryResidenceExistsException {
+			ResidenceStatusConflictException, PrimaryResidenceExistsException,
+			ResidenceTermExistsException {
 		// Arrangements
 		Person person = this.personDelegate.create("Smith", "John", "Jay", 
 				null);
@@ -171,18 +191,20 @@ public class ResidenceServiceCreateResidenceTermTests
 	}
 	
 	/**
-	 * Tests {@code DuplicateEntityFoundException} is thrown.
+	 * Tests {@code ResidenceTermExistsException} is thrown.
 	 * 
 	 * @throws DuplicateEntityFoundException if duplicate entity exists
 	 * @throws ResidenceStatusConflictException if residence term conflict 
 	 * exists
 	 * @throws PrimaryResidenceExistsException if primary residence already 
+	 * @throws ResidenceTermExistsException residence term exists exception
 	 * exists
 	 */
-	@Test(expectedExceptions = {DuplicateEntityFoundException.class})
+	@Test(expectedExceptions = {ResidenceTermExistsException.class})
 	public void testDuplicateEntityFoundException() 
 			throws DuplicateEntityFoundException, 
-			ResidenceStatusConflictException, PrimaryResidenceExistsException {
+			ResidenceStatusConflictException, PrimaryResidenceExistsException,
+			ResidenceTermExistsException {
 		// Arrangements
 		Person person = this.personDelegate.create("Smith", "John", "Jay", 
 				null);
@@ -272,18 +294,20 @@ public class ResidenceServiceCreateResidenceTermTests
 	}*/
 	
 	/**
-	 * Tests {@code PrimaryResidenceExistsException} is thrown.
+	 * Tests {@code ResidenceTermExistsException} is thrown.
 	 * 
 	 * @throws DuplicateEntityFoundException if duplicate entity exists
 	 * @throws ResidenceStatusConflictException if residence term conflict 
 	 * exists
 	 * @throws PrimaryResidenceExistsException if primary residence already 
+	 * @throws ResidenceTermExistsException residence term exists exception
 	 * exists
 	 */
 	@Test(expectedExceptions = {PrimaryResidenceExistsException.class})
 	public void testPrimaryResidenceExistsException() 
 			throws DuplicateEntityFoundException, 
-			ResidenceStatusConflictException, PrimaryResidenceExistsException {
+			ResidenceStatusConflictException, PrimaryResidenceExistsException,
+			ResidenceTermExistsException {
 		// Arrangements
 		Person person = this.personDelegate.create("Smith", "John", "Jay", 
 				null);

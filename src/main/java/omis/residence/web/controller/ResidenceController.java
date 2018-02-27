@@ -1,3 +1,20 @@
+/* 
+* OMIS - Offender Management Information System 
+* Copyright (C) 2011 - 2017 State of Montana 
+* 
+* This program is free software: you can redistribute it and/or modify 
+* it under the terms of the GNU General Public License as published by 
+* the Free Software Foundation, either version 3 of the License, or 
+* (at your option) any later version. 
+* 
+* This program is distributed in the hope that it will be useful, 
+* but WITHOUT ANY WARRANTY; without even the implied warranty of 
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+* GNU General Public License for more details. 
+* 
+* You should have received a copy of the GNU General Public License 
+* along with this program.  If not, see <http://www.gnu.org/licenses/>. 
+*/
 package omis.residence.web.controller;
 
 import java.util.Date;
@@ -48,6 +65,7 @@ import omis.residence.domain.ResidenceStatus;
 import omis.residence.domain.ResidenceTerm;
 import omis.residence.exception.PrimaryResidenceExistsException;
 import omis.residence.exception.ResidenceStatusConflictException;
+import omis.residence.exception.ResidenceTermExistsException;
 import omis.residence.report.ResidenceReportService;
 import omis.residence.report.ResidenceSummary;
 import omis.residence.report.ResidenceType;
@@ -64,6 +82,7 @@ import omis.web.controller.delegate.BusinessExceptionHandlerDelegate;
  * 
  * @author Sheronda Vaughn
  * @author Joel Norris
+ * @author Yidong Li
  * @version 0.1.2 (January 19, 2018)
  * @since OMIS 3.0
  */
@@ -149,8 +168,9 @@ public class ResidenceController {
 	
 	private static final String STATUS_OPTIONS_MODEL_KEY = "statusOptions";
 	
-	private static final String NON_RESIDENCE_TERMS_PARAM_NAME = "nonResidenceTerms";
-	
+	private static final String NON_RESIDENCE_TERMS_PARAM_NAME
+		= "nonResidenceTerms";
+		
 	/* Message Keys. */
 
 	private static final String TERM_EXISTS_MESSAGE_KEY
@@ -164,6 +184,9 @@ public class ResidenceController {
 
 	private static final String LOCATION_NOT_ALLOWED_EXISTS_MESSAGE_KEY
 		= "locationNotAllowed.exists";
+	
+	private static final String RESIDENCE_TREM_EXISTS_EXCEPTION_MESSAGE_KEY
+		= "residenceTerm.Exists";
 
 	/* Message bundles. */
 
@@ -386,6 +409,7 @@ public class ResidenceController {
 	 * @throws ResidenceStatusConflictException 
 	 * residence status conflict exception
 	 * @throws LocationNotAllowedException location not allowed exception
+	 * @throws ResidenceTermExistsException residence term exists exception
 	 */
 	@RequestContentMapping(nameKey = "residenceCreateSubmitName",
 			descriptionKey = "residenceCreateSubmitDescription",
@@ -403,7 +427,8 @@ public class ResidenceController {
 					throws DuplicateEntityFoundException, 
 					PrimaryResidenceExistsException, 
 					ResidenceStatusConflictException, 
-					LocationNotAllowedException {
+					LocationNotAllowedException,
+					ResidenceTermExistsException {
 		this.residenceFormValidator.validate(residenceForm, result);	
 		if (result.hasErrors()) {
 			ModelAndView mav = this.prepareRedisplayMav(offender,
@@ -801,7 +826,8 @@ public class ResidenceController {
 					throws DuplicateEntityFoundException, 
 					PrimaryResidenceExistsException, 
 					ResidenceStatusConflictException, 
-					LocationNotAllowedException {
+					LocationNotAllowedException,
+					ResidenceTermExistsException {
 		this.residenceFormValidator.validate(residenceForm, result);
 		final Offender offender;
 		if (residenceTerm != null) {
@@ -1169,6 +1195,20 @@ public class ResidenceController {
 		return this.businessExceptionHandlerDelegate.prepareModelAndView(
 				LOCATION_NOT_ALLOWED_EXISTS_MESSAGE_KEY, ERROR_BUNDLE_NAME, 
 				exception);
+	}
+	
+	/**
+	 * Handles {@code ResidenceTermExistsException}.
+	 * 
+	 * @param ResidenceTermExistsException exception thrown
+	 * @return screen to handle {@code ResidenceTermExistsException}
+	 */
+	@ExceptionHandler(ResidenceTermExistsException.class)
+	public ModelAndView handleResidenceTermExistsException(
+		final ResidenceTermExistsException ResidenceTermExistsException) {
+		return this.businessExceptionHandlerDelegate.prepareModelAndView(
+			RESIDENCE_TREM_EXISTS_EXCEPTION_MESSAGE_KEY,
+			ERROR_BUNDLE_NAME, ResidenceTermExistsException);
 	}
 
 	/* Reports. */

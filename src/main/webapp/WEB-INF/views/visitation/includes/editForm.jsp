@@ -3,6 +3,24 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <fmt:bundle basename="omis.visitation.msgs.visitation">
 	<form:form commandName="visitationAssociationForm" class="editForm">
+	<fieldset>
+			<legend><fmt:message key="personDetailsLabel"/></legend>
+			<span class="fieldGroup">
+				<c:choose>
+					<c:when test="${visitationAssociationForm.newVisitor}">
+						<c:set value="${visitationAssociationForm.personFields}" var="personFields" scope="request"/>
+						<jsp:include page="../../person/includes/personFields.jsp"/>
+					</c:when>
+					<c:otherwise>
+						<c:set value="${contactSummary}" var="contactSummary" scope="request"/>
+						<jsp:include page="../../contact/includes/contactSummary.jsp"/>
+						<form:input type="hidden" path="person"/>
+						<form:errors path="person"/>
+					</c:otherwise>
+				</c:choose>					
+			</span>
+			<form:input type="hidden" path="newVisitor"/>
+		</fieldset>
 		<fieldset>
 			<legend><fmt:message key="approvalDetailsLabel"/></legend>
 				<c:choose>
@@ -39,25 +57,7 @@
 					<form:input path="decisionDate" class="date"/>
 					<form:errors cssClass="error" path="decisionDate"/>
 				</span>
-		</fieldset>
-		<fieldset>
-			<legend><fmt:message key="personDetailsLabel"/></legend>
-			<span class="fieldGroup">
-				<c:choose>
-					<c:when test="${visitationAssociationForm.newVisitor}">
-						<c:set value="${visitationAssociationForm.personFields}" var="personFields" scope="request"/>
-						<jsp:include page="../../person/includes/personFields.jsp"/>
-					</c:when>
-					<c:otherwise>
-						<c:set value="${contactSummary}" var="contactSummary" scope="request"/>
-						<jsp:include page="../../contact/includes/contactSummary.jsp"/>
-						<form:input type="hidden" path="person"/>
-						<form:errors path="person"/>
-					</c:otherwise>
-				</c:choose>					
-			</span>
-			<form:input type="hidden" path="newVisitor"/>
-		</fieldset>
+		</fieldset>		
 		<fieldset>
 			<legend><fmt:message key="VisitationFlagsLabel"/></legend>
 			<span class="fieldGroup">

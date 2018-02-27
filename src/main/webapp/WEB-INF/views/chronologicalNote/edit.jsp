@@ -38,11 +38,22 @@
 		<jsp:include page="/WEB-INF/views/common/includes/headerOffenderFormResources.jsp"/>
 		<jsp:include page="/WEB-INF/views/common/includes/messageResolverResources.jsp"/>
 		<jsp:include page="/WEB-INF/views/common/includes/toolsResources.jsp"/>
-		<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/chronologicalnote/style/chronologicalNote.css?VERSION=1.1"/>
+		<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/chronologicalnote/style/chronologicalNote.css?VERSION=1.2"/>
 		<script type="text/javascript" src="${pageContext.request.contextPath}/resources/chronologicalnote/scripts/chronologicalNote.js?VERSION=1"> </script>
 	</head>
 	<body>
 		<jsp:include page="/WEB-INF/views/offender/includes/offenderHeader.jsp"/>
+		<h1>
+			<a class="actionMenuItem" id="actionMenuLink" href="${pageContext.request.contextPath}/chronologicalNote/chronologicalNoteActionMenu.html?offender=${offender.id}"></a>
+			<c:choose>
+				<c:when test="${not empty chronologicalNote}">
+					<fmt:message key="editChronologicalNoteHeader"/>
+				</c:when>
+				<c:otherwise>
+					<fmt:message key="createChronologicalNoteHeader"/>
+				</c:otherwise>
+			</c:choose>
+		</h1>
 		<jsp:include page="/WEB-INF/views/chronologicalNote/includes/editForm.jsp"/>
 	</body>
 </fmt:bundle>

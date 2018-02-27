@@ -50,9 +50,9 @@ import omis.offender.service.delegate.OffenderDelegate;
 import omis.organization.domain.Organization;
 import omis.organization.service.delegate.OrganizationDelegate;
 import omis.paroleboarditinerary.domain.ParoleBoardItinerary;
-import omis.paroleboarditinerary.domain.ParoleBoardLocation;
 import omis.paroleboarditinerary.service.delegate.ParoleBoardItineraryDelegate;
-import omis.paroleboarditinerary.service.delegate.ParoleBoardLocationDelegate;
+import omis.paroleboardlocation.domain.ParoleBoardLocation;
+import omis.paroleboardlocation.service.delegate.ParoleBoardLocationDelegate;
 import omis.paroleeligibility.domain.ParoleEligibility;
 import omis.paroleeligibility.service.delegate.ParoleEligibilityDelegate;
 import omis.region.domain.City;
@@ -254,37 +254,5 @@ public class BoardHearingDecisionServiceCreateHearingDecisionNoteTests
 		} catch (ParseException e) {
 			throw new RuntimeException("Parse error", e);
 		}
-	}
-	
-	private BoardHearing createBoardHearing()
-			throws DuplicateEntityFoundException {
-		final Offender offender = this.offenderDelegate.createWithoutIdentity(
-				"Wayne", "Bruce", "Alen", null);
-		final ParoleEligibility paroleEligibility =
-				this.paroleEligibilityDelegate.create(offender,
-						this.parseDateText("01/01/2017"), null, null, null);
-		final Organization organization = this.organizationDelegate.create(
-				"Organization", "org", null);
-		final Country country = this.countryDelegate.create(
-				"Country", "USA", true);
-		final State state = this.stateDelegate.create(
-				"State", "ST", country, true, true);
-		final City city = this.cityDelegate.create(
-				"City", true, state, country);
-		final ZipCode zipCode = this.zipCodeDelegate.create(
-				city, "12345", null, true);
-		final Address address = this.addressDelegate.findOrCreate("123", "321",
-				null, null, zipCode);
-		final Location location = this.locationDelegate.create(organization,
-				new DateRange(this.parseDateText("01/01/2001"),
-						this.parseDateText("01/01/2020")), address);
-		final ParoleBoardLocation paroleBoardLocation =
-				this.paroleBoardLocationDelegate.create(location, true);
-		final ParoleBoardItinerary itinerary =
-				this.paroleBoardItineraryDelegate.create(paroleBoardLocation,
-						this.parseDateText("01/01/2015"), null);
-		return this.boardHearingDelegate
-				.create(itinerary, null, null, paroleEligibility, null, null,
-						false);
 	}
 }

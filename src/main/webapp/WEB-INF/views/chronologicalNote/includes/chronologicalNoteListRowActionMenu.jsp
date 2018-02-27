@@ -35,7 +35,7 @@
 		</sec:authorize> 
 		<sec:authorize access="hasRole('CHRONOLOGICAL_NOTE_REMOVE') or hasRole('ADMIN')">
 		<li>
-			<a class="removeLink" href="${pageContext.request.contextPath}/chronologicalNote/remove.html?note=${note.id}"><span class="visibleLinkLabel"><fmt:message key="removeLink" /></span></a>
+			<a class="removeLink" href="${pageContext.request.contextPath}/chronologicalNote/remove.html?chronologicalNote=${note.id}"><span class="visibleLinkLabel"><fmt:message key="removeLink" /></span></a>
 		</li>
 		</sec:authorize>
 		<sec:authorize access="hasRole('CHRONOLOGICAL_NOTE_VIEW') or hasRole('ADMIN')">

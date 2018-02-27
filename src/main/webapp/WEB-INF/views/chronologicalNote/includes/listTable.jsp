@@ -30,9 +30,9 @@
 			<tr>
 				<th class = "operations"> </th>
 				<th><fmt:message key="startDateLabel"/></th>
-				<th><fmt:message key="CategoriesLabel"/></th>
-				<th><fmt:message key="NarrativeLabel"/></th>
-				<th><fmt:message key="UpdatedByLabel"/></th>
+				<th><fmt:message key="categoriesLabel"/></th>
+				<th><fmt:message key="narrativeLabel"/></th>
+				<th><fmt:message key="updatedByLabel"/></th>
 			</tr>
 		</thead>
 		<tbody>

@@ -320,6 +320,5 @@ ul.ui-autocomplete {
 }
 
 div.actionList {
-	max-height: 200px;
 	overflow-y: arrow;
 }

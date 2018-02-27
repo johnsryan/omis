@@ -23,10 +23,12 @@ import java.util.List;
 import omis.exception.DuplicateEntityFoundException;
 import omis.hearinganalysis.domain.HearingAnalysis;
 import omis.hearinganalysis.domain.HearingAnalysisCategory;
+import omis.hearinganalysis.domain.HearingAnalysisNote;
 import omis.hearinganalysis.domain.HearingAnalysisTaskAssociation;
 import omis.hearinganalysis.domain.ParoleHearingAnalysisTaskSource;
 import omis.hearinganalysis.domain.ParoleHearingTaskGroup;
 import omis.hearinganalysis.service.HearingAnalysisTaskService;
+import omis.hearinganalysis.service.delegate.HearingAnalysisNoteDelegate;
 import omis.hearinganalysis.service.delegate.HearingAnalysisTaskAssociationDelegate;
 import omis.hearinganalysis.service.delegate.ParoleHearingAnalysisTaskSourceDelegate;
 import omis.hearinganalysis.service.delegate.ParoleHearingTaskGroupDelegate;
@@ -47,7 +49,7 @@ import omis.user.service.delegate.UserAccountDelegate;
  * Implementation of service for hearing analysis task.
  * 
  * @author Josh Divine
- * @version 0.1.0 (Jan 9, 2018)
+ * @version 0.1.1 (Feb 20, 2018)
  * @since OMIS 3.0
  */
 public class HearingAnalysisTaskServiceImpl 
@@ -74,6 +76,8 @@ public class HearingAnalysisTaskServiceImpl
 	
 	private final UserAccountDelegate userAccountDelegate;
 	
+	private final HearingAnalysisNoteDelegate hearingAnalysisNoteDelegate;
+	
 	/**
 	 * Instantiates a hearing analysis task service implementation with the 
 	 * specified delegates.
@@ -87,6 +91,9 @@ public class HearingAnalysisTaskServiceImpl
 	 * association delegate
 	 * @param paroleHearingAnalysisTaskSourceDelegate parole hearing analysis 
 	 * task source delegate
+	 * @param paroleHearingTaskGroupDelegate parole hearing task group delegate
+	 * @param userAccountDelegate user account delegate
+	 * @param hearingAnalysisNoteDelegate hearing analysis note delegate
 	 */
 	public HearingAnalysisTaskServiceImpl(final TaskDelegate taskDelegate,
 			final TaskParameterValueDelegate taskParameterValueDelegate,
@@ -98,7 +105,8 @@ public class HearingAnalysisTaskServiceImpl
 			final ParoleHearingAnalysisTaskSourceDelegate
 					paroleHearingAnalysisTaskSourceDelegate,
 			final ParoleHearingTaskGroupDelegate paroleHearingTaskGroupDelegate,
-			final UserAccountDelegate userAccountDelegate) {
+			final UserAccountDelegate userAccountDelegate,
+			final HearingAnalysisNoteDelegate hearingAnalysisNoteDelegate) {
 		this.taskDelegate = taskDelegate;
 		this.taskParameterValueDelegate = taskParameterValueDelegate;
 		this.taskAssignmentDelegate = taskAssignmentDelegate;
@@ -110,6 +118,7 @@ public class HearingAnalysisTaskServiceImpl
 				paroleHearingAnalysisTaskSourceDelegate;
 		this.paroleHearingTaskGroupDelegate = paroleHearingTaskGroupDelegate;
 		this.userAccountDelegate = userAccountDelegate;
+		this.hearingAnalysisNoteDelegate = hearingAnalysisNoteDelegate;
 	}
 	
 	/** {@inheritDoc} */
@@ -275,5 +284,39 @@ public class HearingAnalysisTaskServiceImpl
 	@Override
 	public UserAccount findUserAccountByUsername(final String username) {
 		return this.userAccountDelegate.findByUsername(username);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public HearingAnalysisNote createHearingAnalysisNote(
+			final HearingAnalysis hearingAnalysis, final String description, 
+			final Date date) throws DuplicateEntityFoundException {
+		return this.hearingAnalysisNoteDelegate.create(hearingAnalysis, 
+				description, date);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public HearingAnalysisNote updateHearingAnalysisNote(
+			final HearingAnalysisNote hearingAnalysisNote, 
+			final String description, final Date date) 
+					throws DuplicateEntityFoundException {
+		return this.hearingAnalysisNoteDelegate.update(hearingAnalysisNote, 
+				description, date);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void removeHearingAnalysisNote(
+			final HearingAnalysisNote hearingAnalysisNote) {
+		this.hearingAnalysisNoteDelegate.remove(hearingAnalysisNote);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public List<HearingAnalysisNote> findHearingAnalysisNotesByHearingAnalysis(
+			final HearingAnalysis hearingAnalysis) {
+		return this.hearingAnalysisNoteDelegate.findByHearingAnalysis(
+				hearingAnalysis);
 	}
 }

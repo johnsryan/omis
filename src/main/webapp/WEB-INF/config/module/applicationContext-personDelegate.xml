@@ -52,6 +52,7 @@
 	
 	<bean id="alternativeIdentityCategoryDelegate" class="omis.person.service.delegate.AlternativeIdentityCategoryDelegate">
 		<constructor-arg name="alternativeIdentityCategoryDao" ref="alternativeIdentityCategoryDao" />
+		<constructor-arg name="alternativeIdentityCategoryInstanceFactory" ref="alternativeIdentityCategoryInstanceFactory"/>
 	</bean>
 	
 	<bean id="alternativeNameAssociationDelegate" class="omis.person.service.delegate.AlternativeNameAssociationDelegate">

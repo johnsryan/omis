@@ -19,7 +19,7 @@
 		<sec:authorize access="hasRole('OFFENDER_PROFILE_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty offender}">
 			<li>
-				<a href="${pageContext.request.contextPath}/offender/profileInstitutionalCasePlanReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="institutionalCasePlanLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/offender/profileInstitutionalCasePlanReport.rtf?offender=${offender.id}&reportFormat=RTF" class="reportLink"><fmt:message key="institutionalCasePlanLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>			
@@ -40,7 +40,7 @@
 		<sec:authorize access="hasRole('OFFENDER_PROFILE_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty offender}">
 			<li>
-				<a href="${pageContext.request.contextPath}/offender/profileTransitionalCasePlanReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="transitionalCasePlanLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/offender/profileTransitionalCasePlanReport.rtf?offender=${offender.id}&reportFormat=RTF" class="reportLink"><fmt:message key="transitionalCasePlanLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>		

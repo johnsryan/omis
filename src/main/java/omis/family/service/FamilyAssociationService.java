@@ -21,11 +21,10 @@ import java.util.Date;
 import java.util.List;
 
 import omis.address.domain.Address;
-import omis.address.domain.AddressUnitDesignator;
 import omis.address.domain.BuildingCategory;
-import omis.address.domain.StreetSuffix;
 import omis.address.domain.ZipCode;
 import omis.address.exception.AddressExistsException;
+import omis.address.exception.ZipCodeExistsException;
 import omis.audit.domain.VerificationSignature;
 import omis.contact.domain.Contact;
 import omis.contact.domain.OnlineAccount;
@@ -33,12 +32,12 @@ import omis.contact.domain.OnlineAccountHost;
 import omis.contact.domain.TelephoneNumber;
 import omis.contact.domain.TelephoneNumberCategory;
 import omis.contact.domain.component.PoBox;
+import omis.contact.exception.ContactExistsException;
 import omis.contact.exception.OnlineAccountExistsException;
 import omis.contact.exception.TelephoneNumberExistsException;
 import omis.country.domain.Country;
 import omis.datatype.DateRange;
 import omis.demographics.domain.Sex;
-import omis.exception.DuplicateEntityFoundException;
 import omis.family.domain.FamilyAssociation;
 import omis.family.domain.FamilyAssociationCategory;
 import omis.family.domain.FamilyAssociationNote;
@@ -56,6 +55,7 @@ import omis.relationship.exception.ReflexiveRelationshipException;
 import omis.residence.domain.ResidenceTerm;
 import omis.residence.exception.PrimaryResidenceExistsException;
 import omis.residence.exception.ResidenceStatusConflictException;
+import omis.residence.exception.ResidenceTermExistsException;
 
 /**
  * Service for family association.
@@ -181,12 +181,16 @@ public interface FamilyAssociationService {
 	 * @throws ResidenceStatusConflictException 
 	 * residence status conflict exception
 	 * @return residence term
-	 * @throws DuplicateEntityFoundException 
+	 * @throws ResidenceTermExistsException, residence term exists exception 
+	 * @throws ResidenceStatusConflictException, residence status conflict
+	 * exception
+	 * @throws PrimaryResidenceExistsException  primary residence exists
+	 * exception
 	 */
 	ResidenceTerm createResidenceTerm(Person person, Address address, 
 		VerificationSignature verificationSignature)
 		throws PrimaryResidenceExistsException, 
-		ResidenceStatusConflictException, DuplicateEntityFoundException;
+		ResidenceStatusConflictException, ResidenceTermExistsException;
 	
 	/**
 	 * Add contact.
@@ -194,11 +198,12 @@ public interface FamilyAssociationService {
 	 * @param mailingAddress mailing address
 	 * @param poBox P.O. box
 	 * @return contact
-	 * @throws FamilyAssociationExistsException faamily association exists exception
-	 * @throws DuplicateEntityFoundException 
+	 * @throws FamilyAssociationExistsException family association exists
+	 * exception
+	 * @throws ContactExistsException contact exists exception 
 	 */
 	Contact addContact(Person person, Address mailingAddress, PoBox poBox)
-		throws DuplicateEntityFoundException;
+		throws ContactExistsException;
 
 	/**
 	 * Find a contact by person.
@@ -228,11 +233,12 @@ public interface FamilyAssociationService {
 	 * @param mailingAddress mailing address
 	 * @param poBox P.O. box
 	 * @return contact
-	 * @throws FamilyAssociationExistsException family association exists exception
-	 * @throws DuplicateEntityFoundException 
+	 * @throws FamilyAssociationExistsException family association exists
+	 * exception
+	 * @throws ContactExistsException contact exists exception
 	 */
 	Contact updateContact(Contact contact, Address mailingAddress, PoBox poBox)
-			throws DuplicateEntityFoundException;
+			throws ContactExistsException;
 	
 	/**
 	 * Add telephone number.
@@ -393,10 +399,10 @@ public interface FamilyAssociationService {
 	 * @param city city
 	 * @return zip code
 	 * @throws FamilyAssociationExistsException family association exists exception
-	 * @throws DuplicateEntityFoundException 
+	 * @throws ZipCodeExistsException zip code already exists exception 
 	 */
 	ZipCode createZipCode(String value, String extension, City city) 
-		throws DuplicateEntityFoundException;
+		throws ZipCodeExistsException;
 	
 	/**
 	 * Find states by country.
@@ -418,18 +424,6 @@ public interface FamilyAssociationService {
 	 * @return yes or no
 	 */
 	Boolean hasStates(Country country);
-	
-	/**
-	 * Find all address unit designators.
-	 * @return a list of address unit designators
-	 */
-	List<AddressUnitDesignator> findAddressUnitDesignators();
-	
-	/**
-	 * Find all street suffixes.
-	 * @return a list of street suffixes
-	 */
-	List<StreetSuffix> findStreetSuffixes();
 	
 	/**
 	 * Create city.

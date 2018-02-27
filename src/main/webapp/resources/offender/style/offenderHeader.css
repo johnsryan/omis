@@ -90,12 +90,12 @@ div.headerCell {
 }
 
 /* Header non-Button Links */
-div.item a, .profileDetailsWrapper a{
+div.item a, .navDetailsWrapper a{
 	border-bottom: 1px dashed #999;
 	color: inherit;
 }
 
-div.item a:hover, .profileDetailsWrapper a:hover{
+div.item a:hover, .navDetailsWrapper a:hover{
 	opacity: .7;
 	text-decoration: none;
 }
@@ -127,6 +127,11 @@ ul#offenderHeaderNavigationToolbar {
 #offenderProfileLink:before {
 	margin-right: 4px;
 	vertical-align: top;
+}
+
+a.offenderModulesLink:before {
+	content: url('../../common/images/view-list-text.png');
+	cursor: pointer;
 }
 
 .offenderHeaderContainer {
@@ -267,8 +272,7 @@ it ensures that the last pane can scroll to the far left as needed */
 	right:0;
 }
 
-
-/* Profile Navigation Container */
+/* Navigational */
 
 #fullNavBarWrapper{
 	width: auto;
@@ -308,7 +312,7 @@ it ensures that the last pane can scroll to the far left as needed */
 	border-color: transparent transparent transparent #7c8085;
 }
 
-/* Profile Navigation Item */
+/* Navigation Item */
 .navBarItem {
 	display: inline-block;
 	margin-bottom: 4px;
@@ -330,6 +334,11 @@ it ensures that the last pane can scroll to the far left as needed */
 
 .navBarItem:hover {
 	cursor: pointer;
+	text-decoration: none;
+}
+
+.navBarItem:active {
+	color: #FFF;
 }
 
 .navBarItem, .navContent {
@@ -351,16 +360,15 @@ it ensures that the last pane can scroll to the far left as needed */
 	border-bottom-right-radius: 0px; */
 }
 
-/* Profiles Content Containers */
+/* Nav Content Containers */
 .navContentWrapper {
-	width: inherit;
+	/* width: 50%;
 	padding-right: 8px;
 	position: relative;
 	margin-left: 4px;
-	margin-right: 4px;
+	margin-right: 4px; */
 } 
 
-/* Profile Content Containers */
 .navContent {
 	box-sizing: border-box;
     overflow: hidden;
@@ -371,7 +379,7 @@ it ensures that the last pane can scroll to the far left as needed */
 
 .navContentShow {
 	height: auto;
-	width: 100%;
+	width: 50%;
 	margin-left: 4px;
 	margin-right: 4px;
 	left: -4px;
@@ -380,28 +388,20 @@ it ensures that the last pane can scroll to the far left as needed */
     transform:scaleY(1);
 	display: inline-block;
 	padding: 4px;
-	position: absolute;
+	/* position: relative; */
 }
 
-/* Profile Items Container */
-div.profileContainer {
-	display: inline-block;
-	vertical-align: top;
-	margin: 3px;
-	border: 1px solid #000;
-}
+/* Nav Items Container */
 
-
-/* Profile Items Container */
-div.profileItems {
+div.navItems {
 	display: inline-block;
 	margin: 0 auto;
 	float: left;
-	width: 41%;
+	width: 95%;
 }
 
-/* Profile Item Container */
-div.profileItemContainer {
+/* Nav Item Container */
+div.navItemContainer {
 	margin-left: 5px;
 	/* border-radius: 5px; */
 	display: inline-block;
@@ -410,12 +410,12 @@ div.profileItemContainer {
 	height: 20px;
 }
 
-div.profileItemContainer:hover {
+div.navItemContainer:hover {
 	opacity: .7;
 }
 
-/* Profile Item (Button Links) */
-div.profileItem {
+/* Nav Item (Button Links) */
+div.navItem {
 	display: inline-block;
 	vertical-align: top;
 	width: 100%;
@@ -424,7 +424,7 @@ div.profileItem {
 }
 
 
-div.profileItem a {
+div.navItem a {
 	width: 90%;
 	margin: 1px;
 	padding-left: 5px;
@@ -435,7 +435,7 @@ div.profileItem a {
 	color: inherit;
 }
 
-div.profileItem:not(.inactive ) a:hover {
+div.navItem:not(.inactive ) a:hover {
 	padding-top: 0px;
 	padding-bottom: 0px;
 	padding-right: 4px;
@@ -449,17 +449,12 @@ div.profileItem:not(.inactive ) a:hover {
 	background-color: inherit;
 }
 
-/* Profile Action Menu */
-div.profileActionMenuItemContainer{
-	float: left;
-}
-
 /* Profile Details Container */
-div.profileDetailsWrapper{
+div.navDetailsWrapper{
 	margin-left: 45%;
 }
 
-div.profileDetailsWrapper span{
+div.navDetailsWrapper span{
 	display: inline-block;
 	margin: 0 auto;
 	float: left;
@@ -467,16 +462,16 @@ div.profileDetailsWrapper span{
 }
 
 /* Profile Detail Item */
-div.profileDetailsItem{
+div.navDetailsItem{
 	margin-bottom: 4px;
 }
 
-div.profileDetailsItem h1{
+div.navDetailsItem h1{
 	font-size: large;
 	color: inherit;
 }
 
-div.profileDetailsItem label{
+div.navDetailsItem label{
 	float: left;
 	clear: both;
 	font-weight: bold;
@@ -485,52 +480,48 @@ div.profileDetailsItem label{
 	text-align: right;
 }
 
-div.profileDetailsItem label + span{
+div.navDetailsItem label + span{
 	display: -ms-grid;
 	display: grid;
 }
 
-div.profileDetailsItem label::after{
+div.navDetailsItem label::after{
 	content: ':';
 }
 
 @media only screen and (min-width:900px) and (max-width:1199px) {
-	
-	div.profileItemContainer, div.profileDetailsWrapper span{
-		width: calc(80% - 10px);
+	div.navItemContainer, div.navDetailsWrapper span{
+		width: calc(40% - 10px);
 		margin-left: 10%;
 	}
-	div.profileItem, div.profileDetailsWrapper span{
+	div.navItem, div.navDetailsWrapper span{
 		font-size: 1vw;
 	}
 }
 
 @media only screen and (min-width:1200px ) {
-	div.profileItemContainer {
-		width: 45%;
+	div.navItemContainer {
+		width: 30%;
 	}
-	div.profileItem, div.profileDetailsWrapper span{
+	div.navItem, div.navDetailsWrapper span{
 		font-size: .75vw;
 	}
 }
 
 @media only screen and (min-width:1600px ) {
-	div.profileItems {
-		width: 30%;
-	}
-	div.profileDetailsWrapper{
+	div.navDetailsWrapper{
 		margin-left: 35%;
 	}
-	div.profileItem, div.profileDetailsWrapper span{
+	div.navItem, div.navDetailsWrapper span{
 		font-size: .55vw;
 	}
-	div.profileDetailsWrapper {
+	div.navDetailsWrapper {
 		width: 35%;
 	}
 }
 
 @media only screen and (min-width:2100px ) {
-	div.profileItem, div.profileDetailsWrapper span{
+	div.navItem, div.navDetailsWrapper span{
 		font-size: small;
 	}
 }

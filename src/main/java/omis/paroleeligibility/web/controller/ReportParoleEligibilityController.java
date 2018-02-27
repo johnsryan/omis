@@ -48,7 +48,8 @@ import omis.report.web.controller.delegate.ReportControllerDelegate;
  * Controller to report parole eligibilities.
  *
  * @author Trevor Isles
- * @version 0.1.0 (Dec 19, 2017)
+ * @author Josh Divine
+ * @version 0.1.1 (Feb 20, 2018)
  * @since OMIS 3.0
  */
 @Controller
@@ -73,6 +74,8 @@ public class ReportParoleEligibilityController {
 	private static final String OFFENDER_MODEL_KEY = "offender";
 	
 	private static final String ELIGIBILITY_MODEL_KEY = "eligibility";
+	
+	private static final String HEARING_ANALYSIS_MODEL_KEY = "hearingAnalysis";
 	
 	/* Services. */
 	
@@ -191,6 +194,9 @@ public class ReportParoleEligibilityController {
 		}
 		if (eligibility != null) {
 			mav.addObject(ELIGIBILITY_MODEL_KEY, eligibility);
+			mav.addObject(HEARING_ANALYSIS_MODEL_KEY, 
+					this.paroleEligibilityReportService
+					.findHearingAnalysisByParoleEligibility(eligibility));
 		}			
 		return mav;
 	}

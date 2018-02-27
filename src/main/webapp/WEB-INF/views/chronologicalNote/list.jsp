@@ -45,11 +45,11 @@
  	<c:if test="${not empty offenderSummary}">
  	<jsp:include page="/WEB-INF/views/offender/includes/offenderHeader.jsp"/>
  	</c:if>
- 	<jsp:include page="/WEB-INF/views/chronologicalNote/includes/chronologicalNoteFilterOptionsForm.jsp"/>
  	<h1>
 		<a class="actionMenuItem" id="chronologicalNoteListActionMenuLink" href="${pageContext.request.contextPath}/chronologicalNote/chronologicalNoteListScreenActionMenu.html?offender=${offender.id}"></a><span class="visibleLinkLabel"/>
 		<fmt:message key="chronologicalNoteListHeader"/>
 	</h1>
+ 	<jsp:include page="/WEB-INF/views/chronologicalNote/includes/chronologicalNoteFilterOptionsForm.jsp"/>
 	<jsp:include page="includes/listTable.jsp"/>
 </body>
 </fmt:bundle>

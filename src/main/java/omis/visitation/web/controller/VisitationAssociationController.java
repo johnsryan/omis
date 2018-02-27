@@ -66,6 +66,7 @@ import omis.web.controller.delegate.BusinessExceptionHandlerDelegate;
  * Controller for visitation association.
  * 
  * @author Joel Norris
+ * @author Sheronda Vaughn
  * @version 0.1.0 (May 7, 2015)
  * @since OMIS 3.0
  */
@@ -639,6 +640,26 @@ public class VisitationAssociationController {
 				form.getCategory(), approval, form.getStartDate(), 
 				form.getEndDate(), flags, form.getNotes(), form.getGuardianship());
 		return new ModelAndView(LIST_REDIRECT_URL + offender.getId());
+	}
+	
+	/**
+	 * Removes a model and view of visitation association.
+	 *
+	 *
+	 * @param visitationAssociation visitation association
+	 * @param offender offender
+	 * @return new model and view
+	 */
+	@RequestMapping(value = "remove.html", method = RequestMethod.GET)
+	@PreAuthorize("hasRole('VISITATION_ASSOCIATION_REMOVE') or " 
+			+ "hasRole('ADMIN')")
+	public ModelAndView remove(@RequestParam(value = "visitationAssociation", 
+		required = true) final VisitationAssociation visitationAssociation) {
+		Offender offender = (Offender) visitationAssociation.getRelationship()
+				.getFirstPerson();
+		this.visitationAssociationService.remove(visitationAssociation);		
+		return new ModelAndView(String.format(
+				LIST_REDIRECT_URL + offender.getId()));		
 	}
 	
 	/**

@@ -27,10 +27,10 @@ import omis.victim.report.VictimSearchResultService;
 /**
  * Victim Search Result Servicer Hibernate Implementation.
  * 
- *@author Annie Wahl 
- *@version 0.1.0 (Jan 23, 2018)
- *@since OMIS 3.0
- *
+ * @author Annie Wahl 
+ * @author Josh Divine
+ * @version 0.1.1 (Feb 15, 2018)
+ * @since OMIS 3.0
  */
 public class VictimSearchResultServiceHibernateImpl
 		implements VictimSearchResultService {
@@ -101,6 +101,7 @@ public class VictimSearchResultServiceHibernateImpl
 				.getCurrentSession().getNamedQuery(FIND_BY_LAST_NAME_QUERY_NAME)
 				.setParameter(LAST_NAME_PARAM_NAME, name)
 				.setParameter(OFFENDER_PARAM_NAME, offender)
+				.setReadOnly(true)
 				.list();
 		
 		return result;
@@ -123,6 +124,7 @@ public class VictimSearchResultServiceHibernateImpl
 				.setParameter(MIDDLE_NAME_PARAM_NAME, middle)
 				.setParameter(LAST_NAME_PARAM_NAME, last)
 				.setParameter(OFFENDER_PARAM_NAME, offender)
+				.setReadOnly(true)
 				.list();
 		
 		return result;
@@ -142,6 +144,7 @@ public class VictimSearchResultServiceHibernateImpl
 				.setParameter(NAME1_PARAM_NAME, name1)
 				.setParameter(NAME2_PARAM_NAME, name2)
 				.setParameter(OFFENDER_PARAM_NAME, offender)
+				.setReadOnly(true)
 				.list();
 		
 		return result;

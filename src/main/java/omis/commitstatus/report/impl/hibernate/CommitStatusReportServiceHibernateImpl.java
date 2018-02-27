@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.commitstatus.report.impl.hibernate;
 
 import java.util.List;
@@ -13,15 +30,17 @@ import org.hibernate.SessionFactory;
  * Hibernate implementation of commit status report service.
  * 
  * @author Yidong Li
- * @version 0.1.0 (June 5, 2017)
+ * @author Josh Divine
+ * @version 0.1.1 (Feb 15, 2018)
  * @since OMIS 3.0
  */
 public class CommitStatusReportServiceHibernateImpl
 		implements CommitStatusReportService {
 
 	/* Queries */
-	private static final String FIND_COMMIT_STATUS_SUMMARY_BY_OFFENDER_QUERY_NAME 
-		= "findCommitStatusSummaryByOffender";
+	private static final String 
+			FIND_COMMIT_STATUS_SUMMARY_BY_OFFENDER_QUERY_NAME =
+					"findCommitStatusSummaryByOffender";
 	
 	/* Parameters */
 	private final static String OFFENDER_PARAM_NAME = "offender";
@@ -44,7 +63,8 @@ public class CommitStatusReportServiceHibernateImpl
 	/* Method implementations. */
 	/** {@inheritDoc} */
 	@Override 
-	public List<CommitStatusTermSummary> summarizeByOffender(final Offender offender){
+	public List<CommitStatusTermSummary> summarizeByOffender(
+			final Offender offender) {
 		List<CommitStatusTermSummary> summaries
 			= new ArrayList<CommitStatusTermSummary>();
 		@SuppressWarnings("unchecked")
@@ -52,6 +72,7 @@ public class CommitStatusReportServiceHibernateImpl
 			.getCurrentSession()
 			.getNamedQuery(FIND_COMMIT_STATUS_SUMMARY_BY_OFFENDER_QUERY_NAME)
 			.setParameter(OFFENDER_PARAM_NAME, offender)
+			.setReadOnly(true)
 			.list();
 		summaries.addAll(internalSummaries); 
 		return summaries;

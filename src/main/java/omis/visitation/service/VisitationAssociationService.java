@@ -19,6 +19,7 @@ import omis.relationship.exception.ReflexiveRelationshipException;
 import omis.residence.domain.ResidenceTerm;
 import omis.residence.exception.PrimaryResidenceExistsException;
 import omis.residence.exception.ResidenceStatusConflictException;
+import omis.residence.exception.ResidenceTermExistsException;
 import omis.visitation.domain.VisitationApproval;
 import omis.visitation.domain.VisitationAssociation;
 import omis.visitation.domain.VisitationAssociationCategory;
@@ -176,10 +177,11 @@ public interface VisitationAssociationService {
 	 * conflicts
 	 * @throws PrimaryResidenceExistsException thrown when a primary residence
 	 * already exists for the specified person
+	 * @throws ResidenceTermExistsException residence term exists exception
 	 */
 	ResidenceTerm createResidenceTerm(Person person, Address address)
 		throws DuplicateEntityFoundException, ResidenceStatusConflictException,
-		PrimaryResidenceExistsException;
+		PrimaryResidenceExistsException, ResidenceTermExistsException;
 	
 	/**
 	 * Creates a contact for the specified person.

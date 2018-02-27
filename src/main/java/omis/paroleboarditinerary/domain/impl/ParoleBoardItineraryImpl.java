@@ -4,7 +4,7 @@ import omis.audit.domain.CreationSignature;
 import omis.audit.domain.UpdateSignature;
 import omis.datatype.DateRange;
 import omis.paroleboarditinerary.domain.ParoleBoardItinerary;
-import omis.paroleboarditinerary.domain.ParoleBoardLocation;
+import omis.paroleboardlocation.domain.ParoleBoardLocation;
 
 /**
  * Implementation of parole board itinerary.

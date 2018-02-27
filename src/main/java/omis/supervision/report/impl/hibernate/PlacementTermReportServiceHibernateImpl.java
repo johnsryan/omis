@@ -30,7 +30,8 @@ import omis.supervision.report.PlacementTermSummary;
  * Hibernate implementation of report service to summarize placement terms.
  *
  * @author Stephen Abson
- * @version 0.0.1
+ * @author Josh Divine
+ * @version 0.0.2 (Feb 14, 2018)
  * @since OMIS 3.0
  */
 public class PlacementTermReportServiceHibernateImpl
@@ -76,6 +77,7 @@ public class PlacementTermReportServiceHibernateImpl
 				.getNamedQuery(SUMMARIZE_BY_OFFENDER_QUERY_NAME)
 				.setParameter(OFFENDER_PARAM_NAME, offender)
 				.setTimestamp(EFFECTIVE_DATE_PARAM_NAME, effectiveDate)
+				.setReadOnly(true)
 				.list();
 		return summaries;
 	}

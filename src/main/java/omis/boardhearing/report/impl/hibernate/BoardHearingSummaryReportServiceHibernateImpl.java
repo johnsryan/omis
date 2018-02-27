@@ -28,10 +28,10 @@ import omis.offender.domain.Offender;
 /**
  * Board Hearing Summary Report Service Hibernate Implementation.
  * 
- *@author Annie Wahl 
- *@version 0.1.0 (Dec 29, 2017)
- *@since OMIS 3.0
- *
+ * @author Annie Wahl
+ * @author Josh Divine 
+ * @version 0.1.1 (Feb 14, 2018)
+ * @since OMIS 3.0
  */
 public class BoardHearingSummaryReportServiceHibernateImpl
 		implements BoardHearingSummaryReportService {
@@ -64,6 +64,7 @@ public class BoardHearingSummaryReportServiceHibernateImpl
 				.getCurrentSession().getNamedQuery(
 						FIND_SUMMARIES_BY_OFFENDER_QUERY_NAME)
 				.setParameter(OFFENDER_PARAM_NAME, offender)
+				.setReadOnly(true)
 				.list();
 		
 		return summaries;
@@ -76,6 +77,7 @@ public class BoardHearingSummaryReportServiceHibernateImpl
 				this.sessionFactory.getCurrentSession()
 				.getNamedQuery(SUMMARIZE_QUERY_NAME)
 				.setParameter(BOARD_HEARING_PARAM_NAME, boardHearing)
+				.setReadOnly(true)
 				.uniqueResult();
 		
 		return summary;

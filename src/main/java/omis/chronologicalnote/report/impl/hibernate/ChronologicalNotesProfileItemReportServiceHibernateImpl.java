@@ -52,6 +52,7 @@ public class ChronologicalNotesProfileItemReportServiceHibernateImpl
 		Query q = this.sessionFactory.getCurrentSession().getNamedQuery(
 			FIND_CHRONOLOGICAL_NOTE_COUNT_BY_OFFENDER_AND_DATE_QUERY_NAME);
 		q.setEntity(OFFENDER_PARAM_NAME, offender);
+		q.setReadOnly(true);
 		return ((Long) q.uniqueResult()).intValue();
 	}
 }

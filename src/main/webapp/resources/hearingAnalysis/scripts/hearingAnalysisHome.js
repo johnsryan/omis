@@ -20,7 +20,7 @@
  * Applies hearing analysis home screen behavior.
  *
  * @author: Josh Divine
- * Version: 0.1.0 (Jan 17, 2018)
+ * Version: 0.1.1 (Feb 20, 2018)
  * Since: OMIS 3.0
  */
 window.onload = function() {
@@ -30,5 +30,9 @@ window.onload = function() {
 	var taskCheckBoxes = document.getElementsByClassName("taskCheckBox");
 	for(var i = 0, taskCheckBox; taskCheckBox = taskCheckBoxes[i]; i++){
 		taskCheckBoxOnClick(taskCheckBox);
+	}
+	applyActionMenu(document.getElementById("hearingAnalysisNotesActionMenuLink"), hearingAnalysisNoteActionMenuOnClick);
+	for (var index = 0; index < currentHearingAnalysisNoteIndex; index++) {
+		hearingAnalysisNoteRowOnClick(index);
 	}
 };

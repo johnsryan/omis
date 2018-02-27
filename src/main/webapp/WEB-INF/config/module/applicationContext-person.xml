@@ -91,7 +91,12 @@
 	<constructor-arg name="entityName" value="omis.person.domain.AlternativeNameCategory" />
   </bean>
   
-	
+  <bean id="alternativeIdentityCategoryInstanceFactory"
+        class="omis.instance.factory.hibernate.impl.InstanceFactoryHibernateImpl">
+    <constructor-arg name="instanceFactoryDelegate" ref="instanceFactoryDelegate"/>
+    <constructor-arg name="entityName" value="omis.person.domain.AlternativeIdentityCategory"/>
+  </bean>
+  
   <!-- Services -->
   
   <bean id="suffixService" class="omis.person.service.impl.SuffixServiceImpl">

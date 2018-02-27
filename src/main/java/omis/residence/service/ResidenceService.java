@@ -22,6 +22,7 @@ import omis.residence.domain.ResidenceStatus;
 import omis.residence.domain.ResidenceTerm;
 import omis.residence.exception.PrimaryResidenceExistsException;
 import omis.residence.exception.ResidenceStatusConflictException;
+import omis.residence.exception.ResidenceTermExistsException;
 
 /**
  * Service for residences. 
@@ -51,13 +52,15 @@ public interface ResidenceService {
 	 * primary residence exists exception
 	 * @throws ResidenceStatusConflictException 
 	 * residence status conflict exception
+	 * @throws ResidenceTermExistsException residence term exists exception
 	 */
 	ResidenceTerm createResidenceTerm(Person person, DateRange dateRange,
 			Boolean primary, Address address, Boolean fosterCare, 
 			Boolean confirmed, String notes, 
 			VerificationSignature verificationSignature)
 			throws DuplicateEntityFoundException,
-			PrimaryResidenceExistsException, ResidenceStatusConflictException;
+			PrimaryResidenceExistsException, ResidenceStatusConflictException,
+			ResidenceTermExistsException;
 	
 	/**
 	 * Update a residence term.
@@ -76,12 +79,13 @@ public interface ResidenceService {
 	 * primary residence exists exception
 	 * @throws ResidenceStatusConflictException 
 	 * residence status conflict exception
+	 * @throws ResidenceTermExistsException residence term exists exception
 	 */
 	ResidenceTerm updateResidenceTerm(ResidenceTerm residenceTerm, 
 			DateRange dateRange, Boolean primary, Address address, 
 			Boolean fosterCare, Boolean confirmed, String notes, 
 			VerificationSignature verificationSignature)
-			throws DuplicateEntityFoundException,
+			throws DuplicateEntityFoundException, ResidenceTermExistsException,
 			PrimaryResidenceExistsException;
 	
 	/**

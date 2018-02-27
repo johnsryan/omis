@@ -103,8 +103,8 @@ public class FamilyAssociationServiceFamilyAssociationRemoveTests
 		Person familyMember = personDelegate.create("Li", "Yidong", "CIC311", 
 			"Mr.");
 		DateRange dateRange = new DateRange();
-		Date startDate = this.parseDateText("11111111");
-		Date endDate = this.parseDateText("12345678");
+		Date startDate = this.parseDateText("01/01/2010");
+		Date endDate = this.parseDateText("12/31/2020");
 		dateRange.setEndDate(endDate);
 		dateRange.setStartDate(startDate);
 		FamilyAssociationCategory category 
@@ -115,8 +115,8 @@ public class FamilyAssociationServiceFamilyAssociationRemoveTests
 		flags.setCohabitant(true);
 		flags.setDependent(true);
 		flags.setEmergencyContact(true);
-		Date marriageDate = this.parseDateText("1/11/3333");
-		Date divorceDate = this.parseDateText("2113333");
+		Date marriageDate = this.parseDateText("01/01/2010");
+		Date divorceDate = this.parseDateText("12/31/2020");
 		FamilyAssociation familyAssociation = this.familyAssociationService
 			.associate(offender, familyMember, dateRange, category, flags, 
 			marriageDate, divorceDate);

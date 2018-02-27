@@ -1,22 +1,16 @@
-function applyShowProfile(profileId, navContentTarget){
-	var offenderId = $("#headerOffenderId").val();
-	if(!$(navContentTarget).html().trim()){
-		$.ajax(config.ServerConfig.getContextPath() + "/offender/" + profileId + ".html",
-		{
-				type: "GET",
-				async: false,
-				data: {
-					offender: offenderId
-					},
-				success: function(data) {
-					$(navContentTarget).append(data);
-					assignNewTabLinks();
-				},
-				error: function(jqXHR, textStatus, errorThrown) {
-					alert("Error - status: " + textStatus + "; error: "
-						+ errorThrown);
-					$(navContentTarget).html(jqXHR.responseText );
-				}
-		});
+function setContentPosition(navItem, navContentTarget) {
+	var offset = $(navItem).offset();
+	var height = $(navItem).height();
+	var width = $(navItem).width();
+	var top = offset.top + height + 5 + "px";
+	var left = offset.left - 15 + "px";
+	if (offset.left > ($(window).width()/2)+15) {
+		left = offset.left + width - $(navContentTarget).width() + 15 + "px";
 	}
+	
+	$(navContentTarget).css( {
+		'position': 'absolute',
+		'left': left,
+		'top': top
+	});
 }

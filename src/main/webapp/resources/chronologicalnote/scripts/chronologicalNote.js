@@ -25,6 +25,7 @@
  */
 
 window.onload = function() {
+	applyActionMenu(document.getElementById("actionMenuLink"));
 	applyDatePicker(document.getElementById("date"), null);
 	applyTextCounter(document.getElementById("narrative"), document.getElementById("narrativeCharacterCounterContainer"));
 	var categoryItemCheckBoxes = document.getElementsByClassName("categoryItemCheckBox");
@@ -48,7 +49,12 @@ window.onload = function() {
 			}
 	    },false);
 	}
-	
+	var narrative = document.getElementById("narrative");
+	narrative.onfocus = function() {
+			applySessionExtender(narrative, 
+					config.ServerConfig.getContextPath() + "/chronologicalNote/extendSession.html", 
+					300000);
+			}
 }
 
 

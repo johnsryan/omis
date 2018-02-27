@@ -9,10 +9,11 @@ import omis.custody.report.CustodySummary;
 import omis.offender.domain.Offender;
 
 /**
- * 
+ * Implementation of custody review summary item service.
  *
  * @author Sheronda Vaughn
- * @version 0.1.0 (Jun 8, 2017)
+ * @author Josh Divine
+ * @version 0.1.1 (Feb 14, 2018)
  * @since OMIS 3.0
  */
 public class CustodyReviewSummaryItemServiceHibernateImpl 
@@ -43,6 +44,7 @@ public class CustodyReviewSummaryItemServiceHibernateImpl
 				.getNamedQuery(FIND_CUSTODY_REVIEW_BY_OFFENDER_AND_DATE_QUERY)
 				.setParameter(OFFENDER_PARAMETER_NAME, offender)
 				.setTimestamp(EFFECTIVE_PARAMETER_NAME, effectiveDate)
+				.setReadOnly(true)
 				.setMaxResults(1).uniqueResult();
 		return summary;
 	}

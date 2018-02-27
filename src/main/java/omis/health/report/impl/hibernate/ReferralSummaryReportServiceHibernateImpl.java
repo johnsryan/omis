@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.health.report.impl.hibernate;
 
 import java.lang.reflect.Field;
@@ -23,7 +40,8 @@ import org.hibernate.SessionFactory;
  * Hibernate implementation of report service for referral summaries.
  * 
  * @author Stephen Abson
- * @version 0.1.0 (May 9, 2014)
+ * @author Josh Divine
+ * @version 0.1.1 (Feb 14, 2018)
  * @since OMIS 3.0
  */
 public class ReferralSummaryReportServiceHibernateImpl
@@ -108,6 +126,7 @@ public class ReferralSummaryReportServiceHibernateImpl
 			this.sessionFactory.getCurrentSession().getNamedQuery(
 				FIND_INTERNAL_FOR_ACTION_QUERY_NAME)
 			.setParameter(ACTION_REQUEST_PARAM_NAME, actionRequest)
+			.setReadOnly(true)
 			.uniqueResult();
 		if (referralSummary != null) {
 			Field field = this.getUnitNameField();
@@ -127,6 +146,7 @@ public class ReferralSummaryReportServiceHibernateImpl
 				this.sessionFactory.getCurrentSession().getNamedQuery(
 					FIND_EXTERNAL_FOR_ACTION_QUERY_NAME)
 				.setParameter(ACTION_REQUEST_PARAM_NAME, actionRequest)
+				.setReadOnly(true)
 				.uniqueResult();
 			if (referralSummary != null) {
 				Field field = this.getUnitNameField();
@@ -141,8 +161,8 @@ public class ReferralSummaryReportServiceHibernateImpl
 
 	/** {@inheritDoc} */
 	@Override
-	public ReferralSummary findForActionRequest(final HealthRequest actionRequest,
-			final Date effectiveDate)
+	public ReferralSummary findForActionRequest(
+			final HealthRequest actionRequest, final Date effectiveDate)
 					throws HealthRequestFollowsUpMultipleReferralsException {
 		ReferralSummary referralSummary = this.findInternalForActionRequest(
 				actionRequest, effectiveDate);
@@ -196,6 +216,7 @@ public class ReferralSummaryReportServiceHibernateImpl
 					.setBoolean(APPOINTMENT_STATUSES_CONTAINS_NULL_PARAM_NAME,
 							Arrays.asList(statuses).contains(null))
 					.setParameterList(APPOINTMENT_STATUSES_PARAM_NAME, statuses)
+					.setReadOnly(true)
 					.list();
 				summaries.addAll(internalSummaries);
 			}
@@ -210,6 +231,7 @@ public class ReferralSummaryReportServiceHibernateImpl
 					.setBoolean(APPOINTMENT_STATUSES_CONTAINS_NULL_PARAM_NAME,
 							Arrays.asList(statuses).contains(null))
 					.setParameterList(APPOINTMENT_STATUSES_PARAM_NAME, statuses)
+					.setReadOnly(true)
 					.list();
 				summaries.addAll(externalSummaries);
 			}
@@ -224,6 +246,7 @@ public class ReferralSummaryReportServiceHibernateImpl
 					.setBoolean(APPOINTMENT_STATUSES_CONTAINS_NULL_PARAM_NAME,
 						Arrays.asList(statuses).contains(null))
 					.setParameterList(APPOINTMENT_STATUSES_PARAM_NAME, statuses)
+					.setReadOnly(true)
 					.list();
 				summaries.addAll(labWorkReferralSummaries);
 			}
@@ -252,6 +275,7 @@ public class ReferralSummaryReportServiceHibernateImpl
 					.setBoolean(APPOINTMENT_STATUSES_CONTAINS_NULL_PARAM_NAME,
 							Arrays.asList(statuses).contains(null))
 					.setParameterList(APPOINTMENT_STATUSES_PARAM_NAME, statuses)
+					.setReadOnly(true)
 					.list();
 				summaries.addAll(internalSummaries);
 			}
@@ -266,6 +290,7 @@ public class ReferralSummaryReportServiceHibernateImpl
 					.setBoolean(APPOINTMENT_STATUSES_CONTAINS_NULL_PARAM_NAME,
 							Arrays.asList(statuses).contains(null))
 					.setParameterList(APPOINTMENT_STATUSES_PARAM_NAME, statuses)
+					.setReadOnly(true)
 					.list();
 				summaries.addAll(externalSummaries);
 			}
@@ -282,6 +307,7 @@ public class ReferralSummaryReportServiceHibernateImpl
 								Arrays.asList(statuses).contains(null))
 						.setParameterList(
 								APPOINTMENT_STATUSES_PARAM_NAME, statuses)
+						.setReadOnly(true)
 						.list();
 				summaries.addAll(labWorkReferralSummaries);
 			}

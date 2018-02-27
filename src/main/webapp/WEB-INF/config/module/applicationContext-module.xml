@@ -141,9 +141,13 @@
   
   <import resource="applicationContext-paroleBoardItinerary.xml"/>
   
+  <import resource="applicationContext-paroleBoardLocation.xml"/>
+  
   <import resource="applicationContext-paroleBoardMember.xml"/>
   
   <import resource="applicationContext-paroleEligibility.xml"/>
+  
+  <import resource="applicationContext-parolePlan.xml"/>
   
   <import resource="applicationContext-paroleReview.xml"/>
   

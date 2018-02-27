@@ -1,19 +1,39 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.search.report.service.impl.hibernate;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.SessionFactory;
+
 import omis.search.report.UserSearchResult;
 import omis.search.report.service.UserPersonSearchReportService;
 import omis.search.util.PersonRegexUtility;
 
-import org.hibernate.Query;
-import org.hibernate.SessionFactory;
-
-/** User search report service.
+/** 
+ * User search report service.
+ * 
  * @author Ryan Johns
- * @version 0.1.0 (May 29, 2013)
- * @since OMIS 3.0 */
+ * @author Josh Divine
+ * @version 0.1.1 (Feb 14, 2018)
+ * @since OMIS 3.0 
+ */
 public class UserPersonSearchReportServiceHibernateImpl
 		extends AbstractPersonSearchReportServiceHibernateImpl<UserSearchResult>
 		implements UserPersonSearchReportService {
@@ -22,21 +42,19 @@ public class UserPersonSearchReportServiceHibernateImpl
 			"findUsersNamesByFirstLastNameSearch";
 
 	private static final String[] FIND_BY_FIRST_LAST_NAME_SEARCH_PARAMS =
-	{"name1", "name2"};
+			{"name1", "name2"};
 
 	private static final String
-	FIND_BY_FIRST_MIDDLE_LAST_NAME_SEARCH_QUERY_NAME =
-		"findUsersNameByFirstMiddleLastNameSearch";
+			FIND_BY_FIRST_MIDDLE_LAST_NAME_SEARCH_QUERY_NAME =
+					"findUsersNameByFirstMiddleLastNameSearch";
 
 	private static final String[] FIND_BY_FIRST_MIDDLE_LAST_NAME_SEARCH_PARAMS =
-	{"first", "middle", "last"};
+			{"first", "middle", "last"};
 
 	private static final String FIND_BY_NAME_SEARCH_CRITERIA =
 			"findUserNamesByLastNameSearchCriteria";
 
-	private static final String FIND_BY_NAME_SEARCH_CRITERIA_PARAM =
-		"name";
-
+	private static final String FIND_BY_NAME_SEARCH_CRITERIA_PARAM = "name";
 
 	private static final String FIND_BY_USERNAME_SEARCH_QUERY =
 			"findUserNamesByUsernameSearchCriteria";
@@ -44,8 +62,7 @@ public class UserPersonSearchReportServiceHibernateImpl
 	private static final String FIND_BY_USERNAME_SEARCH_QUERY_PARAM =
 			"username";
 
-	private static final String FIND_PERSON_SEARCH_BY_ID =
-			"findUserSearchById";
+	private static final String FIND_PERSON_SEARCH_BY_ID = "findUserSearchById";
 
 	private static final String FIND_PERSON_SEARCH_BY_ID_PARAM = "id";
 
@@ -56,16 +73,14 @@ public class UserPersonSearchReportServiceHibernateImpl
 		super(sessionFactory);
 	}
 
-
 	/** {@inheritDoc} */
 	@Override
 	public UserSearchResult findById(final Long id) {
-		final Query q = this.getSessionFactory().getCurrentSession()
-				.getNamedQuery(FIND_PERSON_SEARCH_BY_ID);
-
-		q.setParameter(FIND_PERSON_SEARCH_BY_ID_PARAM, id);
-
-		return (UserSearchResult) q.uniqueResult();
+		return (UserSearchResult) this.getSessionFactory().getCurrentSession()
+				.getNamedQuery(FIND_PERSON_SEARCH_BY_ID)
+				.setParameter(FIND_PERSON_SEARCH_BY_ID_PARAM, id)
+				.setReadOnly(true)
+				.uniqueResult();
 	}
 
 	@Override
@@ -88,7 +103,6 @@ public class UserPersonSearchReportServiceHibernateImpl
 		return FIND_BY_FIRST_MIDDLE_LAST_NAME_SEARCH_PARAMS;
 	}
 
-
 	@Override
 	public String getFindPersonNameByNameSearchQuery() {
 		return FIND_BY_NAME_SEARCH_CRITERIA;
@@ -103,18 +117,16 @@ public class UserPersonSearchReportServiceHibernateImpl
 	@Override
 	public List<UserSearchResult> findPersonNamesByUsernameSearch(
 			final String username) {
-		final Query q = this.getSessionFactory().getCurrentSession()
-				.getNamedQuery(FIND_BY_USERNAME_SEARCH_QUERY);
-		q.setParameter(FIND_BY_USERNAME_SEARCH_QUERY_PARAM,
-				username);
-
 		@SuppressWarnings("unchecked")
 		final
-		List<UserSearchResult> result = q.list();
+		List<UserSearchResult> result = this.getSessionFactory()
+				.getCurrentSession()
+				.getNamedQuery(FIND_BY_USERNAME_SEARCH_QUERY)
+				.setParameter(FIND_BY_USERNAME_SEARCH_QUERY_PARAM, username)
+				.setReadOnly(true)
+				.list();
 		return result;
 	}
-
-
 
 	/** {@inheritDoc} */
 	@Override
