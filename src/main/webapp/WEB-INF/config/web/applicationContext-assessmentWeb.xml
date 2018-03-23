@@ -13,5 +13,27 @@
 		
 		<context:component-scan base-package="omis.assessment.web.controller" />
 		
+		<bean id="assessmentDocumentSummaryReportService" class="omis.assessment.report.impl.hibernate.AssessmentDocumentSummaryReportServiceHibernateImpl">
+			<constructor-arg name="sessionFactory" ref="sessionFactory"/>
+		</bean>
 		
+		<aop:config>
+			<aop:pointcut id="assessmentDocumentControllerOperation"
+				expression="execution(* omis.assessment.web.controller.AssessmentDocumentController.*(..))"/>
+			<aop:advisor advice-ref="transactionAdvice" pointcut-ref="assessmentDocumentControllerOperation"/>	
+		</aop:config>
+		
+		<aop:config>
+			<aop:pointcut id="assessmentNoteControllerOperation"
+				expression="execution(* omis.assessment.web.controller.AssessmentNoteController.*(..))"/>
+			<aop:advisor advice-ref="transactionAdvice" pointcut-ref="assessmentNoteControllerOperation"/>	
+		</aop:config>
+		
+		<bean id="assessmentDocumentFormValidator"
+			class="omis.assessment.web.validator.AssessmentDocumentFormValidator">
+		</bean>
+		
+		<bean id="assessmentNoteFormValidator"
+			class="omis.assessment.web.validator.AssessmentNoteFormValidator">
+		</bean>
 </beans>

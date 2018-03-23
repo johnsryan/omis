@@ -8,6 +8,7 @@ window.onload = function() {
 	applyDatePicker(document.getElementById("expectedCompletionDate"));
 	applyDatePicker(document.getElementById("requestDate"));
 	applyDatePicker(document.getElementById("sentenceDate"));
+	applyDatePicker(document.getElementById("submissionDate"));
 	applySearchUserAccountsAutocomplete(
 			document.getElementById("assignedUserInput"), 
 			document.getElementById("assignedUserDisplay"), 

@@ -28,6 +28,7 @@ import omis.offender.domain.Offender;
  * Chronological note data access object.
  * 
  * @author Joel Norris
+ * @author Sheronda Vaughn
  * @version 0.1.0 (January 29, 2018)
  * @since OMIS 3.0
  */
@@ -42,24 +43,24 @@ public interface ChronologicalNoteDao extends GenericDao<ChronologicalNote> {
 	List<ChronologicalNote> findByOffender(Offender offender);
 	
 	/**
-	 * Returns chronological note with the specified date, offender, and narrative.
+	 * Returns chronological note with the specified date, offender, and title.
 	 * 
 	 * @param date date
 	 * @param offender offender
-	 * @param narrative narrative
+	 * @param title title
 	 * @return chronological note
 	 */
-	ChronologicalNote find(Date date, Offender offender, String narrative);
+	ChronologicalNote find(Date date, Offender offender, String title);
 	
 	/**
-	 * Returns chronological note with the specified date, offender, and narrative excluding the specified
+	 * Returns chronological note with the specified date, offender, and title excluding the specified
 	 * chronological note.
 	 * 
 	 * @param note chronological note
 	 * @param date date
 	 * @param offender offender
-	 * @param narrative narrative
+	 * @param title title
 	 * @return chronological note
 	 */
-	ChronologicalNote findExcluding(ChronologicalNote note, Date date, Offender offender, String narrative);
+	ChronologicalNote findExcluding(ChronologicalNote note, Date date, Offender offender, String title);
 }

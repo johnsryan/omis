@@ -28,4 +28,48 @@ window.onload = function() {
 	for(var x =0; x < chronologicalNoteRows.length; x++) {
 		applyActionMenu(chronologicalNoteRows[x], function() {applyRemoveLinkConfirmation();});
 	}
+	var groupCategoryContainers = document.getElementsByClassName("groupCategoryContainer");
+	var groupVisibilityLinks = document.getElementsByClassName("groupVisibilityLink");
+	document.getElementById("groupsVisibilityLink").onclick = function() {
+		if (document.getElementById("groupsVisibilityLink").classList.contains("expandLink")) {
+			document.getElementById("groupsVisibilityLink").classList.add("collapseLink");
+			document.getElementById("groupsVisibilityLink").classList.remove("expandLink");
+			for (var i = 0; i < groupCategoryContainers.length; i++) {
+				groupCategoryContainers[i].classList.remove("hidden");
+				
+			}
+			for (var g = 0; g < groupVisibilityLinks.length; g++) {
+				groupVisibilityLinks[g].classList.add("collapseLink");
+				groupVisibilityLinks[g].classList.remove("expandLink");
+			}
+		} else {
+			document.getElementById("groupsVisibilityLink").classList.remove("collapseLink");
+			document.getElementById("groupsVisibilityLink").classList.add("expandLink");
+			for (var t = 0; t < groupCategoryContainers.length; t++) {
+				groupCategoryContainers[t].classList.add("hidden");
+			}
+			for (var g = 0; g < groupVisibilityLinks.length; g++) {
+				groupVisibilityLinks[g].classList.remove("collapseLink");
+				groupVisibilityLinks[g].classList.add("expandLink");
+			}
+		}
+	}
+	var groupVisibilityLinks = document.getElementsByClassName("groupVisibilityLink");
+	for (var g = 0; g < groupVisibilityLinks.length; g++) {
+		assignGroupVisibilityLinkOnClick(g);
+	}
+}
+
+function assignGroupVisibilityLinkOnClick(index) {
+	var link = document.getElementById("groupVisibilityLink" + index);
+	link.onclick = function() {
+		var groupContainer = document.getElementById("groupCategoryContainer" + index);
+		toggleElementVisibility(groupContainer);
+		link.classList.toggle("collapseLink");
+		link.classList.toggle("expandLink");
+	};
+}
+
+function toggleElementVisibility(elt) {
+	elt.classList.toggle("hidden");
 }

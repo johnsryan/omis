@@ -23,7 +23,7 @@
 			</c:otherwise>
 		</c:choose>
 		<li><a class="unlinkLink" id="visitorSummary${visitationAssociation.id}DissociateLink" href="${pageContext.request.contextPath}/visitation/dissociateVisitationAssociation.html?visitationAssociation=${visitationAssociation.id}"><fmt:message key="dissociateLabel"/></a></li>
-		<li><a class="removeLink" id="visitorSummary${visitationAssociation.id}RemoveLink" href="${pageContext.request.contextPath}/visitation/remove.html?visitationAssociation=${visitationAssociation.id}"><fmt:message key="removeVisitorLabel"/></a></li>
+		<li><a class="removeLink visitationAssociationRemoveLink" id="visitorSummary${visitationAssociation.id}RemoveLink" href="${pageContext.request.contextPath}/visitation/remove.html?visitationAssociation=${visitationAssociation.id}"><fmt:message key="removeVisitorLabel"/></a></li>
 		<sec:authorize access="(hasRole('VISITATION_ASSOCIATION_VIEW') and hasRole('OFFENDER_SSN_VIEW')) or hasRole('ADMIN')">
 			<li><a href="${pageContext.request.contextPath}/visitation/visitationDetailsReport.html?visitationAssociation=${visitationAssociation.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="visitationAssociationDetailReportLinkLabel"/></a></li>
 		</sec:authorize>

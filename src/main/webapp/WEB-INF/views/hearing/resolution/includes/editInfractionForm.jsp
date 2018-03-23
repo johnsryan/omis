@@ -11,16 +11,6 @@
 	<c:choose>
 		<c:when test="${resolutionCategory eq 'FORMAL'}">
 			<fieldset>
-				<span class="fieldGroup">
-					<form:label path="date" class="fieldLabel">
-						<fmt:message key="hearingDateLabel"/>
-					</form:label>
-					<form:input path="date" class="date"/>
-					<form:errors path="date" cssClass="error"/>
-				</span>
-			</fieldset>
-			
-			<fieldset>
 				<legend>
 					<fmt:message key="hearingStatusLabel" />
 				</legend>
@@ -39,11 +29,37 @@
 					<form:errors path="category" cssClass="error"/>
 				</span>
 				<span class="fieldGroup">
+					<form:label path="date" class="fieldLabel">
+						<fmt:message key="hearingDateLabel"/>
+					</form:label>
+					<form:input path="date" class="date"/>
+					<form:errors path="date" cssClass="error"/>
+				</span>
+				<span class="fieldGroup">
+					<form:label path="inAttendance" class="fieldLabel">
+						<fmt:message key="offenderPresentLabel"/>
+					</form:label>
+					<form:checkbox path="inAttendance" />
+					<form:errors path="inAttendance" cssClass="error"/>
+				</span>
+				<span class="fieldGroup">
 					<form:label path="statusDescription" class="fieldLabel">
 						<fmt:message key="statusDescriptionLabel"/>
 					</form:label>
 					<form:textarea path="statusDescription"/>
 					<form:errors path="statusDescription" cssClass="error"/>
+				</span>
+			</fieldset>
+			
+			<!-- Attended Staff Items -->
+			<fieldset>
+				<legend>
+					<fmt:message key="attendedStaffLabel"/>
+				</legend>
+				<span class="fieldGroup">
+					<form:errors path="staffAttendanceItems" cssClass="error"/>
+					<c:set var="staffAttendanceItems" value="${resolutionForm.staffAttendanceItems}" scope="request"/>
+					<jsp:include page="staffAttendanceTable.jsp"/>
 				</span>
 			</fieldset>
 		</c:when>
@@ -78,6 +94,20 @@
 		</div>
 		
 		
+		<c:choose>
+			<c:when test="${resolutionCategory eq 'FORMAL'}">
+				<span class="fieldGroup">
+					<form:label path="violationItem.plea" class="fieldLabel">
+						<fmt:message key="pleaLabel"/>
+					</form:label>
+					<form:select path="violationItem.plea">
+						<form:option value=""><fmt:message key="nullLabel" bundle="${commonBundle}"/></form:option>
+						<form:options items="${infractionPleas}" itemLabel="name" itemValue="id"/>
+					</form:select>
+					<form:errors path="violationItem.plea" cssClass="error"/>
+				</span>
+			</c:when>
+		</c:choose>
 		<span class="fieldGroup">
 			<form:label path="violationItem.date" class="fieldLabel">
 				<fmt:message key="dateLabel"/>

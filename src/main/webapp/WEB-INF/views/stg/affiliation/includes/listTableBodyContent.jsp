@@ -16,6 +16,7 @@
 		</td>
 		<td><c:out value="${affiliationSummary.groupName}"/></td>
 		<td><c:out value="${affiliationSummary.chapterName}"/></td>
+		<td><c:out value="${affiliationSummary.moniker}"/></td>
 		<td><c:out value="${affiliationSummary.rankName}"/></td>
 		<td><c:out value="${affiliationSummary.cityName}"/></td>
 		<td><c:out value="${affiliationSummary.stateName}"/></td>

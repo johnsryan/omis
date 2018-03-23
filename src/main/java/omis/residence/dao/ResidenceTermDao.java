@@ -30,13 +30,10 @@ public interface ResidenceTermDao
 	 * @param dateRange date range
 	 * @param address address
 	 * @param term term
-	 * @param category category
-	 * @param status status
 	 * @return residence term
 	 */
 	ResidenceTerm findExcluding(Person person, DateRange dateRange,
-			Address address, ResidenceTerm term, ResidenceCategory category,
-			ResidenceStatus status);
+			Address address, ResidenceTerm term);
 
 	/**
 	 * Returns the locations within this date range excluding the 
@@ -65,12 +62,9 @@ public interface ResidenceTermDao
 	 * @param person person
 	 * @param dateRange date range
 	 * @param address address
-	 * @param category category
-	 * @param status status
 	 * @return residence term
 	 */
-	ResidenceTerm find(Person person, DateRange dateRange, Address address,
-			ResidenceCategory category, ResidenceStatus status);
+	ResidenceTerm find(Person person, DateRange dateRange, Address address);
 
 	/**
 	 * Returns the residence terms by person and dateRange.
@@ -131,6 +125,14 @@ public interface ResidenceTermDao
 	List<ResidenceTerm> findAssociatedResidenceTerms(Person person,
 			DateRange dateRange);	
 	
+	/**
+	 * Returns a list of residence terms by offender.
+	 *
+	 *
+	 * @param offender offender
+	 * @param date date
+	 * @return residence terms
+	 */
 	List<ResidenceTerm> findResidenceTermsByOffender(
 			Offender offender, Date date);
 }

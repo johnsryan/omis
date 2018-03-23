@@ -31,6 +31,7 @@ import org.hibernate.SessionFactory;
  * Hibernate implementation of data access object for chronological note.
  * 
  * @author Yidong Li
+ * @author Sheronda Vaughn
  * @version 0.1.0 (Jan 31, 2018)
  * @since OMIS 3.0
  */
@@ -47,7 +48,7 @@ public class ChronologicalNoteDaoHibernateImpl
 	/* Parameters. */
 	private static final String OFFENDER_PARAM_NAME = "offender";
 	private static final String DATE_PARAM_NAME = "date";
-	private static final String NARRATIVE_PARAM_NAME = "narrative";
+	private static final String TITLE_PARAM_NAME = "title";
 	private static final String CHRONOLOGICAL_NOTE_PARAM_NAME
 		= "chronologicalNote";
 	
@@ -80,12 +81,12 @@ public class ChronologicalNoteDaoHibernateImpl
 	/** {@inheritDoc} */
 	@Override
 	public ChronologicalNote find(final Date date, final Offender offender,
-		final String narrative) {
+		final String title) {
 		ChronologicalNote note = (ChronologicalNote) this.getSessionFactory()
 			.getCurrentSession().getNamedQuery(FIND_QUERY_NAME)
 			.setParameter(OFFENDER_PARAM_NAME, offender)
 			.setParameter(DATE_PARAM_NAME, date)
-			.setParameter(NARRATIVE_PARAM_NAME, narrative)
+			.setParameter(TITLE_PARAM_NAME, title)
 			.uniqueResult();
 		return note;
 	}
@@ -93,13 +94,13 @@ public class ChronologicalNoteDaoHibernateImpl
 	/** {@inheritDoc} */
 	@Override
 	public ChronologicalNote findExcluding(final ChronologicalNote note,
-		final Date date, final Offender offender, final String narrative) {
+		final Date date, final Offender offender, final String title) {
 		ChronologicalNote chronologicalNote
 			= (ChronologicalNote) this.getSessionFactory()
 			.getCurrentSession().getNamedQuery(FIND_EXCLUDING_QUERY_NAME)
 			.setParameter(OFFENDER_PARAM_NAME, offender)
 			.setParameter(DATE_PARAM_NAME, date)
-			.setParameter(NARRATIVE_PARAM_NAME, narrative)
+			.setParameter(TITLE_PARAM_NAME, title)
 			.setParameter(CHRONOLOGICAL_NOTE_PARAM_NAME, note)
 			.uniqueResult();
 		return chronologicalNote;

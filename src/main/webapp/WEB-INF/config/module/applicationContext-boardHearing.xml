@@ -19,6 +19,13 @@
 			<constructor-arg name="paroleBoardItineraryDelegate" ref="paroleBoardItineraryDelegate" />
 		</bean>
 		
+		<bean id="boardHearingDocumentService"
+			class="omis.boardhearing.service.impl.BoardHearingDocumentServiceImpl">
+			<constructor-arg name="boardHearingAssociableDocumentDelegate" ref="boardHearingAssociableDocumentDelegate"/>
+			<constructor-arg name="documentDelegate" ref="documentDelegate"/>
+			<constructor-arg name="documentTagDelegate" ref="documentTagDelegate"/>
+		</bean>
+		
 		<!-- BoardHearing Beans -->
 		
 		<bean id="boardHearingDao" class="omis.boardhearing.dao.impl.hibernate.BoardHearingDaoHibernateImpl">
@@ -122,6 +129,47 @@
 			<constructor-arg name="configuration" ref="hibernateConfiguration" />
 		</bean>
 		
+		<!-- BoardHearingDocument Beans -->
 		
+		<bean id="boardHearingAssociableDocumentDao" class="omis.boardhearing.dao.impl.hibernate.BoardHearingAssociableDocumentDaoHibernateImpl">
+			<constructor-arg name="sessionFactory" ref="sessionFactory"/>
+			<constructor-arg name="entityName" value="omis.boardhearing.domain.BoardHearingAssociableDocument"/>
+		</bean>
+		
+		<bean id="boardHearingAssociableDocumentDelegate" class="omis.boardhearing.service.delegate.BoardHearingAssociableDocumentDelegate">
+			<constructor-arg name="boardHearingAssociableDocumentDao" ref="boardHearingAssociableDocumentDao"/>
+			<constructor-arg name="boardHearingAssociableDocumentInstanceFactory" ref="boardHearingAssociableDocumentInstanceFactory"/>
+			<constructor-arg name="auditComponentRetriever" ref="auditComponentRetriever"/>
+		</bean>
+		
+		<bean id="boardHearingAssociableDocumentInstanceFactory" class="omis.instance.factory.hibernate.impl.InstanceFactoryHibernateImpl">
+			<constructor-arg name="instanceFactoryDelegate" ref="instanceFactoryDelegate"/>
+			<constructor-arg name="entityName" value="omis.boardhearing.domain.BoardHearingAssociableDocument"/>
+		</bean>
+		
+		<bean id="boardHearingAssociableDocumentPropertyEditorFactory" class="omis.beans.factory.impl.hibernate.PropertyEditorFactoryHibernateImpl">
+			<constructor-arg name="dao" ref="boardHearingAssociableDocumentDao"/>
+			<constructor-arg name="entityName" value="omis.boardhearing.domain.BoardHearingAssociableDocument"/>
+			<constructor-arg name="configuration" ref="hibernateConfiguration"/>
+		</bean>
+		
+		<!-- Document Beans -->
+		
+		<bean id="boardHearingDocumentPersister" class="omis.document.io.impl.SimpleDocumentPersisterImpl">
+			<constructor-arg name="fileLocator" ref="boardHearingDocumentLocator"/>
+		</bean>
+
+		<bean id="boardHearingDocumentRetriever" class="omis.document.io.impl.SimpleDocumentRetrieverImpl">
+			<constructor-arg name="fileLocator" ref="boardHearingDocumentLocator"/>
+			<constructor-arg name="defaultFilename" value="notFound"/>
+		</bean>
+
+		<bean id="boardHearingDocumentLocator" class="omis.io.impl.FileFromPathLocatorImpl">
+			<constructor-arg name="path" value="${application.resource.path}\Documents\BoardHearingDocuments"/>
+		</bean>
+		
+		<bean id="boardHearingDocumentRemover" class="omis.io.impl.SimpleFileRemoverImpl">
+			<constructor-arg name="fileLocator" ref="boardHearingDocumentLocator"/>
+		</bean>
 		
 </beans>

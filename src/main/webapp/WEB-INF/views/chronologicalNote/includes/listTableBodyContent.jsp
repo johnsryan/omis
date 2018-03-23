@@ -19,6 +19,7 @@
 <%--
  - Table body of listed chronological notes 
  - Author: Yidong Li
+ - Author: Sheronda Vaughn
  - Version: 0.1.1 (Feb 1, 2018)
  - Since: OMIS 3.0
  --%>
@@ -33,6 +34,9 @@
 		<tr>
 			<td>
 				<a class="actionMenuItem chronologicalNoteListRowActionMenuItem" id="chronologicalNoteActionMenuLink${status.index}" href="${pageContext.request.contextPath}/chronologicalNote/chronologicalNoteListRowActionMenu.html?note=${chronologicalNoteSummary.id}"></a>	
+			</td>
+			<td>
+				<c:out value="${chronologicalNoteSummary.title}"/>
 			</td>
 			<td>
 				<fmt:formatDate value="${chronologicalNoteSummary.date}" pattern="MM/dd/yyyy"/>

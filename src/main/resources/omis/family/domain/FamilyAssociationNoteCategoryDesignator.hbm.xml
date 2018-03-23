@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+       "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+       "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+	<hibernate-mapping package="omis.family.domain">
+	<class entity-name="omis.family.domain.FamilyAssociationNoteCategoryDesignator"
+		proxy="omis.family.domain.FamilyAssociationNoteCategoryDesignator"
+		name="omis.family.domain.impl.FamilyAssociationNoteCategoryDesignatorImpl"
+		table="`FAMILY_ASSOC_NOTE_CAT_DES`">
+		<id name="id" column="`ID`" type="java.lang.Long">
+			<generator class="sequence">
+				<param name="sequence">`FAMILY_ASSOC_NOTE_CAT_DES_SEQ`</param>
+			</generator>
+		</id>
+		<many-to-one name="relationshipNoteCategory" not-null="true" column="`CATEGORY_ID`"
+			entity-name="omis.relationship.domain.RelationshipNoteCategory"/>
+	</class>
+	<query name="findRelationshipNoteCategoriesDesignated"><![CDATA[
+		select category from
+			omis.family.domain.FamilyAssociationNoteCategoryDesignator designator
+			inner join designator.relationshipNoteCategory category
+		order by category.sortOrder 
+	]]></query>
+	
+	<query name="findFamilyAssociationNoteCategoryDesignatorByCategory"><![CDATA[
+		select designator from
+			omis.family.domain.FamilyAssociationNoteCategoryDesignator designator
+			inner join designator.relationshipNoteCategory category
+		where category = :category 
+	]]></query>
+</hibernate-mapping>

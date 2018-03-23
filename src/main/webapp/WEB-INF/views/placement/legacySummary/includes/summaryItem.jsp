@@ -20,12 +20,6 @@
 			<span class="offenderHeaderFieldValue"><c:out value="${locationTermSummary.correctionalStatusReasonName}"/></span>
 		</a>
 	</div>
-	<div class="headerCell">
-		<span class="offenderHeaderFieldLabel"><fmt:message key="correctionalStatusStartDateLabel"/></span>
-		<a href="${pageContext.request.contextPath}/supervision/placementTerm/list.html?offender=${offenderSummary.id}" >
-			<span class="offenderHeaderFieldValue"><fmt:formatDate value="${locationTermSummary.correctionalStatusStartDate}" pattern="M/d/YYYY"/></span>
-		</a>
-	</div>
 </div>
 <c:if test="${not empty locationTermSummary.chimesId}">
 <div class="offenderHeaderDetailsSection">
@@ -42,19 +36,6 @@
 			<span class="offenderHeaderFieldValue"><c:out value="${locationTermSummary.currentLocationName}"/></span>
 		</a>
 	</div>
-	<div class="headerCell">
-		<span class="offenderHeaderFieldLabel"><fmt:message key="currentLocationReasonNameLabel"/></span>
-		<a href="${pageContext.request.contextPath}/locationTerm/list.html?offender=${offenderSummary.id}" >
-			<span class="offenderHeaderFieldValue"><c:out value="${locationTermSummary.currentLocationReasonName}"/></span>
-		</a>
-	</div>
-	<div class="headerCell">
-		<span class="offenderHeaderFieldLabel"><fmt:message key="currentLocationStartDateLabel"/></span>
-		<a href="${pageContext.request.contextPath}/locationTerm/list.html?offender=${offenderSummary.id}" >
-			<span class="offenderHeaderFieldValue"><fmt:formatDate value="${locationTermSummary.currentLocationStartDate}" pattern="M/d/YYYY"/></span>
-		</a>
-	</div>
-	
 	<%-- Remove this when placement is migrated - location term update screens should be used instead [Stephen Abson] --%>
 	<div class="headerCell">
 		<sec:authorize access="hasRole('LOCATION_TERM_EDIT') or hasRole('ADMIN')">

@@ -51,6 +51,6 @@
 			        <omis:reportPro reportPath="/CaseManagement/Chronological_Notes/Chronological_Notes_Search&DOC_ID=${offender.offenderNumber}" decorate="no" title="" className="newTab reportLink"><fmt:message key="chronologicalNoteSearchReportLinkLabel"/></omis:reportPro>
 			    </li>
 		    </c:if>
-		</sec:authorize>
+		</sec:authorize>	
 	</ul>
 </fmt:bundle>

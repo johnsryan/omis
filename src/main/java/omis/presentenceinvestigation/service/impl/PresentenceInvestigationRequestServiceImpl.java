@@ -90,11 +90,11 @@ public class PresentenceInvestigationRequestServiceImpl
 			final UserAccount assignedUser, final Date requestDate, 
 			final Date expectedCompletionDate, final Docket docket,
 			final Date completionDate, final Date sentenceDate,
-			final PresentenceInvestigationCategory category)
+			final PresentenceInvestigationCategory category, final Date submissionDate)
 					throws DuplicateEntityFoundException {
 		return this.presentenceInvestigationRequestDelegate.create(
 				assignedUser, requestDate, expectedCompletionDate, 
-				docket, completionDate, sentenceDate, category);
+				docket, completionDate, sentenceDate, category, submissionDate);
 	}
 
 	/** {@inheritDoc} */
@@ -105,12 +105,12 @@ public class PresentenceInvestigationRequestServiceImpl
 			final UserAccount assignedUser, final Date requestDate, 
 			final Date completionDate, final Date expectedCompletionDate,
 			final Docket docket, final Date sentenceDate,
-			final PresentenceInvestigationCategory category) 
+			final PresentenceInvestigationCategory category, final Date submissionDate) 
 					throws DuplicateEntityFoundException {
 		return this.presentenceInvestigationRequestDelegate.update(
 				presentenceInvestigationRequest, assignedUser, requestDate,
 				completionDate, expectedCompletionDate, docket, sentenceDate,
-				category);
+				category, submissionDate);
 	}
 
 	

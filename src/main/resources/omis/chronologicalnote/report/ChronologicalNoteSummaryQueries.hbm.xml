@@ -31,6 +31,7 @@
 	select new omis.chronologicalnote.report.ChronologicalNoteSummary(
 		note.id,
 		note.date,
+		note.title,
 		note.narrative,
 		name.lastName,
 		name.firstName,
@@ -60,6 +61,7 @@
     select new omis.chronologicalnote.report.ChronologicalNoteSummary(
 		note.id,
 		note.date,
+		note.title,
 		note.narrative,
 		name.lastName,
 		name.firstName,

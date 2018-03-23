@@ -34,6 +34,12 @@
 			</label>
 			<c:out value="${summary.assignedUserLastName}, ${summary.assignedUserFirstName} (${summary.assignedUserUserName})"/>
 		</span>
+		<%-- <span class="fieldGroup">
+			<label class="fieldLabel detailsLabel">
+				<fmt:message key="submissionDateLabel"/>
+			</label>
+			<c:out value="${summary.submissionDate}"/>
+		</span> --%>
 	</fieldset>
 </div>
 </fmt:bundle>

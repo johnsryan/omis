@@ -143,6 +143,19 @@ public class AssessmentCategoryOverrideDelegate {
 		this.assessmentCategoryOverrideDao.makeTransient(
 				assessmentCategoryOverride);
 	}
+
+	/**
+	 * Returns the assessment category override for the specified assessment 
+	 * category score.
+	 * 
+	 * @param assessmentCategoryScore assessment category score
+	 * @return assessment category override
+	 */
+	public AssessmentCategoryOverride findByAssessmentCategoryScore(
+			final AssessmentCategoryScore assessmentCategoryScore) {
+		return this.assessmentCategoryOverrideDao.findByAssessmentCategoryScore(
+				assessmentCategoryScore);
+	}
 	
 	// Populates an assessment category override
 	private void populateAssessmentCategoryOverride(

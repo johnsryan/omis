@@ -29,6 +29,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -1178,10 +1180,31 @@ public class UpdateOffenderRelationController {
 				.getPoBoxValue());
 			poBox.setZipCode(editRelationshipsForm.getPoBoxFields()
 				.getZipCode());
+		}	
+		City city;
+		if (editRelationshipsForm.getPersonFields().getNewCity() != null 
+				&& editRelationshipsForm.getPersonFields().getNewCity()) {
+			city = newCreatedPersonFieldsCity;
+		} else {
+			city = editRelationshipsForm.getPersonFields().getBirthCity();
 		}
-		
-		if (!editRelationshipsForm.getPersonFields().getNewCity()) {
+		//if (!editRelationshipsForm.getPersonFields().getNewCity()) {
 			// Exiting city
+		
+		if (hasRole("ADMIN") || hasRole("OFFENDER_RELATIONSHIP_SSN_EDIT") 
+				|| hasRole("OFFENDER_RELATIONSHIP_SSN_VIEW")) {		
+			Integer socialSecurityNumber;
+			if (editRelationshipsForm.getPersonFields()
+					.getSocialSecurityNumber() != null 
+					&& !"".equals(editRelationshipsForm
+							.getPersonFields()
+							.getSocialSecurityNumber())) {
+				socialSecurityNumber = Integer.valueOf(editRelationshipsForm
+						.getPersonFields().getSocialSecurityNumber()
+						.replaceAll("-", ""));
+			} else {
+				socialSecurityNumber = null;
+			}		
 			this.updateOffenderRelationService.updateRelation(
 				relationship.getSecondPerson(), 
 				editRelationshipsForm.getPersonFields().getLastName(), 
@@ -1192,15 +1215,13 @@ public class UpdateOffenderRelationController {
 				editRelationshipsForm.getPersonFields().getBirthDate(), 
 				editRelationshipsForm.getPersonFields().getBirthCountry(), 
 				editRelationshipsForm.getPersonFields().getBirthState(), 
-				editRelationshipsForm.getPersonFields().getBirthCity(), 
-				editRelationshipsForm.getPersonFields()
-				.getSocialSecurityNumber(), 
+				city, socialSecurityNumber, 
 				editRelationshipsForm.getPersonFields().getStateIdNumber(), 
 				editRelationshipsForm.getPersonFields().getDeceased(), 
 				editRelationshipsForm.getPersonFields().getDeathDate());
 		} else {
-			this.updateOffenderRelationService.updateRelation(relationship
-				.getSecondPerson(), 
+			this.updateOffenderRelationService.updateRelationWithoutSsn(
+				relationship.getSecondPerson(), 
 				editRelationshipsForm.getPersonFields().getLastName(), 
 				editRelationshipsForm.getPersonFields().getFirstName(), 
 				editRelationshipsForm.getPersonFields().getMiddleName(), 
@@ -1209,9 +1230,7 @@ public class UpdateOffenderRelationController {
 				editRelationshipsForm.getPersonFields().getBirthDate(), 
 				editRelationshipsForm.getPersonFields().getBirthCountry(), 
 				editRelationshipsForm.getPersonFields().getBirthState(), 
-				newCreatedPersonFieldsCity,
-				editRelationshipsForm.getPersonFields()
-				.getSocialSecurityNumber(), 
+				city,
 				editRelationshipsForm.getPersonFields().getStateIdNumber(), 
 				editRelationshipsForm.getPersonFields().getDeceased(), 
 				editRelationshipsForm.getPersonFields().getDeathDate());
@@ -1463,8 +1482,42 @@ public class UpdateOffenderRelationController {
 					.getIdentity().getDeceased());
 			personFields.setSex(relationship.getSecondPerson().getIdentity()
 					.getSex());
-			personFields.setSocialSecurityNumber(relationship.getSecondPerson()
-					.getIdentity().getSocialSecurityNumber());
+			if (relationship.getSecondPerson().getIdentity()
+					.getSocialSecurityNumber() != null) {
+				if (hasRole("ADMIN") || hasRole("OFFENDER_RELATIONSHIP_SSN_EDIT") 
+						|| hasRole("OFFENDER_RELATIONSHIP_SSN_VIEW")) {
+					String stringSSN = String.format("%09d",
+							relationship.getSecondPerson().getIdentity()
+							.getSocialSecurityNumber());
+					if (stringSSN.length() != 9) {
+						throw new IllegalStateException(
+								"Invalid Social Security Number");
+					} else {
+						String formattedSSN = String
+								.format("%s-%s-%s",
+										stringSSN.substring(0,3),
+										stringSSN.substring(3,5),
+										stringSSN.substring(5,9));
+						personFields.setSocialSecurityNumber(formattedSSN);
+					}
+					editRelationshipsForm.setValidateSocialSecurityNumber(true);
+				} else {
+					String socialSecurityNumber
+						= relationship.getSecondPerson().getIdentity()
+						.getSocialSecurityNumber().toString(); 
+					if (socialSecurityNumber.length() >= 4) {
+						socialSecurityNumber = "XXX-XX-"
+								+ socialSecurityNumber.substring(
+										socialSecurityNumber.length() - 4,
+										socialSecurityNumber.length());
+					} else {
+						socialSecurityNumber = "XXX-XX-"
+								+ socialSecurityNumber;
+					}				
+				personFields.setSocialSecurityNumber(socialSecurityNumber);
+				editRelationshipsForm.setValidateSocialSecurityNumber(false);
+				}
+			}
 			personFields.setStateIdNumber(relationship.getSecondPerson()
 					.getIdentity().getStateIdNumber());
 			personFieldsBirthStates = this.updateOffenderRelationService
@@ -2383,12 +2436,17 @@ public class UpdateOffenderRelationController {
 			doc, reportFormat);
 	}
 	
-	
-	
-	
-	
-	
-	
+	// Returns whether the current user has the specified role
+		private boolean hasRole(final String role) {
+			for (GrantedAuthority authority :
+					SecurityContextHolder.getContext().getAuthentication()
+						.getAuthorities()) {
+				if (role.equals(authority.getAuthority())) {
+					return true;
+				}
+			}
+			return false;
+		}	
 	
 	/**
 	 * Handles {@code PersonNameExistsException}.

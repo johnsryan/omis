@@ -20,6 +20,7 @@ package omis.chronologicalnote.report;
 import java.util.List;
 
 import omis.chronologicalnote.domain.ChronologicalNoteCategory;
+import omis.chronologicalnote.domain.ChronologicalNoteCategoryGroup;
 import omis.offender.domain.Offender;
 
 /**
@@ -54,4 +55,11 @@ public interface ChronologicalNoteReportService {
 	 * @return all chronological note categories
 	 */
 	List<ChronologicalNoteCategory> findCategories();
+	
+	/**
+	 * Returns all chronological note category groups.
+	 * 
+	 * @return list of chronological note category groups
+	 */
+	List<ChronologicalNoteCategoryGroup> findGroups();
 }

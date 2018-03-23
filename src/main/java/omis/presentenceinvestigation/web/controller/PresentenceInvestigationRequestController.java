@@ -274,7 +274,7 @@ public class PresentenceInvestigationRequestController {
 								.create(form.getAssignedUserAccount(),
 								form.getRequestDate(),
 								form.getExpectedCompletionDate(), docket, null,
-								form.getSentenceDate(), form.getCategory());
+								form.getSentenceDate(), form.getCategory(), form.getSubmissionDate());
 			this.processItems(form.getPresentenceInvestigationRequestNoteItems(),
 					presentenceInvestigationRequest);
 			
@@ -323,6 +323,8 @@ public class PresentenceInvestigationRequestController {
 		form.setSentenceDate(
 				presentenceInvestigationRequest.getSentenceDate());
 		form.setCategory(presentenceInvestigationRequest.getCategory());
+		form.setSubmissionDate(presentenceInvestigationRequest
+				.getSubmissionDate());
 		List<PresentenceInvestigationRequestNoteItem> noteItems =
 				new ArrayList<PresentenceInvestigationRequestNoteItem>();
 		for(PresentenceInvestigationRequestNote note :
@@ -395,7 +397,8 @@ public class PresentenceInvestigationRequestController {
 							presentenceInvestigationRequest.getCompletionDate(),
 							form.getExpectedCompletionDate(), docket,
 							form.getSentenceDate(),
-							presentenceInvestigationRequest.getCategory());
+							presentenceInvestigationRequest.getCategory(),
+							form.getSubmissionDate());
 			this.processItems(form.getPresentenceInvestigationRequestNoteItems(),
 					presentenceInvestigationRequest);
 			

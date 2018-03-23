@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="omis.boardhearing.domain">
+	<class entity-name="omis.boardhearing.domain.BoardHearingAssociableDocument"
+			proxy="omis.boardhearing.domain.BoardHearingAssociableDocument"
+			name="omis.boardhearing.domain.impl.BoardHearingAssociableDocumentImpl"
+			table="`BOARD_HEARING_ASSOC_DOCMNT`">
+			<id name="id" column="`ID`" type="java.lang.Long">
+				<generator class="sequence">
+					<param name="sequence">`BOARD_HEARING_ASSOC_DOCMNT_SEQ`</param>
+				</generator>
+			</id>
+			<many-to-one name="boardHearing" column="`BOARD_HEARING_ID`" entity-name="omis.boardhearing.domain.BoardHearing" not-null="true"/>
+			<many-to-one name="document" column="`DOCUMENT_ID`" entity-name="omis.document.domain.Document" not-null="true" />
+			<component name="creationSignature">
+				<many-to-one name="userAccount" column="`CREATE_ACCOUNT_ID`" not-null="true"/>
+				<property name="date" column="`CREATE_DATE`" not-null="true"/> 	
+			</component>
+			<component name="updateSignature">
+				<many-to-one name="userAccount" column="`UPDATE_ACCOUNT_ID`" not-null="true"/>
+				<property name="date" column="`UPDATE_DATE`" not-null="true"/>
+			</component>
+	</class>
+	<query name="findBoardHearingAssociableDocument"><![CDATA[
+		select boardHearingAssociableDocument
+		from
+			omis.boardhearing.domain.BoardHearingAssociableDocument boardHearingAssociableDocument
+		where
+			boardHearingAssociableDocument.boardHearing = :boardHearing
+		and
+			boardHearingAssociableDocument.document = :document
+	]]></query>
+	<query name="findBoardHearingAssociableDocumentExcluding"><![CDATA[
+		select boardHearingAssociableDocument
+		from
+			omis.boardhearing.domain.BoardHearingAssociableDocument boardHearingAssociableDocument
+		where
+			boardHearingAssociableDocument.boardHearing = :boardHearing
+		and
+			boardHearingAssociableDocument.document = :document
+		and
+			boardHearingAssociableDocument != :boardHearingAssociableDocument
+	]]></query>
+</hibernate-mapping>

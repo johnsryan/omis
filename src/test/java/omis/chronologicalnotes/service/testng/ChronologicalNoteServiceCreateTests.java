@@ -38,26 +38,12 @@ import omis.util.PropertyValueAsserter;
  * Chronological note service create tests.
  * 
  * @author Joel Norris
+ * @author Sheronda Vaughn
  * @version 0.1.0
  * @since OMIS 3.0
  */
 public class ChronologicalNoteServiceCreateTests
-extends AbstractHibernateTransactionalTestNGSpringContextTests{
-	
-	/* Delegates. */
-	
-	@Autowired
-	@Qualifier("chronologicalNoteDelegate")
-	ChronologicalNoteDelegate chronologicalNoteDelegate;
-	
-	@Autowired
-	@Qualifier("offenderDelegate")
-	OffenderDelegate offenderDelegate;
-	
-	/* Service. */
-	@Autowired
-	@Qualifier("chronologicalNoteService")
-	ChronologicalNoteService chronologicalNoteService;
+	extends AbstractHibernateTransactionalTestNGSpringContextTests {
 	
 	/* Property value names. */
 	
@@ -65,10 +51,26 @@ extends AbstractHibernateTransactionalTestNGSpringContextTests{
 	private static final String DATE_PROPERTY_VALUE_NAME = "date";
 	private static final String NARRATIVE_PROPERTY_VALUE_NAME = "narrative";
 	
+	/* Delegates. */
+	
+	@Autowired
+	@Qualifier("chronologicalNoteDelegate")
+	private ChronologicalNoteDelegate chronologicalNoteDelegate;
+	
+	@Autowired
+	@Qualifier("offenderDelegate")
+	private OffenderDelegate offenderDelegate;
+	
+	/* Service. */
+	@Autowired
+	@Qualifier("chronologicalNoteService")
+	private ChronologicalNoteService chronologicalNoteService;	
+	
 	/* Constructor. */
 	
 	/**
-	 * Instantiates a default instance of chronological note service create tests.
+	 * Instantiates a default instance of chronological note service create 
+	 * tests.
 	 */
 	public ChronologicalNoteServiceCreateTests() {
 		//Default constructor.
@@ -79,42 +81,52 @@ extends AbstractHibernateTransactionalTestNGSpringContextTests{
 	/**
 	 * Test the creation of a chronological note.
 	 * 
-	 * @throws ChronologicalNoteExistsException Thrown if a chronological note already
-	 * exists with the specified date, offender, and narrative.
+	 * @throws ChronologicalNoteExistsException Thrown if a chronological 
+	 * note already exists with the specified date, offender, and narrative.
 	 */
 	@Test
 	public void testCreate() throws ChronologicalNoteExistsException {
 		Date date = this.parseDateText("01/01/2018");
-		Offender offender = this.offenderDelegate.createWithoutIdentity("Schmoe", "Joe", "Not So", null);
-		String narrative = new String("This is the narrative of the test chronological note");
+		Offender offender = this.offenderDelegate.createWithoutIdentity(
+				"Schmoe", "Joe", "Not So", null);
+		String narrative = new String(
+				"This is the narrative of the test chronological note");
+		String title = "title";
 		//Action
-		ChronologicalNote note = this.chronologicalNoteService.create(date, offender, narrative);
+		ChronologicalNote note = this.chronologicalNoteService.create(
+				date, offender, title, narrative);
 		
 		//Assertions
 		PropertyValueAsserter.create()
 			.addExpectedValue(DATE_PROPERTY_VALUE_NAME, date)
 			.addExpectedValue(OFFENDER_PROPERTY_VALUE_NAME, offender)
+			.addExpectedValue("title", title)
 			.addExpectedValue(NARRATIVE_PROPERTY_VALUE_NAME, narrative)
 			.performAssertions(note);
 	}
 	
 	/**
-	 * Tests {@code ChronologicalNoteService} create method to ensure a {@link ChronologicalNoteExistsException}
+	 * Tests {@code ChronologicalNoteService} create method to ensure a 
+	 * {@link ChronologicalNoteExistsException}
 	 * is thrown in the proper circumstance.
 	 * 
-	 * @throws ChronologicalNoteExistsException Thrown when a duplicate chronological note is found
-	 * with the specified date, offender, and narrative.
+	 * @throws ChronologicalNoteExistsException Thrown when a duplicate 
+	 * chronological note is found with the specified date, offender, and 
+	 * narrative.
 	 */
 	@Test(expectedExceptions = {ChronologicalNoteExistsException.class})
 	public void testChronologicalNoteExistsException()
 			throws ChronologicalNoteExistsException {
 		Date date = this.parseDateText("01/01/2018");
-		Offender offender = this.offenderDelegate.createWithoutIdentity("Schmoe", "Joe", "Not So", null);
-		String narrative = new String("This is the narrative of the test chronological note");
-		this.chronologicalNoteDelegate.create(date, offender, narrative);
+		Offender offender = this.offenderDelegate.createWithoutIdentity(
+				"Schmoe", "Joe", "Not So", null);
+		String narrative = new String(
+				"This is the narrative of the test chronological note");
+		String title = "title";
+		this.chronologicalNoteDelegate.create(date, offender, title, narrative);
 		
 		//Action
-		this.chronologicalNoteService.create(date, offender, narrative);
+		this.chronologicalNoteService.create(date, offender, title, narrative);
 	}
 	
 	/* Helper methods */

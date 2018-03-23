@@ -18,11 +18,13 @@
 package omis.assessment.service.delegate;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import omis.assessment.dao.RatingCategoryDao;
 import omis.assessment.domain.RatingCategory;
 import omis.exception.DuplicateEntityFoundException;
 import omis.instance.factory.InstanceFactory;
+import omis.questionnaire.domain.QuestionnaireType;
 
 /**
  * Rating category delegate.
@@ -86,7 +88,7 @@ public class RatingCategoryDelegate {
 	 * @return rating category
 	 * @throws DuplicateEntityFoundException if duplicate entity exists
 	 */
-	public RatingCategory create(final RatingCategory ratingCategory, 
+	public RatingCategory update(final RatingCategory ratingCategory, 
 			final String description, final BigDecimal ratingFactor, 
 			final Boolean valid) throws DuplicateEntityFoundException {
 		if (this.ratingCategoryDao.findExcluding(description, valid, 
@@ -106,6 +108,17 @@ public class RatingCategoryDelegate {
 	 */
 	public void remove(final RatingCategory ratingCategory) {
 		this.ratingCategoryDao.makeTransient(ratingCategory);
+	}
+
+	/**
+	 * Returns a list of rating categories for the specified questionnaire type.
+	 * 
+	 * @param questionnaireType questionnaire type
+	 * @return list of rating categories
+	 */
+	public List<RatingCategory> findByQuestionnaireType(
+			final QuestionnaireType questionnaireType) {
+		return this.ratingCategoryDao.findByQuestionnaireType(questionnaireType);
 	}
 	
 	// Populates a rating category

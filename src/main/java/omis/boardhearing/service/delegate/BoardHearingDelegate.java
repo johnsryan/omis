@@ -166,4 +166,15 @@ public class BoardHearingDelegate {
 	public void remove(final BoardHearing boardHearing) {
 		this.boardHearingDao.makeTransient(boardHearing);
 	}
+	
+	/**
+	 * Returns a Board Hearing with the specified Parole Eligibility.
+	 * 
+	 * @param paroleEligibility - Parole Eligibility
+	 * @return Board Hearing with the specified Parole Eligibility.
+	 */
+	public BoardHearing findByParoleEligibility(
+			final ParoleEligibility paroleEligibility) {
+		return this.boardHearingDao.find(paroleEligibility);
+	}
 }

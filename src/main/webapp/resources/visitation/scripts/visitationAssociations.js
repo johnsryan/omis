@@ -63,5 +63,15 @@ window.onload = function() {
 	};*/
 	applyVisitorCheckInFormOnClick();
 	
-	
+}
+
+function applyVisitationAssociationRowActionMenu() {
+	var visitationAssociationRemoveLinks = document.getElementsByClassName("visitationAssociationRemoveLink");
+	for (var i = 0; i < visitationAssociationRemoveLinks.length; i++) {
+		
+		visitationAssociaitonRemoveLink[i].onclick = function() {
+			ui.confirm("visitation", "visitationAssociationRemoveOnClick");
+		};
+		alert("reached");
+	}
 }

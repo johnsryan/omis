@@ -23,6 +23,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <fmt:setBundle basename="omis.msgs.common" var="commonBundle"/>
 <fmt:setBundle basename="omis.audit.msgs.audit" var="auditBundle"/>
 <fmt:bundle basename="omis.family.msgs.family">
@@ -47,6 +48,9 @@
 	<c:if test="${empty familyMember}">
 		<fieldset <c:if test="${not createFlag}">disabled</c:if>>
 			<legend><fmt:message key="personFieldsLabel"/></legend>
+			<sec:authorize access="hasRole('ADMIN') or hasRole('FAMILY_ASSOCIATION_SSN_EDIT')" var="canEditSsn"/>
+			<c:set var="readOnlySsn" value="${not canEditSsn}" scope="request"/>
+			<form:hidden path="validateSocialSecurityNumber"/>
 			<c:set var="personFields" value="${familyAssociationForm.personFields}" scope="request"/>
 			<c:set var="createFlag" value="${createFlag}" scope="request"/>
 			<jsp:include page="../../person/includes/personFields.jsp"/>

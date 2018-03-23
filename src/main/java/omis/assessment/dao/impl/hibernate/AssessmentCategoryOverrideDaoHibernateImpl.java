@@ -45,6 +45,9 @@ public class AssessmentCategoryOverrideDaoHibernateImpl
 	private final static String FIND_EXCLUDING_QUERY_NAME = 
 			"findAssessmentCategoryOverrideExcluding";
 	
+	private final static String FIND_BY_ASSESSMENT_CATEGORY_SCORE_QUERY_NAME =
+			"findAssessmentCategoryOverrideByAssessmentCategoryScore";
+	
 	/* Parameters. */
 	
 	private final static String ASSESSMENT_CATEGORY_SCORE_PARAM_NAME = 
@@ -98,6 +101,20 @@ public class AssessmentCategoryOverrideDaoHibernateImpl
 				.setParameter(ASSESSMENT_RATING_PARAM_NAME, assessmentRating)
 				.setParameter(EXCLUDED_ASSESSMENT_CATEGORY_OVERRIDE_PARAM_NAME, 
 						excludedAssessmentCategoryOverride)
+				.uniqueResult();
+		return assessmentCategoryOverride;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public AssessmentCategoryOverride findByAssessmentCategoryScore(
+			final AssessmentCategoryScore assessmentCategoryScore) {
+		AssessmentCategoryOverride assessmentCategoryOverride = 
+				(AssessmentCategoryOverride) this.getSessionFactory()
+				.getCurrentSession()
+				.getNamedQuery(FIND_BY_ASSESSMENT_CATEGORY_SCORE_QUERY_NAME)
+				.setParameter(ASSESSMENT_CATEGORY_SCORE_PARAM_NAME, 
+						assessmentCategoryScore)
 				.uniqueResult();
 		return assessmentCategoryOverride;
 	}

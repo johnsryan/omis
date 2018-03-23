@@ -51,10 +51,10 @@ import omis.testng.AbstractHibernateTransactionalTestNGSpringContextTests;
 import omis.violationevent.service.ViolationEventService;
 
 /**
- * HearingServiceRemoveTests.java
+ * Hearing Service Remove Tests.
  * 
- *@author Annie Jacques 
- *@version 0.1.0 (May 5, 2017)
+ *@author Annie Wahl 
+ *@version 0.1.1 (Mar 8, 2018)
  *@since OMIS 3.0
  *
  */
@@ -123,7 +123,7 @@ public class HearingServiceRemoveTests
 	private DisciplinaryCodeService disciplinaryCodeService;
 	
 	@Test
-	public void testHearingRemove() throws DuplicateEntityFoundException{
+	public void testHearingRemove() throws DuplicateEntityFoundException {
 		
 		final Organization organization = this.organizationDelegate.create(
 				"Organization", "org", null);
@@ -135,19 +135,23 @@ public class HearingServiceRemoveTests
 				"City", true, state, country);
 		final ZipCode zipCode = this.zipCodeDelegate.create(
 				city, "12345", null, true);
-		final Address address = this.addressDelegate.findOrCreate("123", "321", null,
+		final Address address = this.addressDelegate.findOrCreate(
+				"123", "321", null,
 				null, zipCode);
-		final Person person = this.personDelegate.create("Pennyworth", "Alfred", "J", null);
+		final Person person = this.personDelegate.create(
+				"Pennyworth", "Alfred", "J", null);
 		final SupervisoryOrganization supervisoryOrganization =
 				this.supervisoryOrganizationDelegate
 			.create("The Batcave", "TBC", organization);
 		
-		StaffAssignment officer = this.staffAssignmentInstanceFactory.createInstance();
+		StaffAssignment officer = this.staffAssignmentInstanceFactory
+				.createInstance();
 		officer.setStaffMember(person);
 		officer.setStaffId("999");
 		officer.setSupervisoryOrganization(supervisoryOrganization);
 		officer.setSupervisory(true);
-		officer.setTitle(this.staffTitleService.create("Butler", (short)1, true));
+		officer.setTitle(this.staffTitleService.create(
+				"Butler", (short) 1, true));
 		officer = this.staffAssignmentDao.makePersistent(officer);
 		final Offender offender = this.offenderDelegate.createWithoutIdentity(
 				"Wayne", "Bruce", "Alen", null);
@@ -166,7 +170,7 @@ public class HearingServiceRemoveTests
 	}
 	
 	@Test
-	public void testHearingStatusRemove() throws DuplicateEntityFoundException{
+	public void testHearingStatusRemove() throws DuplicateEntityFoundException {
 		final Hearing hearing = this.createHearing();
 		
 		final HearingStatus hearingStatus = this.hearingService
@@ -181,7 +185,7 @@ public class HearingServiceRemoveTests
 	}
 	
 	@Test
-	public void testHearingNoteRemove() throws DuplicateEntityFoundException{
+	public void testHearingNoteRemove() throws DuplicateEntityFoundException {
 		final Hearing hearing = this.createHearing();
 		
 		final HearingNote hearingNote = this.hearingService.createHearingNote(
@@ -191,26 +195,29 @@ public class HearingServiceRemoveTests
 		
 		assert !this.hearingService.findHearingNotesByHearing(hearing)
 		.contains(hearingNote) : "Hearing Note was not removed!";
-		
 	}
 	
 
 	@Test
-	public void testStaffAttendanceRemove() throws DuplicateEntityFoundException{
+	public void testStaffAttendanceRemove()
+			throws DuplicateEntityFoundException {
 		final Hearing hearing = this.createHearing();
 		final SupervisoryOrganization supervisoryOrganization =
 				this.supervisoryOrganizationDelegate
-			.create("1Batcave12", "TBC12", hearing.getLocation().getOrganization());
+			.create("1Batcave12", "TBC12",
+					hearing.getLocation().getOrganization());
 		final Person person = this.personDelegate.create(
 				"Grayson", "Richard", "J", null);
-		StaffAssignment staffAssignment = this.staffAssignmentInstanceFactory.createInstance();
+		StaffAssignment staffAssignment = this.staffAssignmentInstanceFactory
+				.createInstance();
 		staffAssignment.setStaffMember(person);
 		staffAssignment.setStaffId("4321");
 		staffAssignment.setSupervisoryOrganization(supervisoryOrganization);
 		staffAssignment.setSupervisory(true);
 		staffAssignment.setTitle(this.staffTitleService.create(
-				"Robin", (short)11, true));
-		staffAssignment = this.staffAssignmentDao.makePersistent(staffAssignment);
+				"Robin", (short) 11, true));
+		staffAssignment = this.staffAssignmentDao.makePersistent(
+				staffAssignment);
 		
 		final StaffAttendance staffAttendance = this.hearingService
 				.createStaffAttendance(hearing, staffAssignment);
@@ -222,7 +229,7 @@ public class HearingServiceRemoveTests
 	}
 	
 	@Test
-	public void testInfractionRemove() throws DuplicateEntityFoundException{
+	public void testInfractionRemove() throws DuplicateEntityFoundException {
 		
 		final String descision = "Resolution Decision";
 		final String reason = "Resolution Reason";
@@ -237,9 +244,10 @@ public class HearingServiceRemoveTests
 		resolution.setDescision(descision);
 		resolution.setReason(reason);
 		resolution.setDisposition(disposition);
-		resolution.setAuthority(this.personDelegate.create("Buttehead", "Joel", "Trevor", null));
+		resolution.setAuthority(this.personDelegate.create(
+				"Buttehead", "Joel", "Trevor", null));
 		final Infraction infraction = this.hearingService.createInfraction(
-				hearing, null, null, resolution);
+				hearing, null, null, resolution, null);
 		
 		this.hearingService.removeInfraction(infraction);
 		
@@ -260,19 +268,23 @@ public class HearingServiceRemoveTests
 				"City", true, state, country);
 		final ZipCode zipCode = this.zipCodeDelegate.create(
 				city, "12345", null, true);
-		final Address address = this.addressDelegate.findOrCreate("123", "321", null,
+		final Address address = this.addressDelegate.findOrCreate(
+				"123", "321", null,
 				null, zipCode);
-		final Person person = this.personDelegate.create("Pennyworth", "Alfred", "J", null);
+		final Person person = this.personDelegate.create(
+				"Pennyworth", "Alfred", "J", null);
 		final SupervisoryOrganization supervisoryOrganization =
 				this.supervisoryOrganizationDelegate
 			.create("The Batcave", "TBC", organization);
 		
-		StaffAssignment officer = this.staffAssignmentInstanceFactory.createInstance();
+		StaffAssignment officer = this.staffAssignmentInstanceFactory
+				.createInstance();
 		officer.setStaffMember(person);
 		officer.setStaffId("999");
 		officer.setSupervisoryOrganization(supervisoryOrganization);
 		officer.setSupervisory(true);
-		officer.setTitle(this.staffTitleService.create("Butler", (short)1, true));
+		officer.setTitle(this.staffTitleService.create(
+				"Butler", (short) 1, true));
 		officer = this.staffAssignmentDao.makePersistent(officer);
 		final Offender offender = this.offenderDelegate.createWithoutIdentity(
 				"Wayne", "Bruce", "Alen", null);

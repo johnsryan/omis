@@ -85,4 +85,20 @@ select new omis.boardhearing.report.BoardHearingSummary(
 	and
 		(pE = paroleEligibility or pE is null)
 ]]></query>
+<query name="findBoardHearingDocumentSummariesByHearing"><![CDATA[
+select new omis.boardhearing.report.BoardHearingDocumentSummary(
+		boardHearingAssociableDocument.id,
+		document.id,
+		document.title,
+		document.date
+	)
+	from
+		omis.boardhearing.domain.BoardHearingAssociableDocument boardHearingAssociableDocument
+	inner join
+		boardHearingAssociableDocument.document document
+	inner join
+		boardHearingAssociableDocument.boardHearing boardHearing
+	where
+		boardHearing = :boardHearing
+]]></query>
 </hibernate-mapping>

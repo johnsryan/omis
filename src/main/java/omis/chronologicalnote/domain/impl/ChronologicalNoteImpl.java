@@ -27,6 +27,7 @@ import omis.offender.domain.Offender;
 
 /** Implementation of chronological note.
  * @author Yidong Li
+ * @author Sheronda Vaughn
  * @version 0.1.0 (Jan 29, 2018)
  * @since OMIS 3.0 */
 
@@ -36,6 +37,7 @@ public class ChronologicalNoteImpl implements ChronologicalNote {
 	private Offender offender;
 	private Date date;
 	private String narrative;
+	private String title;
 	private UpdateSignature updateSignature;
 	private CreationSignature creationSignature;
 	
@@ -79,6 +81,18 @@ public class ChronologicalNoteImpl implements ChronologicalNote {
 		this.narrative = narrative;
 	}
 
+	/** {@inheritDoc} */
+	@Override
+	public String getTitle() {
+		return this.title;
+	}
+	
+	/** {@inheritDoc} */
+	@Override
+	public void setTitle(final String title) {
+		this.title = title;
+	}
+	
 	/** {@inheritDoc} */
 	@Override
 	public Date getDate() {
@@ -138,10 +152,10 @@ public class ChronologicalNoteImpl implements ChronologicalNote {
 		if (!this.getDate().equals(that.getDate())) {
 			return false;
 		}
-		if (this.getNarrative() == null) {
-			throw new IllegalStateException("Narrative required");
+		if (this.getTitle() == null) {
+			throw new IllegalStateException("Title required");
 		}
-		if (!this.getNarrative().equals(that.getNarrative())) {
+		if (!this.getTitle().equals(that.getTitle())) {
 			return false;
 		}
 		return true;
@@ -163,10 +177,10 @@ public class ChronologicalNoteImpl implements ChronologicalNote {
 		}
 		hashCode += 29 * this.getDate().hashCode();
 		
-		if (this.getNarrative() == null) {
-			throw new IllegalStateException("Narrative required");
+		if (this.getTitle() == null) {
+			throw new IllegalStateException("Title required");
 		}
-		hashCode += 29 * this.getNarrative().hashCode();
+		hashCode += 29 * this.getTitle().hashCode();
 		return hashCode;
 	}
 }

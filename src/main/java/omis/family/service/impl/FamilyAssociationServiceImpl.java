@@ -56,6 +56,7 @@ import omis.family.exception.FamilyAssociationNoteExistsException;
 import omis.family.service.FamilyAssociationService;
 import omis.family.service.delegate.FamilyAssociationCategoryDelegate;
 import omis.family.service.delegate.FamilyAssociationDelegate;
+import omis.family.service.delegate.FamilyAssociationNoteCategoryDesignatorDelegate;
 import omis.family.service.delegate.FamilyAssociationNoteDelegate;
 import omis.instance.factory.InstanceFactory;
 import omis.offender.domain.Offender;
@@ -70,8 +71,12 @@ import omis.region.exception.CityExistsException;
 import omis.region.service.delegate.CityDelegate;
 import omis.region.service.delegate.StateDelegate;
 import omis.relationship.domain.Relationship;
+import omis.relationship.domain.RelationshipNote;
+import omis.relationship.domain.RelationshipNoteCategory;
 import omis.relationship.exception.ReflexiveRelationshipException;
+import omis.relationship.exception.RelationshipNoteExistsException;
 import omis.relationship.service.delegate.RelationshipDelegate;
+import omis.relationship.service.delegate.RelationshipNoteDelegate;
 import omis.residence.domain.ResidenceCategory;
 import omis.residence.domain.ResidenceStatus;
 import omis.residence.domain.ResidenceTerm;
@@ -106,6 +111,9 @@ public class FamilyAssociationServiceImpl implements FamilyAssociationService {
 	private final StateDelegate stateDelegate;
 	private final CityDelegate cityDelegate;
 	private final SuffixDelegate suffixDelegate;
+	private final RelationshipNoteDelegate relationshipNoteDelegate;
+	private final FamilyAssociationNoteCategoryDesignatorDelegate
+	familyAssociationNoteCategoryDesignatorDelegate;
 	
 	/**
 	 * Instantiates an instance of family association service with the
@@ -135,6 +143,7 @@ public class FamilyAssociationServiceImpl implements FamilyAssociationService {
 	 * @param addressUnitDesignatorDelegate address unit designator delegate
 	 * @param personIdentityDelegate person identity delegate 
 	 * @param suffixDelegate suffix delegate
+	 * @param relationshipNoteDelegate relationship note delegate
 	 */
 	public FamilyAssociationServiceImpl(
 		final FamilyAssociationCategoryDelegate 
@@ -158,7 +167,10 @@ public class FamilyAssociationServiceImpl implements FamilyAssociationService {
 		final StateDelegate stateDelegate,
 		final CityDelegate cityDelegate,
 		final PersonIdentityDelegate personIdentityDelegate,
-		final SuffixDelegate suffixDelegate) {
+		final SuffixDelegate suffixDelegate,
+		final RelationshipNoteDelegate relationshipNoteDelegate,
+		final FamilyAssociationNoteCategoryDesignatorDelegate
+		familyAssociationNoteCategoryDesignatorDelegate) {
 		this.familyAssociationCategoryDelegate 
 			= familyAssociationCategoryDelegate;
 		this.familyAssociationNoteDelegate = familyAssociationNoteDelegate;
@@ -176,6 +188,9 @@ public class FamilyAssociationServiceImpl implements FamilyAssociationService {
 		this.cityDelegate = cityDelegate;
 		this.stateDelegate = stateDelegate;
 		this.suffixDelegate = suffixDelegate;
+		this.relationshipNoteDelegate = relationshipNoteDelegate;
+		this.familyAssociationNoteCategoryDesignatorDelegate
+		= familyAssociationNoteCategoryDesignatorDelegate;
 	}
 	
 	/**{@inheritDoc} */
@@ -482,5 +497,48 @@ public class FamilyAssociationServiceImpl implements FamilyAssociationService {
 	public List<City> findCitiesByCountryWithoutState(
 			final Country country) {
 		return this.cityDelegate.findByCountryWithoutState(country);
+	}
+	
+	/** {@inheritDoc} */
+	@Override
+	public RelationshipNote addRelationshipNote(
+		final FamilyAssociation familyAssociation,
+		final RelationshipNoteCategory category, final Date date,
+		final String value)	throws RelationshipNoteExistsException {
+		return this.relationshipNoteDelegate.create(
+			familyAssociation.getRelationship(), category, value, date);
+	};
+		
+	/** {@inheritDoc} */
+	@Override
+	public RelationshipNote updateRelationshipNote(
+		final RelationshipNote relationshipNote,
+		final RelationshipNoteCategory category, final Date date,
+		final String value)	throws RelationshipNoteExistsException {
+		return this.relationshipNoteDelegate.update(relationshipNote, category,
+			value, date);
+	};
+		
+	/** {@inheritDoc} */
+	@Override
+	public void removeRelationshipNote(
+		final RelationshipNote relationshipNote) {
+		this.relationshipNoteDelegate.remove(relationshipNote);
+	};
+		
+	/** {@inheritDoc} */
+	@Override
+	public List<RelationshipNoteCategory>
+	findDesignatedRelationshipNoteCategories() {
+		return this.familyAssociationNoteCategoryDesignatorDelegate
+			.findDesignatedRelationshipNoteCategories();
+	};
+		
+	/** {@inheritDoc} */
+	@Override
+	public List<RelationshipNote> findRelationshipNotes(final FamilyAssociation
+		familyAssociation) {
+		return this.familyAssociationNoteCategoryDesignatorDelegate
+			.findRelationshipNotes(familyAssociation);
 	}
 }

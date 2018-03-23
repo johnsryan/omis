@@ -17,7 +17,9 @@
 	<div class="headerCell">
 		<span class="offenderHeaderFieldLabel"><fmt:message key="bedPlacementLabel"/></span>
 		<a href="${pageContext.request.contextPath}/bedPlacement/list.html?offender=${offenderSummary.id}">
-			<span class="offenderHeaderFieldValue"><c:if test="${not empty bedPlacementSummary.complexName}"><c:out value="${bedPlacementSummary.complexName}"/> - </c:if><c:if test="${not empty bedPlacementSummary.unitName}"><c:out value="${bedPlacementSummary.unitName}"/> - </c:if><c:if test="${not empty bedPlacementSummary.sectionName}"><c:out value="${bedPlacementSummary.sectionName}"/> - </c:if><c:if test="${not empty bedPlacementSummary.levelName}"><c:out value="${bedPlacementSummary.levelName}"/> - </c:if><c:if test="${not empty bedPlacementSummary.roomName}"><c:out value="${bedPlacementSummary.roomName}"/> - </c:if><c:if test="${not empty bedPlacementSummary.bedNumber}"><c:out value="${bedPlacementSummary.bedNumber}"/></c:if></span>
+			<span class="offenderHeaderFieldValue">
+				<c:if test="${not empty bedPlacementSummary.complexName}"><c:out value="${bedPlacementSummary.complexName}"/> - </c:if><c:if test="${not empty bedPlacementSummary.unitName}"><c:out value="${bedPlacementSummary.unitName}"/> - </c:if><c:if test="${not empty bedPlacementSummary.levelName}"><c:out value="${bedPlacementSummary.levelName}"/> - </c:if><c:if test="${not empty bedPlacementSummary.sectionName}"><c:out value="${bedPlacementSummary.sectionName}"/> - </c:if><c:if test="${not empty bedPlacementSummary.roomName}"><c:out value="${bedPlacementSummary.roomName}"/> - </c:if><c:if test="${not empty bedPlacementSummary.bedNumber}"><c:out value="${bedPlacementSummary.bedNumber}"/></c:if>
+			</span>
 		</a>
 	</div>
 	<%-- <c:if test="${not empty bedPlacementSummary.unitName}">

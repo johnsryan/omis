@@ -5,6 +5,7 @@
 		<tr>
 			<th class="operations" />
 			<th><fmt:message key="eventCategoryLabel"/></th>
+			<th><fmt:message key="eventDateLabel"/></th>
 			<th><fmt:message key="violationDetailsLabel"/></th>
 			<th><fmt:message key="resolutionLabel"/></th>
 			<th><fmt:message key="dispositionLabel"/></th>

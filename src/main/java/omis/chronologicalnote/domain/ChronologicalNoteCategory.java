@@ -23,6 +23,7 @@ import java.io.Serializable;
  * Chronological note category.
  * 
  * @author Joel Norris
+ * @author Stephen Abson
  * @version 0.1.0(January 29, 2018)
  * @since OMIS 3.0
  */
@@ -55,6 +56,20 @@ public interface ChronologicalNoteCategory extends Serializable {
 	 * @param name name
 	 */
 	void setName(String name);
+	
+	/**
+	 * Returns group.
+	 * 
+	 * @return group
+	 */
+	ChronologicalNoteCategoryGroup getGroup();
+	
+	/**
+	 * Sets group.
+	 * 
+	 * @param group group
+	 */
+	void setGroup(ChronologicalNoteCategoryGroup group);
 	
 	/**
 	 * Returns short name.

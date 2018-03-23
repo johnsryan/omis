@@ -128,4 +128,11 @@
 		and
 			trunc(visit.dateRange.startDate) = trunc(:date)
 	]]></query>
+	<query name="findVisitsByVisitationAssociation"><![CDATA[
+		select visit
+		from
+			omis.visitation.domain.Visit visit
+		where
+			visit.visitationAssociation = :visitationAssociation
+	]]></query>
 	</hibernate-mapping>

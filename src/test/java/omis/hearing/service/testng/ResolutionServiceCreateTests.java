@@ -16,9 +16,11 @@ import omis.hearing.domain.DispositionCategory;
 import omis.hearing.domain.Hearing;
 import omis.hearing.domain.ImposedSanction;
 import omis.hearing.domain.Infraction;
+import omis.hearing.domain.InfractionPlea;
 import omis.hearing.domain.ResolutionClassificationCategory;
 import omis.hearing.domain.component.Resolution;
 import omis.hearing.service.ResolutionService;
+import omis.hearing.service.delegate.InfractionPleaDelegate;
 import omis.offender.domain.Offender;
 import omis.offender.service.delegate.OffenderDelegate;
 import omis.supervision.domain.SupervisoryOrganization;
@@ -31,10 +33,10 @@ import omis.violationevent.domain.ViolationEventCategory;
 import omis.violationevent.service.ViolationEventService;
 
 /**
- * ResolutionServiceCreateTests.java
+ * Resolution Service Create Tests.
  * 
- *@author Annie Jacques 
- *@version 0.1.0 (May 5, 2017)
+ *@author Annie Wahl 
+ *@version 0.1.1 (Mar 8, 2018)
  *@since OMIS 3.0
  *
  */
@@ -59,11 +61,14 @@ public class ResolutionServiceCreateTests
 	private SupervisoryOrganizationDelegate supervisoryOrganizationDelegate;
 
 	@Autowired
+	private InfractionPleaDelegate infractionPleaDelegate;
+	
+	@Autowired
 	@Qualifier("offenderDelegate")
 	private OffenderDelegate offenderDelegate;
 	
 	@Test
-	public void testInfractionCreate() throws DuplicateEntityFoundException{
+	public void testInfractionCreate() throws DuplicateEntityFoundException {
 		final SupervisoryOrganization supervisoryOrganization =
 				this.supervisoryOrganizationDelegate
 			.create("The Batcave", "TBC", null);
@@ -94,19 +99,19 @@ public class ResolutionServiceCreateTests
 		resolution.setDescision(descision);
 		resolution.setReason(reason);
 		resolution.setDisposition(disposition);
+		final InfractionPlea plea = this.infractionPleaDelegate
+				.create("Guilty", true);
 		
 		final Infraction infraction = this.resolutionService.createInfraction(
-				hearing, conditionViolation, disciplinaryCodeViolation, resolution);
+				hearing, conditionViolation, disciplinaryCodeViolation,
+				resolution, plea);
 		
-		/*assert hearing.equals(infraction.getHearing())
-		: String.format("Wrong hearing for infraction: %s found; %s expected",
-				infraction.getHearing(), hearing);
-		assert conditionViolation.equals(infraction.getConditionViolation())
-		: String.format("Wrong conditionViolation for infraction: %s found; %s expected",
-				infraction.getConditionViolation(), conditionViolation);*/
-		assert disciplinaryCodeViolation.equals(infraction.getDisciplinaryCodeViolation())
-		: String.format("Wrong disciplinaryCodeViolation for infraction: %s found; %s expected",
-				infraction.getDisciplinaryCodeViolation().getDisciplinaryCode().getValue(),
+		assert disciplinaryCodeViolation.equals(infraction
+				.getDisciplinaryCodeViolation())
+		: String.format("Wrong disciplinaryCodeViolation for infraction: "
+				+ "%s found; %s expected",
+				infraction.getDisciplinaryCodeViolation()
+				.getDisciplinaryCode().getValue(),
 				disciplinaryCodeViolation.getDisciplinaryCode().getValue());
 		assert descision.equals(infraction.getResolution().getDescision())
 		: String.format("Wrong descision for infraction: %s found; %s expected",
@@ -114,16 +119,24 @@ public class ResolutionServiceCreateTests
 		assert reason.equals(infraction.getResolution().getReason())
 		: String.format("Wrong reason for infraction: %s found; %s expected",
 				infraction.getResolution().getReason(), reason);
-		assert resolutionCategory.equals(infraction.getResolution().getCategory())
-		: String.format("Wrong resolutionCategory for infraction: %s found; %s expected",
+		assert resolutionCategory.equals(
+				infraction.getResolution().getCategory())
+		: String.format("Wrong resolutionCategory for infraction: "
+				+ "%s found; %s expected",
 				infraction.getResolution().getCategory(), resolutionCategory);
 		assert disposition.equals(infraction.getResolution().getDisposition())
-		: String.format("Wrong disposition for infraction: %s found; %s expected",
+		: String.format("Wrong disposition for infraction: "
+				+ "%s found; %s expected",
 				infraction.getResolution().getDisposition(), disposition);
+		assert plea.equals(infraction.getPlea())
+		: String.format("Wrong plea for infraction: %s found; %s expected",
+				infraction.getPlea().getName(), plea.getName());
+		
 	}
 	
 	@Test
-	public void testImposedSanctionCreate() throws DuplicateEntityFoundException{
+	public void testImposedSanctionCreate()
+			throws DuplicateEntityFoundException {
 		final Infraction infraction = this.createInfraction();
 		final String description = "Sanction";
 		final Offender offender = infraction.getDisciplinaryCodeViolation()
@@ -133,14 +146,17 @@ public class ResolutionServiceCreateTests
 				.createImposedSanction(infraction, offender, description);
 		
 		assert infraction.equals(imposedSanction.getInfraction())
-		: String.format("Wrong infraction for imposedSanction: %d found; %d expected",
+		: String.format("Wrong infraction for imposedSanction: "
+				+ "%d found; %d expected",
 				imposedSanction.getInfraction().getId(), infraction.getId());
 		assert offender.equals(imposedSanction.getOffender())
-		: String.format("Wrong offender for imposedSanction: %s found; %s expected",
+		: String.format("Wrong offender for imposedSanction: "
+				+ "%s found; %s expected",
 				imposedSanction.getOffender().getName().getFirstName(),
 				offender.getName().getFirstName());
 		assert description.equals(imposedSanction.getDescription())
-		: String.format("Wrong description for imposedSanction: %s found; %s expected",
+		: String.format("Wrong description for imposedSanction: "
+				+ "%s found; %s expected",
 				imposedSanction.getDescription(), description);
 	}
 	
@@ -175,9 +191,12 @@ public class ResolutionServiceCreateTests
 		resolution.setDescision(descision);
 		resolution.setReason(reason);
 		resolution.setDisposition(disposition);
+		final InfractionPlea plea = this.infractionPleaDelegate
+				.create("Guilty", true);
 		
 		return this.resolutionService.createInfraction(
-				hearing, conditionViolation, disciplinaryCodeViolation, resolution);
+				hearing, conditionViolation, disciplinaryCodeViolation,
+				resolution, plea);
 	}
 	
 	private Date parseDateText(final String dateText) {

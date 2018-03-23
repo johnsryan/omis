@@ -469,9 +469,12 @@ public class BoardHearingController {
 			method = RequestMethod.GET)
 	public ModelAndView displayBoardHearingActionMenu(@RequestParam(
 			value = "paroleEligibility", required = true)
-			final ParoleEligibility paroleEligibility) {
+			final ParoleEligibility paroleEligibility, @RequestParam(
+			value = "boardHearing", required = true)
+			final BoardHearing boardHearing) {
 		ModelMap map = new ModelMap();
 		map.addAttribute(PAROLE_ELIGIBILITY_MODEL_KEY, paroleEligibility);
+		map.addAttribute(BOARD_HEARING_MODEL_KEY, boardHearing);
 		
 		return new ModelAndView(BOARD_HEARING_ACTION_MENU_VIEW_NAME, map);
 	}

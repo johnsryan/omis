@@ -18,12 +18,14 @@
 package omis.assessment.service.delegate;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import omis.assessment.dao.AnswerRatingDao;
 import omis.assessment.domain.AnswerRating;
 import omis.assessment.domain.RatingCategory;
 import omis.exception.DuplicateEntityFoundException;
 import omis.instance.factory.InstanceFactory;
+import omis.questionnaire.domain.AdministeredQuestionnaire;
 import omis.questionnaire.domain.AnswerValue;
 
 /**
@@ -108,6 +110,22 @@ public class AnswerRatingDelegate {
 	 */
 	public void remove(final AnswerRating answerRating) {
 		this.answerRatingDao.makeTransient(answerRating);
+	}
+	
+	/**
+	 * Returns a list of answer ratings for the specified rating category and 
+	 * administered questionnaire.
+	 * 
+	 * @param ratingCategory rating category
+	 * @param administeredQuestionnaire administered questionnaire
+	 * @return list of answer ratings
+	 */
+	public List<AnswerRating> findByRatingCategoryAndAdministeredQuestionnaire(
+			final RatingCategory ratingCategory,
+			final AdministeredQuestionnaire administeredQuestionnaire) {
+		return this.answerRatingDao
+				.findByRatingCategoryAndAdministeredQuestionnaire(
+						ratingCategory, administeredQuestionnaire);
 	}
 	
 	// Populates an answer rating

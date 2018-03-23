@@ -29,6 +29,7 @@ public interface PresentenceInvestigationRequestService {
 	 * @param completionDate - completion date.
 	 * @param sentenceDate - sentence date.
 	 * @param category - PresentenceInvestigationCategory
+	 * @param submissionDate - submission date.
 	 * @return presentence investigation request. 
 	 * @throws DuplicateEntityFoundException - when presentence investigation
 	 * request exists with given docket. */
@@ -36,7 +37,7 @@ public interface PresentenceInvestigationRequestService {
 			 UserAccount assignedUser, Date requestDate, 
 			 Date expectedCompletionDate, Docket docket, 
 			 Date completionDate, Date sentenceDate,
-			 PresentenceInvestigationCategory category)
+			 PresentenceInvestigationCategory category, Date submissionDate)
 	 throws DuplicateEntityFoundException;
 	 
 	 /** Updates an existing presentence investigation request.\
@@ -50,6 +51,7 @@ public interface PresentenceInvestigationRequestService {
 	 * @param docket - docket.
 	 * @param sentenceDate - sentence date.
 	 * @param category - PresentenceInvestigationCategory
+	 * @param submissionDate - submission date.
 	 * @return presentence investigation request.
 	 * @throws DuplicateEntityFoundException - when presentence investigation
 	 * request exists for given docket. */
@@ -59,7 +61,7 @@ public interface PresentenceInvestigationRequestService {
 			UserAccount assignedUser, Date requestDate,
 			Date completionDate,
 			Date expectedCompletionDate, Docket docket, Date sentenceDate,
-			PresentenceInvestigationCategory category)
+			PresentenceInvestigationCategory category, Date submissionDate)
 	throws DuplicateEntityFoundException;
 	
 	/** Removes a presentence investigation request.

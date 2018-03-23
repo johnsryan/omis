@@ -46,6 +46,9 @@ public class VisitDaoHibernateImpl
 	FIND_OFFENDERS_WITH_VISITS_BY_FACILITY_ON_DATE_QUERY_NAME
 		= "findOffendersWithVisitsByFacilityOnDate";
 	
+	private static final String FIND_VISITS_BY_ASSOCIATION_QUERY_NAME
+		= "findVisitsByVisitationAssociation";
+	
 	/* Parameter names. */
 	
 	private static final String OFFENDER_PARAM_NAME = "offender";
@@ -178,5 +181,17 @@ public class VisitDaoHibernateImpl
 				.setDate(DATE_PARAM_NAME, date)
 				.list();
 		return offenders;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public List<Visit> findVisitsByAssociation(VisitationAssociation association) {
+		@SuppressWarnings("unchecked")
+		List<Visit> visits = this.getSessionFactory()
+				.getCurrentSession()
+				.getNamedQuery(FIND_VISITS_BY_ASSOCIATION_QUERY_NAME)
+				.setParameter(VISITATION_ASSOCIATION_PARAMETER_NAME, association)
+				.list();
+		return visits;
 	}
 }

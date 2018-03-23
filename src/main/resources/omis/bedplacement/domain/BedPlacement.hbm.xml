@@ -323,19 +323,17 @@
 			bedPlacement <> :bedPlacement
 	]]></query>
 	<query name="findBedPlacementCountByOffenderAndDate"><![CDATA[
-	 select case when bedPlacement.confirmed is null then 'No Current Placement'
-	   		     else
-	   		          case 
-	   		               when bedPlacement.confirmed = 'Y' then 'Currently Placed'
-	   		               else 'Unconfirmed Placement'
-	   		          end
-	   		     end
-	   from omis.bedplacement.domain.BedPlacement bedPlacement
-right outer join bedPlacement.offender offender with (bedPlacement.dateRange.startDate <= :effectiveDate
-		                                          or (bedPlacement.dateRange.startDate is null))
-		                                         and (bedPlacement.dateRange.endDate > :effectiveDate
-		                                          or (bedPlacement.dateRange.endDate is null))
-	  where offender = :offender
-		
+	 	select
+	 		bedPlacement
+	  	from
+	  		omis.bedplacement.domain.BedPlacement bedPlacement
+			right outer join bedPlacement.offender offender with (bedPlacement.dateRange.startDate <= :effectiveDate
+				or (bedPlacement.dateRange.startDate is null))
+				and (bedPlacement.dateRange.endDate > :effectiveDate
+				or (bedPlacement.dateRange.endDate is null))
+		where
+			offender = :offender
+		and
+			bedPlacement.confirmed = 'Y'
 	]]></query>
 </hibernate-mapping>

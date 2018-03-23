@@ -17,6 +17,7 @@
   	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/bedPlacement/scripts/bedPlacements.js"> </script>
 	<title>
 		<fmt:message key="bedPlacementListHeader"/>
+		<jsp:include page="/WEB-INF/views/offender/includes/offenderNameSummary.jsp"/>
 	</title>
 </head>
  <body>

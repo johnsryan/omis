@@ -7,9 +7,10 @@
 			<th class="operations"></th>
 			<th><fmt:message key="courtCaseLabel"/></th>
 			<th><fmt:message key="requestDateLabel"/></th>
-			<th><fmt:message key="sentenceDateLabel"/></th>
-			<th><fmt:message key="categoryLabel"/></th>
+			<th><fmt:message key="expectedCompletionDateLabel"/></th>
 			<th><fmt:message key="statusLabel"/></th>
+			<th><fmt:message key="submissionDateLabel"/></th>
+			<th><fmt:message key="categoryLabel"/></th>
 			<c:choose>
 				<c:when test="${empty offender}">
 					<th><fmt:message key="offenderLabel"/></th>
@@ -18,7 +19,7 @@
 					<th><fmt:message key="assignedUserLabel"/></th>
 				</c:when>
 			</c:choose>
-			<th><fmt:message key="expectedCompletionDateLabel"/></th>
+			<th><fmt:message key="sentenceDateLabel"/></th>
 		</tr>
 	</thead>
 	<tbody>

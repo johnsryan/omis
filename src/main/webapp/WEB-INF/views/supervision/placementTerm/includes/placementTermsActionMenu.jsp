@@ -59,5 +59,12 @@
 			</li>
 		</c:if>
 	</sec:authorize>
+	<sec:authorize access="hasRole('PLACEMENT_TERM_VIEW') or hasRole('ADMIN')">
+		<c:if test="${not empty offender}">
+			<li>
+				<a href="${pageContext.request.contextPath}/supervision/placementTerm//placementSupOrgListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="placementSupOrgListingReportLinkLabel"/></a>
+			</li>
+		</c:if>
+	</sec:authorize>	
 </ul>
 </fmt:bundle>

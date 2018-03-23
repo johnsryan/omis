@@ -34,11 +34,11 @@ public class ProgramPlacementProfileItemServiceImpl
 	@Override
 	public Boolean findProgramPlacementExistenceByOffenderOnDate(
 			final Offender offender, final Date effectiveDate) {
-		return this.sessionFactory.getCurrentSession()
+		return !this.sessionFactory.getCurrentSession()
 				.getNamedQuery(
 					FIND_PROGRAM_PLACEMENTS_BY_OFFENDER_ON_DATE_QUERY_NAME)
 				.setParameter(OFFENDER_PARAM_NAME, offender)
 				.setParameter(DATE_PARAM_NAME, effectiveDate)
-				.uniqueResult() != null;
+				.list().isEmpty();
 	}
 }

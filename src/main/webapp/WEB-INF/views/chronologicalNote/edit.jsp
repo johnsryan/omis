@@ -38,7 +38,9 @@
 		<jsp:include page="/WEB-INF/views/common/includes/headerOffenderFormResources.jsp"/>
 		<jsp:include page="/WEB-INF/views/common/includes/messageResolverResources.jsp"/>
 		<jsp:include page="/WEB-INF/views/common/includes/toolsResources.jsp"/>
-		<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/chronologicalnote/style/chronologicalNote.css?VERSION=1.2"/>
+		<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/common/style/jquery/ui/jquery.ptTimeSelect.css"/>
+		<script type="text/javascript" src="${pageContext.request.contextPath}/resources/3rdparty/JQuery/ui/jquery.ptTimeSelect.js"> </script>
+		<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/chronologicalnote/style/chronologicalNote.css?VERSION=1.3"/>
 		<script type="text/javascript" src="${pageContext.request.contextPath}/resources/chronologicalnote/scripts/chronologicalNote.js?VERSION=1"> </script>
 	</head>
 	<body>

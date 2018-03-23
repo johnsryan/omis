@@ -28,7 +28,7 @@ import omis.questionnaire.domain.QuestionnaireType;
  * Assessment rating.
  * 
  * @author Josh Divine
- * @version 0.1.0 (Feb 23, 2018)
+ * @version 0.1.2 (Mar 14, 2018)
  * @since OMIS 3.0
  */
 public interface AssessmentRating extends Serializable {
@@ -130,4 +130,46 @@ public interface AssessmentRating extends Serializable {
 	 * @return date range
 	 */
 	DateRange getDateRange();
+	
+	/**
+	 * Sets the rating category.
+	 * 
+	 * @param category rating category
+	 */
+	void setCategory(RatingCategory category);
+	
+	/**
+	 * Returns the rating category.
+	 * 
+	 * @return rating category
+	 */
+	RatingCategory getCategory();
+	
+	/**
+	 * Sets the description.
+	 * 
+	 * @param description description
+	 */
+	void setDescription(String description);
+	
+	/**
+	 * Returns the description.
+	 * 
+	 * @return description
+	 */
+	String getDescription();
+	
+	/**
+	 * Sets the rating rank.
+	 * 
+	 * @param rank rating rank
+	 */
+	void setRank(RatingRank rank);
+	
+	/**
+	 * Returns the rating rank.
+	 * 
+	 * @return rating rank
+	 */
+	RatingRank getRank();
 }

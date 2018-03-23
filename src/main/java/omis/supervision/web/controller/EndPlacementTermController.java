@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,6 +50,7 @@ import omis.util.DateManipulator;
  * Controller for ending a placement term.
  * 
  * @author Joshua Divine
+ * @author Stephen Abson
  * @version 0.1.0 (Feb 16, 2017)
  * @since OMIS 3.0
  */
@@ -168,8 +170,7 @@ public class EndPlacementTermController {
 			final PlacementTerm placementTerm,
 			final EndPlacementTermForm endPlacementTermForm,
 			final BindingResult result) throws DuplicateEntityFoundException {
-		this.endPlacementTermFormValidator.validate(endPlacementTermForm, 
-				result);
+		this.validate(placementTerm, endPlacementTermForm, result);
 		if (result.hasErrors()) {
 			return this.prepareRedisplayMav(offender, placementTerm, 
 					endPlacementTermForm, result);
@@ -221,6 +222,22 @@ public class EndPlacementTermController {
 		this.offenderSummaryModelDelegate.add(mav.getModelMap(), offender);
 		mav.addObject(OFFENDER_MODEL_KEY, offender);
 		return mav;
+	}
+	
+	// Validates form
+	private void validate(
+			final PlacementTerm placementTerm,
+			final EndPlacementTermForm endPlacementTermForm,
+			final Errors errors) {
+		if (placementTerm.getDateRange().getStartDate().after(
+				DateManipulator.getDateAtTimeOfDay(
+						endPlacementTermForm.getEndDate(),
+						endPlacementTermForm.getEndTime()))) {
+			errors.rejectValue("endTime",
+					"endPlacementTermForm.endDate.beforeStartDate");
+		}
+		this.endPlacementTermFormValidator.validate(endPlacementTermForm, 
+				errors);
 	}
 	
 	/* Init binder. */

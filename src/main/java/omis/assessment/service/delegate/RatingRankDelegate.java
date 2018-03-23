@@ -100,7 +100,7 @@ public class RatingRankDelegate {
 	 * @return rating rank
 	 * @throws DuplicateEntityFoundException if duplicate entity exists
 	 */
-	public RatingRank create(final RatingRank ratingRank, final String name, 
+	public RatingRank update(final RatingRank ratingRank, final String name, 
 			final RatingCategory ratingCategory, final Boolean valid) 
 					throws DuplicateEntityFoundException {
 		if (this.ratingRankDao.find(name, ratingCategory) != null) {

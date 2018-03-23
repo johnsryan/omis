@@ -118,7 +118,14 @@
 	</span>
 	<span class="fieldGroup">
 		<label class="fieldLabel" for="${personFieldsPropertyName}.socialSecurityNumber"><fmt:message key="personFieldsSocialSecurityNumberLabel"/></label>
-		<input type="text" name="${personFieldsPropertyName}.socialSecurityNumber" id="${personFieldsPropertyName}SocialSecurityNumber" value="${personFields.socialSecurityNumber}"/>
+		<c:choose>
+			<c:when test="${readOnlySsn}">
+				<input type="text" name="${personFieldsPropertyName}.socialSecurityNumber" id="${personFieldsPropertyName}SocialSecurityNumber" value="${personFields.socialSecurityNumber}" disabled="true"/>
+			</c:when>
+			<c:otherwise>
+				<input type="text" name="${personFieldsPropertyName}.socialSecurityNumber" id="${personFieldsPropertyName}SocialSecurityNumber" value="${personFields.socialSecurityNumber}"/>
+			</c:otherwise>
+		</c:choose>
 		<form:errors cssClass="error" path="${personFieldsPropertyName}.socialSecurityNumber"/>
 	</span>
 	<span class="fieldGroup">

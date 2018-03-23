@@ -10,6 +10,6 @@
 <fmt:setBundle basename="omis.msgs.common" var="commonBundle"/>
 <ul>
 	<li>
-		<li><a class="createLink" id="createOffenderPhotoAssociationNoteItemLink" href="${pageContext.request.contextPath}/offenderPhoto/createOffenderPhotoAssociationNoteItem.html?offenderPhotoAssociationNoteItemIndex=${offenderPhotoAssociationNoteItemIndex}"><span class="visibleLinkLabel"><fmt:message key="newOffenderPhotoAssociationNoteItemLabel" bundle='${offenderPhotoBundle}'/></span></a></li>
+		<a class="createLink" id="createOffenderPhotoAssociationNoteItemLink" href="${pageContext.request.contextPath}/offenderPhoto/createOffenderPhotoAssociationNoteItem.html?offenderPhotoAssociationNoteItemIndex=${offenderPhotoAssociationNoteItemIndex}"><span class="visibleLinkLabel"><fmt:message key="newOffenderPhotoAssociationNoteItemLabel" bundle='${offenderPhotoBundle}'/></span></a>
 	</li>
 </ul>

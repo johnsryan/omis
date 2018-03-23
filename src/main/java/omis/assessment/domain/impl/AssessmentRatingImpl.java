@@ -20,6 +20,8 @@ package omis.assessment.domain.impl;
 import java.math.BigDecimal;
 
 import omis.assessment.domain.AssessmentRating;
+import omis.assessment.domain.RatingCategory;
+import omis.assessment.domain.RatingRank;
 import omis.datatype.DateRange;
 import omis.demographics.domain.Sex;
 import omis.questionnaire.domain.QuestionnaireType;
@@ -28,7 +30,7 @@ import omis.questionnaire.domain.QuestionnaireType;
  * Implementation of assessment rating.
  * 
  * @author Josh Divine
- * @version 0.1.0 (Feb 26, 2018)
+ * @version 0.1.3 (Mar 15, 2018)
  * @since OMIS 3.0
  */
 public class AssessmentRatingImpl implements AssessmentRating {
@@ -48,6 +50,12 @@ public class AssessmentRatingImpl implements AssessmentRating {
 	private Boolean valid;
 	
 	private DateRange dateRange;
+	
+	private RatingCategory category;
+	
+	private String description;
+	
+	private RatingRank rank;
 	
 	/**
 	 * Instantiates an implementation of assessment rating.
@@ -141,9 +149,46 @@ public class AssessmentRatingImpl implements AssessmentRating {
 		return dateRange;
 	}
 
+
 	/** {@inheritDoc} */
 	@Override
-	public boolean equals(Object obj) {
+	public void setCategory(final RatingCategory category) {
+		this.category = category;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public RatingCategory getCategory() {
+		return category;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void setDescription(final String description) {
+		this.description = description;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public String getDescription() {
+		return description;
+	}
+	
+	/** {@inheritDoc} */
+	@Override
+	public void setRank(final RatingRank rank) {
+		this.rank = rank;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public RatingRank getRank() {
+		return rank;
+	}
+	
+	/** {@inheritDoc} */
+	@Override
+	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
 		}
@@ -181,6 +226,12 @@ public class AssessmentRatingImpl implements AssessmentRating {
 		if (!this.getSex().equals(that.getSex())) {
 			return false;
 		}
+		if (this.getRank() == null) {
+			throw new IllegalStateException("Ratink rank required.");
+		}
+		if (!this.getRank().equals(that.getRank())) {
+			return false;
+		}
 		return true;
 	}
 
@@ -202,12 +253,16 @@ public class AssessmentRatingImpl implements AssessmentRating {
 		if (this.getSex() == null) {
 			throw new IllegalStateException("Sex required.");
 		}
+		if (this.getRank() == null) {
+			throw new IllegalStateException("Ratink rank required.");
+		}
 		int hashCode = 14;
 		hashCode = 29 * hashCode + this.getDateRange().hashCode();
 		hashCode = 29 * hashCode + this.getMax().hashCode();
 		hashCode = 29 * hashCode + this.getMin().hashCode();
 		hashCode = 29 * hashCode + this.getQuestionnaireType().hashCode();
 		hashCode = 29 * hashCode + this.getSex().hashCode();
+		hashCode = 29 * hashCode + this.getRank().hashCode();
 		return hashCode;
 	}
 }

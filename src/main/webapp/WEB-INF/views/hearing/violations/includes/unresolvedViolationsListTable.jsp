@@ -4,6 +4,7 @@
 	<thead>
 		<tr>
 			<th><fmt:message key="eventCategoryLabel"/></th>
+			<th><fmt:message key="eventDateLabel"/></th>
 			<th><fmt:message key="eventDetailsLabel"/></th>
 			<th><fmt:message key="violationDetailsLabel"/></th>
 		</tr>

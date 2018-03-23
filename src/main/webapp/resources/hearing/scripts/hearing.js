@@ -3,7 +3,6 @@ window.onload = function() {
 	applyDatePicker(document.getElementById("date"));
 	applyOnClickToItems();
 	applyActionMenu(document.getElementById("hearingNoteItemsActionMenuLink"), hearingNoteItemsCreateOnClick);
-	applyActionMenu(document.getElementById("staffAttendanceItemsActionMenuLink"), staffAttendanceItemsCreateOnClick);
 	applyLocationTypeOnClick();
 	applyStaffAssignmentSearch(document.getElementById("officerInput"),
 			document.getElementById("officer"),

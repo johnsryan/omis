@@ -21,7 +21,6 @@ import java.util.Date;
 
 import org.hibernate.SessionFactory;
 
-import omis.commitstatus.domain.CommitStatusTerm;
 import omis.commitstatus.report.CommitStatusTermProfileItemReportService;
 import omis.offender.domain.Offender;
 
@@ -31,7 +30,7 @@ import omis.offender.domain.Offender;
  *
  * @author Yidong Li
  * @author Josh Divine
- * @version 0.0.2 (Feb 14, 2018)
+ * @version 0.1.2 (Mar 22, 2018)
  * @since OMIS 3.0
  */
 public class CommitStatusTermProfileItemReportServiceHibernateImpl
@@ -70,15 +69,15 @@ public class CommitStatusTermProfileItemReportServiceHibernateImpl
 	
 	/** {@inheritDoc} */
 	@Override
-	public CommitStatusTerm findCommitStatusTermCountByOffenderAndDate(
+	public Integer findCommitStatusTermCountByOffenderAndDate(
 			final Offender offender, final Date effectiveDate) {
-		CommitStatusTerm term = (CommitStatusTerm) this.sessionFactory
+		Integer count = ((Long) this.sessionFactory
 				.getCurrentSession()
 				.getNamedQuery(COUNT_BY_PERSON_AND_EFFECTIVE_DATE_QUERY_NAME)
 				.setParameter(OFFENDER_PARAM_NAME, offender)
 				.setTimestamp(DATE_PARAM_NAME, effectiveDate)
 				.setReadOnly(true)
-				.uniqueResult();
-		return term;
+				.uniqueResult()).intValue();
+		return count;
 	}
 }

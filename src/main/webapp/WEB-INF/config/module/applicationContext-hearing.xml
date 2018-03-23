@@ -33,6 +33,7 @@
 			<constructor-arg name="imposedSanctionDelegate" ref="imposedSanctionDelegate" />
 			<constructor-arg name="conditionViolationDelegate" ref="conditionViolationDelegate" />
 			<constructor-arg name="disciplinaryCodeViolationDelegate" ref="disciplinaryCodeViolationDelegate" />
+			<constructor-arg name="infractionPleaDelegate" ref="infractionPleaDelegate" />
 		</bean>
 		
 		<bean id="hearingProfileItemService" class="omis.hearing.report.impl.hibernate.HearingProfileItemServiceHibernateImpl">
@@ -75,6 +76,11 @@
 			<constructor-arg name="entityName" value="omis.hearing.domain.ImposedSanction" />
 		</bean>
 		
+		<bean id="infractionPleaDao" class="omis.hearing.dao.impl.hibernate.InfractionPleaDaoHibernateImpl">
+			<constructor-arg name="sessionFactory" ref="sessionFactory" />
+			<constructor-arg name="entityName" value="omis.hearing.domain.InfractionPlea" />
+		</bean>
+		
 		<!-- Delegate -->
 		
 		<bean id="hearingDelegate" class="omis.hearing.service.delegate.HearingDelegate">
@@ -113,6 +119,12 @@
 			<constructor-arg name="auditComponentRetriever" ref="auditComponentRetriever" />
 		</bean>
 		
+		<bean id="infractionPleaDelegate" class="omis.hearing.service.delegate.InfractionPleaDelegate">
+			<constructor-arg name="infractionPleaDao" ref="infractionPleaDao" />
+			<constructor-arg name="infractionPleaInstanceFactory" ref="infractionPleaInstanceFactory" />
+			<constructor-arg name="auditComponentRetriever" ref="auditComponentRetriever" />
+		</bean>
+		
 		<!-- Instance Factory -->
 		
 		<bean id="hearingInstanceFactory" class="omis.instance.factory.hibernate.impl.InstanceFactoryHibernateImpl">
@@ -143,6 +155,11 @@
 		<bean id="imposedSanctionInstanceFactory" class="omis.instance.factory.hibernate.impl.InstanceFactoryHibernateImpl">
 			<constructor-arg name="instanceFactoryDelegate" ref="instanceFactoryDelegate" />
 			<constructor-arg name="entityName" value="omis.hearing.domain.ImposedSanction" />
+		</bean>
+		
+		<bean id="infractionPleaInstanceFactory" class="omis.instance.factory.hibernate.impl.InstanceFactoryHibernateImpl">
+			<constructor-arg name="instanceFactoryDelegate" ref="instanceFactoryDelegate" />
+			<constructor-arg name="entityName" value="omis.hearing.domain.InfractionPlea" />
 		</bean>
 		
 		<!-- Property Editor Factory -->
@@ -195,4 +212,11 @@
 			<constructor-arg name="configuration" ref="hibernateConfiguration" />
 		</bean>
 		
+		<bean id="infractionPleaPropertyEditorFactory"
+		class="omis.beans.factory.impl.hibernate.PropertyEditorFactoryHibernateImpl">
+			<constructor-arg name="dao" ref="infractionPleaDao" />
+			<constructor-arg name="entityName"
+				value="omis.hearing.domain.InfractionPlea" />
+			<constructor-arg name="configuration" ref="hibernateConfiguration" />
+		</bean>
 </beans>

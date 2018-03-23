@@ -6,7 +6,7 @@
  * Since: OMIS 3.0
  */
  
-form.listForm fieldset span.categoryListContainer span{
+form.listForm fieldset span.categoryListContainer label{
    display: inline-block;
    width: 24%;
    min-width: 300px;
@@ -74,4 +74,16 @@ form.listForm select, form select {
     min-width: 90px;      
     text-indent: 0.01px;
     text-overflow: ""; 
+}
+
+form.listForm fieldset legend a.groupsVisibilityLink {
+	padding: 0px 0px 0px 5px;
+}
+
+ form.listForm fieldset span.categoryContainer {
+   display: inline-block;
+   width: 24%;
+   min-width: 300px;
+   text-align: left;
+   margin: 3px 0px 3px 0px;
 }

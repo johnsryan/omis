@@ -47,6 +47,7 @@
 	  select note
 	  from omis.victim.domain.VictimNote note
 	  where note.victim = :victim
+	  order by note.date desc
 	]]></query>
 	<query name="findVictimNotesByAssociation"><![CDATA[
 	  select note

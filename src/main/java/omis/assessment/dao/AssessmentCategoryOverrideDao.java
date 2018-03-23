@@ -58,4 +58,14 @@ public interface AssessmentCategoryOverrideDao
 			AssessmentCategoryScore assessmentCategoryScore, 
 			AssessmentRating assessmentRating,
 			AssessmentCategoryOverride excludedAssessmentCategoryOverride);
+
+	/**
+	 * Returns the assessment category override for the specified assessment 
+	 * category score.
+	 * 
+	 * @param assessmentCategoryScore assessment category score
+	 * @return assessment category override
+	 */
+	AssessmentCategoryOverride findByAssessmentCategoryScore(
+			AssessmentCategoryScore assessmentCategoryScore);
 }

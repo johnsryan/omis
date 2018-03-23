@@ -60,7 +60,8 @@
 		and
 			(supervisoryOrganizationCode.dateRange.startDate <= :effectiveDate)
 			and (supervisoryOrganizationCode.dateRange.endDate > :effectiveDate
-				or supervisoryOrganizationCode.dateRange.endDate is null) 
+				or supervisoryOrganizationCode.dateRange.endDate is null)
+		order by disciplinaryCode.value asc
 	]]></query>
 	
 	

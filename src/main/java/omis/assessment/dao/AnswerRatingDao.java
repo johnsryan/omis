@@ -17,9 +17,12 @@
 */
 package omis.assessment.dao;
 
+import java.util.List;
+
 import omis.assessment.domain.AnswerRating;
 import omis.assessment.domain.RatingCategory;
 import omis.dao.GenericDao;
+import omis.questionnaire.domain.AdministeredQuestionnaire;
 import omis.questionnaire.domain.AnswerValue;
 
 /**
@@ -51,4 +54,16 @@ public interface AnswerRatingDao extends GenericDao<AnswerRating> {
 	 */
 	AnswerRating findExcluding(AnswerValue answerValue, 
 			RatingCategory ratingCategory, AnswerRating excludedAnswerRating);
+
+	/**
+	 * Returns a list of answer ratings for the specified rating category and 
+	 * administered questionnaire.
+	 * 
+	 * @param ratingCategory rating category
+	 * @param administeredQuestionnaire administered questionnaire
+	 * @return list of answer ratings
+	 */
+	List<AnswerRating> findByRatingCategoryAndAdministeredQuestionnaire(
+			RatingCategory ratingCategory,
+			AdministeredQuestionnaire administeredQuestionnaire);
 }

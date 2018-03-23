@@ -1,5 +1,12 @@
 window.onload = function() {
 	applyActionMenu(document.getElementById("actionMenuLink"));
+	if(document.getElementById("staffAttendanceItemsActionMenuLink")) {
+		applyActionMenu(document.getElementById("staffAttendanceItemsActionMenuLink"), staffAttendanceItemsCreateOnClick);
+	}
+
+	for (var index = 0; index < currentStaffAttendanceItemIndex; index++) {
+		staffAttendanceItemRowOnClick(index);
+	}
 
 	var dateInputs = document.getElementsByClassName("date");
 	for(var i = 0; i < dateInputs.length; i++){

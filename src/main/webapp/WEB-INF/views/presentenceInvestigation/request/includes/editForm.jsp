@@ -165,6 +165,13 @@
 			<form:input path="expectedCompletionDate" class="date"/>
 			<form:errors path="expectedCompletionDate" cssClass="error"/>
 		</span>
+		<span class="fieldGroup">
+			<form:label path="submissionDate" class="fieldLabel">
+				<fmt:message key="submissionDateLabel"/>
+			</form:label>
+			<form:input path="submissionDate" class="date"/>
+			<form:errors path="submissionDate" cssClass="error"/>
+		</span>
 	</fieldset>
 	
 	

@@ -242,6 +242,9 @@ public class PlacementTermController {
 	private static final String PLACEMENT_LISTING_REPORT_NAME 
 		= "/Placement/PlacementTerms/Placement_Listing";
 	
+	private static final String PLACEMENT_BY_SUP_ORG_LISTING_REPORT_NAME 
+	    = "/Placement/PlacementTerms/Placement_Term_by_Supervisory_Organization_Listing";	
+	
 	private static final String PLACEMENT_DETAILS_REPORT_NAME 
 		= "/Placement/PlacementTerms/Placement_Term_Details";	
 
@@ -1222,6 +1225,31 @@ public class PlacementTermController {
 		return this.reportControllerDelegate.constructReportResponseEntity(
 				doc, reportFormat);
 	}
+	
+	/**
+	 * Returns the report for the specified offenders placements by sup org.
+	 * 
+	 * @param offender offender
+	 * @param reportFormat report format
+	 * @return response entity with report
+	 */
+	@RequestMapping(value = "/placementSupOrgListingReport.html",
+			method = RequestMethod.GET)
+	@PreAuthorize("hasRole('PLACEMENT_TERM_VIEW') or hasRole('ADMIN')")
+	public ResponseEntity<byte []> reportPlacementSupOrgListing(@RequestParam(
+			value = "offender", required = true)
+			final Offender offender,
+			@RequestParam(value = "reportFormat", required = true)
+			final ReportFormat reportFormat) {
+		Map<String, String> reportParamMap = new HashMap<String, String>();
+		reportParamMap.put(PLACEMENT_LISTING_ID_REPORT_PARAM_NAME,
+				Long.toString(offender.getOffenderNumber()));
+		byte[] doc = this.reportRunner.runReport(
+				PLACEMENT_BY_SUP_ORG_LISTING_REPORT_NAME,
+				reportParamMap, reportFormat);
+		return this.reportControllerDelegate.constructReportResponseEntity(
+				doc, reportFormat);
+	}	
 	
 	/**
 	 * Returns the report for the specified placement term.

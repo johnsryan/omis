@@ -12,6 +12,7 @@ import omis.region.domain.State;
  * Person fields.
  * 
  * @author Joel Norris
+ * @author Sheronda Vaughn
  * @version 0.1.0 (Jun 9, 2015)
  * @since OMIS 3.0
  */
@@ -37,7 +38,7 @@ public class PersonFields implements Serializable {
 	
 	private City birthCity;
 	
-	private Integer socialSecurityNumber;
+	private String socialSecurityNumber;
 	
 	private String stateIdNumber;
 	
@@ -77,7 +78,7 @@ public class PersonFields implements Serializable {
 		final String middleName, final String suffix, final Sex sex,
 		final Date birthDate, final Country birthCountry,
 		final State birthState, final City birthCity,
-		final Integer socialSecurityNumber, final String stateId,
+		final String socialSecurityNumber, final String stateId,
 		final Boolean deceased, final Date deathDate,
 		final Boolean newCity,final String cityName) {
 		this.firstName = firstName;
@@ -264,7 +265,7 @@ public class PersonFields implements Serializable {
 	 * 
 	 * @return social security number
 	 */
-	public Integer getSocialSecurityNumber() {
+	public String getSocialSecurityNumber() {
 		return this.socialSecurityNumber;
 	}
 
@@ -272,8 +273,9 @@ public class PersonFields implements Serializable {
 	 * Sets social security number.
 	 * 
 	 * @param socialSecurityNumber social security number
+	 * @return social security number 
 	 */
-	public void setSocialSecurityNumber(final Integer socialSecurityNumber) {
+	public void setSocialSecurityNumber(final String socialSecurityNumber) {
 		this.socialSecurityNumber = socialSecurityNumber;
 	}
 

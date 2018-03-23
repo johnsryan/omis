@@ -87,7 +87,6 @@
 		</span>
 		
 		<span class="fieldGroup">
-			
 			<form:label path="officer" class="fieldLabel">
 				<fmt:message key="hearingOfficerLabel"/>
 			</form:label>
@@ -100,31 +99,9 @@
 				</c:if>
 			</span>
 			<form:errors path="officer" cssClass="error"/>
-			
-			
-			
-		</span>
-		
-		<span class="fieldGroup">
-			<form:label path="inAttendance" class="fieldLabel">
-				<fmt:message key="offenderPresentLabel"/>
-			</form:label>
-			<form:checkbox path="inAttendance" />
-			<form:errors path="inAttendance" cssClass="error"/>
 		</span>
 	</fieldset>
-		
-		<!-- Attended Staff Items -->
-	<fieldset>
-		<legend>
-			<fmt:message key="attendedStaffLabel"/>
-		</legend>
-		<span class="fieldGroup">
-			<form:errors path="staffAttendanceItems" cssClass="error"/>
-			<c:set var="staffAttendanceItems" value="${hearingForm.staffAttendanceItems}" scope="request"/>
-			<jsp:include page="staffAttendanceTable.jsp"/>
-		</span>
-	</fieldset>
+	
 	<fieldset>
 		<legend>
 			<fmt:message key="infractionsLabel" />
@@ -143,10 +120,8 @@
 		<legend>
 			<fmt:message key="notesLabel" />
 		</legend>
-		<span class="fieldGroup">
-			<c:set var="hearingNoteItems" value="${hearingForm.hearingNoteItems}" scope="request"/>
-			<jsp:include page="hearingNoteTable.jsp"/>
-		</span>
+		<c:set var="hearingNoteItems" value="${hearingForm.hearingNoteItems}" scope="request"/>
+		<jsp:include page="hearingNoteTable.jsp"/>
 	</fieldset>
 		
 	

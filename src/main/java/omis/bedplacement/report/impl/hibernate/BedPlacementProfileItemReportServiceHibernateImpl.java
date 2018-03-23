@@ -51,13 +51,13 @@ public class BedPlacementProfileItemReportServiceHibernateImpl
 
 	/** {@inheritDoc} */
 	@Override
-	public String findBedPlacementExistenceByOffenderAndDate(
+	public Boolean findBedPlacementExistenceByOffenderAndDate(
 			final Offender offender, final Date effectiveDate) {
-		return ((String)this.sessionFactory.getCurrentSession().getNamedQuery(
+		return !(this.sessionFactory.getCurrentSession().getNamedQuery(
 				FIND_BED_PLACEMENT_COUNT_BY_OFFENDER_AND_DATE_QUERY_NAME)
 				.setParameter(OFFENDER_PARAM_NAME, offender)
 				.setDate(EFFECTIVE_DATE_PARAM_NAME, effectiveDate)
 				.setReadOnly(true)
-				.uniqueResult());
+				.list().isEmpty());
 	}
 }

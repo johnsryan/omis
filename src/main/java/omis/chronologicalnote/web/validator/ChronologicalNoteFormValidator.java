@@ -31,6 +31,7 @@ import omis.web.validator.StringLengthChecks;
  * Chronological note from validator.
  * 
  * @author Joel Norris
+ * @author Sheronda Vaughn
  * @version 0.1.0 (February 7, 2018)
  * @since OMIS 3.0
  */
@@ -39,7 +40,8 @@ public class ChronologicalNoteFormValidator implements Validator {
 	/* Helpers. */
 	
 	/*
-	 * TODO: Use String length checks object once database unique key issue for chronological notes
+	 * TODO: Use String length checks object once database unique key issue 
+	 * for chronological notes
 	 * is resolved. - JN
 	 */
 	@SuppressWarnings("unused")
@@ -50,11 +52,13 @@ public class ChronologicalNoteFormValidator implements Validator {
 	private final int NARRATIVE_MAX_LENGTH = 6000;
 	
 	/**
-	 * Instantiates a chronological note form validator with the specified string length checks.
+	 * Instantiates a chronological note form validator with the specified 
+	 * string length checks.
 	 * 
 	 * @param stringLengthChecks string length checks
 	 */
-	public ChronologicalNoteFormValidator(final StringLengthChecks stringLengthChecks) {
+	public ChronologicalNoteFormValidator(final StringLengthChecks 
+			stringLengthChecks) {
 		this.stringLengthChecks = stringLengthChecks;
 	}
 	
@@ -68,12 +72,17 @@ public class ChronologicalNoteFormValidator implements Validator {
 	@Override
 	public void validate(final Object target, final Errors errors) {
 		ChronologicalNoteForm form = (ChronologicalNoteForm) target;
-		if(form.getNarrative() == null || form.getNarrative().isEmpty()) {
-			errors.rejectValue("narrative", "chronologicalNote.narrative.empty");
-		} else {
+		if (form.getTitle() == null || form.getTitle().isEmpty()) {
+			errors.rejectValue("title", "chronologicalNote.title.empty");
+		} 		
+		if (form.getNarrative() == null || form.getNarrative().isEmpty()) {
+			errors.rejectValue("narrative", 
+					"chronologicalNote.narrative.empty");
+		} else {		
 			//FIXME: Use document check once data tier issue is resolved.
-			if(form.getNarrative().length() > NARRATIVE_MAX_LENGTH) {
-				errors.rejectValue("narrative", "chronologicalNote.narrative.lengthExceeded");
+			if (form.getNarrative().length() > NARRATIVE_MAX_LENGTH) {
+				errors.rejectValue("narrative", 
+						"chronologicalNote.narrative.lengthExceeded");
 			}
 //			this.stringLengthChecks.getDocumentCheck().check(
 //					"narrative", form.getNarrative(), errors);
@@ -85,9 +94,15 @@ public class ChronologicalNoteFormValidator implements Validator {
 				errors.rejectValue("date", "chronologicalNote.date.futureDate");
 			}
 		}
+		if (form.getDateTime() == null) {
+			errors.rejectValue("dateTime", "chronologicalNote.date.time.empty");
+		} 
 		boolean categorized = false;
 		for (ChronologicalNoteCategoryItem item : form.getItems()) {
-			if((item.getAssociated() && !ChronologicalNoteCategoryItemOperation.DISSOCIATE.equals(item.getOperation())) || ChronologicalNoteCategoryItemOperation.ASSOCIATE.equals(item.getOperation())) {
+			if ((item.getAssociated() && !ChronologicalNoteCategoryItemOperation
+					.DISSOCIATE.equals(item.getOperation())) 
+					|| ChronologicalNoteCategoryItemOperation.ASSOCIATE.equals(
+							item.getOperation())) {
 				categorized = true;
 			}
 		}
@@ -96,5 +111,4 @@ public class ChronologicalNoteFormValidator implements Validator {
 		}
 		
 	}
-
 }

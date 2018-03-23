@@ -1,9 +1,25 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.hearing.service.impl;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import omis.communitysupervision.dao.CommunitySupervisionOfficeDao;
 import omis.communitysupervision.domain.CommunitySupervisionOffice;
 import omis.exception.DuplicateEntityFoundException;
@@ -16,6 +32,7 @@ import omis.hearing.domain.HearingStatus;
 import omis.hearing.domain.HearingStatusCategory;
 import omis.hearing.domain.ImposedSanction;
 import omis.hearing.domain.Infraction;
+import omis.hearing.domain.InfractionPlea;
 import omis.hearing.domain.StaffAttendance;
 import omis.hearing.domain.component.Resolution;
 import omis.hearing.service.HearingService;
@@ -45,10 +62,10 @@ import omis.violationevent.service.delegate.DisciplinaryCodeViolationDelegate;
 import omis.violationevent.service.delegate.ViolationEventDelegate;
 
 /**
- * HearingServiceImpl.java
+ * Hearing Service Implementation.
  * 
- *@author Annie Jacques 
- *@version 0.1.1 (Apr 18, 2017)
+ *@author Annie Wahl 
+ *@version 0.1.2 (Feb 28, 2018)
  *@since OMIS 3.0
  *
  */
@@ -89,18 +106,23 @@ public class HearingServiceImpl implements HearingService {
 	
 	
 	/**
-	 * @param hearingDelegate
-	 * @param hearingNoteDelegate
-	 * @param staffAttendanceDelegate
-	 * @param hearingStatusDelegate
-	 * @param infractionDelegate
-	 * @param violationEventDelegate
-	 * @param jailDelegate
-	 * @param facilityDelegate
-	 * @param treatmentCenterDao
-	 * @param preReleaseCenterDao
-	 * @param communitySupervisionOfficeDao
-	 * @param supervisoryOrganizationDao
+	 * @param hearingDelegate - hearing delegate
+	 * @param hearingNoteDelegate - hearing note delegate
+	 * @param staffAttendanceDelegate - staff attendance delegate
+	 * @param hearingStatusDelegate - hearing status delegate
+	 * @param infractionDelegate - infraction delegate
+	 * @param imposedSanctionDelegate - imposed sanction delegate
+	 * @param violationEventDelegate - violation event delegate
+	 * @param conditionViolationDelegate - condition violation delegate
+	 * @param disciplinaryCodeViolationDelegate - disciplinary code violation
+	 * delegate
+	 * @param jailDelegate - jail delegate
+	 * @param facilityDelegate - facility delegate
+	 * @param locationDelegate - location delegate
+	 * @param treatmentCenterDao - treatment center dao
+	 * @param preReleaseCenterDao - prerelease center dao
+	 * @param communitySupervisionOfficeDao - community supervision office dao
+	 * @param supervisoryOrganizationDao - supervisory organization dao
 	 */
 	public HearingServiceImpl(final HearingDelegate hearingDelegate,
 			final HearingNoteDelegate hearingNoteDelegate,
@@ -141,9 +163,10 @@ public class HearingServiceImpl implements HearingService {
 	/**{@inheritDoc} */
 	@Override
 	public Hearing createHearing(final Location location,
-			final Offender offender, final Boolean inAttendance, final Date date,
-			final HearingCategory category, final StaffAssignment officer)
-			throws DuplicateEntityFoundException {
+			final Offender offender, final Boolean inAttendance,
+			final Date date, final HearingCategory category,
+			final StaffAssignment officer)
+					throws DuplicateEntityFoundException {
 		return this.hearingDelegate.create(location, offender, inAttendance,
 				date, category, officer);
 	}
@@ -153,7 +176,7 @@ public class HearingServiceImpl implements HearingService {
 	public Hearing updateHearing(final Hearing hearing, final Location location,
 			final Boolean inAttendance, final Date date,
 			final HearingCategory category, final StaffAssignment officer)
-			throws DuplicateEntityFoundException {
+					throws DuplicateEntityFoundException {
 		return this.hearingDelegate.update(hearing, location, inAttendance,
 				date, category, officer);
 	}
@@ -168,7 +191,7 @@ public class HearingServiceImpl implements HearingService {
 	@Override
 	public HearingNote createHearingNote(final Hearing hearing,
 			final String description, final Date date)
-			throws DuplicateEntityFoundException {
+					throws DuplicateEntityFoundException {
 		return this.hearingNoteDelegate.create(hearing, description, date);
 	}
 
@@ -176,7 +199,7 @@ public class HearingServiceImpl implements HearingService {
 	@Override
 	public HearingNote updateHearingNote(final HearingNote hearingNote,
 			final String description, final Date date)
-			throws DuplicateEntityFoundException {
+					throws DuplicateEntityFoundException {
 		return this.hearingNoteDelegate.update(
 				hearingNote, description, date);
 	}
@@ -228,7 +251,7 @@ public class HearingServiceImpl implements HearingService {
 	public List<Location> findFacilityLocations() {
 		List<Facility> facilities = this.facilityDelegate.findAll();
 		List<Location> locations = new ArrayList<Location>();
-		for(Facility facility : facilities){
+		for (Facility facility : facilities) {
 			locations.add(facility.getLocation());
 		}
 		return locations;
@@ -239,7 +262,7 @@ public class HearingServiceImpl implements HearingService {
 	public List<Location> findJailLocations() {
 		List<Jail> jails = this.jailDelegate.findAll();
 		List<Location> locations = new ArrayList<Location>();
-		for(Jail jail : jails){
+		for (Jail jail : jails) {
 			locations.add(jail.getLocation());
 		}
 		return locations;
@@ -276,10 +299,10 @@ public class HearingServiceImpl implements HearingService {
 	public Infraction createInfraction(final Hearing hearing,
 			final ConditionViolation conditionViolation,
 			final DisciplinaryCodeViolation disciplinaryCodeViolation,
-			final Resolution resolution)
+			final Resolution resolution, final InfractionPlea plea)
 					throws DuplicateEntityFoundException {
 		return this.infractionDelegate.create(hearing, conditionViolation,
-				disciplinaryCodeViolation, resolution);
+				disciplinaryCodeViolation, resolution, plea);
 	}
 
 	/**{@inheritDoc} */
@@ -287,10 +310,10 @@ public class HearingServiceImpl implements HearingService {
 	public Infraction updateInfraction(final Infraction infraction,
 			final ConditionViolation conditionViolation,
 			final DisciplinaryCodeViolation disciplinaryCodeViolation,
-			final Resolution resolution)
+			final Resolution resolution, final InfractionPlea plea)
 					throws DuplicateEntityFoundException {
 		return this.infractionDelegate.update(infraction, conditionViolation,
-				disciplinaryCodeViolation, resolution);
+				disciplinaryCodeViolation, resolution, plea);
 	}
 
 	/**{@inheritDoc} */
@@ -329,10 +352,10 @@ public class HearingServiceImpl implements HearingService {
 		List<Location> locations =
 				this.locationDelegate.findAll();
 		
-		for(Location location : locations){
-			for(TreatmentCenter treatmentCenter : treatmentCenters){
-				if(treatmentCenter.getLocation()
-						.equals(location)){
+		for (Location location : locations) {
+			for (TreatmentCenter treatmentCenter : treatmentCenters) {
+				if (treatmentCenter.getLocation()
+						.equals(location)) {
 					treatmentCenterLocations
 						.add(location);
 				}
@@ -353,10 +376,10 @@ public class HearingServiceImpl implements HearingService {
 		List<Location> locations =
 				this.locationDelegate.findAll();
 		
-		for(Location location : locations){
-			for(PreReleaseCenter preReleaseCenter : preReleaseCenters){
-				if(preReleaseCenter.getLocation()
-						.equals(location)){
+		for (Location location : locations) {
+			for (PreReleaseCenter preReleaseCenter : preReleaseCenters) {
+				if (preReleaseCenter.getLocation()
+						.equals(location)) {
 					preReleaseCenterLocations
 						.add(location);
 				}
@@ -377,11 +400,11 @@ public class HearingServiceImpl implements HearingService {
 		List<Location> locations =
 				this.locationDelegate.findAll();
 		
-		for(Location location : locations){
-			for(CommunitySupervisionOffice communitySupervisionOffice :
-					communitySupervisionOffices){
-				if(communitySupervisionOffice.getLocation()
-						.equals(location)){
+		for (Location location : locations) {
+			for (CommunitySupervisionOffice communitySupervisionOffice
+					: communitySupervisionOffices) {
+				if (communitySupervisionOffice.getLocation()
+						.equals(location)) {
 					communitySupervisionOfficeLocations
 						.add(location);
 				}
@@ -430,7 +453,8 @@ public class HearingServiceImpl implements HearingService {
 
 	/**{@inheritDoc} */
 	@Override
-	public List<HearingStatus> findHearingStatusesByHearing(Hearing hearing) {
+	public List<HearingStatus> findHearingStatusesByHearing(
+			final Hearing hearing) {
 		return this.hearingStatusDelegate.findByHearing(hearing);
 	}
 }

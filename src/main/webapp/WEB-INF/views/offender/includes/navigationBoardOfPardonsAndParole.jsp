@@ -3,6 +3,17 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <fmt:bundle basename="omis.offender.msgs.navigation">
 <div class="navItems">
+	<c:if test="${offenderProfileItemsProperties.boardHearingProfileItemEnabled}">
+		<div class="foregroundUltraLight navItemContainer">
+			<div class="navItem">
+				<a href="${pageContext.request.contextPath}/boardHearing/list.html?offender=${offenderSummary.id}">
+					<span>
+						<fmt:message key="boardHearingLabel"/>
+					</span>
+				</a>
+			</div>
+		</div>
+	</c:if>
 	<c:if test="${offenderProfileItemsProperties.paroleBoardAgreementProfileItemEnabled}">
 		<div class="foregroundUltraLight navItemContainer">
 			<div class="navItem">

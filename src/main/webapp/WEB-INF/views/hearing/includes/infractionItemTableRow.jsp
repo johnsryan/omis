@@ -20,7 +20,7 @@
 				<span class="showOverflow"></span>
 			</td>
 			<td>
-				<c:out value="${infractionItem.disciplinaryCodeViolation.disciplinaryCode.description}" />
+				<c:out value="${infractionItem.disciplinaryCodeViolation.disciplinaryCode.value}" /> - <c:out value="${infractionItem.disciplinaryCodeViolation.disciplinaryCode.description}" />
 			</td>
 		</tr>
 	</c:if>
@@ -41,7 +41,7 @@
 				<span class="showOverflow"></span>
 			</td>
 			<td>
-				<c:out value="${infractionItem.conditionViolation.condition.clause}" />
+				<c:out value="${infractionItem.conditionViolation.condition.conditionClause.conditionTitle.title}" /> - <c:out value="${infractionItem.conditionViolation.condition.clause}" />
 			</td>
 		</tr>
 	</c:if>

@@ -70,11 +70,11 @@ public class LocationTermProfileItemReportServiceHibernateImpl
 	@Override
 	public boolean findLocationExistenceByOffenderAndDate(
 			final Offender offender, final Date effectiveDate) {
-		return sessionFactory.getCurrentSession().getNamedQuery(
+		return !this.sessionFactory.getCurrentSession().getNamedQuery(
 				FIND_FOR_OFFENDER_ON_DATE_QUERY_NAME)
 			.setParameter(OFFENDER_PARAM_NAME, offender)
 			.setTimestamp(DATE_PARAM_NAME, effectiveDate)
 			.setReadOnly(true)
-			.uniqueResult() != null;
+			.list().isEmpty();
 	}
 }

@@ -18,9 +18,12 @@
 package omis.assessment.service.delegate;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import omis.assessment.dao.AssessmentRatingDao;
 import omis.assessment.domain.AssessmentRating;
+import omis.assessment.domain.RatingCategory;
+import omis.assessment.domain.RatingRank;
 import omis.datatype.DateRange;
 import omis.demographics.domain.Sex;
 import omis.exception.DuplicateEntityFoundException;
@@ -31,7 +34,7 @@ import omis.questionnaire.domain.QuestionnaireType;
  * Assessment rating delegate.
  * 
  * @author Josh Divine
- * @version 0.1.0 (Feb 26, 2018)
+ * @version 0.1.2 (Mar 14, 2018)
  * @since OMIS 3.0
  */
 public class AssessmentRatingDelegate {
@@ -69,23 +72,28 @@ public class AssessmentRatingDelegate {
 	 * @param min min
 	 * @param max max
 	 * @param valid valid
+	 * @param category rating category
+	 * @param description description
+	 * @param rank rating rank
 	 * @return assessment rating
 	 * @throws DuplicateEntityFoundException if duplicate entity exists
 	 */
 	public AssessmentRating create(final QuestionnaireType questionnaireType, 
 			final Sex sex, final DateRange dateRange, final BigDecimal min, 
-			final BigDecimal max, final Boolean valid) 
+			final BigDecimal max, final Boolean valid, 
+			final RatingCategory category, final String description,
+			final RatingRank rank) 
 					throws DuplicateEntityFoundException {
 		if (this.assessmentRatingDao.find(questionnaireType, sex, min, max, 
 				DateRange.getStartDate(dateRange), 
-				DateRange.getEndDate(dateRange)) != null) {
+				DateRange.getEndDate(dateRange), category, rank) != null) {
 			throw new DuplicateEntityFoundException(
 					"Assessment rating already exists.");
 		}
 		AssessmentRating assessmentRating = this.assessmentRatingInstanceFactory
 				.createInstance();
 		populateAssessmentRating(assessmentRating, questionnaireType, sex, 
-				dateRange, min, max, valid);
+				dateRange, min, max, valid, category, description, rank);
 		return this.assessmentRatingDao.makePersistent(assessmentRating);
 	}
 	
@@ -99,22 +107,28 @@ public class AssessmentRatingDelegate {
 	 * @param min min
 	 * @param max max
 	 * @param valid valid
+	 * @param category rating category
+	 * @param description description
+	 * @param rank rating rank
 	 * @return assessment rating
 	 * @throws DuplicateEntityFoundException if duplicate entity exists
 	 */
-	public AssessmentRating create(final AssessmentRating assessmentRating,
+	public AssessmentRating update(final AssessmentRating assessmentRating,
 			final QuestionnaireType questionnaireType, final Sex sex, 
 			final DateRange dateRange, final BigDecimal min, 
-			final BigDecimal max, final Boolean valid) 
+			final BigDecimal max, final Boolean valid, 
+			final RatingCategory category, final String description,
+			final RatingRank rank) 
 					throws DuplicateEntityFoundException {
 		if (this.assessmentRatingDao.findExcluding(questionnaireType, sex, min, 
 				max, DateRange.getStartDate(dateRange), 
-				DateRange.getEndDate(dateRange), assessmentRating) != null) {
+				DateRange.getEndDate(dateRange), category, rank, 
+				assessmentRating) != null) {
 			throw new DuplicateEntityFoundException(
 					"Assessment rating already exists.");
 		}
 		populateAssessmentRating(assessmentRating, questionnaireType, sex, 
-				dateRange, min, max, valid);
+				dateRange, min, max, valid, category, description, rank);
 		return this.assessmentRatingDao.makePersistent(assessmentRating);
 	}
 	
@@ -127,17 +141,33 @@ public class AssessmentRatingDelegate {
 		this.assessmentRatingDao.makeTransient(assessmentRating);
 	}
 
+	/**
+	 * Returns a list of assessment ratings for the specified rating category.
+	 * 
+	 * @param ratingCategory rating category
+	 * @return list of assessment ratings
+	 */
+	public List<AssessmentRating> findByRatingCategory(
+			final RatingCategory ratingCategory) {
+		return this.assessmentRatingDao.findByRatingCategory(ratingCategory);
+	}
+	
 	// Populates an assessment rating
 	private void populateAssessmentRating(
 			final AssessmentRating assessmentRating,
 			final QuestionnaireType questionnaireType, final Sex sex, 
 			final DateRange dateRange, final BigDecimal min,
-			final BigDecimal max, final Boolean valid) {
+			final BigDecimal max, final Boolean valid, 
+			final RatingCategory category, final String description,
+			final RatingRank rank) {
 		assessmentRating.setDateRange(dateRange);
 		assessmentRating.setMax(max);
 		assessmentRating.setMin(min);
 		assessmentRating.setQuestionnaireType(questionnaireType);
 		assessmentRating.setSex(sex);
 		assessmentRating.setValid(valid);
+		assessmentRating.setCategory(category);
+		assessmentRating.setDescription(description);
+		assessmentRating.setRank(rank);
 	}
 }

@@ -546,7 +546,7 @@ public class VisitationAssociationController {
 			visitor = this.visitationAssociationService.createVisitor(
 					personFields.getLastName(), personFields.getFirstName(),
 					personFields.getMiddleName(), personFields.getSuffix(),
-					personFields.getSocialSecurityNumber(),
+					Integer.valueOf(personFields.getSocialSecurityNumber().replaceAll("-", "")),
 					personFields.getBirthDate(), personFields.getBirthCity(),
 					personFields.getBirthState(),
 					personFields.getBirthCountry(), personFields.getSex(),
@@ -657,6 +657,7 @@ public class VisitationAssociationController {
 		required = true) final VisitationAssociation visitationAssociation) {
 		Offender offender = (Offender) visitationAssociation.getRelationship()
 				.getFirstPerson();
+		//TODO:remove visits or throw business exception before removing visitation association
 		this.visitationAssociationService.remove(visitationAssociation);		
 		return new ModelAndView(String.format(
 				LIST_REDIRECT_URL + offender.getId()));		

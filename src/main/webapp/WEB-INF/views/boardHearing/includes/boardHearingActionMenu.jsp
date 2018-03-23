@@ -14,5 +14,22 @@
 				<a class="listLink" href="${pageContext.request.contextPath}/hearingAnalysis/edit.html?eligibility=${paroleEligibility.id}"><span class="visibleLinkLabel"><fmt:message key="viewHearingAnalysisLink"/></span></a>
 			</li>
 		</sec:authorize>
+		<c:if test="${not empty boardHearing}">
+		<sec:authorize access="hasRole('HEARING_PARTICIPANT_VIEW') or hasRole('ADMIN')">
+			<li>
+				<a class="listLink" href="${pageContext.request.contextPath}/hearingParticipant/list.html?boardHearing=${boardHearing.id}"><span class="visibleLinkLabel"><fmt:message key="listHearingParticipantLink"/></span></a>
+			</li>
+		</sec:authorize>
+		<sec:authorize access="hasRole('BOARD_HEARING_DOCUMENT_VIEW') or hasRole('ADMIN')">
+			<li>
+				<a class="listLink" href="${pageContext.request.contextPath}/boardHearing/document/list.html?boardHearing=${boardHearing.id}"><span class="visibleLinkLabel"><fmt:message key="listBoardhearingDocumentLink"/></span></a>
+			</li>
+		</sec:authorize>
+		<sec:authorize access="hasRole('BOARD_HEARING_DECISION_VIEW') or hasRole('ADMIN')">
+			<li>
+				<a class="listLink" href="${pageContext.request.contextPath}/boardHearingDecision/edit.html?boardHearing=${boardHearing.id}"><span class="visibleLinkLabel"><fmt:message key="viewBoardHearingDecision"/></span></a>
+			</li>
+		</sec:authorize>
+		</c:if>
 	</ul>
 </fmt:bundle>

@@ -8,10 +8,22 @@
 		   psir.id,
 		   offender.id,
 			docket.value,
-		   psir.requestDate, 'started', personName.firstName, personName.lastName, userAccount.username,
+		   psir.requestDate, personName.firstName, personName.lastName, userAccount.username,
 		   psir.expectedCompletionDate, psir.completionDate,
 		   offenderName.firstName, offenderName.lastName, offenderName.middleName, offender.offenderNumber,
-		   psir.sentenceDate, category.name)
+		   psir.sentenceDate, category.name,
+		   (select count(*)
+		      from omis.presentenceinvestigation.domain.PresentenceInvestigationTaskAssociation pita2
+		inner join pita2.task task
+		     where pita2.presentenceInvestigationRequest = psir
+		       and task.completionDate is not null
+		   ),
+		   (select count(*) 
+		       from omis.presentenceinvestigation.domain.PresentenceInvestigationTaskGroup pitg,
+		            omis.task.domain.TaskTemplate tt
+		      where pitg.presentenceInvestigationCategory = category
+		        and pitg.group = tt.group),
+		        psir.submissionDate)
       from
 	omis.presentenceinvestigation.domain.PresentenceInvestigationRequest psir
 		inner join psir.category category
@@ -29,10 +41,22 @@
 		   psir.id,
 		   offender.id,
 			docket.value,
-		   psir.requestDate, 'started', personName.firstName, personName.lastName, userAccount.username,
+		   psir.requestDate, personName.firstName, personName.lastName, userAccount.username,
 		   psir.expectedCompletionDate, psir.completionDate,
 		   offenderName.firstName, offenderName.lastName, offenderName.middleName, offender.offenderNumber,
-		   psir.sentenceDate, category.name)
+		   psir.sentenceDate, category.name,
+		   (select count(*)
+		      from omis.presentenceinvestigation.domain.PresentenceInvestigationTaskAssociation pita2
+		inner join pita2.task task
+		     where pita2.presentenceInvestigationRequest = psir
+		       and task.completionDate is not null
+		   ),
+		   (select count(*) 
+		      from omis.presentenceinvestigation.domain.PresentenceInvestigationTaskGroup pitg,
+		           omis.task.domain.TaskTemplate tt
+		     where pitg.presentenceInvestigationCategory = category
+		       and pitg.group = tt.group),
+		   psir.submissionDate)
       from omis.presentenceinvestigation.domain.PresentenceInvestigationRequest psir
 		inner join psir.category category
 		inner join psir.docket docket
@@ -48,10 +72,21 @@
 			psir.id,
 			offender.id,
 			docket.value,
-			psir.requestDate, 'started', personName.firstName, personName.lastName, userAccount.username,
+			psir.requestDate,  personName.firstName, personName.lastName, userAccount.username,
 			psir.expectedCompletionDate, psir.completionDate,
 			offenderName.firstName, offenderName.lastName, offenderName.middleName, offender.offenderNumber,
-		   psir.sentenceDate, category.name)
+		   psir.sentenceDate, category.name, 
+		   (select count(*)
+		      from omis.presentenceinvestigation.domain.PresentenceInvestigationTaskAssociation pita2
+		inner join pita2.task task
+		     where pita2.presentenceInvestigationRequest = psir
+		       and task.completionDate is not null
+		   ),
+		   (select count(*) 
+	          from omis.presentenceinvestigation.domain.PresentenceInvestigationTaskGroup pitg,
+		           omis.task.domain.TaskTemplate tt
+		     where pitg.presentenceInvestigationCategory = category
+		       and pitg.group = tt.group), psir.submissionDate)
 	from
 	omis.presentenceinvestigation.domain.PresentenceInvestigationRequest psir
 		inner join psir.category category

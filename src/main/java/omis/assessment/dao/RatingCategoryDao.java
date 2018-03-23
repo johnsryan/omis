@@ -17,8 +17,11 @@
 */
 package omis.assessment.dao;
 
+import java.util.List;
+
 import omis.assessment.domain.RatingCategory;
 import omis.dao.GenericDao;
+import omis.questionnaire.domain.QuestionnaireType;
 
 /**
  * Data access object for rating category.
@@ -49,4 +52,13 @@ public interface RatingCategoryDao extends GenericDao<RatingCategory> {
 	 */
 	RatingCategory findExcluding(String description, Boolean valid, 
 			RatingCategory excludedRatingCategory);
+
+	/**
+	 * Returns a list of rating categories for the specified questionnaire type.
+	 * 
+	 * @param questionnaireType questionnaire type
+	 * @return list of rating categories
+	 */
+	List<RatingCategory> findByQuestionnaireType(
+			QuestionnaireType questionnaireType);
 }

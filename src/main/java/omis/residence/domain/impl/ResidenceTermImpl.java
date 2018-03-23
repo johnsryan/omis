@@ -202,12 +202,6 @@ public class ResidenceTermImpl
 		if (!this.getPerson().equals(that.getPerson())) {
 			return false;
 		}
-		if (this.getStatus() == null) {
-			throw new IllegalStateException("Status required");
-		}
-		if (!this.getStatus().equals(that.getStatus())) {
-			return false;
-		}
 		if (this.getAddress() == null) {
 			throw new IllegalStateException("Address required");
 		}
@@ -222,14 +216,6 @@ public class ResidenceTermImpl
 						return false;
 					}
 				} else if (that.getDateRange().getStartDate() != null) {
-					return false;
-				}
-				if (this.getDateRange().getEndDate() != null) {
-					if (!this.getDateRange().getEndDate().equals(
-							that.getDateRange().getEndDate())) {
-						return false;
-					}
-				} else if (that.getDateRange().getEndDate() != null) {
 					return false;
 				}
 			} else {
@@ -247,21 +233,16 @@ public class ResidenceTermImpl
 		if (this.getPerson() == null) {
 			throw new IllegalStateException("Person required");
 		}
-		if (this.getStatus() == null) {
-			throw new IllegalStateException("Status required");
+		if (this.getAddress() == null) {
+			throw new IllegalStateException("Address required");
 		}
 		int hashCode = 14;
 		hashCode = 29 * hashCode + this.getPerson().hashCode();
-		hashCode = 29 * hashCode + this.getStatus().hashCode();
 		hashCode = 29 * hashCode + this.getAddress().hashCode();
 		if (this.getDateRange() != null) {
 			if (this.getDateRange().getStartDate() != null) {
 				hashCode = 29 * hashCode + this.getDateRange()
 						.getStartDate().hashCode();
-			}
-			if (this.getDateRange().getEndDate() != null) {
-				hashCode = 31 * hashCode + this.getDateRange()
-						.getEndDate().hashCode();
 			}
 		}
 		return hashCode;

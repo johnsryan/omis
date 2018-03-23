@@ -26,14 +26,12 @@ import omis.beans.factory.PropertyEditorFactory;
 import omis.beans.factory.spring.CustomDateEditorFactory;
 import omis.country.domain.Country;
 import omis.demographics.domain.Sex;
-import omis.instance.factory.InstanceFactory;
 import omis.offender.beans.factory.OffenderPropertyEditorFactory;
 import omis.offender.domain.Offender;
 import omis.offender.service.OffenderPersonalDetailsService;
 import omis.offender.web.controller.delegate.OffenderSummaryModelDelegate;
 import omis.offender.web.form.OffenderPersonalDetailsForm;
 import omis.offender.web.validator.OffenderPersonalDetailsFormValidator;
-import omis.person.domain.PersonIdentity;
 import omis.person.domain.Suffix;
 import omis.person.exception.PersonIdentityExistsException;
 import omis.person.exception.PersonNameExistsException;
@@ -143,12 +141,6 @@ public class OffenderPersonalDetailsController {
 	
 	@Autowired
 	private CustomDateEditorFactory customDateEditorFactory;
-	
-	/* Instance factories. */
-	
-	@Autowired
-	@Qualifier("personIdentityInstanceFactory")
-	private InstanceFactory<PersonIdentity> personIdentityInstanceFactory;
 	
 	/* Validators. */
 	

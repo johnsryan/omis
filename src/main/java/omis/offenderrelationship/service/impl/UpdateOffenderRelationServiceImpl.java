@@ -196,6 +196,35 @@ public class UpdateOffenderRelationServiceImpl
 	
 	/** {@inheritDoc} */
 	@Override
+	public Person updateRelationWithoutSsn(final Person person, final String lastName, 
+		final String firstName,	final String middleName, final String suffix, 
+		final Sex sex, final Date birthDate, final Country birthCountry,
+		final State birthState, final City birthCity, final String stateId, 
+		final Boolean deceased, final Date deathDate) 
+		throws PersonNameExistsException,
+		PersonIdentityExistsException {
+		Person updatedPerson = this.personDelegate.update(
+				person, lastName, firstName, middleName, suffix);
+		if (person.getIdentity() != null) {
+			this.personIdentityDelegate.update(person.getIdentity(), sex, 
+				birthDate,	birthCountry, birthState, birthCity, 
+				null, stateId, deceased, deathDate);
+		} else {
+			if (sex != null || birthDate != null || birthCountry != null 
+					|| birthState != null || birthCity != null 
+					|| stateId != null || deceased != null || deathDate != null) {
+				PersonIdentity identity = this.personIdentityDelegate.create(
+					person, sex, birthDate, birthCountry, birthState, 
+					birthCity, 
+					null, stateId, deceased, deathDate);
+				person.setIdentity(identity);
+			}
+		}
+		return updatedPerson;
+	}
+	
+	/** {@inheritDoc} */
+	@Override
 	public List<Suffix> findNameSuffixes() {
 		return this.suffixDelegate.findAll();
 	}

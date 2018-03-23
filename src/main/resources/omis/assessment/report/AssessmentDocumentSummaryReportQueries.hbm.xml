@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="omis.assessment.report">
+	<query name="findAssessmentDocumentSummariesByAdministeredQuestionnaire"><![CDATA[
+		select new omis.assessment.report.AssessmentDocumentSummary(
+				assessmentDocumentAssociation.id,
+				document.id,
+				document.title,
+				name.firstName,
+				name.lastName
+			)
+		from
+			omis.assessment.domain.AssessmentDocumentAssociation assessmentDocumentAssociation
+		inner join
+			assessmentDocumentAssociation.document document
+		inner join
+			assessmentDocumentAssociation.updateSignature updateSignature
+		inner join
+			updateSignature.userAccount userAccount
+		inner join
+			userAccount.user user
+		inner join
+			user.name name
+		where
+			assessmentDocumentAssociation.administeredQuestionnaire = :administeredQuestionnaire
+	]]></query>
+</hibernate-mapping>

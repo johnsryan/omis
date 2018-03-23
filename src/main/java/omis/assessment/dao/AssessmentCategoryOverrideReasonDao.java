@@ -17,6 +17,8 @@
 */
 package omis.assessment.dao;
 
+import java.util.List;
+
 import omis.assessment.domain.AssessmentCategoryOverride;
 import omis.assessment.domain.AssessmentCategoryOverrideReason;
 import omis.assessment.domain.CategoryOverrideReason;
@@ -59,4 +61,14 @@ public interface AssessmentCategoryOverrideReasonDao
 			CategoryOverrideReason categoryOverrideReason,
 			AssessmentCategoryOverrideReason 
 					excludedAssessmentCategoryOverrideReason);
+
+	/**
+	 * Returns a list of assessment category override reasons for the specified 
+	 * assessment category override.
+	 * 
+	 * @param assessmentCategoryOverride assessment category override
+	 * @return list of assessment category override reasons
+	 */
+	List<AssessmentCategoryOverrideReason> findByAssessmentCategoryOverride(
+			AssessmentCategoryOverride assessmentCategoryOverride);
 }

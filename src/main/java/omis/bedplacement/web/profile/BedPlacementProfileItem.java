@@ -20,8 +20,9 @@ public class BedPlacementProfileItem
 	extends AbstractProfileItem 
 	implements ProfileItem {
 	private final static long serialVersionUID = 1L;
-	private final static String BED_PLACEMENT_EXISTS_MODEL_KEY 
-		= "bedPlacement";
+	
+	/* Model keys. */
+	private final static String BED_PLACEMENT_MODEL_KEY = "bedPlacement";
 	
 	private final BedPlacementProfileItemReportService 
 		bedPlacementProfileItemReportService;
@@ -51,7 +52,7 @@ public class BedPlacementProfileItem
 	@Override
 	public void build(final Map<String, Object> map, final Offender offender,
 			final UserAccount userAccount, final Date date) {
-		map.put(BED_PLACEMENT_EXISTS_MODEL_KEY, this
+		map.put(BED_PLACEMENT_MODEL_KEY, this
 				.bedPlacementProfileItemReportService
 				.findBedPlacementExistenceByOffenderAndDate(offender,date));
 	}

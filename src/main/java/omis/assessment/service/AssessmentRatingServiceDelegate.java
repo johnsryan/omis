@@ -17,7 +17,10 @@
 */
 package omis.assessment.service;
 
-import omis.assessment.domain.AssessmentCategoryScore;
+import java.math.BigDecimal;
+
+import omis.assessment.domain.RatingCategory;
+import omis.questionnaire.domain.AdministeredQuestionnaire;
 
 /**
  * Assessment rating service delegate.
@@ -29,19 +32,20 @@ import omis.assessment.domain.AssessmentCategoryScore;
 public interface AssessmentRatingServiceDelegate {
 
 	/**
-	 * Checks if assessment category score is assessable.
+	 * Checks if the rating category is assessable.
 	 * 
-	 * @param assessmentCategoryScore assessment category score
-	 * @return if assessment category score is assessable
+	 * @param ratingCategory rating category
+	 * @return if rating category is assessable
 	 */
-	Boolean isAssessable(AssessmentCategoryScore assessmentCategoryScore);
+	Boolean isAssessable(RatingCategory ratingCategory);
 	
 	/**
-	 * Assesses a assessment category score.
+	 * Assesses a score.
 	 * 
-	 * @param assessmentCategoryScore assessment category score
-	 * @return assessment category score
+	 * @param administeredQuestionnaire administered questionnaire
+	 * @param ratingCategory rating category
+	 * @return score
 	 */
-	AssessmentCategoryScore assess(
-			AssessmentCategoryScore assessmentCategoryScore);
+	BigDecimal assess(AdministeredQuestionnaire administeredQuestionnaire, 
+			RatingCategory ratingCategory);
 }

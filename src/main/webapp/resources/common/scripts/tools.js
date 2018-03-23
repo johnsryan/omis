@@ -202,6 +202,19 @@ ui.appendHtml = function(elt, newHtml) {
 };
 
 /**
+ * Displays a confirmation dialog box.
+ * 
+ * @param baseName base name of message file
+ * @param key message key
+ * @param optional params
+ * @return confirmation result
+ */
+ui.confirm = function(baseName, key, params) {
+	var resolver = new common.MessageResolver(baseName);
+	return confirm(resolver.getMessage(key, params));
+};
+
+/**
  * Applies session extender to the specified element.
  * 
  * @param elt DOM element
@@ -313,4 +326,3 @@ function applyModuleGroup(elt, nextElt) {
 		}
 	}
 }
-

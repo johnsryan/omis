@@ -63,6 +63,7 @@ import omis.util.PropertyValueAsserter;
  *
  * @author Josh Divine
  * @author Yidong Li
+ * @author Sheronda Vaughn
  * @version 0.0.1
  * @since OMIS 3.0
  */
@@ -175,11 +176,11 @@ public class ResidenceServiceUpdateResidenceTermTests
 		ResidenceTerm residenceTerm = this.residenceTermDelegate
 				.createResidenceTerm(person, dateRange, category, address, 
 						status, confirmed, notes, verificationSignature);
-		DateRange newDateRange = new DateRange(this.parseDateText("02/01/2017"), 
+		DateRange newDateRange = new DateRange(this.parseDateText("02/01/2017"),
 				this.parseDateText("06/01/2017"));
 		
 		// Action
-		residenceTerm = this.residenceService.updateResidenceTerm(residenceTerm, 
+		residenceTerm = this.residenceService.updateResidenceTerm(residenceTerm,
 				newDateRange, primary, address, fosterCare, confirmed, notes, 
 				verificationSignature);
 		
@@ -241,7 +242,7 @@ public class ResidenceServiceUpdateResidenceTermTests
 		ResidenceCategory newCategory = ResidenceCategory.SECONDARY;
 		
 		// Action
-		residenceTerm = this.residenceService.updateResidenceTerm(residenceTerm, 
+		residenceTerm = this.residenceService.updateResidenceTerm(residenceTerm,
 				dateRange, primary, address, fosterCare, confirmed, notes, 
 				verificationSignature);
 		
@@ -303,7 +304,7 @@ public class ResidenceServiceUpdateResidenceTermTests
 				null, null, null, zipCode);
 		
 		// Action
-		residenceTerm = this.residenceService.updateResidenceTerm(residenceTerm, 
+		residenceTerm = this.residenceService.updateResidenceTerm(residenceTerm,
 				dateRange, primary, newAddress, fosterCare, confirmed, notes, 
 				verificationSignature);
 		
@@ -364,7 +365,7 @@ public class ResidenceServiceUpdateResidenceTermTests
 		ResidenceStatus newStatus = ResidenceStatus.FOSTER_CARE;
 		
 		// Action
-		residenceTerm = this.residenceService.updateResidenceTerm(residenceTerm, 
+		residenceTerm = this.residenceService.updateResidenceTerm(residenceTerm,
 				dateRange, primary, address, fosterCare, confirmed, notes, 
 				verificationSignature);
 		
@@ -425,7 +426,7 @@ public class ResidenceServiceUpdateResidenceTermTests
 		Boolean newConfirmed = false;
 		
 		// Action
-		residenceTerm = this.residenceService.updateResidenceTerm(residenceTerm, 
+		residenceTerm = this.residenceService.updateResidenceTerm(residenceTerm,
 				dateRange, primary, address, fosterCare, newConfirmed, notes, 
 				verificationSignature);
 		
@@ -486,7 +487,7 @@ public class ResidenceServiceUpdateResidenceTermTests
 		String newNotes = "New notes";
 		
 		// Action
-		residenceTerm = this.residenceService.updateResidenceTerm(residenceTerm, 
+		residenceTerm = this.residenceService.updateResidenceTerm(residenceTerm,
 				dateRange, primary, address, fosterCare, confirmed, newNotes, 
 				verificationSignature);
 		
@@ -550,7 +551,7 @@ public class ResidenceServiceUpdateResidenceTermTests
 						this.parseDateText("02/01/2017"), false, method);
 		
 		// Action
-		residenceTerm = this.residenceService.updateResidenceTerm(residenceTerm, 
+		residenceTerm = this.residenceService.updateResidenceTerm(residenceTerm,
 				dateRange, primary, address, fosterCare, confirmed, notes, 
 				newVerificationSignature);
 		
@@ -664,11 +665,13 @@ public class ResidenceServiceUpdateResidenceTermTests
 		this.residenceTermDelegate.createResidenceTerm(person, dateRange, 
 				category, address, status, confirmed, notes, 
 				verificationSignature);
-		
+		DateRange newDateRange = new DateRange(this.parseDateText("07/01/2017"), 
+				this.parseDateText("08/01/2017"));
 		ResidenceCategory secondCategory = ResidenceCategory.SECONDARY;
 		ResidenceTerm residenceTerm = this.residenceTermDelegate
-				.createResidenceTerm(person, dateRange, secondCategory, address, 
-						status, confirmed, notes, verificationSignature);
+				.createResidenceTerm(person, newDateRange, secondCategory, 
+						address, status, confirmed, notes, 
+						verificationSignature);
 		Boolean fosterCare = true;
 		
 		// Action
@@ -678,11 +681,11 @@ public class ResidenceServiceUpdateResidenceTermTests
 	}
 	
 	// Parses date text
-		private Date parseDateText(final String text) {
-			try {
-				return new SimpleDateFormat("MM/dd/yyyy").parse(text);
-			} catch (ParseException e) {
-				throw new RuntimeException("Parse error", e);
-			}
+	private Date parseDateText(final String text) {
+		try {
+			return new SimpleDateFormat("MM/dd/yyyy").parse(text);
+		} catch (ParseException e) {
+			throw new RuntimeException("Parse error", e);
 		}
+	}
 }

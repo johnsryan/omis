@@ -80,7 +80,7 @@
 	         OR an.middleName like '')
 	     AND utl_match.JARO_WINKLER_SIMILARITY(upper(an.firstName),upper(:first)) >= 85
 	     AND an.person = o
-	ORDER BY utl_match.JARO_WINKLER_SIMILARITY(upper(an.firstName),upper(:name1)) + utl_match.JARO_WINKLER_SIMILARITY(upper(an.lastName),upper(:name2)) + utl_match.JARO_WINKLER_SIMILARITY(upper(an.middleName), upper(:middle)) DESC
+	ORDER BY utl_match.JARO_WINKLER_SIMILARITY(upper(an.firstName),upper(:first)) + utl_match.JARO_WINKLER_SIMILARITY(upper(an.lastName),upper(:last)) + utl_match.JARO_WINKLER_SIMILARITY(upper(an.middleName), upper(:middle)) DESC
 	]]></query>
 	
 	<query name="findOffenderNameByOffenderNumberSearch"><![CDATA[

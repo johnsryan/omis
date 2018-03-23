@@ -29,6 +29,7 @@
 				</fmt:message>
 			</c:otherwise>
 		</c:choose>
+		<jsp:include page="/WEB-INF/views/offender/includes/offenderNameSummary.jsp"/>
 	</title>
 </head>
 <body>

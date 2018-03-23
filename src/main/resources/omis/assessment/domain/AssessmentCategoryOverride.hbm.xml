@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ - OMIS - Offender Management Information System
+ - Copyright (C) 2011 - 2017 State of Montana
+ -
+ - This program is free software: you can redistribute it and/or modify
+ - it under the terms of the GNU General Public License as published by
+ - the Free Software Foundation, either version 3 of the License, or
+ - (at your option) any later version.
+ -
+ - This program is distributed in the hope that it will be useful,
+ - but WITHOUT ANY WARRANTY; without even the implied warranty of
+ - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ - GNU General Public License for more details.
+ -
+ - You should have received a copy of the GNU General Public License
+ - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="omis.assessment.domain">
+	<class	entity-name="omis.assessment.domain.AssessmentCategoryOverride"
+			proxy="omis.assessment.domain.AssessmentCategoryOverride"
+			name="omis.assessment.domain.impl.AssessmentCategoryOverrideImpl"
+			table="`ASSESSMENT_CATEGRY_OVRRDE`">
+		<id name="id" type="java.lang.Long" column="`ID`">
+			<generator class="sequence">
+				<param name="sequence">`ASSESSMENT_CATEGRY_OVRRDE_SEQ`</param>
+			</generator>
+		</id>
+		<many-to-one name="assessmentCategoryScore" column="`ASSESSMENT_CATEGORY_SCORE_ID`" entity-name="omis.assessment.domain.AssessmentCategoryScore" not-null="true"/>
+		<many-to-one name="assessmentRating" column="`ASSESSMENT_RATING_ID`" entity-name="omis.assessment.domain.AssessmentRating" not-null="true"/>
+		<property name="notes" column="`NOTES`" type="java.lang.String" not-null="false"/>
+		<many-to-one name="approvedStaffAssignment" column="`STAFF_ASSIGNMENT_ID`" entity-name="omis.staff.domain.StaffAssignment" not-null="true"/>
+		<component name="creationSignature">
+			<many-to-one name="userAccount" column="`CREATE_ACCOUNT_ID`"
+			             not-null="true"/>
+			<property name="date" column="`CREATE_DATE`" not-null="true"/>
+		</component>
+		<component name="updateSignature">
+			<many-to-one name="userAccount" column="`UPDATE_ACCOUNT_ID`"
+			             not-null="true"/>
+			<property name="date" column="`UPDATE_DATE`" not-null="true"/>
+		</component>
+	</class>
+	<query name="findAssessmentCategoryOverride"><![CDATA[
+		select assessmentCategoryOverride
+		from omis.assessment.domain.AssessmentCategoryOverride assessmentCategoryOverride
+		where
+			assessmentCategoryOverride.assessmentCategoryScore = :assessmentCategoryScore
+		and
+			assessmentCategoryOverride.assessmentRating = :assessmentRating
+	]]></query>
+	<query name="findAssessmentCategoryOverrideExcluding"><![CDATA[
+		select assessmentCategoryOverride
+		from omis.assessment.domain.AssessmentCategoryOverride assessmentCategoryOverride
+		where
+			assessmentCategoryOverride.assessmentCategoryScore = :assessmentCategoryScore
+		and
+			assessmentCategoryOverride.assessmentRating = :assessmentRating
+		and
+			assessmentCategoryOverride <> :excludedAssessmentCategoryOverride
+	]]></query>
+	<query name="findAssessmentCategoryOverrideByAssessmentCategoryScore"><![CDATA[
+		select assessmentCategoryOverride
+		from omis.assessment.domain.AssessmentCategoryOverride assessmentCategoryOverride
+		where
+			assessmentCategoryOverride.assessmentCategoryScore = :assessmentCategoryScore
+	]]></query>
+</hibernate-mapping>

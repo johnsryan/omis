@@ -26,10 +26,12 @@ import java.util.List;
  * <p>Typical usage is:
  * 
  * <pre>
- *   EqualityChecker.create(Serializable.class)
+ *   if (EqualityChecker.create(Serializable.class)
  *       .add(this.getDate(), that.getDate())
- *       .add(this.getCategory(), that.getCategory)
- *       .check();
+ *       .add(this.getCategory(), that.getCategory())
+ *       .check()) {
+ *     // Perform operation
+ *   }  
  * </pre>
  * 
  * <p>Types of pairs must be of type {@code T} or a deriavent to compile and

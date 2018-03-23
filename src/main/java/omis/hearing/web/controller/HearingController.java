@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.hearing.web.controller;
 
 import java.util.ArrayList;
@@ -6,7 +23,6 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +37,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-
 import omis.beans.factory.PropertyEditorFactory;
 import omis.beans.factory.spring.CustomDateEditorFactory;
 import omis.exception.DuplicateEntityFoundException;
@@ -42,7 +57,6 @@ import omis.hearing.web.form.HearingForm;
 import omis.hearing.web.form.HearingNoteItem;
 import omis.hearing.web.form.InfractionItem;
 import omis.hearing.web.form.ItemOperation;
-import omis.hearing.web.form.StaffAttendanceItem;
 import omis.hearing.web.form.ViolationSelectionItem;
 import omis.hearing.web.form.ViolationsSelectForm;
 import omis.hearing.web.validator.HearingFormValidator;
@@ -59,10 +73,10 @@ import omis.violationevent.domain.DisciplinaryCodeViolation;
 import omis.web.controller.delegate.BusinessExceptionHandlerDelegate;
 
 /**
- * HearingController.java
+ * Hearing Controller.
  * 
- *@author Annie Jacques 
- *@version 0.1.1 (Apr 18, 2017)
+ *@author Annie Wahl
+ *@version 0.1.2 (Feb 28, 2018)
  *@since OMIS 3.0
  *
  */
@@ -75,14 +89,8 @@ public class HearingController {
 	
 	private static final String EDIT_VIEW_NAME = "/hearing/edit";
 	
-	private static final String STAFF_ATTENDANCE_ITEMS_ACTION_MENU_VIEW_NAME =
-			"/hearing/includes/staffAttendanceItemsActionMenu";
-	
 	private static final String HEARING_NOTE_ITEM_ROW_VIEW_NAME =
 			"/hearing/includes/hearingNoteItemTableRow";
-	
-	private static final String STAFF_ATTENDANCE_ITEM_ROW_VIEW_NAME =
-			"/hearing/includes/staffAttendanceItemTableRow";
 	
 	private static final String HEARING_ACTION_MENU_VIEW_NAME =
 			"/hearing/includes/hearingActionMenu";
@@ -102,14 +110,8 @@ public class HearingController {
 	
 	private static final String HEARING_NOTE_ITEM_MODEL_KEY = "hearingNoteItem";
 	
-	private static final String STAFF_ATTENDANCE_ITEM_MODEL_KEY =
-			"staffAttendanceItem";
-	
 	private static final String HEARING_NOTE_ITEM_INDEX_MODEL_KEY =
 			"hearingNoteItemIndex";
-	
-	private static final String STAFF_ATTENDANCE_ITEM_INDEX_MODEL_KEY =
-			"staffAttendanceItemIndex";
 	
 	private static final String HEARING_CATEGORIES_MODEL_KEY = "categories";
 	
@@ -128,7 +130,8 @@ public class HearingController {
 	
 	private static final String RESOLUTION_REDIRECT =
 			"redirect:/hearing/resolution/create.html?"
-			+ "offender=%d&hearing=%d&resolutionCategory=%s&violationCategory=%s";
+			+ "offender=%d&hearing=%d&resolutionCategory=%s"
+			+ "&violationCategory=%s";
 	
 	private static final String VIOLATIONS_SELECT_REDIRECT =
 			"redirect:/hearing/violations/select.html?"
@@ -149,7 +152,7 @@ public class HearingController {
 		= "/Compliance/Hearings/Hearing_Details";
 	
 	private static final String ADJUDICATE_HEARING_REPORT_NAME 
-	= "/Compliance/Hearings/Adjudicate_Hearing";
+		= "/Compliance/Hearings/Adjudicate_Hearing";
 
 	/* Report parameter names. */
 	
@@ -161,6 +164,11 @@ public class HearingController {
 
 	private static final String ADJUDICATE_HEARING_ID_REPORT_PARAM_NAME 
 		= "HEARING_ID";
+
+	/* Bundles */
+	
+	private static final String ERROR_BUNDLE_NAME
+		= "omis.hearing.msgs.form";
 	
 	/* Report runners. */
 	
@@ -174,10 +182,6 @@ public class HearingController {
 	@Qualifier("reportControllerDelegate")
 	private ReportControllerDelegate reportControllerDelegate;
 	
-	/* Bundles */
-	
-	private static final String ERROR_BUNDLE_NAME =
-			"omis.hearing.msgs.form";
 	
 	/* Services */
 	
@@ -203,16 +207,13 @@ public class HearingController {
 	private PropertyEditorFactory hearingNotePropertyEditorFactory;
 	
 	@Autowired
-	@Qualifier("staffAttendancePropertyEditorFactory")
-	private PropertyEditorFactory staffAttendancePropertyEditorFactory;
-	
-	@Autowired
 	@Qualifier("locationPropertyEditorFactory")
 	private PropertyEditorFactory locationPropertyEditorFactory;
 	
 	@Autowired
 	@Qualifier("disciplinaryCodeViolationPropertyEditorFactory")
-	private PropertyEditorFactory disciplinaryCodeViolationPropertyEditorFactory;
+	private PropertyEditorFactory
+		disciplinaryCodeViolationPropertyEditorFactory;
 
 	@Autowired
 	@Qualifier("conditionViolationPropertyEditorFactory")
@@ -240,7 +241,7 @@ public class HearingController {
 	
 	
 	/**
-	 * Default constructor for HearingController
+	 * Default constructor for HearingController.
 	 */
 	public HearingController() {
 	}
@@ -248,7 +249,7 @@ public class HearingController {
 	/* Views */
 	
 	/**
-	 * Returns a model and view for hearing creation
+	 * Returns a model and view for hearing creation.
 	 * @param offender - Offender
 	 * @param resolutionCategory - ResolutionClassificationCategory
 	 * @param selectForm - ViolationsSelectForm, carried over from the
@@ -260,26 +261,26 @@ public class HearingController {
 	public ModelAndView create(
 			@RequestParam(value = "offender", required = true)
 				final Offender offender,
-			@RequestParam(value="resolutionCategory", required = false)
+			@RequestParam(value = "resolutionCategory", required = false)
 				final ResolutionClassificationCategory resolutionCategory,
-			final ViolationsSelectForm selectForm){
+			final ViolationsSelectForm selectForm) {
 		
 		HearingForm form = new HearingForm();
 
-		if(selectForm.getViolationSelectionItems() != null){
-			List<InfractionItem> infractionItems = new ArrayList<InfractionItem>();
-			for(ViolationSelectionItem selectionItem
-					: selectForm.getViolationSelectionItems()){
+		if (selectForm.getViolationSelectionItems() != null) {
+			List<InfractionItem> infractionItems =
+					new ArrayList<InfractionItem>();
+			for (ViolationSelectionItem selectionItem
+					: selectForm.getViolationSelectionItems()) {
 				InfractionItem item = new InfractionItem();
 				
-				if(selectionItem.getSelected()){
-					if(selectionItem.getDisciplinaryCodeViolation() != null){
+				if (selectionItem.getSelected()) {
+					if (selectionItem.getDisciplinaryCodeViolation() != null) {
 						item.setDisciplinaryCodeViolation(
 								selectionItem.getDisciplinaryCodeViolation());
 						
 						infractionItems.add(item);
-					}
-					else if(selectionItem.getConditionViolation() != null){
+					} else if (selectionItem.getConditionViolation() != null) {
 						item.setConditionViolation(
 								selectionItem.getConditionViolation());
 						
@@ -306,15 +307,15 @@ public class HearingController {
 	
 	/**
 	 * Attempts to save a hearing and return to the hearing list, or returns
-	 * to the hearing creation screen on creation error
-	 * @param offender
+	 * to the hearing creation screen on creation error.
+	 * @param offender - Offender
 	 * @param adjudicate - String, sent if "Save And Adjudicate" button is
 	 * pressed, used to trigger the redirect to the Adjudication screen
 	 * @param selectViolations - String, sent if "Save and Select Violations"
 	 * button is pressed, used to trigger the redirect to the Violations Select
 	 * screen
 	 * @param form - hearingForm
-	 * @param bindingResult
+	 * @param bindingResult - Binding Result
 	 * @return ModelAndView - hearing list on successful hearing creation, or
 	 * back to hearing creation on error
 	 * @throws DuplicateEntityFoundException - when hearing, hearing note, or
@@ -325,16 +326,16 @@ public class HearingController {
 	public ModelAndView save(
 			@RequestParam(value = "offender", required = true)
 				final Offender offender,
-			@RequestParam(value="adjudicate", required=false)
+			@RequestParam(value = "adjudicate", required = false) final
 				String adjudicate,
-			@RequestParam(value="selectViolations", required=false)
+			@RequestParam(value = "selectViolations", required = false) final
 				String selectViolations,
 			final HearingForm form, final BindingResult bindingResult)
-					throws DuplicateEntityFoundException{
+					throws DuplicateEntityFoundException {
 		
 		this.hearingFormValidator.validate(form, bindingResult);
 		
-		if(bindingResult.hasErrors()){
+		if (bindingResult.hasErrors()) {
 			ModelMap map = new ModelMap();
 			List<HearingStatusCategory> hearingStatusCategories =
 					new ArrayList<HearingStatusCategory>();
@@ -343,63 +344,60 @@ public class HearingController {
 			hearingStatusCategories.add(HearingStatusCategory.PENDING);
 			hearingStatusCategories.add(HearingStatusCategory.DELAYED);
 			
-			map.addAttribute(HEARING_STATUSES_MODEL_KEY, hearingStatusCategories);
+			map.addAttribute(HEARING_STATUSES_MODEL_KEY,
+					hearingStatusCategories);
 			return prepareEditMav(offender, form, map);
-		}
-		else{
+		} else {
 			Hearing hearing = this.hearingService.createHearing(
-					form.getLocation(), offender, form.getInAttendance(),
+					form.getLocation(), offender, null,
 					form.getDate(), form.getCategory(),
 					form.getOfficer());
 			this.hearingService.createHearingStatus(hearing, null,
 					new Date(), form.getStatus());
-			if(HearingStatusCategory.DISMISSED.equals(form.getStatus())){
-				for(InfractionItem infractionItem : form.getInfractionItems()){
+			if (HearingStatusCategory.DISMISSED.equals(form.getStatus())) {
+				for (InfractionItem infractionItem
+						: form.getInfractionItems()) {
 					Resolution resolution = new Resolution();
 					resolution.setCategory(
 							ResolutionClassificationCategory.DISMISSED);
 					resolution.setDate(new Date());
 					
 					this.hearingService.createInfraction(hearing,
-						(infractionItem.getConditionViolation()!= null ?
-							infractionItem.getConditionViolation() : null),
+						(infractionItem.getConditionViolation() != null ?
+								infractionItem.getConditionViolation() : null),
 						(infractionItem.getDisciplinaryCodeViolation() != null ?
-							infractionItem.getDisciplinaryCodeViolation() : null),
-						resolution);
+								infractionItem.getDisciplinaryCodeViolation()
+									: null), resolution, null);
 				}
-			}
-			else{
-				for(InfractionItem infractionItem : form.getInfractionItems()){
+			} else {
+				for (InfractionItem infractionItem
+						: form.getInfractionItems()) {
 					this.hearingService.createInfraction(hearing,
-						(infractionItem.getConditionViolation()!= null ?
+						(infractionItem.getConditionViolation() != null ?
 							infractionItem.getConditionViolation() : null),
 						(infractionItem.getDisciplinaryCodeViolation() != null ?
-							infractionItem.getDisciplinaryCodeViolation() : null),
-						null);
+							infractionItem.getDisciplinaryCodeViolation()
+							: null), null, null);
 				}
 			}
 			
 			this.processHearingNoteItems(form.getHearingNoteItems(), hearing);
-			this.processStaffAttendanceItems(form.getStaffAttendanceItems(),
-					hearing);
 			
-			if(adjudicate != null){
+			if (adjudicate != null) {
 				return new ModelAndView(String.format(
 						RESOLUTION_REDIRECT,
 						hearing.getSubject().getOffender().getId(),
 						hearing.getId(), 
 						ResolutionClassificationCategory.FORMAL,
 						hearing.getCategory()));
-			}
-			else if(selectViolations != null){
+			} else if (selectViolations != null) {
 				return new ModelAndView(String.format(
 						VIOLATIONS_SELECT_REDIRECT,
 						hearing.getSubject().getOffender().getId(),
 						hearing.getId(), 
 						ResolutionClassificationCategory.FORMAL,
 						hearing.getCategory(), GoToOption.HEARINGS_LIST));
-			}
-			else{
+			} else {
 				return new ModelAndView(String.format(
 						LIST_REDIRECT, offender.getId()));
 			}
@@ -407,14 +405,14 @@ public class HearingController {
 	}
 	
 	/**
-	 * Returns a model and view for editing a hearing
+	 * Returns a model and view for editing a hearing.
 	 * @param hearing - hearing to edit
 	 * @return ModelAndView - model and view for editing a hearing
 	 */
 	@RequestMapping(value = "/edit.html", method = RequestMethod.GET)
 	@PreAuthorize("hasRole('HEARING_VIEW') or hasRole('ADMIN')")
 	public ModelAndView edit(@RequestParam(
-			value = "hearing", required = true) final Hearing hearing){
+			value = "hearing", required = true) final Hearing hearing) {
 		
 		ModelMap map = new ModelMap();
 		map.addAttribute(HEARING_MODEL_KEY, hearing);
@@ -425,12 +423,11 @@ public class HearingController {
 				.findLatestHearingStatus(hearing).getCategory();
 		hearingStatusCategories.add(HearingStatusCategory.HELD);
 		hearingStatusCategories.add(HearingStatusCategory.DISMISSED);
-		if(!(latestStatus.getAdjudicated())){
+		if (!(latestStatus.getAdjudicated())) {
 			hearingStatusCategories.add(HearingStatusCategory.PENDING);
 			hearingStatusCategories.add(HearingStatusCategory.DELAYED);
-		}
-		else if(EnumSet.of(HearingStatusCategory.UPHELD,
-				HearingStatusCategory.MODIFIED).contains(latestStatus)){
+		} else if (EnumSet.of(HearingStatusCategory.UPHELD,
+				HearingStatusCategory.MODIFIED).contains(latestStatus)) {
 			hearingStatusCategories.add(HearingStatusCategory.valueOf(
 					latestStatus.getName()));
 		}
@@ -442,7 +439,7 @@ public class HearingController {
 	
 	/**
 	 * Attempts to update a hearing and return to the hearing list, or returns
-	 * to the hearing edit screen on creation error
+	 * to the hearing edit screen on creation error.
 	 * @param hearing - hearing being edited
 	 * @param adjudicate - String, sent if "Save And Adjudicate" button is
 	 * pressed, used to trigger the redirect to the Adjudication screen
@@ -461,16 +458,16 @@ public class HearingController {
 	public ModelAndView update(
 			@RequestParam(value = "hearing", required = true)
 				final Hearing hearing,
-			@RequestParam(value="adjudicate", required=false)
+			@RequestParam(value = "adjudicate", required = false) final
 				String adjudicate,
-			@RequestParam(value="selectViolations", required=false)
+			@RequestParam(value = "selectViolations", required = false) final
 				String selectViolations,
 			final HearingForm form, final BindingResult bindingResult)
-					throws DuplicateEntityFoundException{
+					throws DuplicateEntityFoundException {
 		
 		this.hearingFormValidator.validate(form, bindingResult);
 		
-		if(bindingResult.hasErrors()){
+		if (bindingResult.hasErrors()) {
 			ModelMap map = new ModelMap();
 			List<HearingStatusCategory> hearingStatusCategories =
 					new ArrayList<HearingStatusCategory>();
@@ -478,38 +475,35 @@ public class HearingController {
 					.findLatestHearingStatus(hearing).getCategory();
 			hearingStatusCategories.add(HearingStatusCategory.HELD);
 			hearingStatusCategories.add(HearingStatusCategory.DISMISSED);
-			if(!(latestStatus.getAdjudicated())){
+			if (!(latestStatus.getAdjudicated())) {
 				hearingStatusCategories.add(HearingStatusCategory.PENDING);
 				hearingStatusCategories.add(HearingStatusCategory.DELAYED);
-			}
-			else if(EnumSet.of(HearingStatusCategory.UPHELD,
-					HearingStatusCategory.MODIFIED).contains(latestStatus)){
+			} else if (EnumSet.of(HearingStatusCategory.UPHELD,
+					HearingStatusCategory.MODIFIED).contains(latestStatus)) {
 				hearingStatusCategories.add(HearingStatusCategory.valueOf(
 						latestStatus.getName()));
 			}
-			map.addAttribute(HEARING_STATUSES_MODEL_KEY, hearingStatusCategories);
+			map.addAttribute(HEARING_STATUSES_MODEL_KEY,
+					hearingStatusCategories);
 			
 			map.addAttribute(HEARING_MODEL_KEY, hearing);
 			
 			return prepareEditMav(hearing.getSubject().getOffender(), form,
 					map);
-		}
-		else{
+		} else {
 			this.processHearingNoteItems(form.getHearingNoteItems(), hearing);
-			this.processStaffAttendanceItems(form.getStaffAttendanceItems(),
-					hearing);
-			if(!(form.getStatus().equals(this.hearingService
-					.findLatestHearingStatus(hearing).getCategory()))){
+			if (!(form.getStatus().equals(this.hearingService
+					.findLatestHearingStatus(hearing).getCategory()))) {
 				this.hearingService.createHearingStatus(hearing, null,
 						new Date(), form.getStatus());
 			}
 			this.hearingService.updateHearing(hearing,
-					form.getLocation(), form.getInAttendance(),
+					form.getLocation(), hearing.getSubject().getInAttendance(),
 					form.getDate(), form.getCategory(),
 					form.getOfficer());
-			if(HearingStatusCategory.DISMISSED.equals(form.getStatus())){
-				for(Infraction infraction : this.hearingService
-						.findInfractionsByHearing(hearing)){
+			if (HearingStatusCategory.DISMISSED.equals(form.getStatus())) {
+				for (Infraction infraction : this.hearingService
+						.findInfractionsByHearing(hearing)) {
 					Resolution resolution = new Resolution();
 					resolution.setCategory(
 							ResolutionClassificationCategory.DISMISSED);
@@ -517,45 +511,43 @@ public class HearingController {
 					
 					this.hearingService.updateInfraction(
 						infraction,
-						(infraction.getConditionViolation()!= null ?
+						(infraction.getConditionViolation() != null ?
 							infraction.getConditionViolation() : null),
 						(infraction.getDisciplinaryCodeViolation() != null ?
 							infraction.getDisciplinaryCodeViolation() : null),
-						resolution);
+						resolution, infraction.getPlea());
 				}
 			}
-			if(adjudicate != null){
+			if (adjudicate != null) {
 				return new ModelAndView(String.format(
 						RESOLUTION_REDIRECT,
 						hearing.getSubject().getOffender().getId(),
 						hearing.getId(),
 						ResolutionClassificationCategory.FORMAL,
 						hearing.getCategory()));
-			}
-			else if(selectViolations != null){
+			} else if (selectViolations != null) {
 				return new ModelAndView(String.format(
 						VIOLATIONS_SELECT_REDIRECT,
 						hearing.getSubject().getOffender().getId(),
 						hearing.getId(), 
 						ResolutionClassificationCategory.FORMAL,
 						hearing.getCategory(), GoToOption.HEARINGS_LIST));
-			}
-			else{
+			} else {
 				return new ModelAndView(String.format(
-						LIST_REDIRECT, hearing.getSubject().getOffender().getId()));
+					LIST_REDIRECT, hearing.getSubject().getOffender().getId()));
 			}
 		}
 	}
 	
 	/**
-	 * Removes a hearing and returns to the hearing list screen
+	 * Removes a hearing and returns to the hearing list screen.
 	 * @param hearing - hearing to remove
 	 * @return ModelAndView - redirect to hearing list screen
 	 */
 	@RequestMapping(value = "/remove.html", method = RequestMethod.GET)
 	@PreAuthorize("hasRole('HEARING_REMOVE') or hasRole('ADMIN')")
 	public ModelAndView remove(@RequestParam(
-			value = "hearing", required = true) final Hearing hearing){
+			value = "hearing", required = true) final Hearing hearing) {
 		
 		List<HearingNote> hearingNotes = this.hearingService
 				.findHearingNotesByHearing(hearing);
@@ -564,21 +556,21 @@ public class HearingController {
 		List<Infraction> infractions = this.hearingService
 				.findInfractionsByHearing(hearing);
 		
-		for(HearingNote note : hearingNotes){
+		for (HearingNote note : hearingNotes) {
 			this.hearingService.removeHearingNote(note);
 		}
-		for(StaffAttendance staff : staffAttended){
+		for (StaffAttendance staff : staffAttended) {
 			this.hearingService.removeStaffAttendance(staff);
 		}
-		for(Infraction infraction : infractions){
+		for (Infraction infraction : infractions) {
 			ImposedSanction imposedSanction = this.hearingService
 					.findImposedSanctionByInfraction(infraction);
-			if(imposedSanction != null){
+			if (imposedSanction != null) {
 				this.hearingService.removeImposedSanction(imposedSanction);
 			}
 			this.hearingService.removeInfraction(infraction);
 		}
-		for(HearingStatus hearingStatus : this.hearingService
+		for (HearingStatus hearingStatus : this.hearingService
 				.findHearingStatusesByHearing(hearing)) {
 			this.hearingService.removeHearingStatus(hearingStatus);
 		}
@@ -594,8 +586,8 @@ public class HearingController {
 	
 	
 	/**
-	 * Displays a hearing note item row
-	 * @param hearingNoteItemIndex
+	 * Displays a hearing note item row.
+	 * @param hearingNoteItemIndex - Integer
 	 * @return ModelAndView - view for a hearing note item row
 	 */
 	@RequestMapping(value = "createHearingNoteItem.html",
@@ -612,37 +604,17 @@ public class HearingController {
 		return new ModelAndView(HEARING_NOTE_ITEM_ROW_VIEW_NAME, map);
 	}
 	
-	/**
-	 * Displays a staff attendance item row
-	 * @param staffAttendanceItemIndex
-	 * @return ModelAndView - view for staff attendance item row
-	 */
-	@RequestMapping(value = "createStaffAttendanceItem.html",
-			method = RequestMethod.GET)
-	public ModelAndView displayStaffAttendanceItemRow(@RequestParam(
-			value = "staffAttendanceItemIndex", required = true)
-			final Integer staffAttendanceItemIndex) {
-		ModelMap map = new ModelMap();
-		StaffAttendanceItem noteItem = new StaffAttendanceItem();
-		noteItem.setItemOperation(ItemOperation.CREATE);
-		map.addAttribute(STAFF_ATTENDANCE_ITEM_MODEL_KEY, noteItem);
-		map.addAttribute(STAFF_ATTENDANCE_ITEM_INDEX_MODEL_KEY,
-				staffAttendanceItemIndex);
-		return new ModelAndView(STAFF_ATTENDANCE_ITEM_ROW_VIEW_NAME, map);
-	}
-	
 	/* Action Menu Views */
 	
-	
 	/**
-	 * Returns the model and view for hearing action menu
-	 * @param offender
+	 * Returns the model and view for hearing action menu.
+	 * @param offender - Offender
 	 * @return ModelAndView - model and view for hearing action menu
 	 */
 	@RequestMapping(value = "/hearingActionMenu.html", 
 			method = RequestMethod.GET)
 	public ModelAndView displayHearingActionMenu(@RequestParam
-			(value = "offender", required = true) final Offender offender){
+			(value = "offender", required = true) final Offender offender) {
 		ModelMap map = new ModelMap();
 		map.addAttribute(OFFENDER_MODEL_KEY, offender);
 		
@@ -650,20 +622,7 @@ public class HearingController {
 	}
 	
 	/**
-	 * Returns a model and view of staff attendance items action menu
-	 * @return ModelAndView - model and view of staff attendance items
-	 * action menu
-	 */
-	@RequestMapping(value = "staffAttendanceItemsActionMenu.html",
-			method = RequestMethod.GET)
-	public ModelAndView displayStaffAttendanceItemsActionMenu() {
-		ModelMap map = new ModelMap();	
-		return new ModelAndView(
-				STAFF_ATTENDANCE_ITEMS_ACTION_MENU_VIEW_NAME, map);
-	}
-	
-	/**
-	 * Returns a model and view for hearing note items action menu
+	 * Returns a model and view for hearing note items action menu.
 	 * @return ModelAndView - model and view for hearing note items action menu
 	 */
 	@RequestMapping(value = "hearingNoteItemsActionMenu.html",
@@ -675,7 +634,7 @@ public class HearingController {
 	}
 	
 	/**
-	 * Displays the location options
+	 * Displays the location options.
 	 * @param locationType - location type of locations to show
 	 * @return ModelAndView - location options
 	 */
@@ -686,23 +645,20 @@ public class HearingController {
 			final LocationType locationType) {
 		ModelMap map = new ModelMap();
 		List<Location> locations = new ArrayList<Location>();
-		if(LocationType.FACILITIES.equals(locationType)){
+		if (LocationType.FACILITIES.equals(locationType)) {
 			locations = this.hearingService.findFacilityLocations();
-		}
-		else if(LocationType.JAILS.equals(locationType)){
+		} else if (LocationType.JAILS.equals(locationType)) {
 			locations = this.hearingService.findJailLocations();
-		}
-		else if(LocationType.COMMUNITY_SUPERVISION_OFFICES.equals(locationType)){
+		} else if (LocationType.COMMUNITY_SUPERVISION_OFFICES
+				.equals(locationType)) {
 			locations = this.hearingService
 					.findCommunitySupervisionOfficeLocations();
-		}
-		else if(LocationType.PRERELEASES.equals(locationType)){
+		} else if (LocationType.PRERELEASES.equals(locationType)) {
 			locations = this.hearingService.findPreReleaseCenterLocations();
-		}
-		else if(LocationType.TREATMENT_AND_SANCTION_CENTERS.equals(locationType)){
+		} else if (LocationType.TREATMENT_AND_SANCTION_CENTERS
+				.equals(locationType)) {
 			locations = this.hearingService.findTreatmentCenterLocations();
-		}
-		else{
+		} else {
 			throw new UnsupportedOperationException(
 					"Location Type Not Supported");
 		}
@@ -792,17 +748,17 @@ public class HearingController {
 	/* Helper Methods */
 	
 	/**
-	 * Returns the prepared model and view for editing a hearing
-	 * @param offender
+	 * Returns the prepared model and view for editing a hearing.
+	 * @param offender - Offender
 	 * @param form - hearingForm
 	 * @param map - ModelMap
 	 * @return ModelAndView - prepared model and view for editing a hearing
 	 */
 	private ModelAndView prepareEditMav(final Offender offender,
-			final HearingForm form, final ModelMap map){
+			final HearingForm form, final ModelMap map) {
 		
 		//populate the Location list appropriately if there is a location
-		if(form.getLocation() != null){
+		if (form.getLocation() != null) {
 			List<Location> facilityLocations = this.hearingService
 					.findFacilityLocations();
 			List<Location> jailLocations = this.hearingService
@@ -813,49 +769,41 @@ public class HearingController {
 					.findPreReleaseCenterLocations();
 			List<Location> trmtAndSnctCenters = this.hearingService
 					.findTreatmentCenterLocations();
-			if(facilityLocations.contains(form.getLocation())){
+			if (facilityLocations.contains(form.getLocation())) {
 				map.put(LOCATIONS_MODEL_KEY, facilityLocations);
 				form.setLocationType(LocationType.FACILITIES);
-			}
-			else if(jailLocations.contains(form.getLocation())){
+			} else if (jailLocations.contains(form.getLocation())) {
 				map.put(LOCATIONS_MODEL_KEY, jailLocations);
 				form.setLocationType(LocationType.JAILS);
-			}
-			else if(commSupervisionOffices.contains(form.getLocation())){
+			} else if (commSupervisionOffices.contains(form.getLocation())) {
 				map.put(LOCATIONS_MODEL_KEY, commSupervisionOffices);
-				form.setLocationType(LocationType.COMMUNITY_SUPERVISION_OFFICES);
-			}
-			else if(preReleaseCenters.contains(form.getLocation())){
+				form.setLocationType(
+						LocationType.COMMUNITY_SUPERVISION_OFFICES);
+			} else if (preReleaseCenters.contains(form.getLocation())) {
 				map.put(LOCATIONS_MODEL_KEY, preReleaseCenters);
 				form.setLocationType(LocationType.PRERELEASES);
-			}
-			else if(trmtAndSnctCenters.contains(form.getLocation())){
+			} else if (trmtAndSnctCenters.contains(form.getLocation())) {
 				map.put(LOCATIONS_MODEL_KEY, trmtAndSnctCenters);
-				form.setLocationType(LocationType.TREATMENT_AND_SANCTION_CENTERS);
+				form.setLocationType(
+						LocationType.TREATMENT_AND_SANCTION_CENTERS);
 			}
-		}
-		//or populate the location list if there is only a location type
-		else if(form.getLocationType() != null){
+		} else if (form.getLocationType() != null) {
 			List<Location> locations = new ArrayList<Location>();
-			if(LocationType.FACILITIES.equals(form.getLocationType())){
+			if (LocationType.FACILITIES.equals(form.getLocationType())) {
 				locations = this.hearingService.findFacilityLocations();
-			}
-			else if(LocationType.JAILS.equals(form.getLocationType())){
+			} else if (LocationType.JAILS.equals(form.getLocationType())) {
 				locations = this.hearingService.findJailLocations();
-			}
-			else if(LocationType.COMMUNITY_SUPERVISION_OFFICES.equals(
-					form.getLocationType())){
+			} else if (LocationType.COMMUNITY_SUPERVISION_OFFICES.equals(
+					form.getLocationType())) {
 				locations = this.hearingService
 						.findCommunitySupervisionOfficeLocations();
-			}
-			else if(LocationType.PRERELEASES.equals(form.getLocationType())){
+			} else if (LocationType.PRERELEASES.equals(
+					form.getLocationType())) {
 				locations = this.hearingService.findPreReleaseCenterLocations();
-			}
-			else if(LocationType.TREATMENT_AND_SANCTION_CENTERS.equals(
-					form.getLocationType())){
+			} else if (LocationType.TREATMENT_AND_SANCTION_CENTERS.equals(
+					form.getLocationType())) {
 				locations = this.hearingService.findTreatmentCenterLocations();
-			}
-			else{
+			} else {
 				throw new UnsupportedOperationException(
 						"Location Type Not Supported");
 			}
@@ -863,17 +811,14 @@ public class HearingController {
 		}
 		
 		//populate the item indexes
-		int hnIndex = 0;//hearing note item index
-		int saIndex = 0;//staff attendance item index
+		int hnIndex = 0;
+			//hearing note item index
 		
-		if(form.getHearingNoteItems() != null){
+		if (form.getHearingNoteItems() != null) {
 			hnIndex = form.getHearingNoteItems().size();
 		}
-		if(form.getStaffAttendanceItems() != null){
-			saIndex = form.getStaffAttendanceItems().size();
-		}
+		
 		map.addAttribute(HEARING_NOTE_ITEM_INDEX_MODEL_KEY, hnIndex);
-		map.addAttribute(STAFF_ATTENDANCE_ITEM_INDEX_MODEL_KEY, saIndex);
 		map.addAttribute(HEARING_CATEGORIES_MODEL_KEY,
 				HearingCategory.values());
 		map.addAttribute(LOCATION_TYPES_MODEL_KEY, LocationType.values());
@@ -885,33 +830,20 @@ public class HearingController {
 	}
 	
 	/**
-	 * Prepares a hearingForm with a Hearing's values
+	 * Prepares a hearingForm with a Hearing's values.
 	 * @param hearing - Hearing used to populate the form
 	 * @return HearingForm - populated HearingForm
 	 */
-	private HearingForm prepareEditForm(final Hearing hearing){
+	private HearingForm prepareEditForm(final Hearing hearing) {
 		
 		HearingForm form = new HearingForm();
-		
-		List<StaffAttendanceItem> staffAttendanceItems =
-				new ArrayList<StaffAttendanceItem>();
 		List<HearingNoteItem> hearingNoteItems =
 				new ArrayList<HearingNoteItem>();
 		List<InfractionItem> infractionItems = new ArrayList<InfractionItem>();
 		
-		List<StaffAttendance> staffAttended =
-				this.hearingService.findStaffAttendedByHearing(hearing);
-		for(StaffAttendance staff : staffAttended){
-			StaffAttendanceItem item = new StaffAttendanceItem();
-			item.setStaffAttended(staff);
-			item.setStaff(staff.getStaff());
-			item.setItemOperation(ItemOperation.UPDATE);
-			
-			staffAttendanceItems.add(item);
-		}
 		List<HearingNote> hearingNotes =
 				this.hearingService.findHearingNotesByHearing(hearing);
-		for(HearingNote note : hearingNotes){
+		for (HearingNote note : hearingNotes) {
 			HearingNoteItem item = new HearingNoteItem();
 			item.setHearingNote(note);
 			item.setDate(note.getDate());
@@ -922,7 +854,7 @@ public class HearingController {
 		}
 		List<Infraction> infractions = this.hearingService
 				.findInfractionsByHearing(hearing);
-		for(Infraction infraction : infractions){
+		for (Infraction infraction : infractions) {
 			InfractionItem item = new InfractionItem();
 			item.setInfraction(infraction);
 			item.setDisciplinaryCodeViolation(infraction
@@ -937,18 +869,17 @@ public class HearingController {
 		form.setLocation(hearing.getLocation());
 		form.setCategory(hearing.getCategory());
 		form.setDate(hearing.getDate());
-		form.setInAttendance(hearing.getSubject().getInAttendance());
 		form.setOfficer(hearing.getOfficer());
 		form.setStatus(status);
 		form.setInfractionItems(infractionItems);
 		form.setHearingNoteItems(hearingNoteItems);
-		form.setStaffAttendanceItems(staffAttendanceItems);
 		
 		return form;
 	}
 	
 	/**
-	 * Creates, updates, and removes hearing notes based on their item operation
+	 * Creates, updates, and removes hearing notes based on their
+	 * item operation.
 	 * @param hearingNoteItems - list of hearingNoteItems to be processed
 	 * @param hearing - hearing for which the items are being processed
 	 * @throws DuplicateEntityFoundException - when a hearing note's date and 
@@ -956,74 +887,46 @@ public class HearingController {
 	 */
 	private void processHearingNoteItems(
 			final List<HearingNoteItem> hearingNoteItems,
-			final Hearing hearing) throws DuplicateEntityFoundException{
-		if(hearingNoteItems != null){
-			for(HearingNoteItem item : hearingNoteItems){
-				if(ItemOperation.CREATE.equals(item.getItemOperation())){
+			final Hearing hearing) throws DuplicateEntityFoundException {
+		if (hearingNoteItems != null) {
+			for (HearingNoteItem item : hearingNoteItems) {
+				if (ItemOperation.CREATE.equals(item.getItemOperation())) {
 					this.hearingService.createHearingNote(hearing,
 							item.getDescription(), item.getDate());
-				}
-				else if(ItemOperation.UPDATE.equals(item.getItemOperation())){
-					if(this.isNoteChanged(item.getHearingNote(), item.getDate(),
-							item.getDescription())) {
-						this.hearingService.updateHearingNote(item.getHearingNote(),
+				} else if (ItemOperation.UPDATE.equals(
+						item.getItemOperation())) {
+					if (this.isNoteChanged(item.getHearingNote(),
+							item.getDate(), item.getDescription())) {
+						this.hearingService.updateHearingNote(
+								item.getHearingNote(),
 								item.getDescription(), item.getDate());
 					}
-				}
-				else if(ItemOperation.REMOVE.equals(item.getItemOperation())){
-					this.hearingService.removeHearingNote(item.getHearingNote());
+				} else if (ItemOperation.REMOVE.equals(
+						item.getItemOperation())) {
+					this.hearingService.removeHearingNote(
+							item.getHearingNote());
 				}
 			}
 		}
 	}
 	
 	/**
-	 * Checks if a Hearing Note has been changed and returns true if it has
+	 * Checks if a Hearing Note has been changed and returns true if it has.
 	 * @param note - Hearing Note to check for change
 	 * @param date - Note Date from Form
 	 * @param value - Note Value from Form
-	 * @return Boolean - true if either the form's note date or value is different
-	 * from the original Note's, false otherwise.
+	 * @return Boolean - true if either the form's note date or value is
+	 * different from the original Note's, false otherwise.
 	 */
 	private boolean isNoteChanged(final HearingNote note,
 			final Date date, final String value) {
-		if(!note.getDescription().equals(value)) {
+		if (!note.getDescription().equals(value)) {
 			return true;
 		}
-		if(!(note.getDate().getTime() == date.getTime())) {
+		if (!(note.getDate().getTime() == date.getTime())) {
 			return true;
 		}
 		return false;
-	}
-	
-	/**
-	 * Creates, updates, and removes staff attendances based on their item
-	 * operation
-	 * @param staffAttendanceItems - list of staffAttendanceItems to be 
-	 * processed
-	 * @param hearing - hearing for which the items are being processed
-	 * @throws DuplicateEntityFoundException - when a staff attendance already
-	 * exists for the hearing
-	 */
-	private void processStaffAttendanceItems(
-			final List<StaffAttendanceItem> staffAttendanceItems,
-			final Hearing hearing) throws DuplicateEntityFoundException{
-		if(staffAttendanceItems != null){
-			for(StaffAttendanceItem item : staffAttendanceItems){
-				if(ItemOperation.CREATE.equals(item.getItemOperation())){
-					this.hearingService.createStaffAttendance(hearing,
-							item.getStaff());
-				}
-				else if(ItemOperation.UPDATE.equals(item.getItemOperation())){
-					this.hearingService.updateStaffAttendance(
-							item.getStaffAttended(), item.getStaff());
-				}
-				else if(ItemOperation.REMOVE.equals(item.getItemOperation())){
-					this.hearingService.removeStaffAttendance(
-							item.getStaffAttended());
-				}
-			}
-		}
 	}
 	
 	/**
@@ -1035,20 +938,19 @@ public class HearingController {
 	@ExceptionHandler(DuplicateEntityFoundException.class)
 	public ModelAndView handleDuplicateEntityFoundException(
 			final DuplicateEntityFoundException exception) {
-		return this.businessExceptionHandlerDelegate.prepareModelAndView
-		(ENTITY_EXISTS_MESSAGE_KEY, ERROR_BUNDLE_NAME, 
-				exception);
+		return this.businessExceptionHandlerDelegate.prepareModelAndView(
+				ENTITY_EXISTS_MESSAGE_KEY, ERROR_BUNDLE_NAME,  exception);
 	}
 	
 	/* InitBinder */
 	
 	/**
-	 * Sets up and registers property editors
+	 * Sets up and registers property editors.
 	 * 
 	 * @param binder - web binder
 	 */
 	@InitBinder
-	protected void initBinder(final WebDataBinder binder){
+	protected void initBinder(final WebDataBinder binder) {
 		binder.registerCustomEditor(
 				Offender.class,
 				this.offenderPropertyEditorFactory
@@ -1060,9 +962,6 @@ public class HearingController {
 				.createPropertyEditor());
 		binder.registerCustomEditor(
 				HearingNote.class, this.hearingNotePropertyEditorFactory
-				.createPropertyEditor());
-		binder.registerCustomEditor(
-				StaffAttendance.class, this.staffAttendancePropertyEditorFactory
 				.createPropertyEditor());
 		binder.registerCustomEditor(
 				Location.class, this.locationPropertyEditorFactory

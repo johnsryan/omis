@@ -30,8 +30,9 @@
         	<constructor-arg name="personDelegate" ref="personDelegate"/>
         	<constructor-arg name="countryDelegate" ref="countryDelegate"/>
         	<constructor-arg name="personIdentityDelegate" ref="personIdentityDelegate"/>
-        	<constructor-arg name="familyAssociationNoteDelegate" ref="familyAssociationNoteDelegate"/>
         	<constructor-arg name="suffixDelegate" ref="suffixDelegate"/>
+        	<constructor-arg name="relationshipNoteDelegate" ref="relationshipNoteDelegate"/>
+        	<constructor-arg name="familyAssociationNoteCategoryDesignatorDelegate" ref="familyAssociationNoteCategoryDesignatorDelegate"/>
         </bean>
         
         <bean id="familyAssociationReportService" class="omis.family.report.impl.hibernate.FamilyAssociationReportServiceHibernateImpl">
@@ -66,6 +67,12 @@
     		<constructor-arg name="familyAssociationCategoryDao" ref="familyAssociationCategoryDao"/>
     		<constructor-arg name="familyAssociationCategoryInstanceFactory" ref="familyAssociationCategoryInstanceFactory"/>
     	</bean>
+    	
+    	<bean id="familyAssociationNoteCategoryDesignatorDelegate"
+    		class="omis.family.service.delegate.FamilyAssociationNoteCategoryDesignatorDelegate">
+    		<constructor-arg name="familyAssociationNoteCategoryDesignatorDao" ref="familyAssociationNoteCategoryDesignatorDao"/>
+    		<constructor-arg name="familyAssociationNoteCategoryDesignatorInstanceFactory" ref="familyAssociationNoteCategoryDesignatorInstanceFactory"/>
+    	</bean>
     		
     <!-- Data access objects -->
         <bean id="familyAssociationDao"
@@ -86,6 +93,12 @@
     		<constructor-arg name="sessionFactory" ref="sessionFactory"/>
   		</bean>
   		
+  		<bean id="familyAssociationNoteCategoryDesignatorDao"
+        	class="omis.family.dao.impl.hibernate.FamilyAssociationNoteCategoryDesignatorDaoHibernateImpl">
+    		<constructor-arg name="entityName" value="omis.family.domain.FamilyAssociationNoteCategoryDesignator"/>
+    		<constructor-arg name="sessionFactory" ref="sessionFactory"/>
+  		</bean>
+  		
   	<!-- Instance factories -->
 		<bean id="familyAssociationInstanceFactory"
 			class="omis.instance.factory.hibernate.impl.InstanceFactoryHibernateImpl">
@@ -103,6 +116,12 @@
 			class="omis.instance.factory.hibernate.impl.InstanceFactoryHibernateImpl">
 			<constructor-arg name="instanceFactoryDelegate" ref="instanceFactoryDelegate"/>
 			<constructor-arg name="entityName" value="omis.family.domain.FamilyAssociationCategory"/>
+		</bean>
+		
+		<bean id="familyAssociationNoteCategoryDesignatorInstanceFactory"
+			class="omis.instance.factory.hibernate.impl.InstanceFactoryHibernateImpl">
+			<constructor-arg name="instanceFactoryDelegate" ref="instanceFactoryDelegate"/>
+			<constructor-arg name="entityName" value="omis.family.domain.FamilyAssociationNoteCategoryDesignator"/>
 		</bean>
 		
 	<!--Property editor factories -->
@@ -127,4 +146,10 @@
   			<constructor-arg name="dao" ref="familyAssociationCategoryDao"/>
 		</bean>
 		
+		<bean id="familyAssociationNoteCategoryDesignatorPropertyEditorFactory"
+       		class="omis.beans.factory.impl.hibernate.PropertyEditorFactoryHibernateImpl">
+ 			<constructor-arg name="entityName" value="omis.family.domain.FamilyAssociationNoteCategoryDesignator"/>
+ 			<constructor-arg name="configuration" ref="hibernateConfiguration"/>
+  			<constructor-arg name="dao" ref="familyAssociationNoteCategoryDesignatorDao"/>
+		</bean>
 </beans>

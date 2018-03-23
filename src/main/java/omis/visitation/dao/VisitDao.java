@@ -93,4 +93,12 @@ public interface VisitDao
 	 */
 	List<Offender> findOffendersWithVisitsByFacilityOnDate(Facility facility,
 			Date date);
+
+	/**
+	 * Returns all visits for the specified visitation association.
+	 * 
+	 * @param association visitation association
+	 * @return list of visits
+	 */
+	List<Visit> findVisitsByAssociation(VisitationAssociation association);
 }

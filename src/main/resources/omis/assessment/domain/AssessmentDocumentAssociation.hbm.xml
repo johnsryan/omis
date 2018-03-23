@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="omis.assessment.domain">
+	<class entity-name="omis.assessment.domain.AssessmentDocumentAssociation"
+			proxy="omis.assessment.domain.AssessmentDocumentAssociation"
+			name="omis.assessment.domain.impl.AssessmentDocumentAssociationImpl"
+			table="`ASSESSMNT_DOCMNT_ASSOCITN`">
+			<id name="id" column="`ID`" type="java.lang.Long">
+				<generator class="sequence">
+					<param name="sequence">`ASSESSMNT_DOCMNT_ASSOCITN_SEQ`</param>
+				</generator>
+			</id>
+			<many-to-one name="document" column="`DOCUMENT_ID`" entity-name="omis.document.domain.Document" not-null="true" />
+			<property name="date" column="`DATE`" type="java.util.Date" not-null="true" />
+			<many-to-one name="administeredQuestionnaire" column="`ADMINISTERED_QUESTIONNAIRE_ID`" entity-name="omis.questionnaire.domain.AdministeredQuestionnaire" not-null="true" />
+			<component name="creationSignature">
+				<many-to-one name="userAccount" column="`CREATE_ACCOUNT_ID`" not-null="true"/>
+				<property name="date" column="`CREATE_DATE`" not-null="true"/> 	
+			</component>
+			<component name="updateSignature">
+				<many-to-one name="userAccount" column="`UPDATE_ACCOUNT_ID`" not-null="true"/>
+				<property name="date" column="`UPDATE_DATE`" not-null="true"/>
+			</component>
+	</class>
+	<query name="findAssessmentDocumentAssociation"><![CDATA[
+		select assessmentDocumentAssociation
+		from
+			omis.assessment.domain.AssessmentDocumentAssociation assessmentDocumentAssociation
+		where
+			assessmentDocumentAssociation.document = :document
+	]]></query>
+	<query name="findAssessmentDocumentAssociationExcluding"><![CDATA[
+		select assessmentDocumentAssociation
+		from
+			omis.assessment.domain.AssessmentDocumentAssociation assessmentDocumentAssociation
+		where
+			assessmentDocumentAssociation.document = :document
+		and
+			assessmentDocumentAssociation != :assessmentDocumentAssociation
+	]]></query>
+	<query name="findAssessmentDocumentAssociationsByAdministeredQuestionnaire"><![CDATA[
+		select assessmentDocumentAssociation
+		from
+			omis.assessment.domain.AssessmentDocumentAssociation assessmentDocumentAssociation
+		where
+			assessmentDocumentAssociation.administeredQuestionnaire = :administeredQuestionnaire
+	]]></query>
+</hibernate-mapping>

@@ -35,10 +35,10 @@
 	<td>
 		<c:choose>
 			<c:when test="${violationCategory eq 'DISCIPLINARY'}">
-				<c:out value="${summary.disciplinaryCodeDescription}"/>
+				<c:out value="${summary.disciplinaryCodeValue}"/> - <c:out value="${summary.disciplinaryCodeDescription}"/>
 			</c:when>
 			<c:when test="${violationCategory eq 'SUPERVISION'}">
-				<c:out value="${summary.conditionClause}"/>
+				<c:out value="${summary.conditionTitle}"/> - <c:out value="${summary.conditionClause}"/>
 			</c:when>
 		</c:choose>
 	</td>

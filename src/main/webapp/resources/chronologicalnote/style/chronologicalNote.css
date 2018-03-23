@@ -17,3 +17,11 @@
 form.editForm fieldset textarea.narrative {
 	height: 15em;
 }
+
+form.editForm fieldset span.groupCategoryContainer {
+	transition: display 200ms;
+}
+
+form.editForm fieldset legend a.groupsVisibilityLink {
+	padding: 0px 0px 0px 5px;
+}

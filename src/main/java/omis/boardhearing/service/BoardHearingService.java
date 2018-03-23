@@ -244,4 +244,13 @@ public interface BoardHearingService {
 	 */
 	List<ParoleBoardItinerary> findItinerariesByEffectiveDate(
 			Date effectiveDate);
+	
+	/**
+	 * Returns a Board Hearing with the specified Parole Eligibility.
+	 * 
+	 * @param paroleEligibility - Parole Eligibility
+	 * @return Board Hearing with the specified Parole Eligibility.
+	 */
+	BoardHearing findBoardHearingByParoleEligibility(
+			ParoleEligibility paroleEligibility);
 }

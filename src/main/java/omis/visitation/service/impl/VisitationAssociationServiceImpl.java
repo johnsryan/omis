@@ -53,11 +53,13 @@ import omis.residence.exception.PrimaryResidenceExistsException;
 import omis.residence.exception.ResidenceStatusConflictException;
 import omis.residence.exception.ResidenceTermExistsException;
 import omis.residence.service.delegate.ResidenceTermDelegate;
+import omis.visitation.domain.Visit;
 import omis.visitation.domain.VisitationApproval;
 import omis.visitation.domain.VisitationAssociation;
 import omis.visitation.domain.VisitationAssociationCategory;
 import omis.visitation.domain.VisitationAssociationFlags;
 import omis.visitation.service.VisitationAssociationService;
+import omis.visitation.service.delegate.VisitDelegate;
 import omis.visitation.service.delegate.VisitationAssociationCategoryDelegate;
 import omis.visitation.service.delegate.VisitationAssociationDelegate;
 
@@ -100,6 +102,8 @@ implements VisitationAssociationService {
 	
 	private OffenderDelegate offenderDelegate;
 	
+	private VisitDelegate visitDelegate;
+	
 	/**
 	 * Instantiates a visitation association service with the specified
 	 * data access objects, service implementation delegates, instance
@@ -132,7 +136,8 @@ implements VisitationAssociationService {
 			final AddressDelegate addressDelegate,
 			final ContactDelegate contactDelegate,
 			final PersonDelegate personDelegate,
-			final OffenderDelegate offenderDelegate) {
+			final OffenderDelegate offenderDelegate,
+			final VisitDelegate visitDelegate) {
 		this.relationshipDelegate = relationshipDelegate;
 		this.visitationAssociationCategoryDelegate = 
 				visitationAssociationCategoryDelegate;
@@ -146,6 +151,7 @@ implements VisitationAssociationService {
 		this.contactDelegate = contactDelegate;
 		this.personDelegate = personDelegate;
 		this.offenderDelegate = offenderDelegate;
+		this.visitDelegate = visitDelegate;
 	}
 
 	/** {@inheritDoc} */
@@ -177,6 +183,10 @@ implements VisitationAssociationService {
 	/** {@inheritDoc} */
 	@Override
 	public void remove(final VisitationAssociation association) {
+		List<Visit> visits = this.visitDelegate.findVisitsByVisitationAssociation(association);
+		for (Visit visit : visits) {
+			this.visitDelegate.remove(visit);
+		}
 		this.visitationAssociationDelegate.remove(association);
 	}
 

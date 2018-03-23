@@ -22,19 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import omis.beans.factory.PropertyEditorFactory;
-import omis.chronologicalnote.domain.ChronologicalNote;
-import omis.chronologicalnote.domain.ChronologicalNoteCategory;
-import omis.chronologicalnote.report.ChronologicalNoteReportService;
-import omis.chronologicalnote.report.ChronologicalNoteSummary;
-import omis.chronologicalnote.web.form.ChronologicalNoteFilterOptionsForm;
-import omis.offender.beans.factory.OffenderPropertyEditorFactory;
-import omis.offender.domain.Offender;
-import omis.offender.web.controller.delegate.OffenderSummaryModelDelegate;
-import omis.report.ReportFormat;
-import omis.report.ReportRunner;
-import omis.report.web.controller.delegate.ReportControllerDelegate;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
@@ -48,6 +35,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+
+import omis.beans.factory.PropertyEditorFactory;
+import omis.chronologicalnote.domain.ChronologicalNote;
+import omis.chronologicalnote.domain.ChronologicalNoteCategory;
+import omis.chronologicalnote.domain.ChronologicalNoteCategoryGroup;
+import omis.chronologicalnote.report.ChronologicalNoteReportService;
+import omis.chronologicalnote.report.ChronologicalNoteSummary;
+import omis.chronologicalnote.web.form.ChronologicalNoteFilterOptionsForm;
+import omis.offender.beans.factory.OffenderPropertyEditorFactory;
+import omis.offender.domain.Offender;
+import omis.offender.web.controller.delegate.OffenderSummaryModelDelegate;
+import omis.report.ReportFormat;
+import omis.report.ReportRunner;
+import omis.report.web.controller.delegate.ReportControllerDelegate;
 
 /**
  * Controller for chronological note report.
@@ -74,9 +75,12 @@ public class ReportChronologicalNoteController {
 		= "chronologicalNoteSummaries";
 	private static final String OFFENDER_MODEL_KEY = "offender";
 	private static final String NOTE_MODEL_KEY = "note";
-	private static final String CATEGORIES_MODEL_KEY = "categories";
+	//private static final String CATEGORIES_MODEL_KEY = "categories";
 	private static final String CHRONOLOGICAL_NOTE_FILTER_OPTIONS_FORM_MODEL_KEY
 		= "chronologicalNoteFilterOptionsForm";
+	private static final String CHRONO_CATEGORIES_MODEL_KEY = "chronoCategories";
+	private static final String CHRONO_NOTE_CAT_GROUPS_MODEL_KEY = "groups";
+	private static final String CHRONO_NOTE_CAT_GROUP_MAP_MODEL_KEY = "groupCategoryMap";
 		
 	/* Message bundles. */
 	
@@ -145,22 +149,8 @@ public class ReportChronologicalNoteController {
 	@PreAuthorize("hasRole('CHRONOLOGICAL_NOTE_LIST') or hasRole('ADMIN')")
 	public ModelAndView list(@RequestParam(value = "offender", required = true) 
 		final Offender offender) {
-		List<ChronologicalNoteSummary> chronologicalNoteSummaries
-			= new ArrayList<ChronologicalNoteSummary>();	
-		chronologicalNoteSummaries = this.chronologicalNoteReportService
-			.findByOffender(offender);
-		ModelAndView mav = new ModelAndView(LIST_VIEW_NAME);
-		mav.addObject(CHRONOLOGICAL_NOTE_SUMMARIES_MODEL_KEY,
-			chronologicalNoteSummaries);
-		mav.addObject(OFFENDER_MODEL_KEY, offender);
-		List<ChronologicalNoteCategory> categories
-			= this.chronologicalNoteReportService.findCategories();
-		mav.addObject(CATEGORIES_MODEL_KEY, categories);
-		ChronologicalNoteFilterOptionsForm form
-			= new ChronologicalNoteFilterOptionsForm();
-		mav.addObject(CHRONOLOGICAL_NOTE_FILTER_OPTIONS_FORM_MODEL_KEY, form);
-		this.offenderSummaryModelDelegate.add(mav.getModelMap(), offender);
-		return mav;
+		return this.prepareListMav(this.chronologicalNoteReportService
+				.findByOffender(offender), offender, new ChronologicalNoteFilterOptionsForm());
 	}
 	
 	/**
@@ -179,7 +169,7 @@ public class ReportChronologicalNoteController {
 		final BindingResult result) {
 		List<ChronologicalNoteSummary> chronologicalNoteSummaries
 			= new ArrayList<ChronologicalNoteSummary>();
-		if (form.getCategories() == null) {
+		if (form.getCategories() == null || form.getCategories().isEmpty()) {
 			chronologicalNoteSummaries.addAll(
 				this.chronologicalNoteReportService.findByOffender(offender));
 		} else {
@@ -187,15 +177,7 @@ public class ReportChronologicalNoteController {
 				this.chronologicalNoteReportService.findByOffenderAndCategories(
 				offender, form.getCategories()));
 		}
-		ModelAndView mav = new ModelAndView(LIST_VIEW_NAME);
-		mav.addObject(CHRONOLOGICAL_NOTE_SUMMARIES_MODEL_KEY,
-			chronologicalNoteSummaries);
-		mav.addObject(OFFENDER_MODEL_KEY, offender);
-		List<ChronologicalNoteCategory> categoryOptions
-			= this.chronologicalNoteReportService.findCategories();
-		mav.addObject(CATEGORIES_MODEL_KEY, categoryOptions);
-		this.offenderSummaryModelDelegate.add(mav.getModelMap(), offender);
-		return mav;
+		return this.prepareListMav(chronologicalNoteSummaries, offender, form);
 	}
 	
 	/**
@@ -279,6 +261,54 @@ public class ReportChronologicalNoteController {
 				reportParamMap, reportFormat);
 		return this.reportControllerDelegate.constructReportResponseEntity(
 				doc, reportFormat);
+	}
+	
+	/* Helper methods. */
+	
+	/*
+	 * Prepares a model and view for chronological note list screen.
+	 * 
+	 * @param summaries chronological note summaries
+	 * @param offender offender
+	 * @param form chronological note filter options form
+	 * @return model and view for chronological note list screen
+	 */
+	private ModelAndView prepareListMav(final List<ChronologicalNoteSummary> summaries,
+			final Offender offender, final ChronologicalNoteFilterOptionsForm form) {
+		ModelMap map = new ModelMap();
+		map.addAttribute(CHRONOLOGICAL_NOTE_SUMMARIES_MODEL_KEY, summaries);
+		map.addAttribute(OFFENDER_MODEL_KEY, offender);
+		map.addAttribute(CHRONO_CATEGORIES_MODEL_KEY, this.chronologicalNoteReportService.findCategories());
+		this.offenderSummaryModelDelegate.add(map, offender);
+		map.addAttribute(CHRONOLOGICAL_NOTE_FILTER_OPTIONS_FORM_MODEL_KEY, form);
+		map.addAttribute(CHRONO_NOTE_CAT_GROUPS_MODEL_KEY, this.chronologicalNoteReportService.findGroups());
+		map.addAttribute(CHRONO_NOTE_CAT_GROUP_MAP_MODEL_KEY, this.createCategoryGroupMap(
+				this.chronologicalNoteReportService.findCategories(),
+				this.chronologicalNoteReportService.findGroups()));
+		return new ModelAndView(LIST_VIEW_NAME, map);
+	}
+	
+	/*
+	 * Prepares a map of chronological note categories keyed by chronological note category group name.
+	 * 
+	 * @param categories chronological note categories
+	 * @param groups chronological note category groups
+	 * @return map of chronological note categories keyed by chronological note category group name
+	 */
+	private HashMap<String, List<ChronologicalNoteCategory>> createCategoryGroupMap(
+			final List<ChronologicalNoteCategory> categories, List<ChronologicalNoteCategoryGroup> groups) {
+		HashMap<String, List<ChronologicalNoteCategory>> categoryGroupMap
+			= new HashMap<String, List<ChronologicalNoteCategory>>();
+		for (ChronologicalNoteCategoryGroup group : groups) {
+			List<ChronologicalNoteCategory> groupedCategories = new ArrayList<ChronologicalNoteCategory>();
+			for (ChronologicalNoteCategory category : categories) {
+				if (group.equals(category.getGroup())) {
+					groupedCategories.add(category);
+				}
+			}
+			categoryGroupMap.put(group.getName(), groupedCategories);
+		}
+		return categoryGroupMap;
 	}
 	
 	/**

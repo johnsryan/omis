@@ -21,6 +21,7 @@ import omis.testng.AbstractHibernateTransactionalTestNGSpringContextTests;
  * Chronological note service remove tests.
  * 
  * @author Joel Norris
+ * @author Sheronda Vaughn
  * @version 0.1.0 (February 5, 2018)
  * @since OMIS 3.0
  */
@@ -65,11 +66,11 @@ extends AbstractHibernateTransactionalTestNGSpringContextTests {
 		Date date = this.parseDateText("01/01/2018");
 		Offender offender = this.offenderDelegate.createWithoutIdentity("Schmoe", "Joe", "Not So", null);
 		String narrative = new String("This is the narrative of the test chronological note");
-		
+		String title = "title";
 		//Create chronological note to remove
 		ChronologicalNote note;
 		try {
-			note = this.chronologicalNoteDelegate.create(date, offender, narrative);
+			note = this.chronologicalNoteDelegate.create(date, offender, title, narrative);
 		} catch (ChronologicalNoteExistsException e) {
 			throw new RuntimeException("Chronological note exists", e);
 		}
@@ -78,7 +79,7 @@ extends AbstractHibernateTransactionalTestNGSpringContextTests {
 		this.chronologicalNoteService.remove(note);
 		
 		//Assertion
-		assert this.chronologicalNoteDao.find(date, offender, narrative) == null
+		assert this.chronologicalNoteDao.find(date, offender, title) == null
 				: "Chronological Note was not eremoved.";
 	}
 	

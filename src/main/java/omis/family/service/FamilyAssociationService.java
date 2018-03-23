@@ -51,7 +51,10 @@ import omis.person.domain.Suffix;
 import omis.region.domain.City;
 import omis.region.domain.State;
 import omis.region.exception.CityExistsException;
+import omis.relationship.domain.RelationshipNote;
+import omis.relationship.domain.RelationshipNoteCategory;
 import omis.relationship.exception.ReflexiveRelationshipException;
+import omis.relationship.exception.RelationshipNoteExistsException;
 import omis.residence.domain.ResidenceTerm;
 import omis.residence.exception.PrimaryResidenceExistsException;
 import omis.residence.exception.ResidenceStatusConflictException;
@@ -163,7 +166,8 @@ public interface FamilyAssociationService {
 	 * @param buiildingCategory building category
 	 * @param zipCode zip code
 	 * @return address
-	 * @throws FamilyAssociationExistsException family association exists exception
+	 * @throws FamilyAssociationExistsException family association exists
+	 * exception
 	 * @throws AddressExistsException 
 	 */
 	Address createAddress(String value, String designator, 
@@ -175,7 +179,8 @@ public interface FamilyAssociationService {
 	 * @param person person
 	 * @param address address
 	 * @param verificationSignature verification signature	 
-	 * @throws FamilyAssociationExistsException family association exists exception
+	 * @throws FamilyAssociationExistsException family association exists
+	 * exception
 	 * @throws PrimaryResidenceExistsException 
 	 * primary residence exists exception
 	 * @throws ResidenceStatusConflictException 
@@ -186,6 +191,7 @@ public interface FamilyAssociationService {
 	 * exception
 	 * @throws PrimaryResidenceExistsException  primary residence exists
 	 * exception
+	 * @throws ResidenceTermExistsException residence term exists exception
 	 */
 	ResidenceTerm createResidenceTerm(Person person, Address address, 
 		VerificationSignature verificationSignature)
@@ -398,8 +404,8 @@ public interface FamilyAssociationService {
 	 * @param extension zip code extension
 	 * @param city city
 	 * @return zip code
-	 * @throws FamilyAssociationExistsException family association exists exception
-	 * @throws ZipCodeExistsException zip code already exists exception 
+	 * @throws ZipCodeExistsException zip code exists exception
+	 * exception
 	 */
 	ZipCode createZipCode(String value, String extension, City city) 
 		throws ZipCodeExistsException;
@@ -463,4 +469,52 @@ public interface FamilyAssociationService {
 	 * @return a list of cities
 	 */
 	List<City> findCitiesByCountryWithoutState(Country country);
+	
+	/**
+	 * Add a relationship note to family association.
+	 * @param familyAssociation family association
+	 * @param category relationship note category
+	 * @param date date
+	 * @param value value
+	 * @exception RelationshipNoteExistsException thrown when relationship note
+	 * already exists
+	 * @return relationship note
+	 */
+	RelationshipNote addRelationshipNote(FamilyAssociation familyAssociation,
+		RelationshipNoteCategory category, Date date, String value)
+		throws RelationshipNoteExistsException;
+	
+	/**
+	 * Update an existing  relationship note.
+	 * @param relationshipNote relationship note
+	 * @param category relationship note category
+	 * @param date date
+	 * @param value value
+	 * @exception RelationshipNoteExistsException thrown when relationship note
+	 * already exists
+	 * @return relationship note
+	 */
+	RelationshipNote updateRelationshipNote(RelationshipNote relationshipNote,
+		RelationshipNoteCategory category, Date date, String value)
+		throws RelationshipNoteExistsException;
+	
+	/**
+	 * Remove an existing  relationship note.
+	 * @param relationshipNote relationship note
+	 */
+	void removeRelationshipNote(RelationshipNote relationshipNote);
+	
+	/**
+	 * Find all existing  relationship note categories.
+	 * @return a list of relationship note categories
+	 */
+	List<RelationshipNoteCategory> findDesignatedRelationshipNoteCategories();
+	
+	/**
+	 * Find all relationship notes associated with a family association.
+	 * @param familyAssociation family association
+	 * @return a list of relationship notes
+	 */
+	List<RelationshipNote> findRelationshipNotes(FamilyAssociation
+		familyAssociation);
 }

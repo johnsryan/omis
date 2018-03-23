@@ -22,6 +22,7 @@
   - Configuration for chronological note.
   -
   - Author: Yidong Li
+  - Author: Stephen Abson
   -->
   
 <beans xmlns="http://www.springframework.org/schema/beans"
@@ -38,6 +39,9 @@
     <constructor-arg name="chronologicalNoteDelegate" ref="chronologicalNoteDelegate"/>
     <constructor-arg name="chronologicalNoteCategoryAssociationDelegate" ref="chronologicalNoteCategoryAssociationDelegate"/>
     <constructor-arg name="chronologicalNoteCategoryDelegate" ref="chronologicalNoteCategoryDelegate"/>
+    <constructor-arg name="chronologicalNoteCategoryGroupDelegate" ref="chronologicalNoteCategoryGroupDelegate"/>
+    <constructor-arg name="chronologicalNoteCategoryTemplateDelegate" ref="chronologicalNoteCategoryTemplateDelegate"/>
+    <constructor-arg name="chronologicalNoteCategoryGroupTemplateDelegate" ref="chronologicalNoteCategoryGroupTemplateDelegate"/>
   </bean>
   
   <bean id="chronologicalNoteReportService" class="omis.chronologicalnote.report.impl.hibernate.ChronologicalNoteReportServiceHibernateImpl">
@@ -68,6 +72,24 @@
   		<constructor-arg name="chronologicalNoteInstanceFactory" ref="chronologicalNoteInstanceFactory"/>
   		<constructor-arg name="auditComponentRetriever" ref="auditComponentRetriever"/>
   </bean>
+  
+  <bean id="chronologicalNoteCategoryGroupDelegate"
+  		class="omis.chronologicalnote.service.delegate.ChronologicalNoteCategoryGroupDelegate">
+  		<constructor-arg name="chronologicalNoteCategoryGroupDao" ref="chronologicalNoteCategoryGroupDao"/>
+  		<constructor-arg name="chronologicalNoteCategoryGroupInstanceFactory" ref="chronologicalNoteCategoryGroupInstanceFactory"/>
+  </bean>
+  
+  <bean id="chronologicalNoteCategoryTemplateDelegate"
+  		class="omis.chronologicalnote.service.delegate.ChronologicalNoteCategoryTemplateDelegate">
+  		<constructor-arg name="chronologicalNoteCategoryTemplateDao" ref="chronologicalNoteCategoryTemplateDao"/>
+  		<constructor-arg name="chronologicalNoteCategoryTemplateInstanceFactory" ref="chronologicalNoteCategoryTemplateInstanceFactory"/>
+  </bean>
+  
+  <bean id="chronologicalNoteCategoryGroupTemplateDelegate"
+  		class="omis.chronologicalnote.service.delegate.ChronologicalNoteCategoryGroupTemplateDelegate">
+  		<constructor-arg name="chronologicalNoteCategoryGroupTemplateDao" ref="chronologicalNoteCategoryGroupTemplateDao"/>
+  		<constructor-arg name="chronologicalNoteCategoryGroupTemplateInstanceFactory" ref="chronologicalNoteCategoryGroupTemplateInstanceFactory"/>
+  </bean>
 
   <!-- Data access objects -->
   
@@ -83,6 +105,21 @@
   
   <bean id="chronologicalNoteCategoryAssociationDao" class="omis.chronologicalnote.dao.impl.hibernate.ChronologicalNoteCategoryAssociationDaoHibernateImpl">
     <constructor-arg name="entityName" value="omis.chronologicalnote.domain.ChronologicalNoteCategoryAssociation"/>
+    <constructor-arg name="sessionFactory" ref="sessionFactory"/>
+  </bean>
+  
+  <bean id="chronologicalNoteCategoryTemplateDao" class="omis.chronologicalnote.dao.impl.hibernate.ChronologicalNoteCategoryTemplateDaoHibernateImpl">
+    <constructor-arg name="entityName" value="omis.chronologicalnote.domain.ChronologicalNoteCategoryTemplate"/>
+    <constructor-arg name="sessionFactory" ref="sessionFactory"/>
+  </bean>
+  
+  <bean id="chronologicalNoteCategoryGroupTemplateDao" class="omis.chronologicalnote.dao.impl.hibernate.ChronologicalNoteCategoryGroupTemplateDaoHibernateImpl">
+    <constructor-arg name="entityName" value="omis.chronologicalnote.domain.ChronologicalNoteCategoryGroupTemplate"/>
+    <constructor-arg name="sessionFactory" ref="sessionFactory"/>
+  </bean>
+  
+  <bean id="chronologicalNoteCategoryGroupDao" class="omis.chronologicalnote.dao.impl.hibernate.ChronologicalNoteCategoryGroupDaoHibernateImpl">
+    <constructor-arg name="entityName" value="omis.chronologicalnote.domain.ChronologicalNoteCategoryGroup"/>
     <constructor-arg name="sessionFactory" ref="sessionFactory"/>
   </bean>
   
@@ -105,6 +142,24 @@
     <constructor-arg name="entityName" value="omis.chronologicalnote.domain.ChronologicalNoteCategoryAssociation"/>
   </bean>
   
+  <bean id="chronologicalNoteCategoryGroupInstanceFactory"
+        class="omis.instance.factory.hibernate.impl.InstanceFactoryHibernateImpl">
+    <constructor-arg name="instanceFactoryDelegate" ref="instanceFactoryDelegate"/>
+    <constructor-arg name="entityName" value="omis.chronologicalnote.domain.ChronologicalNoteCategoryGroup"/>
+  </bean>
+  
+  <bean id="chronologicalNoteCategoryGroupTemplateInstanceFactory"
+        class="omis.instance.factory.hibernate.impl.InstanceFactoryHibernateImpl">
+    <constructor-arg name="instanceFactoryDelegate" ref="instanceFactoryDelegate"/>
+    <constructor-arg name="entityName" value="omis.chronologicalnote.domain.ChronologicalNoteCategoryGroupTemplate"/>
+  </bean>
+  
+  <bean id="chronologicalNoteCategoryTemplateInstanceFactory"
+        class="omis.instance.factory.hibernate.impl.InstanceFactoryHibernateImpl">
+    <constructor-arg name="instanceFactoryDelegate" ref="instanceFactoryDelegate"/>
+    <constructor-arg name="entityName" value="omis.chronologicalnote.domain.ChronologicalNoteCategoryTemplate"/>
+  </bean>
+  
   <!--Property editor factories -->
    <bean id="chronologicalNotePropertyEditorFactory"
     	class="omis.beans.factory.impl.hibernate.PropertyEditorFactoryHibernateImpl">
@@ -123,5 +178,23 @@
 		<constructor-arg name="entityName" value="omis.chronologicalnote.domain.ChronologicalNoteCategoryAssociation"/>
 		<constructor-arg name="configuration" ref="hibernateConfiguration"/>
 		<constructor-arg name="dao" ref="chronologicalNoteCategoryAssociationDao"/>
+	</bean>
+	<bean id="chronologicalNoteCategoryGroupPropertyEditorFactory"
+    	class="omis.beans.factory.impl.hibernate.PropertyEditorFactoryHibernateImpl">
+		<constructor-arg name="entityName" value="omis.chronologicalnote.domain.ChronologicalNoteCategoryGroup"/>
+		<constructor-arg name="configuration" ref="hibernateConfiguration"/>
+		<constructor-arg name="dao" ref="chronologicalNoteCategoryGroupDao"/>
+	</bean>
+	<bean id="chronologicalNoteCategoryTemplatePropertyEditorFactory"
+    	class="omis.beans.factory.impl.hibernate.PropertyEditorFactoryHibernateImpl">
+		<constructor-arg name="entityName" value="omis.chronologicalnote.domain.ChronologicalNoteCategoryTemplate"/>
+		<constructor-arg name="configuration" ref="hibernateConfiguration"/>
+		<constructor-arg name="dao" ref="chronologicalNoteCategoryTemplateDao"/>
+	</bean>
+	<bean id="chronologicalNoteCategoryGroupTemplatePropertyEditorFactory"
+    	class="omis.beans.factory.impl.hibernate.PropertyEditorFactoryHibernateImpl">
+		<constructor-arg name="entityName" value="omis.chronologicalnote.domain.ChronologicalNoteCategoryGroupTemplate"/>
+		<constructor-arg name="configuration" ref="hibernateConfiguration"/>
+		<constructor-arg name="dao" ref="chronologicalNoteCategoryGroupTemplateDao"/>
 	</bean>
 </beans>

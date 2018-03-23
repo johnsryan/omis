@@ -11,16 +11,6 @@
 	<c:choose>
 		<c:when test="${resolutionCategory eq 'FORMAL'}">
 			<fieldset>
-				<span class="fieldGroup">
-					<form:label path="date" class="fieldLabel">
-						<fmt:message key="hearingDateLabel"/>
-					</form:label>
-					<form:input path="date" class="date"/>
-					<form:errors path="date" cssClass="error"/>
-				</span>
-			</fieldset>
-			
-			<fieldset>
 				<legend>
 					<fmt:message key="hearingStatusLabel" />
 				</legend>
@@ -39,6 +29,20 @@
 					<form:errors path="category" cssClass="error"/>
 				</span>
 				<span class="fieldGroup">
+					<form:label path="date" class="fieldLabel">
+						<fmt:message key="hearingDateLabel"/>
+					</form:label>
+					<form:input path="date" class="date"/>
+					<form:errors path="date" cssClass="error"/>
+				</span>
+				<span class="fieldGroup">
+					<form:label path="inAttendance" class="fieldLabel">
+						<fmt:message key="offenderPresentLabel"/>
+					</form:label>
+					<form:checkbox path="inAttendance" />
+					<form:errors path="inAttendance" cssClass="error"/>
+				</span>
+				<span class="fieldGroup">
 					<form:label path="statusDescription" class="fieldLabel">
 						<fmt:message key="statusDescriptionLabel"/>
 					</form:label>
@@ -46,8 +50,21 @@
 					<form:errors path="statusDescription" cssClass="error"/>
 				</span>
 			</fieldset>
+			
+			<!-- Attended Staff Items -->
+			<fieldset>
+				<legend>
+					<fmt:message key="attendedStaffLabel"/>
+				</legend>
+				<span class="fieldGroup">
+					<form:errors path="staffAttendanceItems" cssClass="error"/>
+					<c:set var="staffAttendanceItems" value="${resolutionForm.staffAttendanceItems}" scope="request"/>
+					<jsp:include page="staffAttendanceTable.jsp"/>
+				</span>
+			</fieldset>
 		</c:when>
 	</c:choose>
+	
 	<fieldset>
 	<legend>
 		<fmt:message key="violationsLabel" />
@@ -95,12 +112,30 @@
 				<label class="fieldLabel">
 					<fmt:message key="violationLabel"/>
 				</label>
-				<c:out value="${not empty violationItem.summary.conditionClause
-					? violationItem.summary.conditionClause
-					: violationItem.summary.disciplinaryCodeDescription}" />
+				<c:choose>
+					<c:when test="${not empty violationItem.summary.disciplinaryCodeDescription}">
+						<c:out value="${violationItem.summary.disciplinaryCodeValue}"/> - <c:out value="${violationItem.summary.disciplinaryCodeDescription}"/>
+					</c:when>
+					<c:when test="${not empty violationItem.summary.conditionClause}">
+						<c:out value="${violationItem.summary.conditionTitle}"/> - <c:out value="${violationItem.summary.conditionClause}"/>
+					</c:when>
+				</c:choose>
 			</span>
 		</div>
-		
+		<c:choose>
+			<c:when test="${resolutionCategory eq 'FORMAL'}">
+				<span class="fieldGroup">
+					<form:label path="violationItems[${i}].plea" class="fieldLabel">
+						<fmt:message key="pleaLabel"/>
+					</form:label>
+					<form:select path="violationItems[${i}].plea">
+						<form:option value=""><fmt:message key="nullLabel" bundle="${commonBundle}"/></form:option>
+						<form:options items="${infractionPleas}" itemLabel="name" itemValue="id"/>
+					</form:select>
+					<form:errors path="violationItems[${i}].plea" cssClass="error"/>
+				</span>
+			</c:when>
+		</c:choose>
 		<span class="fieldGroup">
 			<form:label path="violationItems[${i}].date" class="fieldLabel">
 				<fmt:message key="dateLabel"/>

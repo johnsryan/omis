@@ -36,22 +36,22 @@
 					</label>
 				</span>
 			</c:if>
-			<c:if test="${not empty bedPlacementSummary.sectionName}">
-				<span class="summarySubSection">
-					<label class="subSectionLabel"><fmt:message key="bedPlacementSectionNameLabel"/></label>
-					<label class="subSectionValueLabel">
-						<fmt:message key="bedPlacementSectionNameValueLabel">
-							<fmt:param value="${bedPlacementSummary.sectionName}"/>
-						</fmt:message>
-					</label>
-				</span>
-			</c:if>
 			<c:if test="${not empty bedPlacementSummary.levelName}">
 				<span class="summarySubSection">
 					<label class="subSectionLabel"><fmt:message key="bedPlacementLevelNameLabel"/></label>
 					<label class="subSectionValueLabel">
 						<fmt:message key="bedPlacementLevelNameValueLabel">
 							<fmt:param value="${bedPlacementSummary.levelName}"/>
+						</fmt:message>
+					</label>
+				</span>
+			</c:if>
+			<c:if test="${not empty bedPlacementSummary.sectionName}">
+				<span class="summarySubSection">
+					<label class="subSectionLabel"><fmt:message key="bedPlacementSectionNameLabel"/></label>
+					<label class="subSectionValueLabel">
+						<fmt:message key="bedPlacementSectionNameValueLabel">
+							<fmt:param value="${bedPlacementSummary.sectionName}"/>
 						</fmt:message>
 					</label>
 				</span>

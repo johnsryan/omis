@@ -50,4 +50,12 @@
 		and
 			boardHearing != :boardHearing
 	]]></query>
+	<query name="findBoardHearingCountByOffenderAndDate"><![CDATA[
+		select count(boardHearing.id)
+			from omis.boardhearing.domain.BoardHearing boardHearing
+		inner join
+			boardHearing.paroleEligibility paroleEligibility
+		where
+			paroleEligibility.offender = :offender
+	]]></query>
 </hibernate-mapping>

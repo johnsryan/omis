@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
-import omis.commitstatus.domain.CommitStatusTerm;
 import omis.commitstatus.report.CommitStatusTermProfileItemReportService;
 import omis.offender.domain.Offender;
 import omis.user.domain.UserAccount;
@@ -24,11 +23,12 @@ public class CommitStatusTermProfileItem
 		implements ProfileItem {
 	
 	private static final long serialVersionUID = 1L;
-	private final CommitStatusTermProfileItemReportService
-	commitStatusTermProfileItemReportService;
 	
-	private static final String COMMIT_STATUS_TERM_MODEL_KEY
-		= "commitStatusTerm";
+	private final CommitStatusTermProfileItemReportService
+			commitStatusTermProfileItemReportService;
+	
+	private static final String COMMIT_STATUS_TERM_COUNT_MODEL_KEY = 
+			"commitStatusTermCount";
 
 	/**
 	 * Instantiates profile item for commit status term.
@@ -62,8 +62,8 @@ public class CommitStatusTermProfileItem
 			final Offender offender,
 			final UserAccount userAccount,
 			final Date date) {
-		CommitStatusTerm term = this.commitStatusTermProfileItemReportService
+		Integer count = this.commitStatusTermProfileItemReportService
 				.findCommitStatusTermCountByOffenderAndDate(offender, date);
-		modelMap.put(COMMIT_STATUS_TERM_MODEL_KEY, term);
+		modelMap.put(COMMIT_STATUS_TERM_COUNT_MODEL_KEY, count);
 	}
 }

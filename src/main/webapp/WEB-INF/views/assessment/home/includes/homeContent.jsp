@@ -7,7 +7,7 @@
 	<div id="assessmentModuleGroup" class="moduleGroupLinkContainer">
 		<a href="${pageContext.request.contextPath}/offender/profile.html?offender=${offenderSummary.id}"><fmt:message key="scoresRatingsLink"/></a>
 		<a href="${pageContext.request.contextPath}/offender/modules.html?offender=${offenderSummary.id}"><fmt:message key="recommendationsLink"/></a>
-		<a href="${pageContext.request.contextPath}/offender/personalDetails/edit.html?offender=${offenderSummary.id}"><fmt:message key="attachmentsLink"/></a>
-		<a href="${pageContext.request.contextPath}/offender/name/alternative/list.html?offender=${offenderSummary.id}"><fmt:message key="notesLink"/></a>
+		<a href="${pageContext.request.contextPath}/assessment/document/list.html?administeredQuestionnaire=${administeredQuestionnaire.id}"><fmt:message key="attachmentsLink"/></a>
+		<a href="${pageContext.request.contextPath}/assessment/notes/edit.html?administeredQuestionnaire=${administeredQuestionnaire.id}"><fmt:message key="notesLink"/></a>
 	</div>
 </fmt:bundle>

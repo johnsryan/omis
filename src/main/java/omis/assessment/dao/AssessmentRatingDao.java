@@ -19,8 +19,11 @@ package omis.assessment.dao;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 import omis.assessment.domain.AssessmentRating;
+import omis.assessment.domain.RatingCategory;
+import omis.assessment.domain.RatingRank;
 import omis.dao.GenericDao;
 import omis.demographics.domain.Sex;
 import omis.questionnaire.domain.QuestionnaireType;
@@ -29,7 +32,7 @@ import omis.questionnaire.domain.QuestionnaireType;
  * Data access object for assessment rating.
  * 
  * @author Josh Divine
- * @version 0.1.0 (Feb 26, 2018)
+ * @version 0.1.1 (Mar 14, 2018)
  * @since OMIS 3.0
  */
 public interface AssessmentRatingDao extends GenericDao<AssessmentRating> {
@@ -43,10 +46,13 @@ public interface AssessmentRatingDao extends GenericDao<AssessmentRating> {
 	 * @param max max
 	 * @param startDate start date
 	 * @param endDate end date
+	 * @param ratingCategory rating category
+	 * @param rank rating rank
 	 * @return assessment rating
 	 */
 	AssessmentRating find(QuestionnaireType questionnaireType, Sex sex, 
-			BigDecimal min, BigDecimal max, Date startDate, Date endDate);
+			BigDecimal min, BigDecimal max, Date startDate, Date endDate, 
+			RatingCategory ratingCategory, RatingRank rank);
 	
 	/**
 	 * Returns the assessment rating for the specified parameters excluding the 
@@ -58,10 +64,21 @@ public interface AssessmentRatingDao extends GenericDao<AssessmentRating> {
 	 * @param max max
 	 * @param startDate start date
 	 * @param endDate end date
+	 * @param ratingCategory rating category
+	 * @param rank rating rank
 	 * @param excludedAssessmentRating excluded assessment rating
 	 * @return assessment rating
 	 */
 	AssessmentRating findExcluding(QuestionnaireType questionnaireType, Sex sex, 
 			BigDecimal min, BigDecimal max, Date startDate, Date endDate, 
+			RatingCategory ratingCategory, RatingRank rank, 
 			AssessmentRating excludedAssessmentRating);
+
+	/**
+	 * Returns a list of assessment ratings for the specified rating category.
+	 * 
+	 * @param ratingCategory rating category
+	 * @return list of assessment ratings
+	 */
+	List<AssessmentRating> findByRatingCategory(RatingCategory ratingCategory);
 }

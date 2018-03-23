@@ -36,6 +36,7 @@
 				</type>
 				</property>
 			</component>
+			<many-to-one name="plea" column="`INFRACTION_PLEA_ID`" entity-name="omis.hearing.domain.InfractionPlea" not-null="false" />
 			<component name="creationSignature">
 				<many-to-one name="userAccount" column="`CREATE_ACCOUNT_ID`" not-null="true"/>
 				<property name="date" column="`CREATE_DATE`" not-null="true"/> 	

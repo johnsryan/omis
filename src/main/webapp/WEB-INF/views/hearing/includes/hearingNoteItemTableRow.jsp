@@ -19,6 +19,16 @@
 		<td>
 			<textarea rows="4" name="hearingNoteItems[${hearingNoteItemIndex}].description" id="hearingNoteItems[${hearingNoteItemIndex}].description" style="width: 95%"><c:out value="${hearingNoteItem.description}"/></textarea>
 			<form:errors path="hearingNoteItems[${hearingNoteItemIndex}].description" cssClass="error"/>
-		</td> 
+		</td>
+		<td>
+			<c:if test="${not empty hearingNoteItem.hearingNote.updateSignature}">
+				<label>
+					<fmt:message key="lastUpdatedUserName">
+						<fmt:param value="${hearingNoteItem.hearingNote.updateSignature.userAccount.user.name.lastName}"/>
+						<fmt:param value="${hearingNoteItem.hearingNote.updateSignature.userAccount.user.name.firstName}"/>
+					</fmt:message>
+				</label>
+			</c:if>
+		</td>
 	</tr>
 </fmt:bundle> 

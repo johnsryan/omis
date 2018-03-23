@@ -20,6 +20,7 @@ package omis.chronologicalnote.dao;
 import java.util.List;
 
 import omis.chronologicalnote.domain.ChronologicalNoteCategory;
+import omis.chronologicalnote.domain.ChronologicalNoteCategoryGroup;
 import omis.dao.GenericDao;
 
 /**
@@ -27,23 +28,34 @@ import omis.dao.GenericDao;
  * 
  * @author Joel Norris
  * @author Yidong Li
- *
+ * @author Stephen Abson
  */
-public interface ChronologicalNoteCategoryDao extends GenericDao<ChronologicalNoteCategory> {
+public interface ChronologicalNoteCategoryDao
+		extends GenericDao<ChronologicalNoteCategory> {
+	
 	/**
 	 * Returns chronological note categories.
 	 * 
-	 * @param date date
-	 * @param offender offender
-	 * @param narrative narrative
-	 * @return chronological note
+	 * @return categories
+	 * @deprecated use findAll()
 	 */
+	@Deprecated
 	List<ChronologicalNoteCategory> findCategories();
 	
 	/**
-	 * Returns the chronological note with the specified name.
-	 * @param name
+	 * Returns the chronological note category.
+	 * @param name name
+	 * @param group group
+	 * @return chronological note category
+	 */
+	ChronologicalNoteCategory find(
+			String name, ChronologicalNoteCategoryGroup group);
+	
+	/**
+	 * Returns a list of chronological note categories with the specified group.
+	 * @param group chronological note category group
 	 * @return
 	 */
-	ChronologicalNoteCategory find(String name);
+	List<ChronologicalNoteCategory> findCategoriesByGroup(
+		ChronologicalNoteCategoryGroup group);
 }

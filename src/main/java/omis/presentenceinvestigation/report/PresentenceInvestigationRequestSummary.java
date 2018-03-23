@@ -5,7 +5,7 @@ import java.util.Date;
 /** Report object for presentence investigation summary.
  * @author Ryan Johns
  * @author Annie Jacques
- * @version 0.1.1 (May 16, 2017)
+ * @version 0.1.2 (March 22, 2017)
  * @since OMIS 3.0 */
 public class PresentenceInvestigationRequestSummary {
 	
@@ -13,7 +13,6 @@ public class PresentenceInvestigationRequestSummary {
 	private final Long offenderId;
 	private final String docketValue;
 	private final Date requestDate;
-	private final String status;
 	private final String assignedUserFirstName;
 	private final String assignedUserLastName;
 	private final String assignedUserUserName;
@@ -25,6 +24,9 @@ public class PresentenceInvestigationRequestSummary {
 	private final Integer offenderNumber;
 	private final Date sentenceDate;
 	private final String category;
+	private final Long completedTaskCount;
+	private final Long totalTaskCount;
+	private final Date submissionDate;
 	
 	
 	
@@ -36,7 +38,6 @@ public class PresentenceInvestigationRequestSummary {
 	 * @param offenderId - offender id
 	 * @param docketValue - docketValue.
 	 * @param requestDate - request date.
-	 * @param status - status.
 	 * @param assignedUserFirstName - assigned user first name.
 	 * @param assignedUserLastName - assigned user last name.
 	 * @param assignedUserUserName - assigned user user name
@@ -48,21 +49,23 @@ public class PresentenceInvestigationRequestSummary {
 	 * @param offenderNumber - offender number
 	 * @param sentenceDate - sentence Date
 	 * @param category - Presentence Investigation Category
+	 * @param completedTaskCount - Completed task count.
+	 * @param totalTaskCount - Total task count.
 	 */
 	public PresentenceInvestigationRequestSummary(
 			final Long presentenceInvestigationRequestId, final Long offenderId,
-			final String docketValue, final Date requestDate, final String status,
+			final String docketValue, final Date requestDate,
 			final String assignedUserFirstName, final String assignedUserLastName,
 			final String assignedUserUserName, final Date expectedCompletionDate,
 			final Date completionDate, final String offenderFirstName,
 			final String offenderLastName, final String offenderMiddleName,
 			final Integer offenderNumber, final Date sentenceDate,
-			final String category) {
+			final String category, final Long completedTaskCount, 
+			final Long totalTaskCount, final Date submissionDate) {
 		this.presentenceInvestigationRequestId = presentenceInvestigationRequestId;
 		this.offenderId = offenderId;
 		this.docketValue = docketValue;
 		this.requestDate = requestDate;
-		this.status = status;
 		this.assignedUserFirstName = assignedUserFirstName;
 		this.assignedUserLastName = assignedUserLastName;
 		this.assignedUserUserName = assignedUserUserName;
@@ -74,6 +77,9 @@ public class PresentenceInvestigationRequestSummary {
 		this.offenderNumber = offenderNumber;
 		this.sentenceDate = sentenceDate;
 		this.category = category;
+		this.completedTaskCount = completedTaskCount;
+		this.totalTaskCount = totalTaskCount;
+		this.submissionDate = submissionDate;
 	}
 
 	
@@ -105,13 +111,6 @@ public class PresentenceInvestigationRequestSummary {
 	 */
 	public Date getRequestDate() {
 		return this.requestDate;
-	}
-
-	/**
-	 * @return the status
-	 */
-	public String getStatus() {
-		return this.status;
 	}
 
 	/**
@@ -192,6 +191,25 @@ public class PresentenceInvestigationRequestSummary {
 	 */
 	public String getCategory() {
 		return category;
+	}
+	
+	
+	/** Returns completed tasks.
+	 * @return completed tasks count. */
+	public Long getCompletedTaskCount() {
+		return this.completedTaskCount;
+	}
+	
+	/** Returns total tasks.
+	 * @return total task count. */
+	public Long getTotalTaskCount() {
+		return this.totalTaskCount;
+	}
+	
+	/** Gets Submission date.
+	 * @return submission date. */
+	public Date getSubmissionDate() {
+		return this.submissionDate;
 	}
 	
 	

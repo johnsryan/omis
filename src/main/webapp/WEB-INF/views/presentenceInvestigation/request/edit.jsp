@@ -14,7 +14,7 @@
 	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/user/scripts/searchUserAccount.js?VERSION=1"> </script>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/common/scripts/SessionConfig.js"> </script>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/presentenceInvestigation/scripts/includes/jquery.omis.presentenceInvestigationRequest.js?VERSION=1"></script>
-	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/presentenceInvestigation/scripts/presentenceInvestigationRequest.js?VERSION=1"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/presentenceInvestigation/scripts/presentenceInvestigationRequest.js?VERSION=2"></script>
 	<script type="text/javascript">
 		var currentPresentenceInvestigationRequestNoteItemIndex = ${presentenceInvestigationRequestNoteItemIndex};
 	</script>

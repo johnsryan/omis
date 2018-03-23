@@ -53,10 +53,10 @@ import omis.violationevent.domain.ViolationEventCategory;
 import omis.violationevent.service.ViolationEventService;
 
 /**
- * ResolutionServiceRemoveTests.java
+ * Resolution Service Remove Tests.
  * 
- *@author Annie Jacques 
- *@version 0.1.0 (May 5, 2017)
+ *@author Annie Wahl 
+ *@version 0.1.1 (Mar 8, 2018)
  *@since OMIS 3.0
  *
  */
@@ -126,7 +126,7 @@ public class ResolutionServiceRemoveTests
 	private InstanceFactory<StaffAssignment> staffAssignmentInstanceFactory;
 	
 	@Test
-	public void testInfractionRemove() throws DuplicateEntityFoundException{
+	public void testInfractionRemove() throws DuplicateEntityFoundException {
 		
 		final Infraction infraction = this.createInfraction();
 		
@@ -138,7 +138,8 @@ public class ResolutionServiceRemoveTests
 	}
 	
 	@Test
-	public void testImposedSanctionRemove() throws DuplicateEntityFoundException{
+	public void testImposedSanctionRemove()
+			throws DuplicateEntityFoundException {
 		final Infraction infraction = this.createInfraction();
 		final Offender offender = infraction.getDisciplinaryCodeViolation()
 				.getViolationEvent().getOffender();
@@ -148,11 +149,11 @@ public class ResolutionServiceRemoveTests
 		
 		this.resolutionService.removeImposedSanction(imposedSanction);
 		
-		assert this.resolutionService.findImposedSanctionByInfraction(infraction)
-			== null : "Imposed Sanction was not removed!";
+		assert this.resolutionService.findImposedSanctionByInfraction(
+				infraction) == null : "Imposed Sanction was not removed!";
 	}
 	
-	private Infraction createInfraction() throws DuplicateEntityFoundException{
+	private Infraction createInfraction() throws DuplicateEntityFoundException {
 		final SupervisoryOrganization supervisoryOrganization =
 				this.supervisoryOrganizationDelegate
 			.create("Batcave", "TBC2", null);
@@ -168,7 +169,8 @@ public class ResolutionServiceRemoveTests
 		final DisciplinaryCodeViolation disciplinaryCodeViolation =
 				this.violationEventService.createDisciplinaryCodeViolation(
 						disciplinaryCode, violationEvent);
-		final Person authority = this.personDelegate.create("Butthead", "Joel", "Trevor", null);
+		final Person authority = this.personDelegate.create(
+				"Butthead", "Joel", "Trevor", null);
 		final String descision = "Resolution Decision";
 		final String reason = "Resolution Reason";
 		final ResolutionClassificationCategory resolutionCategory =
@@ -185,7 +187,8 @@ public class ResolutionServiceRemoveTests
 		resolution.setDisposition(disposition);
 		resolution.setAuthority(authority);
 		return this.resolutionService.createInfraction(
-				hearing, conditionViolation, disciplinaryCodeViolation, resolution);
+				hearing, conditionViolation, disciplinaryCodeViolation,
+				resolution, null);
 	}
 	
 	private Hearing createHearing() throws DuplicateEntityFoundException {
@@ -199,19 +202,23 @@ public class ResolutionServiceRemoveTests
 				"City", true, state, country);
 		final ZipCode zipCode = this.zipCodeDelegate.create(
 				city, "12345", null, true);
-		final Address address = this.addressDelegate.findOrCreate("123", "321", null,
+		final Address address = this.addressDelegate.findOrCreate(
+				"123", "321", null,
 				null, zipCode);
-		final Person person = this.personDelegate.create("Pennyworth", "Alfred", "J", null);
+		final Person person = this.personDelegate.create(
+				"Pennyworth", "Alfred", "J", null);
 		final SupervisoryOrganization supervisoryOrganization =
 				this.supervisoryOrganizationDelegate
 			.create("The Batcave", "TBC", organization);
 		
-		StaffAssignment officer = this.staffAssignmentInstanceFactory.createInstance();
+		StaffAssignment officer = this.staffAssignmentInstanceFactory
+				.createInstance();
 		officer.setStaffMember(person);
 		officer.setStaffId("999");
 		officer.setSupervisoryOrganization(supervisoryOrganization);
 		officer.setSupervisory(true);
-		officer.setTitle(this.staffTitleService.create("Butler", (short)1, true));
+		officer.setTitle(this.staffTitleService.create(
+				"Butler", (short) 1, true));
 		officer = this.staffAssignmentDao.makePersistent(officer);
 		final Offender offender = this.offenderDelegate.createWithoutIdentity(
 				"Wayne", "Bruce", "Alen", null);

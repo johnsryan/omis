@@ -26,6 +26,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -1449,8 +1451,8 @@ public class ManageFamilyAssociationController {
 					familyAssociationForm.getPersonFields().getBirthCountry(),
 					familyAssociationForm.getPersonFields().getBirthState(),
 					familyAssociationForm.getPersonFields().getBirthCity(),
-					familyAssociationForm.getPersonFields()
-					.getSocialSecurityNumber(),
+					Integer.valueOf(familyAssociationForm.getPersonFields()
+					.getSocialSecurityNumber().replaceAll("-", "")),
 					familyAssociationForm.getPersonFields().getStateIdNumber(),
 					familyAssociationForm.getPersonFields().getDeceased(),
 					familyAssociationForm.getPersonFields().getDeathDate());
@@ -1466,8 +1468,8 @@ public class ManageFamilyAssociationController {
 					familyAssociationForm.getPersonFields().getBirthCountry(),
 					familyAssociationForm.getPersonFields().getBirthState(),
 					newCreatedPersonFieldsCity,
-					familyAssociationForm.getPersonFields()
-					.getSocialSecurityNumber(),
+					Integer.valueOf(familyAssociationForm.getPersonFields()
+					.getSocialSecurityNumber().replaceAll("-", "")),
 					familyAssociationForm.getPersonFields().getStateIdNumber(),
 					familyAssociationForm.getPersonFields().getDeceased(),
 					familyAssociationForm.getPersonFields().getDeathDate());
@@ -1746,8 +1748,43 @@ public class ManageFamilyAssociationController {
 				personFields.setSuffix(person.getName().getSuffix());
 			}
 			personFields.setSex(person.getIdentity().getSex());
-			personFields.setSocialSecurityNumber(person.getIdentity()
-				.getSocialSecurityNumber());
+			if (person.getIdentity()
+					.getSocialSecurityNumber() != null) {
+				if (hasRole("ADMIN") 
+						|| hasRole("FAMILY_ASSOCIATION_SSN_EDIT") 
+						|| hasRole("FAMILY_ASSOCIATION_SSN_VIEW")) {
+					String stringSSN = String.format("%09d",
+							person.getIdentity()
+							.getSocialSecurityNumber());
+					if (stringSSN.length() != 9) {
+						throw new IllegalStateException(
+								"Invalid Social Security Number");
+					} else {
+						String formattedSSN = String
+								.format("%s-%s-%s",
+										stringSSN.substring(0,3),
+										stringSSN.substring(3,5),
+										stringSSN.substring(5,9));
+						personFields.setSocialSecurityNumber(formattedSSN);
+					}
+					familyAssociationForm.setValidateSocialSecurityNumber(true);
+				} else {
+					String socialSecurityNumber
+						= person.getIdentity()
+						.getSocialSecurityNumber().toString(); 
+					if (socialSecurityNumber.length() >= 4) {
+						socialSecurityNumber = "XXX-XX-"
+								+ socialSecurityNumber.substring(
+										socialSecurityNumber.length() - 4,
+										socialSecurityNumber.length());
+					} else {
+						socialSecurityNumber = "XXX-XX-"
+								+ socialSecurityNumber;
+					}				
+				personFields.setSocialSecurityNumber(socialSecurityNumber);
+				familyAssociationForm.setValidateSocialSecurityNumber(false);
+				}
+			}
 			personFields.setStateIdNumber(
 					person.getIdentity().getStateIdNumber());
 			familyAssociationForm.setPersonFields(personFields);
@@ -2422,6 +2459,18 @@ public class ManageFamilyAssociationController {
 			+ FAMILY_ASSOCIATION_FIELDS_MODEL_KEY, result);
 		return mav;
 	}	
+
+	// Returns whether the current user has the specified role
+		private boolean hasRole(final String role) {
+			for (GrantedAuthority authority :
+					SecurityContextHolder.getContext().getAuthentication()
+						.getAuthorities()) {
+				if (role.equals(authority.getAuthority())) {
+					return true;
+				}
+			}
+			return false;
+		}	
 
 	/**
 	 * Returns a view for family associations action menu pertaining to the 

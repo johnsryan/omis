@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.hearing.web.controller;
 
 import java.util.ArrayList;
@@ -27,15 +44,18 @@ import omis.hearing.domain.HearingStatus;
 import omis.hearing.domain.HearingStatusCategory;
 import omis.hearing.domain.ImposedSanction;
 import omis.hearing.domain.Infraction;
+import omis.hearing.domain.InfractionPlea;
 import omis.hearing.domain.ResolutionClassificationCategory;
+import omis.hearing.domain.StaffAttendance;
 import omis.hearing.domain.component.Resolution;
 import omis.hearing.report.HearingSummaryReportService;
 import omis.hearing.report.ViolationSummaryReportService;
 import omis.hearing.service.HearingService;
 import omis.hearing.service.ResolutionService;
-
 import omis.hearing.web.form.GoToOption;
+import omis.hearing.web.form.ItemOperation;
 import omis.hearing.web.form.ResolutionForm;
+import omis.hearing.web.form.StaffAttendanceItem;
 import omis.hearing.web.form.ViolationItem;
 import omis.hearing.web.form.ViolationSelectionItem;
 import omis.hearing.web.form.ViolationsSelectForm;
@@ -44,16 +64,18 @@ import omis.offender.beans.factory.OffenderPropertyEditorFactory;
 import omis.offender.domain.Offender;
 import omis.offender.web.controller.delegate.OffenderSummaryModelDelegate;
 import omis.person.domain.Person;
+import omis.staff.domain.StaffAssignment;
+import omis.util.StringUtility;
 import omis.violationevent.domain.ConditionViolation;
 import omis.violationevent.domain.DisciplinaryCodeViolation;
 import omis.violationevent.domain.ViolationEventCategory;
 import omis.web.controller.delegate.BusinessExceptionHandlerDelegate;
 
 /**
- * ResolutionController.java
+ * Resolution Controller.
  * 
- *@author Annie Jacques 
- *@version 0.1.1 (Aug 8, 2017)
+ *@author Annie Wahl
+ *@version 0.1.2 (Feb 28, 2018)
  *@since OMIS 3.0
  *
  */
@@ -71,6 +93,12 @@ public class ResolutionController {
 	
 	private static final String RESOLUTION_ACTION_MENU_VIEW_NAME =
 			"/hearing/resolution/includes/resolutionActionMenu";
+	
+	private static final String STAFF_ATTENDANCE_ITEMS_ACTION_MENU_VIEW_NAME =
+			"/hearing/includes/staffAttendanceItemsActionMenu";
+	
+	private static final String STAFF_ATTENDANCE_ITEM_ROW_VIEW_NAME =
+			"/hearing/includes/staffAttendanceItemTableRow";
 	
 	private static final String VIOLATIONS_LIST_REDIRECT =
 			"redirect:/hearing/violations/list.html?offender=%d";
@@ -98,6 +126,14 @@ public class ResolutionController {
 	
 	private static final String RESOLUTION_CATEGORY_MODEL_KEY =
 			"resolutionCategory";
+	
+	private static final String INFRACTION_PLEAS_MODEL_KEY = "infractionPleas";
+	
+	private static final String STAFF_ATTENDANCE_ITEM_MODEL_KEY =
+			"staffAttendanceItem";
+	
+	private static final String STAFF_ATTENDANCE_ITEM_INDEX_MODEL_KEY =
+			"staffAttendanceItemIndex";
 	
 	private static final String RESOLUTION_FORM_MODEL_KEY =
 			"resolutionForm";
@@ -135,7 +171,8 @@ public class ResolutionController {
 	
 	@Autowired
 	@Qualifier("disciplinaryCodeViolationPropertyEditorFactory")
-	private PropertyEditorFactory disciplinaryCodeViolationPropertyEditorFactory;
+	private PropertyEditorFactory
+		disciplinaryCodeViolationPropertyEditorFactory;
 
 	@Autowired
 	@Qualifier("conditionViolationPropertyEditorFactory")
@@ -146,12 +183,24 @@ public class ResolutionController {
 	private PropertyEditorFactory infractionPropertyEditorFactory;
 	
 	@Autowired
+	@Qualifier("infractionPleaPropertyEditorFactory")
+	private PropertyEditorFactory infractionPleaPropertyEditorFactory;
+	
+	@Autowired
 	@Qualifier("offenderPropertyEditorFactory")
 	private OffenderPropertyEditorFactory offenderPropertyEditorFactory;
 	
 	@Autowired
 	@Qualifier("hearingPropertyEditorFactory")
 	private PropertyEditorFactory hearingPropertyEditorFactory;
+	
+	@Autowired
+	@Qualifier("staffAttendancePropertyEditorFactory")
+	private PropertyEditorFactory staffAttendancePropertyEditorFactory;
+	
+	@Autowired
+	@Qualifier("staffAssignmentPropertyEditorFactory")
+	private PropertyEditorFactory staffAssignmentPropertyEditorFactory;
 	
 	@Autowired
 	@Qualifier("personPropertyEditorFactory")
@@ -179,13 +228,13 @@ public class ResolutionController {
 	
 	
 	/**
-	 * Default Constructor for ResolutionController
+	 * Default Constructor for ResolutionController.
 	 */
 	public ResolutionController() {
 	}
 	
 	/**
-	 * Returns the ModelAndView for creating Infractions
+	 * Returns the ModelAndView for creating Infractions.
 	 * @param offender - Offender
 	 * @param hearing - Hearing
 	 * @param resolutionCategory - ResolutionClassificationCategory
@@ -205,22 +254,22 @@ public class ResolutionController {
 				final ResolutionClassificationCategory resolutionCategory,
 			@RequestParam(value = "violationCategory", required = true)
 				final ViolationEventCategory violationCategory,
-			final ViolationsSelectForm selectForm){
+			final ViolationsSelectForm selectForm) {
 		
 		switch (resolutionCategory) {
 			case FORMAL:
-				if(!this.resolutionService.findInfractionsByHearing(hearing)
-						.isEmpty()){
-					return this.prepareResolutionMav(hearing, resolutionCategory,
-							this.prepareForm(hearing, violationCategory,
-									resolutionCategory),
+				if (!this.resolutionService.findInfractionsByHearing(hearing)
+						.isEmpty()) {
+					return this.prepareResolutionMav(hearing,
+							resolutionCategory, this.prepareForm(hearing,
+								violationCategory, resolutionCategory),
 							new ModelMap());
-				}
-				else{
+				} else {
 					return new ModelAndView(String.format(
 							VIOLATIONS_SELECT_REDIRECT,
-							offender.getId(), hearing.getId(), resolutionCategory,
-							violationCategory, GoToOption.ADJUDICATE));
+							offender.getId(), hearing.getId(),
+							resolutionCategory, violationCategory,
+							GoToOption.ADJUDICATE));
 				}
 			case INFORMAL:
 			case DISMISSED:
@@ -236,12 +285,12 @@ public class ResolutionController {
 	
 	/**
 	 * Creates Infractions/ImposedSanctions/HearingStatus and returns to
-	 * either the Hearings List or the Violations List
+	 * either the Hearings List or the Violations List.
 	 * @param offender - Offender
 	 * @param hearing - Hearing
 	 * @param resolutionCategory - ResolutionClassificationCategory
 	 * @param violationCategory - ViolationEventCategory
-	 * @param resolutionForm - ResolutionForm
+	 * @param form - ResolutionForm
 	 * @param bindingResult - BindingResult
 	 * @return ModelAndView - Redirects to either the
 	 * Hearings List or the Violations List (dependent on resolutionCategory)
@@ -260,86 +309,98 @@ public class ResolutionController {
 				final ResolutionClassificationCategory resolutionCategory,
 			@RequestParam(value = "violationCategory", required = true)
 				final ViolationEventCategory violationCategory,
-			final ResolutionForm resolutionForm, BindingResult bindingResult)
-					throws DuplicateEntityFoundException{
-		
-		this.resolutionFormValidator.validate(resolutionForm, bindingResult);
-		
-		if(bindingResult.hasErrors()){
-			//The summaries are not carried forward to the POST, so repopulating them
-			for(int i = 0; i < resolutionForm.getViolationItems().size(); i++){
-				if(ViolationEventCategory.DISCIPLINARY.equals(violationCategory)){
-					resolutionForm.getViolationItems().get(i).setSummary(
+			final ResolutionForm form,
+			final BindingResult bindingResult)
+					throws DuplicateEntityFoundException {
+		this.resolutionFormValidator.validate(form, bindingResult);
+		if (bindingResult.hasErrors()) {
+			//Repopulating Summary Items
+			for (int i = 0; i < form.getViolationItems().size();
+					i++) {
+				if (ViolationEventCategory.DISCIPLINARY
+						.equals(violationCategory)) {
+					form.getViolationItems().get(i).setSummary(
 							this.violationSummaryReportService.summarize(
-									resolutionForm.getViolationItems().get(i)
+									form.getViolationItems().get(i)
 									.getDisciplinaryCodeViolation()));
-				}
-				else if(ViolationEventCategory.SUPERVISION.equals(violationCategory)){
-					resolutionForm.getViolationItems().get(i).setSummary(
+				} else if (ViolationEventCategory.SUPERVISION
+						.equals(violationCategory)) {
+					form.getViolationItems().get(i).setSummary(
 							this.violationSummaryReportService.summarize(
-									resolutionForm.getViolationItems().get(i)
+									form.getViolationItems().get(i)
 									.getConditionViolation()));
 				}
 			}
-			
 			switch (resolutionCategory) {
 				case FORMAL:
-					return this.prepareResolutionMav(hearing, resolutionCategory,
-							resolutionForm, new ModelMap());
+					return this.prepareResolutionMav(hearing,
+							resolutionCategory, form, new ModelMap());
 				case INFORMAL:
 				case DISMISSED:
-					return this.prepareResolutionMav(offender, resolutionCategory,
-							resolutionForm, new ModelMap());
+					return this.prepareResolutionMav(offender,
+							resolutionCategory, form, new ModelMap());
 				default :
 					throw new UnsupportedOperationException(
 							"Resolution Category Not Supported");
 			}
-		}
-		else{
-			if(ResolutionClassificationCategory.FORMAL.equals(resolutionCategory)){
+		} else {
+			if (ResolutionClassificationCategory.FORMAL
+					.equals(resolutionCategory)) {
 				this.resolutionService.createHearingStatus(hearing,
-						resolutionForm.getStatusDescription(),
-						new Date(), resolutionForm.getCategory());
-				if(!(resolutionForm.getDate().equals(hearing.getDate()))){
+						form.getStatusDescription(),
+						new Date(), form.getCategory());
+				if (!(form.getDate().equals(hearing.getDate()))) {
 					this.hearingService.updateHearing(hearing,
 							hearing.getLocation(),
 							hearing.getSubject().getInAttendance(),
-							resolutionForm.getDate(), hearing.getCategory(),
+							form.getDate(), hearing.getCategory(),
 							hearing.getOfficer());
 				}
+				if (!(form.getInAttendance().equals(
+						hearing.getSubject().getInAttendance()))) {
+					this.hearingService.updateHearing(hearing,
+							hearing.getLocation(), form.getInAttendance(),
+							hearing.getDate(), hearing.getCategory(),
+							hearing.getOfficer());
+				}
+				this.processStaffAttendanceItems(form.getStaffAttendanceItems(),
+						hearing);
 			}
-			for(ViolationItem item : resolutionForm.getViolationItems()){
+			for (ViolationItem item : form.getViolationItems()) {
 				Resolution resolution = new Resolution();
 				String sanctionDescription = null;
-				if(resolutionForm.getGroupEdit()) {
+				if (form.getGroupEdit()) {
 					switch (resolutionCategory) {
 						case FORMAL:
-							resolution.setDisposition(resolutionForm
-									.getViolationItems().get(0).getDisposition());
+							resolution.setDisposition(form
+								.getViolationItems().get(0).getDisposition());
 						case INFORMAL:
-							sanctionDescription = resolutionForm
+							sanctionDescription = form
 							.getViolationItems().get(0).getSanction();
 						case DISMISSED:
 							resolution.setCategory(resolutionCategory);
-							resolution.setDate(resolutionForm.getViolationItems()
-									.get(0).getDate());
-							resolution.setAuthority(resolutionForm
+							resolution.setDate(form
+									.getViolationItems().get(0).getDate());
+							resolution.setAuthority(form
 									.getViolationItems().get(0).getAuthority());
-							resolution.setReason(resolutionForm
+							resolution.setReason(form
 									.getViolationItems().get(0).getReason());
-							if(resolutionForm.getViolationItems().get(0)
+							if (form.getViolationItems().get(0)
 									.getAppealDate() != null) {
-								resolution.setAppealDate(resolutionForm
-										.getViolationItems().get(0).getAppealDate());
+								resolution.setAppealDate(form
+										.getViolationItems().get(0
+												).getAppealDate());
 							}
-							if(!ResolutionClassificationCategory.FORMAL.equals(
-									resolutionCategory)){
-								resolution.setDescision(resolutionForm
-										.getViolationItems().get(0).getDecision());
+							if (!ResolutionClassificationCategory.FORMAL.equals(
+									resolutionCategory)) {
+								resolution.setDescision(form
+										.getViolationItems().get(0)
+										.getDecision());
 							}
+						default:
+							break;
 					}
-				}
-				else {
+				} else {
 					switch (resolutionCategory) {
 						case FORMAL:
 							resolution.setDisposition(item.getDisposition());
@@ -350,77 +411,66 @@ public class ResolutionController {
 							resolution.setDate(item.getDate());
 							resolution.setAuthority(item.getAuthority());
 							resolution.setReason(item.getReason());
-							if(item.getAppealDate() != null) {
+							if (item.getAppealDate() != null) {
 								resolution.setAppealDate(item.getAppealDate());
 							}
-							if(!ResolutionClassificationCategory.FORMAL.equals(
-									resolutionCategory)){
+							if (!ResolutionClassificationCategory.FORMAL.equals(
+									resolutionCategory)) {
 								resolution.setDescision(item.getDecision());
 							}
 							break;
-							default :
-								throw new UnsupportedOperationException(
-										"Resolution Category Not Supported");
-						}
+						default :
+							throw new UnsupportedOperationException(
+									"Resolution Category Not Supported");
+					}
 				}
-				
 				Infraction infraction = item.getInfraction();
 				ConditionViolation conditionViolation =
 						item.getConditionViolation();
 				DisciplinaryCodeViolation disciplinaryCodeViolation =
 						item.getDisciplinaryCodeViolation();
-				
-				if(infraction == null){
-					infraction = 
-					this.resolutionService.createInfraction(hearing,
-							conditionViolation,
-							disciplinaryCodeViolation, resolution);
-				}
-				else{
+				InfractionPlea plea = item.getPlea();
+				if (infraction == null) {
+					infraction = this.resolutionService.createInfraction(
+							hearing, conditionViolation,
+							disciplinaryCodeViolation, resolution, plea);
+				} else {
 					this.resolutionService.updateInfraction(infraction,
-							conditionViolation,
-							disciplinaryCodeViolation, resolution);
+							conditionViolation, disciplinaryCodeViolation,
+							resolution, plea);
 				}
-				ImposedSanction imposedSanction =
-						this.resolutionService
-						.findImposedSanctionByInfraction(
-								infraction);
-				if(imposedSanction != null){
-					if(sanctionDescription != null &&
-							!sanctionDescription.equals("")){
+				ImposedSanction imposedSanction = this.resolutionService
+						.findImposedSanctionByInfraction(infraction);
+				if (imposedSanction != null) {
+					if (StringUtility.hasContent(sanctionDescription)) {
 						this.resolutionService.updateImposedSanction(
-								imposedSanction, offender,
-								sanctionDescription);
-					}
-					else {
+							imposedSanction, offender, sanctionDescription);
+					} else {
 						this.resolutionService.removeImposedSanction(
 								imposedSanction);
 					}
-				}
-				else {
-					if(sanctionDescription != null &&
-							!sanctionDescription.equals("")){
+				} else {
+					if (StringUtility.hasContent(sanctionDescription)) {
 						this.resolutionService.createImposedSanction(
-								infraction, offender,
-								sanctionDescription);
+							infraction, offender, sanctionDescription);
 					}
 				}
 			}
 			switch (resolutionCategory) {
 				case INFORMAL:
 				case DISMISSED:
-					return new ModelAndView(String.format(VIOLATIONS_LIST_REDIRECT,
-							offender.getId()));
+					return new ModelAndView(String.format(
+							VIOLATIONS_LIST_REDIRECT, offender.getId()));
 				case FORMAL:
 				default :
-					return new ModelAndView(String.format(HEARINGS_LIST_REDIRECT,
-							offender.getId()));
+					return new ModelAndView(String.format(
+							HEARINGS_LIST_REDIRECT, offender.getId()));
 			}
 		}
 	}
 	
 	/**
-	 * Returns the ModelAndView for editing an Infraction
+	 * Returns the ModelAndView for editing an Infraction.
 	 * @param infraction - Infraction to be edited
 	 * @return ModelAndView for editing an Infraction
 	 */
@@ -448,32 +498,29 @@ public class ResolutionController {
 	public ModelAndView update(
 			@RequestParam(value = "infraction", required = true)
 				final Infraction infraction,
-				final ResolutionForm form, BindingResult bindingResult)
-						throws DuplicateEntityFoundException{
+				final ResolutionForm form, final BindingResult bindingResult)
+						throws DuplicateEntityFoundException {
 		
 		this.resolutionFormValidator.validate(form, bindingResult);
 		
-		if(bindingResult.hasErrors()){
+		if (bindingResult.hasErrors()) {
 			//The summary will be lost on POST, so resetting the summary
-			if(infraction.getConditionViolation() != null) {
+			if (infraction.getConditionViolation() != null) {
 				form.getViolationItem().setSummary(
 						this.violationSummaryReportService.summarize(
 						infraction.getConditionViolation()));
-			}
-			else if (infraction.getDisciplinaryCodeViolation() != null) {
+			} else if (infraction.getDisciplinaryCodeViolation() != null) {
 				form.getViolationItem().setSummary(
 						this.violationSummaryReportService.summarize(
 						infraction.getDisciplinaryCodeViolation()));
 			}
 			return this.prepareResolutionMav(infraction, form);
-		}
-		else{
+		} else {
 			Offender offender;
-			if(infraction.getConditionViolation() != null) {
+			if (infraction.getConditionViolation() != null) {
 				offender = infraction.getConditionViolation()
 						.getViolationEvent().getOffender();
-			}
-			else {
+			} else {
 				offender = infraction.getDisciplinaryCodeViolation()
 						.getViolationEvent().getOffender();
 			}
@@ -486,15 +533,33 @@ public class ResolutionController {
 			switch (resolutionCategory) {
 				case FORMAL:
 					this.resolutionService.createHearingStatus(
-							infraction.getHearing(), form.getStatusDescription(),
+						infraction.getHearing(), form.getStatusDescription(),
 							new Date(), form.getCategory());
-					if(!(form.getDate().equals(infraction.getHearing().getDate()))){
-						this.hearingService.updateHearing(infraction.getHearing(),
+					if (!(form.getDate().equals(infraction.getHearing()
+							.getDate()))) {
+						this.hearingService.updateHearing(infraction
+								.getHearing(),
 								infraction.getHearing().getLocation(),
-								infraction.getHearing().getSubject().getInAttendance(),
-								form.getDate(), infraction.getHearing().getCategory(),
+								infraction.getHearing().getSubject()
+									.getInAttendance(),
+								form.getDate(), infraction.getHearing()
+									.getCategory(),
 								infraction.getHearing().getOfficer());
 					}
+					if (!(form.getInAttendance().equals(
+							infraction.getHearing().getSubject()
+							.getInAttendance()))) {
+						this.hearingService.updateHearing(
+								infraction.getHearing(),
+								infraction.getHearing().getLocation(),
+								form.getInAttendance(),
+								infraction.getHearing().getDate(),
+								infraction.getHearing().getCategory(),
+								infraction.getHearing().getOfficer());
+					}
+					this.processStaffAttendanceItems(
+							form.getStaffAttendanceItems(),
+							infraction.getHearing());
 					resolution.setDisposition(form.getViolationItem()
 							.getDisposition());
 				case INFORMAL:
@@ -505,13 +570,13 @@ public class ResolutionController {
 					resolution.setAuthority(
 							form.getViolationItem().getAuthority());
 					resolution.setReason(form.getViolationItem().getReason());
-					if(form.getViolationItem()
+					if (form.getViolationItem()
 							.getAppealDate() != null) {
 						resolution.setAppealDate(form.getViolationItem()
 								.getAppealDate());
 					}
-					if(!ResolutionClassificationCategory.FORMAL.equals(
-							resolutionCategory)){
+					if (!ResolutionClassificationCategory.FORMAL.equals(
+							resolutionCategory)) {
 						resolution.setDescision(form.getViolationItem()
 								.getDecision());
 					}
@@ -519,33 +584,29 @@ public class ResolutionController {
 					this.resolutionService.updateInfraction(infraction,
 							infraction.getConditionViolation(),
 							infraction.getDisciplinaryCodeViolation(),
-							resolution);
+							resolution, form.getViolationItem().getPlea());
 					
 					ImposedSanction imposedSanction =
 							this.resolutionService
 							.findImposedSanctionByInfraction(
 									infraction);
-					if(imposedSanction != null){
-						if(sanctionDescription != null &&
-								!sanctionDescription.equals("")){
+					if (imposedSanction != null) {
+						if (StringUtility.hasContent(sanctionDescription)) {
 							this.resolutionService.updateImposedSanction(
 									imposedSanction, offender,
 									sanctionDescription);
-						}
-						else {
+						} else {
 							this.resolutionService.removeImposedSanction(
 									imposedSanction);
 						}
-					}
-					else {
-						if(sanctionDescription != null &&
-								!sanctionDescription.equals("")){
+					} else {
+						if (StringUtility.hasContent(sanctionDescription)) {
 							this.resolutionService.createImposedSanction(
 									infraction, offender,
 									sanctionDescription);
 						}
 					}
-				break;
+					break;
 				default :
 					throw new UnsupportedOperationException(
 							"Resolution Category Not Supported");
@@ -553,38 +614,38 @@ public class ResolutionController {
 			switch (infraction.getResolution().getCategory()) {
 				case INFORMAL:
 				case DISMISSED:
-					return new ModelAndView(String.format(VIOLATIONS_LIST_REDIRECT,
-							offender.getId()));
+					return new ModelAndView(String.format(
+							VIOLATIONS_LIST_REDIRECT, offender.getId()));
 				case FORMAL:
 				default :
-					return new ModelAndView(String.format(HEARINGS_LIST_REDIRECT,
-							offender.getId()));
+					return new ModelAndView(String.format(
+							HEARINGS_LIST_REDIRECT, offender.getId()));
 			}
 		}
 	}
 	
 	/**
-	 * Removes specified infraction and returns to the violations list screen
+	 * Removes specified infraction and returns to the violations list screen.
 	 * @param infraction - Infraction to remove
 	 * @return ModelAndView - Violations List screen
 	 */
 	@RequestMapping(value = "/remove.html", method = RequestMethod.GET)
 	@PreAuthorize("hasRole('VIOLATION_REMOVE') or hasRole('ADMIN')")
 	public ModelAndView remove(@RequestParam(
-			value = "infraction", required = true) final Infraction infraction){
+			value = "infraction", required = true)
+			final Infraction infraction) {
 		Long offenderId = null;
-		if(infraction.getDisciplinaryCodeViolation() != null) {
+		if (infraction.getDisciplinaryCodeViolation() != null) {
 			offenderId = infraction.getDisciplinaryCodeViolation()
 					.getViolationEvent().getOffender().getId();
-		}
-		else if(infraction.getConditionViolation() != null) {
+		} else if (infraction.getConditionViolation() != null) {
 			offenderId = infraction.getConditionViolation()
 					.getViolationEvent().getOffender().getId();
 		}
 		
 		ImposedSanction imposedSanction = this.hearingService
 				.findImposedSanctionByInfraction(infraction);
-		if(imposedSanction != null){
+		if (imposedSanction != null) {
 			this.hearingService.removeImposedSanction(imposedSanction);
 		}
 		this.hearingService.removeInfraction(infraction);
@@ -593,41 +654,72 @@ public class ResolutionController {
 	}
 	
 	/**
-	 * Displays the Resolution Action Menu
+	 * Displays the Resolution Action Menu.
 	 * @param offender - Offender
 	 * @return ModelAndView - Resolution Action Menu
 	 */
 	@RequestMapping(value = "/resolutionActionMenu.html", 
 			method = RequestMethod.GET)
 	public ModelAndView displayResolutionActionMenu(@RequestParam
-			(value = "offender", required = true) final Offender offender){
+			(value = "offender", required = true) final Offender offender) {
 		ModelMap map = new ModelMap();
 		map.addAttribute(OFFENDER_MODEL_KEY, offender);
 		
 		return new ModelAndView(RESOLUTION_ACTION_MENU_VIEW_NAME, map);
 	}
 	
+	/**
+	 * Displays a staff attendance item row.
+	 * @param staffAttendanceItemIndex - Integer
+	 * @return ModelAndView - view for staff attendance item row
+	 */
+	@RequestMapping(value = "createStaffAttendanceItem.html",
+			method = RequestMethod.GET)
+	public ModelAndView displayStaffAttendanceItemRow(@RequestParam(
+			value = "staffAttendanceItemIndex", required = true)
+			final Integer staffAttendanceItemIndex) {
+		ModelMap map = new ModelMap();
+		StaffAttendanceItem noteItem = new StaffAttendanceItem();
+		noteItem.setItemOperation(ItemOperation.CREATE);
+		map.addAttribute(STAFF_ATTENDANCE_ITEM_MODEL_KEY, noteItem);
+		map.addAttribute(STAFF_ATTENDANCE_ITEM_INDEX_MODEL_KEY,
+				staffAttendanceItemIndex);
+		return new ModelAndView(STAFF_ATTENDANCE_ITEM_ROW_VIEW_NAME, map);
+	}
+	
+	/**
+	 * Returns a model and view of staff attendance items action menu.
+	 * @return ModelAndView - model and view of staff attendance items
+	 * action menu
+	 */
+	@RequestMapping(value = "staffAttendanceItemsActionMenu.html",
+			method = RequestMethod.GET)
+	public ModelAndView displayStaffAttendanceItemsActionMenu() {
+		ModelMap map = new ModelMap();	
+		return new ModelAndView(
+				STAFF_ATTENDANCE_ITEMS_ACTION_MENU_VIEW_NAME, map);
+	}
 	
 	/* Helper Methods */
 	
 	
 	/**
-	 * Prepares a ModelAndView for Resolution creation with a Hearing
+	 * Prepares a ModelAndView for Resolution creation with a Hearing.
 	 * @param hearing - Hearing
 	 * @param resolutionCategory - ResolutionClassificationCategory
 	 * @param form - ResolutionForm
 	 * @param map - ModelMap
 	 * @return ModelAndView for Resolution creation with a Hearing
 	 */
-	public ModelAndView prepareResolutionMav(final Hearing hearing,
+	private ModelAndView prepareResolutionMav(final Hearing hearing,
 			final ResolutionClassificationCategory resolutionCategory,
-			final ResolutionForm form, final ModelMap map){
+			final ResolutionForm form, final ModelMap map) {
 		
 		List<HearingStatusCategory> hearingStatusCategories =
 				new ArrayList<HearingStatusCategory>();
 		hearingStatusCategories.add(HearingStatusCategory.HELD);
-		if(this.hearingService.findLatestHearingStatus(hearing).getCategory()
-				.getAdjudicated()){
+		if (this.hearingService.findLatestHearingStatus(hearing).getCategory()
+				.getAdjudicated()) {
 			hearingStatusCategories.add(HearingStatusCategory.UPHELD);
 			hearingStatusCategories.add(HearingStatusCategory.MODIFIED);
 		}
@@ -637,6 +729,8 @@ public class ResolutionController {
 		map.addAttribute(DISPOSITION_CATEGORIES_MODEL_KEY,
 				DispositionCategory.values());
 		map.addAttribute(HEARING_MODEL_KEY, hearing);
+		map.addAttribute(STAFF_ATTENDANCE_ITEM_INDEX_MODEL_KEY,
+				form.getStaffAttendanceItems().size());
 		map.addAttribute(HEARING_SUMMARY_MODEL_KEY,
 				this.hearingSummaryReportService.summarize(hearing));
 		return prepareResolutionMav(hearing.getSubject().getOffender(),
@@ -644,18 +738,22 @@ public class ResolutionController {
 	}
 	
 	/**
-	 * Prepares a ModelAndView for Resolution creation with no Hearing
+	 * Prepares a ModelAndView for Resolution creation with no Hearing.
 	 * @param offender - Offender
 	 * @param resolutionCategory - ResolutionClassificationHearing
 	 * @param form - ResolutionForm form
 	 * @param map - ModelMap
 	 * @return ModelAndView for Resolution creation with no Hearing
 	 */
-	public ModelAndView prepareResolutionMav(final Offender offender,
+	private ModelAndView prepareResolutionMav(final Offender offender,
 			final ResolutionClassificationCategory resolutionCategory,
-			final ResolutionForm form, final ModelMap map){
+			final ResolutionForm form, final ModelMap map) {
 		map.addAttribute(RESOLUTION_CATEGORY_MODEL_KEY, resolutionCategory);
 		map.addAttribute(RESOLUTION_FORM_MODEL_KEY, form);
+		map.addAttribute(INFRACTION_PLEAS_MODEL_KEY,
+				this.resolutionService.findInfractionPleas());
+		map.addAttribute(STAFF_ATTENDANCE_ITEM_INDEX_MODEL_KEY,
+				form.getStaffAttendanceItems().size());
 		map.addAttribute(OFFENDER_MODEL_KEY, offender);
 		this.offenderSummaryModelDelegate.add(map, offender);
 		
@@ -663,21 +761,21 @@ public class ResolutionController {
 	}
 	
 	/**
-	 * Prepares a ModelAndView for Resolution editing for an Infraction
+	 * Prepares a ModelAndView for Resolution editing for an Infraction.
 	 * @param infraction - Infraction to be edited
 	 * @param form - ResolutionForm
 	 * @return ModelAndView - prepared ModelAndView for Resolution editing for
 	 * an Infraction
 	 */
-	public ModelAndView prepareResolutionMav(final Infraction infraction, 
+	private ModelAndView prepareResolutionMav(final Infraction infraction, 
 			final ResolutionForm form) {
 		ModelMap map = new ModelMap();
-		if(infraction.getHearing() != null) {
+		if (infraction.getHearing() != null) {
 			List<HearingStatusCategory> hearingStatusCategories =
 					new ArrayList<HearingStatusCategory>();
 			hearingStatusCategories.add(HearingStatusCategory.HELD);
-			if(this.hearingService.findLatestHearingStatus(infraction.getHearing()).getCategory()
-					.getAdjudicated()){
+			if (this.hearingService.findLatestHearingStatus(infraction
+					.getHearing()).getCategory().getAdjudicated()) {
 				hearingStatusCategories.add(HearingStatusCategory.UPHELD);
 				hearingStatusCategories.add(HearingStatusCategory.MODIFIED);
 			}
@@ -690,11 +788,10 @@ public class ResolutionController {
 		}
 		
 		Offender offender;
-		if(infraction.getConditionViolation() != null) {
+		if (infraction.getConditionViolation() != null) {
 			offender = infraction.getConditionViolation()
 					.getViolationEvent().getOffender();
-		}
-		else {
+		} else {
 			offender = infraction.getDisciplinaryCodeViolation()
 					.getViolationEvent().getOffender();
 		}
@@ -704,6 +801,10 @@ public class ResolutionController {
 		map.addAttribute(RESOLUTION_CATEGORY_MODEL_KEY, 
 				infraction.getResolution().getCategory());
 		map.addAttribute(RESOLUTION_FORM_MODEL_KEY, form);
+		map.addAttribute(INFRACTION_PLEAS_MODEL_KEY,
+				this.resolutionService.findInfractionPleas());
+		map.addAttribute(STAFF_ATTENDANCE_ITEM_INDEX_MODEL_KEY,
+				form.getStaffAttendanceItems().size());
 		map.addAttribute(OFFENDER_MODEL_KEY, offender);
 		this.offenderSummaryModelDelegate.add(map, offender);
 		
@@ -711,65 +812,80 @@ public class ResolutionController {
 	}
 	
 	/**
-	 * Populates a ResolutionForm based on the given properties
+	 * Populates a ResolutionForm based on the given properties.
 	 * @param hearing - Hearing
 	 * @param violationCategory - ViolationEventCategory
 	 * @param resolutionCategory - ResolutionClassificationCategory
 	 * @return Populated ResolutionForm based on the given properties
 	 */
-	public ResolutionForm prepareForm(final Hearing hearing,
+	private ResolutionForm prepareForm(final Hearing hearing,
 			final ViolationEventCategory violationCategory,
-			final ResolutionClassificationCategory resolutionCategory){
+			final ResolutionClassificationCategory resolutionCategory) {
 		ResolutionForm form = new ResolutionForm();
 		List<Infraction> infractions = this.resolutionService
 				.findInfractionsByHearing(hearing);
 		List<ViolationItem> violationItems = new ArrayList<ViolationItem>();
 		
-		for(Infraction infraction : infractions){
+		for (Infraction infraction : infractions) {
 			ViolationItem item = new ViolationItem();
-			if(ViolationEventCategory.DISCIPLINARY.equals(violationCategory)){
+			if (ViolationEventCategory.DISCIPLINARY.equals(violationCategory)) {
 				item.setSummary(this.violationSummaryReportService.summarize(
 						infraction.getDisciplinaryCodeViolation()));
 				item.setDisciplinaryCodeViolation(infraction
 						.getDisciplinaryCodeViolation());
-			}
-			else if(ViolationEventCategory.SUPERVISION.equals(violationCategory)){
+			} else if (ViolationEventCategory.SUPERVISION
+					.equals(violationCategory)) {
 				item.setSummary(this.violationSummaryReportService.summarize(
 						infraction.getConditionViolation()));
 				item.setConditionViolation(infraction.getConditionViolation());
 			}
 			item.setInfraction(infraction);
 			
-			if(infraction.getResolution() != null){
+			if (infraction.getResolution() != null) {
 				item.setDate(infraction.getResolution().getDate());
 				item.setDecision(infraction.getResolution().getDescision());
-				item.setDisposition(infraction.getResolution().getDisposition());
+				item.setDisposition(infraction.getResolution()
+						.getDisposition());
 				item.setReason(infraction.getResolution().getReason());
 				item.setAuthority(infraction.getResolution().getAuthority());
 				item.setAppealDate(infraction.getResolution().getAppealDate());
 			}
-			
+			item.setPlea(infraction.getPlea());
 			ImposedSanction imposedSanction = this.resolutionService
 					.findImposedSanctionByInfraction(infraction);
 			
-			if(imposedSanction != null){
+			if (imposedSanction != null) {
 				item.setSanction(imposedSanction.getDescription());
 			}
 			
 			violationItems.add(item);
 		}
+		
+		List<StaffAttendanceItem> staffAttendanceItems =
+				new ArrayList<StaffAttendanceItem>();
+		List<StaffAttendance> staffAttended =
+				this.hearingService.findStaffAttendedByHearing(hearing);
+		for (StaffAttendance staff : staffAttended) {
+			StaffAttendanceItem item = new StaffAttendanceItem();
+			item.setStaffAttended(staff);
+			item.setStaff(staff.getStaff());
+			item.setItemOperation(ItemOperation.UPDATE);
+			
+			staffAttendanceItems.add(item);
+		}
 		form.setViolationItems(violationItems);
 		form.setResolutionCategory(resolutionCategory);
 		form.setDate(hearing.getDate());
+		form.setInAttendance(hearing.getSubject().getInAttendance());
+		form.setStaffAttendanceItems(staffAttendanceItems);
 		form.setGroupEdit(false);
 		
 		HearingStatus latestStatus =
 				this.hearingService.findLatestHearingStatus(hearing);
-		if(latestStatus.getCategory().getAdjudicated()){
+		if (latestStatus.getCategory().getAdjudicated()) {
 			form.setCategory(latestStatus.getCategory());
-			form.setStatusDescription(latestStatus.getDescription());;
-		}
-		else{
+			form.setStatusDescription(latestStatus.getDescription());
+		} else {
 			form.setCategory(HearingStatusCategory.HELD);
 		}
 		
@@ -778,43 +894,43 @@ public class ResolutionController {
 	
 	/**
 	 * Populates a ResolutionForm based on the given properties, including
-	 * the properties from a ViolationsSelectForm
+	 * the properties from a ViolationsSelectForm.
 	 * @param selectForm - ViolationsSelectForm
 	 * @param violationCategory - ViolationEventCategory
 	 * @param resolutionCategory - ResolutionClassificationCategory
 	 * @return Populated ResolutionForm based on the given properties
 	 */
-	public ResolutionForm prepareForm(final ViolationsSelectForm selectForm,
+	private ResolutionForm prepareForm(final ViolationsSelectForm selectForm,
 			final ViolationEventCategory violationCategory,
-			final ResolutionClassificationCategory resolutionCategory){
+			final ResolutionClassificationCategory resolutionCategory) {
 		ResolutionForm form = new ResolutionForm();
 		List<ViolationSelectionItem> selectedItems =
 				selectForm.getViolationSelectionItems();
 		List<ViolationItem> violationItems = new ArrayList<ViolationItem>();
 		
-		for(ViolationSelectionItem selectedItem : selectedItems){
-			if(selectedItem.getSelected() == true){
-				if(ViolationEventCategory.DISCIPLINARY.equals(violationCategory)){
+		for (ViolationSelectionItem selectedItem : selectedItems) {
+			if (selectedItem.getSelected()) {
+				if (ViolationEventCategory.DISCIPLINARY
+						.equals(violationCategory)) {
 					ViolationItem item = new ViolationItem();
 					
-					item.setSummary(this.violationSummaryReportService.summarize(
-							selectedItem.getDisciplinaryCodeViolation()));
+					item.setSummary(this.violationSummaryReportService
+							.summarize(selectedItem
+									.getDisciplinaryCodeViolation()));
 					item.setDisciplinaryCodeViolation(selectedItem
 							.getDisciplinaryCodeViolation());
 					
 					violationItems.add(item);
-				}
-				else if(ViolationEventCategory.SUPERVISION.equals(
-						violationCategory)){
+				} else if (ViolationEventCategory.SUPERVISION.equals(
+						violationCategory)) {
 					ViolationItem item = new ViolationItem();
-					item.setSummary(this.violationSummaryReportService.summarize(
-							selectedItem.getConditionViolation()));
+					item.setSummary(this.violationSummaryReportService
+							.summarize(selectedItem.getConditionViolation()));
 					item.setConditionViolation(selectedItem
 							.getConditionViolation());
 					
 					violationItems.add(item);
-				}
-				else{
+				} else {
 					throw new UnsupportedOperationException(
 							"Violation Category Not Supported");
 				}
@@ -828,39 +944,56 @@ public class ResolutionController {
 	}
 	
 	/**
-	 * Populates a ResolutionForm from an Infraction
+	 * Populates a ResolutionForm from an Infraction.
 	 * @param infraction - Infraction
 	 * @return ResolutionForm - prepared ResolutionForm
 	 */
-	public ResolutionForm prepareForm(final Infraction infraction) {
+	private ResolutionForm prepareForm(final Infraction infraction) {
 		ResolutionForm form = new ResolutionForm();
 		
-		if(infraction.getHearing() != null) {
+		if (infraction.getHearing() != null) {
 			form.setCategory(this.hearingService.findLatestHearingStatus(
 					infraction.getHearing()).getCategory());
 			form.setDate(infraction.getHearing().getDate());
-			form.setStatusDescription(this.hearingService.findLatestHearingStatus(
-					infraction.getHearing()).getDescription());
+			form.setStatusDescription(this.hearingService
+					.findLatestHearingStatus(infraction.getHearing())
+					.getDescription());
+			form.setInAttendance(infraction.getHearing().getSubject()
+					.getInAttendance());
+			List<StaffAttendanceItem> staffAttendanceItems =
+					new ArrayList<StaffAttendanceItem>();
+			List<StaffAttendance> staffAttended =
+					this.hearingService.findStaffAttendedByHearing(
+							infraction.getHearing());
+			for (StaffAttendance staff : staffAttended) {
+				StaffAttendanceItem item = new StaffAttendanceItem();
+				item.setStaffAttended(staff);
+				item.setStaff(staff.getStaff());
+				item.setItemOperation(ItemOperation.UPDATE);
+				
+				staffAttendanceItems.add(item);
+			}
+			form.setStaffAttendanceItems(staffAttendanceItems);
 		}
 		ViolationItem violation = new ViolationItem();
 		
-		if(infraction.getConditionViolation() != null) {
+		if (infraction.getConditionViolation() != null) {
 			violation.setConditionViolation(infraction.getConditionViolation());
 			violation.setSummary(this.violationSummaryReportService.summarize(
 					infraction.getConditionViolation()));
-		}
-		else if (infraction.getDisciplinaryCodeViolation() != null) {
+		} else if (infraction.getDisciplinaryCodeViolation() != null) {
 			violation.setDisciplinaryCodeViolation(
 					infraction.getDisciplinaryCodeViolation());
 			violation.setSummary(this.violationSummaryReportService.summarize(
 					infraction.getDisciplinaryCodeViolation()));
 		}
-		if(this.resolutionService.findImposedSanctionByInfraction(infraction)
+		if (this.resolutionService.findImposedSanctionByInfraction(infraction)
 				!= null) {
 			violation.setSanction(this.resolutionService
 					.findImposedSanctionByInfraction(
 							infraction).getDescription());
 		}
+		violation.setPlea(infraction.getPlea());
 		violation.setDate(infraction.getResolution().getDate());
 		violation.setDecision(infraction.getResolution().getDescision());
 		violation.setDisposition(infraction.getResolution().getDisposition());
@@ -876,6 +1009,36 @@ public class ResolutionController {
 	}
 	
 	/**
+	 * Creates, updates, and removes staff attendances based on their item
+	 * operation.
+	 * @param staffAttendanceItems - list of staffAttendanceItems to be 
+	 * processed
+	 * @param hearing - hearing for which the items are being processed
+	 * @throws DuplicateEntityFoundException - when a staff attendance already
+	 * exists for the hearing
+	 */
+	private void processStaffAttendanceItems(
+			final List<StaffAttendanceItem> staffAttendanceItems,
+			final Hearing hearing) throws DuplicateEntityFoundException {
+		if (staffAttendanceItems != null) {
+			for (StaffAttendanceItem item : staffAttendanceItems) {
+				if (ItemOperation.CREATE.equals(item.getItemOperation())) {
+					this.hearingService.createStaffAttendance(hearing,
+							item.getStaff());
+				} else if (ItemOperation.UPDATE.equals(
+						item.getItemOperation())) {
+					this.hearingService.updateStaffAttendance(
+							item.getStaffAttended(), item.getStaff());
+				} else if (ItemOperation.REMOVE.equals(
+						item.getItemOperation())) {
+					this.hearingService.removeStaffAttendance(
+							item.getStaffAttended());
+				}
+			}
+		}
+	}
+	
+	/**
 	 * Handles duplicate entity found exceptions.
 	 * 
 	 * @param exception duplicate entity found exception
@@ -884,20 +1047,19 @@ public class ResolutionController {
 	@ExceptionHandler(DuplicateEntityFoundException.class)
 	public ModelAndView handleDuplicateEntityFoundException(
 			final DuplicateEntityFoundException exception) {
-		return this.businessExceptionHandlerDelegate.prepareModelAndView
-		(ENTITY_EXISTS_MESSAGE_KEY, ERROR_BUNDLE_NAME, 
-				exception);
+		return this.businessExceptionHandlerDelegate.prepareModelAndView(
+				ENTITY_EXISTS_MESSAGE_KEY, ERROR_BUNDLE_NAME, exception);
 	}
 	
 	/* InitBinder */
 	
 	/**
-	 * Sets up and registers property editors
+	 * Sets up and registers property editors.
 	 * 
 	 * @param binder - web binder
 	 */
 	@InitBinder
-	protected void initBinder(final WebDataBinder binder){
+	protected void initBinder(final WebDataBinder binder) {
 		binder.registerCustomEditor(
 				Offender.class,
 				this.offenderPropertyEditorFactory
@@ -917,11 +1079,22 @@ public class ResolutionController {
 				this.infractionPropertyEditorFactory
 				.createPropertyEditor());
 		binder.registerCustomEditor(
+				InfractionPlea.class,
+				this.infractionPleaPropertyEditorFactory
+				.createPropertyEditor());
+		binder.registerCustomEditor(
 				Hearing.class, this.hearingPropertyEditorFactory
 				.createPropertyEditor());
 		binder.registerCustomEditor(
 				Person.class,
 				this.personPropertyEditorFactory
+				.createPropertyEditor());
+		binder.registerCustomEditor(
+				StaffAttendance.class, this.staffAttendancePropertyEditorFactory
+				.createPropertyEditor());
+		binder.registerCustomEditor(
+				StaffAssignment.class,
+				this.staffAssignmentPropertyEditorFactory
 				.createPropertyEditor());
 	}
 }

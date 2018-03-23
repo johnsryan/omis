@@ -17,12 +17,15 @@
 */
 package omis.assessment.dao.impl.hibernate;
 
+import java.util.List;
+
 import org.hibernate.SessionFactory;
 
 import omis.assessment.dao.AnswerRatingDao;
 import omis.assessment.domain.AnswerRating;
 import omis.assessment.domain.RatingCategory;
 import omis.dao.impl.hibernate.GenericHibernateDaoImpl;
+import omis.questionnaire.domain.AdministeredQuestionnaire;
 import omis.questionnaire.domain.AnswerValue;
 
 /**
@@ -43,11 +46,18 @@ public class AnswerRatingDaoHibernateImpl
 	private final static String FIND_EXCLUDING_QUERY_NAME = 
 			"findAnswerRatingExcluding";
 	
+	private final static String 
+			FIND_BY_RATING_CATEGORY_AND_ADMINISTERED_QUESTIONNAIRE_QUERY_NAME = 
+				"findAnswerRatingsByRatingCategoryAndAdministeredQuestionnaire";
+	
 	/* Parameters. */
 	
 	private final static String ANSWER_VALUE_PARAM_NAME = "answerValue";
 	
 	private final static String RATING_CATEGORY_PARAM_NAME = "ratingCategory";
+	
+	private final static String ADMINISTERED_QUESTIONNAIRE_PARAM_NAME = 
+			"administeredQuestionnaire";
 	
 	private final static String EXCLUDED_ANSWER_RATING_PARAM_NAME = 
 			"excludedAnswerRating";
@@ -91,5 +101,22 @@ public class AnswerRatingDaoHibernateImpl
 						excludedAnswerRating)
 				.uniqueResult();
 		return answerRating;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public List<AnswerRating> findByRatingCategoryAndAdministeredQuestionnaire(
+			final RatingCategory ratingCategory,
+			final AdministeredQuestionnaire administeredQuestionnaire) {
+		@SuppressWarnings("unchecked")
+		List<AnswerRating> answerRatings = this.getSessionFactory()
+		.getCurrentSession()
+				.getNamedQuery(
+						FIND_BY_RATING_CATEGORY_AND_ADMINISTERED_QUESTIONNAIRE_QUERY_NAME)
+				.setParameter(RATING_CATEGORY_PARAM_NAME, ratingCategory)
+				.setParameter(ADMINISTERED_QUESTIONNAIRE_PARAM_NAME, 
+						administeredQuestionnaire)
+				.list();
+		return answerRatings;
 	}
 }

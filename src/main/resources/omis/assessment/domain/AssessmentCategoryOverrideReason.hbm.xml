@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ - OMIS - Offender Management Information System
+ - Copyright (C) 2011 - 2017 State of Montana
+ -
+ - This program is free software: you can redistribute it and/or modify
+ - it under the terms of the GNU General Public License as published by
+ - the Free Software Foundation, either version 3 of the License, or
+ - (at your option) any later version.
+ -
+ - This program is distributed in the hope that it will be useful,
+ - but WITHOUT ANY WARRANTY; without even the implied warranty of
+ - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ - GNU General Public License for more details.
+ -
+ - You should have received a copy of the GNU General Public License
+ - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="omis.assessment.domain">
+	<class	entity-name="omis.assessment.domain.AssessmentCategoryOverrideReason"
+			proxy="omis.assessment.domain.AssessmentCategoryOverrideReason"
+			name="omis.assessment.domain.impl.AssessmentCategoryOverrideReasonImpl"
+			table="`ASSESSMNT_CATGRY_OVRRD_RSN`">
+		<id name="id" type="java.lang.Long" column="`ID`">
+			<generator class="sequence">
+				<param name="sequence">`ASSESSMNT_CATGRY_OVRRD_RSN_SEQ`</param>
+			</generator>
+		</id>
+		<many-to-one name="assessmentCategoryOverride" column="`ASSESSMENT_CATEGORY_OVERRDE_ID`" entity-name="omis.assessment.domain.AssessmentCategoryOverride" not-null="true"/>
+		<many-to-one name="categoryOverrideReason" column="`CATEGORY_OVERRIDE_REASON_ID`" entity-name="omis.assessment.domain.CategoryOverrideReason" not-null="true"/>
+	</class>
+	<query name="findAssessmentCategoryOverrideReason"><![CDATA[
+		select assessmentCategoryOverrideReason
+		from omis.assessment.domain.AssessmentCategoryOverrideReason assessmentCategoryOverrideReason
+		where
+			assessmentCategoryOverrideReason.assessmentCategoryOverride = :assessmentCategoryOverride
+		and
+			assessmentCategoryOverrideReason.categoryOverrideReason = :categoryOverrideReason
+	]]></query>
+	<query name="findAssessmentCategoryOverrideReasonExcluding"><![CDATA[
+		select assessmentCategoryOverrideReason
+		from omis.assessment.domain.AssessmentCategoryOverrideReason assessmentCategoryOverrideReason
+		where
+			assessmentCategoryOverrideReason.assessmentCategoryOverride = :assessmentCategoryOverride
+		and
+			assessmentCategoryOverrideReason.categoryOverrideReason = :categoryOverrideReason
+		and
+			assessmentCategoryOverrideReason <> :excludedAssessmentCategoryOverrideReason
+	]]></query>
+	<query name="findAssessmentCategoryOverrideReasonsByAssessmentCategoryOverride"><![CDATA[
+		select assessmentCategoryOverrideReason
+		from omis.assessment.domain.AssessmentCategoryOverrideReason assessmentCategoryOverrideReason
+		where
+			assessmentCategoryOverrideReason.assessmentCategoryOverride = :assessmentCategoryOverride
+	]]></query>
+</hibernate-mapping>

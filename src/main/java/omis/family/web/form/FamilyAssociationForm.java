@@ -24,13 +24,6 @@ import omis.user.domain.UserAccount;
  * @version 0.1.0 (Jun 17, 2015)
  * @since OMIS 3.0
  */
-/**
- * 
- *
- * @author Sheronda Vaughn
- * @version 0.1.0 (Dec 5, 2017)
- * @since OMIS 3.0
- */
 public class FamilyAssociationForm implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private PersonFields personFields;
@@ -63,6 +56,7 @@ public class FamilyAssociationForm implements Serializable {
 	private VerificationMethod verificationMethod;
 	private Boolean enterAddress;
 	private Boolean enterPoBox;
+	private boolean validateSocialSecurityNumber;
 	
 	/**
 	 * Instantiates a default instance of family association fields.
@@ -534,5 +528,25 @@ public class FamilyAssociationForm implements Serializable {
 	 */
 	public void setEnterPoBox(final Boolean enterPoBox) {
 		this.enterPoBox = enterPoBox;
+	}	
+	
+	/**
+	 * Returns whether to validate social security number.
+	 * 
+	 * @return whether to validate social security number
+	 */
+	public boolean getValidateSocialSecurityNumber() {
+		return this.validateSocialSecurityNumber;
+	}
+
+	/**
+	 * Sets whether to validate social security number.
+	 * 
+	 * @param validateSocialSecurityNumber whether to validate social security
+	 * number
+	 */
+	public void setValidateSocialSecurityNumber(
+			final boolean validateSocialSecurityNumber) {
+		this.validateSocialSecurityNumber = validateSocialSecurityNumber;
 	}	
 }

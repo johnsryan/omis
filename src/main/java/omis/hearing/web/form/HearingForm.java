@@ -1,9 +1,25 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.hearing.web.form;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import omis.hearing.domain.HearingCategory;
 import omis.hearing.domain.HearingStatusCategory;
 import omis.hearing.domain.LocationType;
@@ -11,10 +27,10 @@ import omis.location.domain.Location;
 import omis.staff.domain.StaffAssignment;
 
 /**
- * HearingForm.java
+ * Hearing Form.
  * 
- *@author Annie Jacques 
- *@version 0.1.1 (Apr 18, 2017)
+ *@author Annie Wahl 
+ *@version 0.1.2 (Mar 1, 2018)
  *@since OMIS 3.0
  *
  */
@@ -32,11 +48,6 @@ public class HearingForm {
 	
 	private StaffAssignment officer;
 	
-	private Boolean inAttendance;
-	
-	private List<StaffAttendanceItem> staffAttendanceItems =
-			new ArrayList<StaffAttendanceItem>();
-	
 	private List<HearingNoteItem> hearingNoteItems =
 			new ArrayList<HearingNoteItem>();
 	
@@ -50,146 +61,131 @@ public class HearingForm {
 	}
 
 	/**
-	 * @return the category
+	 * Returns the category.
+	 * @return category - HearingCategory
 	 */
 	public HearingCategory getCategory() {
-		return category;
+		return this.category;
 	}
 
 	/**
-	 * @param category the category to set
+	 * Sets the category.
+	 * @param category - HearingCategory
 	 */
-	public void setCategory(HearingCategory category) {
+	public void setCategory(final HearingCategory category) {
 		this.category = category;
 	}
-	
+
 	/**
-	 * @return the locationType
+	 * Returns the locationType.
+	 * @return locationType - LocationType
 	 */
 	public LocationType getLocationType() {
-		return locationType;
+		return this.locationType;
 	}
 
 	/**
-	 * @param locationType the locationType to set
+	 * Sets the locationType.
+	 * @param locationType - LocationType
 	 */
-	public void setLocationType(LocationType locationType) {
+	public void setLocationType(final LocationType locationType) {
 		this.locationType = locationType;
 	}
 
 	/**
-	 * @return the location
+	 * Returns the location.
+	 * @return location - Location
 	 */
 	public Location getLocation() {
-		return location;
+		return this.location;
 	}
 
 	/**
-	 * @param location the location to set
+	 * Sets the location.
+	 * @param location - Location
 	 */
-	public void setLocation(Location location) {
+	public void setLocation(final Location location) {
 		this.location = location;
 	}
 
 	/**
-	 * @return the date
+	 * Returns the date.
+	 * @return date - Date
 	 */
 	public Date getDate() {
-		return date;
+		return this.date;
 	}
 
 	/**
-	 * @param date the date to set
+	 * Sets the date.
+	 * @param date - Date
 	 */
-	public void setDate(Date date) {
+	public void setDate(final Date date) {
 		this.date = date;
 	}
 
 	/**
-	 * @return the status
+	 * Returns the status.
+	 * @return status - HearingStatusCategory
 	 */
 	public HearingStatusCategory getStatus() {
-		return status;
+		return this.status;
 	}
 
 	/**
-	 * @param status the status to set
+	 * Sets the status.
+	 * @param status - HearingStatusCategory
 	 */
-	public void setStatus(HearingStatusCategory status) {
+	public void setStatus(final HearingStatusCategory status) {
 		this.status = status;
 	}
 
 	/**
-	 * @return the officer
+	 * Returns the officer.
+	 * @return officer - StaffAssignment
 	 */
 	public StaffAssignment getOfficer() {
-		return officer;
+		return this.officer;
 	}
 
 	/**
-	 * @param officer the officer to set
+	 * Sets the officer.
+	 * @param officer - StaffAssignment
 	 */
-	public void setOfficer(StaffAssignment officer) {
+	public void setOfficer(final StaffAssignment officer) {
 		this.officer = officer;
 	}
 
 	/**
-	 * @return the inAttendance
-	 */
-	public Boolean getInAttendance() {
-		return inAttendance;
-	}
-
-	/**
-	 * @param inAttendance the inAttendance to set
-	 */
-	public void setInAttendance(Boolean inAttendance) {
-		this.inAttendance = inAttendance;
-	}
-
-	/**
-	 * @return the staffAttendanceItems
-	 */
-	public List<StaffAttendanceItem> getStaffAttendanceItems() {
-		return staffAttendanceItems;
-	}
-
-	/**
-	 * @param staffAttendanceItems the staffAttendanceItems to set
-	 */
-	public void setStaffAttendanceItems(List<StaffAttendanceItem> staffAttendanceItems) {
-		this.staffAttendanceItems = staffAttendanceItems;
-	}
-
-	/**
-	 * @return the hearingNoteItems
+	 * Returns the hearingNoteItems.
+	 * @return hearingNoteItems - List<HearingNoteItem>
 	 */
 	public List<HearingNoteItem> getHearingNoteItems() {
-		return hearingNoteItems;
+		return this.hearingNoteItems;
 	}
 
 	/**
-	 * @param hearingNoteItems the hearingNoteItems to set
+	 * Sets the hearingNoteItems.
+	 * @param hearingNoteItems - List<HearingNoteItem>
 	 */
-	public void setHearingNoteItems(List<HearingNoteItem> hearingNoteItems) {
+	public void setHearingNoteItems(
+			final List<HearingNoteItem> hearingNoteItems) {
 		this.hearingNoteItems = hearingNoteItems;
 	}
 
 	/**
-	 * Returns the infractionItems
+	 * Returns the infractionItems.
 	 * @return infractionItems - List<InfractionItem>
 	 */
 	public List<InfractionItem> getInfractionItems() {
-		return infractionItems;
+		return this.infractionItems;
 	}
 
 	/**
-	 * Sets the infractionItems
+	 * Sets the infractionItems.
 	 * @param infractionItems - List<InfractionItem>
 	 */
-	public void setInfractionItems(List<InfractionItem> infractionItems) {
+	public void setInfractionItems(final List<InfractionItem> infractionItems) {
 		this.infractionItems = infractionItems;
 	}
-	
-	
 }

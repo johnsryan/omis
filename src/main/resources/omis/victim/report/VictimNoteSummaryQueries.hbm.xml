@@ -22,5 +22,7 @@
 		  left outer join offender.name as offenderName
 		where
 		  victimNote.victim = :victim
+		order by
+		  victimNote.date desc
 	]]></query>
 </hibernate-mapping>

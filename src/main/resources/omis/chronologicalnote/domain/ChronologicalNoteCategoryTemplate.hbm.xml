@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ - OMIS - Offender Management Information System
+ - Copyright (C) 2011 - 2017 State of Montana
+ -
+ - This program is free software: you can redistribute it and/or modify
+ - it under the terms of the GNU General Public License as published by
+ - the Free Software Foundation, either version 3 of the License, or
+ - (at your option) any later version.
+ -
+ - This program is distributed in the hope that it will be useful,
+ - but WITHOUT ANY WARRANTY; without even the implied warranty of
+ - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ - GNU General Public License for more details.
+ -
+ - You should have received a copy of the GNU General Public License
+ - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+
+<!-- 
+  - Chronological note category template mapping and queries.
+  -
+  - Author: Stephen Abson
+  -->
+<!DOCTYPE hibernate-mapping PUBLIC
+       "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+       "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="omis.chronologicalnote.domain">
+
+	<!-- Class mapping -->
+	<class entity-name="omis.chronologicalnote.domain.ChronologicalNoteCategoryTemplate" proxy="omis.chronologicalnote.domain.ChronologicalNoteCategoryTemplate" name="omis.chronologicalnote.domain.impl.ChronologicalNoteCategoryTemplateImpl" table="`CHRONO_NOTE_CAT_TMPLT`">
+		<id name="id" column="`ID`" type="java.lang.Long">
+			<generator class="sequence">
+				<param name="sequence">`CHRONO_NOTE_CAT_TMPLT_SEQ`</param>
+			</generator>
+		</id>
+		<many-to-one name="category" entity-name="omis.chronologicalnote.domain.ChronologicalNoteCategory" column="`CATEGORY_ID`" not-null="true" unique="true"/>
+		<property name="text" type="java.lang.String" column="`TEXT`" not-null="true"/>
+	</class>
+	
+	<!-- Returns template by category -->
+	<query name="findChronologicalNoteCategoryTemplate"><![CDATA[
+		select template
+		from omis.chronologicalnote.domain.ChronologicalNoteCategoryTemplate template
+		where template.category = :category
+	]]></query>
+</hibernate-mapping>

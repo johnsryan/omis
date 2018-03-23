@@ -2,14 +2,14 @@ package omis.commitstatus.report;
 
 import java.util.Date;
 
-import omis.commitstatus.domain.CommitStatusTerm;
 import omis.offender.domain.Offender;
 
 /**
  * Report service for commit status profile items.
  *
  * @author Yidong Li
- * @version 0.0.1
+ * @author Josh Divine
+ * @version 0.1.1 (Mar 22, 2018)
  * @since OMIS 3.0
  */
 public interface CommitStatusTermProfileItemReportService {
@@ -19,8 +19,8 @@ public interface CommitStatusTermProfileItemReportService {
 	 * 
 	 * @param offender offender
 	 * @param effectiveDate effective date
-	 * @return commit status term effective on date
+	 * @return commit status term count on effective date
 	 */
-	CommitStatusTerm findCommitStatusTermCountByOffenderAndDate(
-			Offender offender, Date effectiveDate);
+	Integer findCommitStatusTermCountByOffenderAndDate(Offender offender, 
+			Date effectiveDate);
 }

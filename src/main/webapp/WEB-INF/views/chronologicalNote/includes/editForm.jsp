@@ -24,32 +24,64 @@
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <fmt:bundle basename="omis.chronologicalnote.msgs.chronologicalNote">
 	<form:form commandName="chronologicalNoteForm" class="editForm">
-		<fieldset>
-			<legend><fmt:message key="categoryLegendLabel"/></legend>
+			<div>
 				<form:errors cssClass="error" path="items"/>
-			<c:forEach items="${chronologicalNoteForm.items}" var="item" varStatus="status">
-				<span class="categoryItem" id="categoryItemContainer${status.index}">
-					<form:input type="hidden" value="${item.name}" path="items[${status.index}].name"/>
-					<form:input type="hidden" value="${item.associated}" path="items[${status.index}].associated" id="categoryItemAssociated${status.index}"/>
-					<form:input type="hidden" value="${item.category.id}" path="items[${status.index}].category"/>
-					<form:input type="hidden" value="${item.operation}" path="items[${status.index}].operation" id="categoryItemOperation${status.index}"/>
-					<c:choose>
-						<c:when test="${item.associated and item.operation ne 'DISSOCIATE'  or item.operation eq 'ASSOCIATE'}">
-							<label><input type="checkbox" class="categoryItemCheckBox" id="categoryItemCheckBox${status.index}" checked="checked"/><c:out value="${item.name}"/></label>
-						</c:when>
-						<c:otherwise>
-							<label><input type="checkbox" class="categoryItemCheckBox" id="categoryItemCheckBox${status.index}" /><c:out value="${item.name}"/></label>
-						</c:otherwise>
-					</c:choose>
-				</span>
-			</c:forEach>
-		</fieldset>
+				<c:set var="itemCount" value="0"/>
+			</div>
+			<c:choose>
+				<c:when test=""></c:when>
+				<c:otherwise></c:otherwise>
+			</c:choose>
+			<fieldset>
+				<legend><fmt:message key="categoryLegendLabel"/><a href="#" id="groupsVisibilityLink" class="groupsVisibilityLink expandLink"></a></legend>
+				<c:forEach items="${groups}" var="group" varStatus="groupStatus">
+					<c:set value="${groupCategoryMap[group.name]}" var="categoryItems" scope="page"/>
+					<c:set value="groupCategoryContainer hidden" var="groupCategoryContainerDisplayClass"/>
+					<c:set value="groupVisibilityLink expandLink" var="groupVisibilityLinkDisplayClass"/>
+					<c:forEach items="${categoryItems}" var="item" varStatus="status">
+						<c:if test="${item.associated and item.operation ne 'DISSOCIATE'  or item.operation eq 'ASSOCIATE'}">
+							<c:set value="groupCategoryContainer" var="groupCategoryContainerDisplayClass"/>
+							<c:set value="groupVisibilityLink collapseLink" var="groupVisibilityLinkDisplayClass"/>
+						</c:if>
+					</c:forEach>
+					<h2><c:out value="${group.name}"/> <a href="javascript:;" id="groupVisibilityLink${groupStatus.index}" class="${groupVisibilityLinkDisplayClass}"></a></h2>
+					<span class="${groupCategoryContainerDisplayClass}" id="groupCategoryContainer${groupStatus.index}">
+					<c:forEach items="${categoryItems}" var="item" varStatus="status">
+						<span class="categoryItem" id="categoryItemContainer${itemCount}">
+							<form:input type="hidden" value="${item.name}" path="items[${itemCount}].name"/>
+							<form:input type="hidden" value="${item.associated}" path="items[${itemCount}].associated" id="categoryItemAssociated${itemCount}"/>
+							<form:input type="hidden" value="${item.category.id}" path="items[${itemCount}].category"/>
+							<form:input type="hidden" value="${item.operation}" path="items[${itemCount}].operation" id="categoryItemOperation${itemCount}"/>
+							<c:choose>
+								<c:when test="${item.associated and item.operation ne 'DISSOCIATE'  or item.operation eq 'ASSOCIATE'}">
+									<label><input type="checkbox" class="categoryItemCheckBox" id="categoryItemCheckBox${itemCount}" checked="checked"/><c:out value="${item.name}"/></label>
+								</c:when>
+								<c:otherwise>
+									<label><input type="checkbox" class="categoryItemCheckBox" id="categoryItemCheckBox${itemCount}" /><c:out value="${item.name}"/></label>
+								</c:otherwise>
+							</c:choose>
+						</span>
+						<c:set var="itemCount" value="${itemCount + 1}"/>
+					</c:forEach>
+					</span>
+				</c:forEach>				
+			</fieldset>
 		<fieldset>
 			<legend><fmt:message key="noteDetailsLegend"/></legend>
+			<span class="fieldGroup">
+				<form:label path="title" class="fieldLabel"><fmt:message key="titleLabel"/></form:label>
+				<form:input path="title" value="${title}" class="categoryItemCheckBox" size="50"/>
+				<form:errors cssClass="error" path="title"/>					
+			</span>
 			<span class="fieldGroup">
 				<form:label path="date" class="fieldLabel"><fmt:message key="dateLabel"/></form:label>
 				<form:input path="date" class="date"/>
 				<form:errors cssClass="error" path="date"/>
+			</span>
+			<span class="fieldGroup">
+				<form:label path="dateTime" class="fieldLabel"><fmt:message key="dateTimeLabel"/></form:label>
+				<form:input path="dateTime" class="time" id="dateTime"/>
+				<form:errors cssClass="error" path="dateTime"/>
 			</span>
 			<span class="fieldGroup">
 				<form:label path="narrative" class="fieldLabel"><fmt:message key="narrativeLabel"/></form:label>

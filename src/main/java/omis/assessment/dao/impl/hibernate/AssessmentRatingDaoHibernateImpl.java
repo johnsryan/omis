@@ -19,11 +19,14 @@ package omis.assessment.dao.impl.hibernate;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 import org.hibernate.SessionFactory;
 
 import omis.assessment.dao.AssessmentRatingDao;
 import omis.assessment.domain.AssessmentRating;
+import omis.assessment.domain.RatingCategory;
+import omis.assessment.domain.RatingRank;
 import omis.dao.impl.hibernate.GenericHibernateDaoImpl;
 import omis.demographics.domain.Sex;
 import omis.questionnaire.domain.QuestionnaireType;
@@ -32,7 +35,7 @@ import omis.questionnaire.domain.QuestionnaireType;
  * Hibernate implementation of the assessment rating data access object.
  * 
  * @author Josh Divine
- * @version 0.1.0 (Feb 26, 2018)
+ * @version 0.1.1 (Mar 14, 2018)
  * @since OMIS 3.0
  */
 public class AssessmentRatingDaoHibernateImpl 
@@ -45,6 +48,9 @@ public class AssessmentRatingDaoHibernateImpl
 	
 	private final static String FIND_EXCLUDING_QUERY_NAME = 
 			"findAssessmentRatingExcluding";
+	
+	private final static String FIND_BY_RATING_CATEGORY_QUERY_NAME = 
+			"findAssessmentRatingsByRatingCategory";
 	
 	/* Parameters. */
 	
@@ -64,6 +70,10 @@ public class AssessmentRatingDaoHibernateImpl
 	private final static String EXCLUDED_ASSESSMENT_RATING_PARAM_NAME = 
 			"excludedAssessmentRating";
 	
+	private final static String RATING_CATEGORY_PARAM_NAME = "ratingCategory";
+	
+	private final static String RATING_RANK_PARAM_NAME = "ratingRank";
+	
 	/**
 	 * Instantiates an Hibernate implementation of data access object for
 	 * assessment rating.
@@ -80,7 +90,8 @@ public class AssessmentRatingDaoHibernateImpl
 	@Override
 	public AssessmentRating find(final QuestionnaireType questionnaireType, 
 			final Sex sex, final BigDecimal min, final BigDecimal max,
-			final Date startDate, final Date endDate) {
+			final Date startDate, final Date endDate, 
+			final RatingCategory ratingCategory, final RatingRank rank) {
 		AssessmentRating assessmentRating = (AssessmentRating) this
 				.getSessionFactory().getCurrentSession()
 				.getNamedQuery(FIND_QUERY_NAME)
@@ -90,6 +101,8 @@ public class AssessmentRatingDaoHibernateImpl
 				.setParameter(MAX_PARAM_NAME, max)
 				.setDate(START_DATE_PARAM_NAME, startDate)
 				.setDate(END_DATE_PARAM_NAME, endDate)
+				.setParameter(RATING_CATEGORY_PARAM_NAME, ratingCategory)
+				.setParameter(RATING_RANK_PARAM_NAME, rank)
 				.uniqueResult();
 		return assessmentRating;
 	}
@@ -99,7 +112,9 @@ public class AssessmentRatingDaoHibernateImpl
 	public AssessmentRating findExcluding(
 			final QuestionnaireType questionnaireType, final Sex sex, 
 			final BigDecimal min, final BigDecimal max, final Date startDate, 
-			final Date endDate, final AssessmentRating excludedAssessmentRating) {
+			final Date endDate, final RatingCategory ratingCategory, 
+			final RatingRank rank, 
+			final AssessmentRating excludedAssessmentRating) {
 		AssessmentRating assessmentRating = (AssessmentRating) this
 				.getSessionFactory().getCurrentSession()
 				.getNamedQuery(FIND_EXCLUDING_QUERY_NAME)
@@ -109,9 +124,24 @@ public class AssessmentRatingDaoHibernateImpl
 				.setParameter(MAX_PARAM_NAME, max)
 				.setDate(START_DATE_PARAM_NAME, startDate)
 				.setDate(END_DATE_PARAM_NAME, endDate)
+				.setParameter(RATING_CATEGORY_PARAM_NAME, ratingCategory)
+				.setParameter(RATING_RANK_PARAM_NAME, rank)
 				.setParameter(EXCLUDED_ASSESSMENT_RATING_PARAM_NAME, 
 						excludedAssessmentRating)
 				.uniqueResult();
 		return assessmentRating;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public List<AssessmentRating> findByRatingCategory(
+			final RatingCategory ratingCategory) {
+		@SuppressWarnings("unchecked")
+		List<AssessmentRating> assessmentRatings = this.getSessionFactory()
+				.getCurrentSession()
+				.getNamedQuery(FIND_BY_RATING_CATEGORY_QUERY_NAME)
+				.setParameter(RATING_CATEGORY_PARAM_NAME, ratingCategory)
+				.list();
+		return assessmentRatings;
 	}
 }

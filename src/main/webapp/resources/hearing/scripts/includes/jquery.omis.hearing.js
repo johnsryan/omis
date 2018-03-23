@@ -20,28 +20,6 @@ function hearingNoteItemsCreateOnClick() {
 	});
 };
 
-function staffAttendanceItemsCreateOnClick() {
-	$("#createStaffAttendanceItemLink").click(function() {
-		$.ajax(config.ServerConfig.getContextPath() + "/hearing/createStaffAttendanceItem.html",
-		   {
-				type: "GET",
-				async: false,
-				data: {staffAttendanceItemIndex: currentStaffAttendanceItemIndex},
-				success: function(data) {
-					$("#staffAttendanceTableBody").append(data);
-					staffAttendanceItemRowOnClick(currentStaffAttendanceItemIndex);
-				},
-				error: function(jqXHR, textStatus, errorThrown) {
-					alert("Error - status: " + textStatus + "; error: "
-						+ errorThrown);
-					$("#staffAttendanceTableBody").html(jqXHR.responseText );
-				}
-			});
-		currentStaffAttendanceItemIndex++;
-		return false;
-	});
-};
-
 function infractionItemsCreateOnClick() {
 	var conditionViolation;
 	var disciplinaryCodeViolation;
@@ -98,25 +76,6 @@ function hearingNoteItemRowOnClick(hearingNoteItemIndex) {
 	});
 };
 
-function staffAttendanceItemRowOnClick(staffAttendanceItemIndex) {
-	applyStaffAssignmentSearch(document.getElementById("staffAttendanceInput" + staffAttendanceItemIndex),
-			document.getElementById("staffAttendanceItems[" + staffAttendanceItemIndex + "].staff"),
-			document.getElementById("staffAttendanceDisplay" + staffAttendanceItemIndex),
-			document.getElementById("clearStaffAttendance" + staffAttendanceItemIndex));
-	$("#removeStaffAttendanceLink" + staffAttendanceItemIndex).click(function() {
-		if ($("#staffAttendanceOperation" + staffAttendanceItemIndex).val() == "UPDATE") {
-			$("#staffAttendanceOperation" + staffAttendanceItemIndex).val("REMOVE");
-			$("#staffAttendanceItemRow" + staffAttendanceItemIndex).addClass("removeRow");
-		} else if($("#staffAttendanceOperation" + staffAttendanceItemIndex).val() == "REMOVE") {
-			$("#staffAttendanceOperation" + staffAttendanceItemIndex).val("UPDATE");
-			$("#staffAttendanceItemRow" +staffAttendanceItemIndex).removeClass("removeRow");
-		} else {
-			$("#staffAttendanceItemRow" + staffAttendanceItemIndex).remove();
-		}
-		return false;
-	});
-};
-
 function infractionItemRowOnClick(infractionItemIndex) {
 	$("#removeInfractionLink" + infractionItemIndex).click(function() {
 		if ($("#infractionOperation" + infractionItemIndex).val() == "UPDATE") {
@@ -135,9 +94,6 @@ function infractionItemRowOnClick(infractionItemIndex) {
 function applyOnClickToItems() {
 	for (var index = 0; index < currentHearingNoteItemIndex; index++) {
 		hearingNoteItemRowOnClick(index);
-	}
-	for (var index = 0; index < currentStaffAttendanceItemIndex; index++) {
-		staffAttendanceItemRowOnClick(index);
 	}
 	//for (var index = 0; index < currentInfractionItemIndex; index++) {
 		//infractionItemRowOnClick(index);
@@ -185,11 +141,6 @@ function locationTypeChangeFunction() {
 		}
 	});
 }
-
-
-
-
-
 
 function applyStaffAssignmentSearch(input, target, targetLabel, clear, options) {
 	var msg = new common.MessageResolver("omis.search.msgs.search");

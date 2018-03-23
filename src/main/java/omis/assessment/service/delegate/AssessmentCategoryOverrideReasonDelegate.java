@@ -17,6 +17,8 @@
 */
 package omis.assessment.service.delegate;
 
+import java.util.List;
+
 import omis.assessment.dao.AssessmentCategoryOverrideReasonDao;
 import omis.assessment.domain.AssessmentCategoryOverride;
 import omis.assessment.domain.AssessmentCategoryOverrideReason;
@@ -130,6 +132,20 @@ public class AssessmentCategoryOverrideReasonDelegate {
 					assessmentCategoryOverrideReason) {
 		this.assessmentCategoryOverrideReasonDao.makeTransient(
 				assessmentCategoryOverrideReason);
+	}
+
+	/**
+	 * Returns a list of assessment category override reasons for the specified 
+	 * assessment category override.
+	 * 
+	 * @param assessmentCategoryOverride assessment category override
+	 * @return list of assessment category override reasons
+	 */
+	public List<AssessmentCategoryOverrideReason> 
+			findByAssessmentCategoryOverride(
+					final AssessmentCategoryOverride assessmentCategoryOverride) {
+		return this.assessmentCategoryOverrideReasonDao
+				.findByAssessmentCategoryOverride(assessmentCategoryOverride);
 	}
 	
 	// Populates an assessment category override reason

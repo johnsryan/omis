@@ -1,19 +1,37 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.hearing.service.impl;
 
 import java.util.Date;
 import java.util.List;
-
 import omis.exception.DuplicateEntityFoundException;
 import omis.hearing.domain.Hearing;
 import omis.hearing.domain.HearingStatus;
 import omis.hearing.domain.HearingStatusCategory;
 import omis.hearing.domain.ImposedSanction;
 import omis.hearing.domain.Infraction;
+import omis.hearing.domain.InfractionPlea;
 import omis.hearing.domain.component.Resolution;
 import omis.hearing.service.ResolutionService;
 import omis.hearing.service.delegate.HearingStatusDelegate;
 import omis.hearing.service.delegate.ImposedSanctionDelegate;
 import omis.hearing.service.delegate.InfractionDelegate;
+import omis.hearing.service.delegate.InfractionPleaDelegate;
 import omis.offender.domain.Offender;
 import omis.violationevent.domain.ConditionViolation;
 import omis.violationevent.domain.DisciplinaryCodeViolation;
@@ -21,10 +39,10 @@ import omis.violationevent.service.delegate.ConditionViolationDelegate;
 import omis.violationevent.service.delegate.DisciplinaryCodeViolationDelegate;
 
 /**
- * ResolutionServiceImpl.java
+ * Resolution Service Implementation.
  * 
- *@author Annie Jacques 
- *@version 0.1.0 (Apr 18, 2017)
+ *@author Annie Wahl 
+ *@version 0.1.1 (Feb 28, 2018)
  *@since OMIS 3.0
  *
  */
@@ -41,10 +59,16 @@ public class ResolutionServiceImpl implements ResolutionService {
 	private final DisciplinaryCodeViolationDelegate
 			disciplinaryCodeViolationDelegate;
 	
+	private final InfractionPleaDelegate infractionPleaDelegate;
+	
 	/**
-	 * @param hearingStatusDelegate
-	 * @param infractionDelegate
-	 * @param imposedSanctionDelegate
+	 * @param hearingStatusDelegate - Hearing Status Delegate
+	 * @param infractionDelegate - Infraction Delegate
+	 * @param imposedSanctionDelegate - Imposed Sanction Delegate
+	 * @param conditionViolationDelegate - Condition Violation Delegate 
+	 * @param disciplinaryCodeViolationDelegate - Disciplinary Code
+	 * Violation Delegate
+	 * @param infractionPleaDelegate - Infraction Plea Delegate
 	 */
 	public ResolutionServiceImpl(
 			final HearingStatusDelegate hearingStatusDelegate,
@@ -52,13 +76,15 @@ public class ResolutionServiceImpl implements ResolutionService {
 			final ImposedSanctionDelegate imposedSanctionDelegate,
 			final ConditionViolationDelegate conditionViolationDelegate,
 			final DisciplinaryCodeViolationDelegate
-			disciplinaryCodeViolationDelegate) {
+			disciplinaryCodeViolationDelegate,
+			final InfractionPleaDelegate infractionPleaDelegate) {
 		this.hearingStatusDelegate = hearingStatusDelegate;
 		this.infractionDelegate = infractionDelegate;
 		this.imposedSanctionDelegate = imposedSanctionDelegate;
 		this.conditionViolationDelegate = conditionViolationDelegate;
 		this.disciplinaryCodeViolationDelegate =
 				disciplinaryCodeViolationDelegate;
+		this.infractionPleaDelegate = infractionPleaDelegate;
 	}
 
 	/**{@inheritDoc} */
@@ -92,10 +118,10 @@ public class ResolutionServiceImpl implements ResolutionService {
 	public Infraction createInfraction(final Hearing hearing,
 			final ConditionViolation conditionViolation,
 			final DisciplinaryCodeViolation disciplinaryCodeViolation,
-			final Resolution resolution)
+			final Resolution resolution, final InfractionPlea plea)
 					throws DuplicateEntityFoundException {
 		return this.infractionDelegate.create(hearing, conditionViolation,
-				disciplinaryCodeViolation, resolution);
+				disciplinaryCodeViolation, resolution, plea);
 	}
 
 	/**{@inheritDoc} */
@@ -103,10 +129,10 @@ public class ResolutionServiceImpl implements ResolutionService {
 	public Infraction updateInfraction(final Infraction infraction,
 			final ConditionViolation conditionViolation,
 			final DisciplinaryCodeViolation disciplinaryCodeViolation,
-			final Resolution resolution)
+			final Resolution resolution, final InfractionPlea plea)
 					throws DuplicateEntityFoundException {
 		return this.infractionDelegate.update(infraction, conditionViolation,
-				disciplinaryCodeViolation, resolution);
+				disciplinaryCodeViolation, resolution, plea);
 	}
 
 	/**{@inheritDoc} */
@@ -164,6 +190,12 @@ public class ResolutionServiceImpl implements ResolutionService {
 	public DisciplinaryCodeViolation findDisciplinaryCodeViolationById(
 			final Long id) {
 		return this.disciplinaryCodeViolationDelegate.findById(id);
+	}
+
+	/**{@inheritDoc} */
+	@Override
+	public List<InfractionPlea> findInfractionPleas() {
+		return this.infractionPleaDelegate.findAll();
 	}
 
 }

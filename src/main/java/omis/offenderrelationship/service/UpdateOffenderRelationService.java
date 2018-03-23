@@ -90,6 +90,33 @@ public interface UpdateOffenderRelationService {
 		PersonIdentityExistsException;
 	
 	/**
+	 * Updates relation.
+	 * 
+	 * @param person relation to update
+	 * @param lastName last name
+	 * @param firstName first name
+	 * @param middleName middle name
+	 * @param suffix suffix
+	 * @param sex sex
+	 * @param birthDate birth date
+	 * @param birthCountry birth country
+	 * @param birthState birth State
+	 * @param birthCity birth city
+	 * @param stateId State ID
+	 * @param deceased whether relation is deceased
+	 * @param deathDate death date
+	 * @return updated relation
+	 * @throws PersonNameExistsException if person name exists
+	 * @throws PersonIdentityExistsException if person identity exists
+	 */
+	Person updateRelationWithoutSsn(Person person, String lastName, 
+			String firstName, String middleName, String suffix, Sex sex, 
+			Date birthDate, Country birthCountry, State birthState, 
+			City birthCity, String stateId, Boolean deceased, Date deathDate) 
+					throws PersonNameExistsException,  
+					PersonIdentityExistsException;
+	
+	/**
 	 * Returns name suffixes.
 	 * 
 	 * @return name suffixes

@@ -113,9 +113,15 @@ public class ReportOffenseTermController {
 	private static final String COURT_CASE_LISTING_REPORT_NAME 
 		= "/Legal/CourtCase/Court_Case_Listing";
 	
+	private static final String COURT_CASE_LISTING_REDACTED_REPORT_NAME 
+	    = "/Legal/CourtCase/Court_Case_Listing_Redacted";	
+	
 	private static final String COURT_CASE_DETAIL_LISTING_REPORT_NAME 
-	= "/Legal/CourtCase/Detailed_Court_Case_Listing";	
-
+	    = "/Legal/CourtCase/Detailed_Court_Case_Listing";	
+ 
+	private static final String COURT_CASE_DETAIL_LISTING_REDACTED_REPORT_NAME 
+        = "/Legal/CourtCase/Detailed_Court_Case_Listing_Redacted";	
+	
 	private static final String COURT_CASE_DETAILS_REPORT_NAME 
 		= "/Legal/CourtCase/Court_Case_Details";
 	
@@ -235,6 +241,31 @@ public class ReportOffenseTermController {
 	}
 	
 	/**
+	 * Returns the redacted report for the specified offenders court cases.
+	 * 
+	 * @param person offender
+	 * @param reportFormat report format
+	 * @return response entity with report
+	 */
+	@RequestMapping(value = "/courtCaseListingRedactedReport.html",
+			method = RequestMethod.GET)
+	@PreAuthorize("hasRole('OFFENSE_TERM_LIST') or hasRole('ADMIN')")
+	public ResponseEntity<byte []> reportCourtCaseListingRedacted(@RequestParam(
+			value = "person", required = true)
+			final Person person,
+			@RequestParam(value = "reportFormat", required = true)
+			final ReportFormat reportFormat) {
+		Map<String, String> reportParamMap = new HashMap<String, String>();
+		reportParamMap.put(COURT_CASE_LISTING_ID_REPORT_PARAM_NAME,
+				Long.toString(person.getId()));
+		byte[] doc = this.reportRunner.runReport(
+				COURT_CASE_LISTING_REDACTED_REPORT_NAME,
+				reportParamMap, reportFormat);
+		return this.reportControllerDelegate.constructReportResponseEntity(
+				doc, reportFormat);
+	}
+	
+	/**
 	 * Returns the detailed report for the specified offenders court cases.
 	 * 
 	 * @param person offender
@@ -258,6 +289,31 @@ public class ReportOffenseTermController {
 		return this.reportControllerDelegate.constructReportResponseEntity(
 				doc, reportFormat);
 	}
+	
+	/**
+	 * Returns the redacted detailed report for the specified offenders court cases.
+	 * 
+	 * @param person offender
+	 * @param reportFormat report format
+	 * @return response entity with report
+	 */
+	@RequestMapping(value = "/courtCaseDetailListingRedactedReport.html",
+			method = RequestMethod.GET)
+	@PreAuthorize("hasRole('OFFENSE_TERM_LIST') or hasRole('ADMIN')")
+	public ResponseEntity<byte []> reportCourtCaseDetailListingRedacted(@RequestParam(
+			value = "person", required = true)
+			final Person person,
+			@RequestParam(value = "reportFormat", required = true)
+			final ReportFormat reportFormat) {
+		Map<String, String> reportParamMap = new HashMap<String, String>();
+		reportParamMap.put(COURT_CASE_LISTING_ID_REPORT_PARAM_NAME,
+				Long.toString(person.getId()));
+		byte[] doc = this.reportRunner.runReport(
+				COURT_CASE_DETAIL_LISTING_REDACTED_REPORT_NAME,
+				reportParamMap, reportFormat);
+		return this.reportControllerDelegate.constructReportResponseEntity(
+				doc, reportFormat);
+	}	
 	
 	/**
 	 * Returns the report for the specified court case.

@@ -22,10 +22,12 @@
   - Author: Yidong Li
   - Author: Joel Norris
   - Author: Stephen Abson
+  - Author: Sheronda Vaughn
   --%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <fmt:setBundle basename="omis.msgs.common" var="commonBundle"/>
 <fmt:bundle basename="omis.offenderrelationship.msgs.editOffenderRelationship">
 <form:form commandName="editRelationshipsForm" class="editForm">
@@ -37,6 +39,9 @@
 	<c:set var="personFieldsPropertyName" value="personFields" scope="request"/>
 	<fieldset id="personFields">
 		<legend><fmt:message key="personDetailsLegendLabel"/></legend>
+		<sec:authorize access="hasRole('ADMIN') or hasRole('OFFENDER_RELATIONSHIP_SSN_EDIT')" var="canEditSsn"/>
+		<c:set var="readOnlySsn" value="${not canEditSsn}" scope="request"/>
+		<form:hidden path="validateSocialSecurityNumber"/>
 		<jsp:include page="/WEB-INF/views/person/includes/personFields.jsp"/>
 	</fieldset>
 	<fieldset id="addressFields">

@@ -138,6 +138,22 @@ public class AssessmentCategoryScoreDelegate {
 		this.assessmentCategoryScoreDao.makeTransient(
 				assessmentCategoryScore);
 	}
+
+	/**
+	 * Returns the assessment category score for the specified rating category 
+	 * and administered questionnaire.
+	 * 
+	 * @param ratingCategory rating category
+	 * @param administeredQuestionnaire administered questionnaire
+	 * @return assessment category score
+	 */
+	public AssessmentCategoryScore 
+			findByRatingCategoryAndAdministeredQuestionnaire(
+					final RatingCategory ratingCategory,
+					final AdministeredQuestionnaire administeredQuestionnaire) {
+		return this.assessmentCategoryScoreDao.find(administeredQuestionnaire, 
+				ratingCategory);
+	}
 	
 	// Populates an assessment category score
 	private void populateAssessmentCategoryScore(

@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.hearing.domain;
 
 import omis.audit.domain.Creatable;
@@ -7,75 +24,87 @@ import omis.violationevent.domain.ConditionViolation;
 import omis.violationevent.domain.DisciplinaryCodeViolation;
 
 /**
- * Infraction.java
+ * Infraction.
  * 
- *@author Annie Jacques 
- *@version 0.1.0 (Apr 17, 2017)
+ *@author Annie Wahl
+ *@version 0.1.1 (Feb 27, 2018)
  *@since OMIS 3.0
  *
  */
 public interface Infraction extends Creatable, Updatable {
 	
 	/**
-	 * Returns the ID of the Infraction
+	 * Returns the ID of the Infraction.
 	 * @return ID
 	 */
-	public Long getId();
+	Long getId();
 	
 	/**
-	 * Sets the ID of the Infraction
+	 * Sets the ID of the Infraction.
 	 * @param id - Long
 	 */
-	public void setId(Long id);
+	void setId(Long id);
 	
 	/**
-	 * Returns the ConditionViolation for the Infraction
+	 * Returns the ConditionViolation for the Infraction.
 	 * @return conditionViolation - ConditionViolation
 	 */
-	public ConditionViolation getConditionViolation();
+	ConditionViolation getConditionViolation();
 	
 	/**
-	 * Sets the ConditionViolation for the Infraction
+	 * Sets the ConditionViolation for the Infraction.
 	 * @param conditionViolation - ConditionViolation
 	 */
-	public void setConditionViolation(ConditionViolation conditionViolation);
+	void setConditionViolation(ConditionViolation conditionViolation);
 	
 	/**
-	 * Returns the DisciplinaryCodeViolation for the Infraction
+	 * Returns the DisciplinaryCodeViolation for the Infraction.
 	 * @return disciplinaryCodeViolation - DisciplinaryCodeViolation
 	 */
-	public DisciplinaryCodeViolation getDisciplinaryCodeViolation();
+	DisciplinaryCodeViolation getDisciplinaryCodeViolation();
 	
 	/**
-	 * Sets the DisciplinaryCodeViolation for the Infraction
+	 * Sets the DisciplinaryCodeViolation for the Infraction.
 	 * @param disciplinaryCodeViolation - DisciplinaryCodeViolation
 	 */
-	public void setDisciplinaryCodeViolation(
+	void setDisciplinaryCodeViolation(
 			DisciplinaryCodeViolation disciplinaryCodeViolation);
 	
 	/**
-	 * Returns the Hearing for the Infraction
+	 * Returns the Hearing for the Infraction.
 	 * @return hearing - Hearing
 	 */
-	public Hearing getHearing();
+	Hearing getHearing();
 	
 	/**
-	 * Sets the Hearing for the Infraction
+	 * Sets the Hearing for the Infraction.
 	 * @param hearing - Hearing
 	 */
-	public void setHearing(Hearing hearing);
+	void setHearing(Hearing hearing);
 	
 	/**
-	 * Returns the Resolution for the Infraction
+	 * Returns the Resolution for the Infraction.
 	 * @return resolution - Resolution
 	 */
-	public Resolution getResolution();
+	Resolution getResolution();
 	
 	/**
-	 * Sets the Resolution for the Infraction
+	 * Sets the Resolution for the Infraction.
 	 * @param resolution - Resolution
 	 */
-	public void setResolution(Resolution resolution);
+	void setResolution(Resolution resolution);
+	
+	/**
+	 * Returns the Plea for the Infraction.
+	 * @return plea - InfractionPlea
+	 */
+	InfractionPlea getPlea();
+	
+	/**
+	 * Sets the Plea for the Infraction.
+	 * @param plea - InfractionPlea
+	 */
+	void setPlea(InfractionPlea plea);
 	
 	/** Compares {@code this} and {@code obj} for equality.
 	 * <p>

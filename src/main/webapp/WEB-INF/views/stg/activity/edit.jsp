@@ -29,7 +29,7 @@
 	<jsp:include page="/WEB-INF/views/common/includes/toolsResources.jsp"/>
 	<jsp:include page="/WEB-INF/views/common/includes/searchResources.jsp"/>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/common/scripts/SessionConfig.js"> </script>
-	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/stg/scripts/includes/jquery.omis.activity.js"> </script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/stg/scripts/JQuery/jquery.omis.activity.js"> </script>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/stg/scripts/activity.js"> </script>
 	<script type="text/javascript">
 			//activity note index used to track activity note items on the form 

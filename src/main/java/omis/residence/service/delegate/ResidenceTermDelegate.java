@@ -66,7 +66,6 @@ public class ResidenceTermDelegate {
 	 * the specified date access object and instance factory.
 	 * 
 	 * @param residenceTermDao residence term dao
-	 * @param nonResidenceTermDao non residence term dao
 	 * @param residenceTermInstanceFactory residence term instance factory
 	 * @param auditComponentRetriever audit component retriever
 	 */
@@ -103,8 +102,7 @@ public class ResidenceTermDelegate {
 			final Boolean confirmed, final String notes, 
 			final VerificationSignature verificationSignature)
 			throws ResidenceTermExistsException {
-		if (this.residenceTermDao.find(person, dateRange, address, 
-				residenceCategory, residenceStatus) != null) { 
+		if (this.residenceTermDao.find(person, dateRange, address) != null) { 
 			throw new ResidenceTermExistsException(
 					"Duplicate residence term found");
 		}		
@@ -147,7 +145,7 @@ public class ResidenceTermDelegate {
 			throws ResidenceTermExistsException {	
 		if (this.residenceTermDao.findExcluding(
 				residenceTerm.getPerson(), dateRange, address, 
-				residenceTerm, residenceCategory, residenceStatus) != null) {
+				residenceTerm) != null) {
 			throw new ResidenceTermExistsException(
 					"Duplicate residence term found");
 		}		
@@ -183,7 +181,7 @@ public class ResidenceTermDelegate {
 			final ResidenceCategory category,
 			final ResidenceStatus status) {
 		return this.residenceTermDao.find(person,
-				new DateRange(startDate, endDate), address, category, status);
+				new DateRange(startDate, endDate), address);
 	}
 	
 	/* Helper methods. */
@@ -257,8 +255,8 @@ public class ResidenceTermDelegate {
 	 * @param dateRange date range
 	 * @return list of residence terms
 	 */
-	public List<ResidenceTerm> findAssociatedResidenceTerms(Person person,
-			DateRange dateRange) {
+	public List<ResidenceTerm> findAssociatedResidenceTerms(final Person person,
+			final DateRange dateRange) {
 		return this.residenceTermDao.findAssociatedResidenceTerms(
 				person, dateRange);
 	}
@@ -271,8 +269,8 @@ public class ResidenceTermDelegate {
 	 * @param dateRange date range
 	 * @return list of residence terms
 	 */
-	public List<ResidenceTerm> findResidenceTermsByPerson(Person person,
-			DateRange dateRange) {
+	public List<ResidenceTerm> findResidenceTermsByPerson(final Person person,
+			final DateRange dateRange) {
 		return this.residenceTermDao.findAssociatedResidenceTerms(
 				person, dateRange);
 	}
@@ -287,9 +285,9 @@ public class ResidenceTermDelegate {
 	 * @param dateRange date range
 	 * @return list of residence terms
 	 */
-	public List<ResidenceTerm> findResidenceTermsByPersonExcluding(Person
-			person, ResidenceTerm residenceTerm, Address address, 
-			DateRange dateRange) {
+	public List<ResidenceTerm> findResidenceTermsByPersonExcluding(final Person
+			person, final ResidenceTerm residenceTerm, final Address address, 
+			final DateRange dateRange) {
 		return this.residenceTermDao.findResidenceTermsByPersonExcluding(
 				person, residenceTerm, address, dateRange);
 	}

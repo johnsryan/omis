@@ -148,6 +148,16 @@ public class VisitDelegate {
 	public List<Visit> findVisitByOffender(final Offender offender) {
 		return this.visitDao.findVisitByOffender(offender);
 	}
+
+	/**
+	 * Returns visits for the specified visitation association.
+	 * 
+	 * @param association visitation association
+	 * @return list of visits
+	 */
+	public List<Visit> findVisitsByVisitationAssociation(VisitationAssociation association) {
+		return this.visitDao.findVisitsByAssociation(association);
+	}
 	
 	/* Helper methods. */
 	

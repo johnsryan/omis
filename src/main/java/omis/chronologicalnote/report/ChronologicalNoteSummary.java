@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
  * Chronological note summary.
  * 
  * @author Yidong Li
+ * @author Sheronda Vaughn
  * @version 0.1.0 (Jan 30, 2018)
  * @since OMIS 3.0
  */
@@ -36,6 +37,7 @@ public class ChronologicalNoteSummary implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private final Long id;
 	private final Date date;
+	private final String title;
 	private final String narrative;
 	private final List<String> categoryNames;
 	private final String updateUserLastName;
@@ -61,11 +63,12 @@ public class ChronologicalNoteSummary implements Serializable {
 	 * @param updateDate updateDate
 	 */
 	public ChronologicalNoteSummary(final Long id, final Date date,
-		final String narrative,
+		final String title, final String narrative,
 		final String updateUserLastName,
 		final String updateUserFirstName,
 		final String updateUserAccountName, final Date updateDate) {
 		this.id = id;
+		this.title = title;
 		this.narrative = narrative;
 		this.date = date;
 		this.updateUserAccountName = updateUserAccountName;
@@ -91,11 +94,12 @@ public class ChronologicalNoteSummary implements Serializable {
 	 */
 	public ChronologicalNoteSummary(final Long id,
 		final List<String> categoryNames, final Date date,
-		final String narrative,
+		final String title, final String narrative,
 		final String updateUserLastName,
 		final String updateUserFirstName,
 		final String updateUserAccountName, final Date updateDate) {
 		this.id = id;
+		this.title = title;
 		this.narrative = narrative;
 		this.date = date;
 		this.updateUserAccountName = updateUserAccountName;
@@ -121,6 +125,16 @@ public class ChronologicalNoteSummary implements Serializable {
 	 */
 	public Date getDate() {
 		return this.date;
+	}
+	
+	/**
+	 * Returns the title.
+	 *
+	 *
+	 * @return title
+	 */
+	public String getTitle() {
+		return this.title;
 	}
 	
 	/**

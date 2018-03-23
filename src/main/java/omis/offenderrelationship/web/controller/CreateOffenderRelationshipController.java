@@ -1336,8 +1336,8 @@ public class CreateOffenderRelationshipController {
 					createRelationshipsForm.getPersonFields().getBirthCountry(),
 					createRelationshipsForm.getPersonFields().getBirthState(), 
 					createRelationshipsForm.getPersonFields().getBirthCity(), 
-					createRelationshipsForm.getPersonFields()
-						.getSocialSecurityNumber(), 
+					Integer.valueOf(createRelationshipsForm.getPersonFields()
+						.getSocialSecurityNumber().replaceAll("-", "")), 
 					createRelationshipsForm.getPersonFields()
 					.getStateIdNumber(),
 					createRelationshipsForm.getPersonFields().getDeceased(), 
@@ -1485,8 +1485,8 @@ public class CreateOffenderRelationshipController {
 					createRelationshipsForm.getPersonFields().getBirthCountry(),
 					createRelationshipsForm.getPersonFields().getBirthState(), 
 					newCreatedPersonFieldsCity,
-					createRelationshipsForm.getPersonFields()
-						.getSocialSecurityNumber(), 
+					Integer.valueOf(createRelationshipsForm.getPersonFields()
+						.getSocialSecurityNumber().replaceAll("-", "")), 
 					createRelationshipsForm.getPersonFields()
 						.getStateIdNumber(), 
 					createRelationshipsForm.getPersonFields().getDeceased(), 

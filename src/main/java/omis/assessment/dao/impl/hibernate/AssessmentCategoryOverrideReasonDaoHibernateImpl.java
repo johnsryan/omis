@@ -17,6 +17,8 @@
 */
 package omis.assessment.dao.impl.hibernate;
 
+import java.util.List;
+
 import org.hibernate.SessionFactory;
 
 import omis.assessment.dao.AssessmentCategoryOverrideReasonDao;
@@ -44,6 +46,9 @@ public class AssessmentCategoryOverrideReasonDaoHibernateImpl
 	
 	private final static String FIND_EXCLUDING_QUERY_NAME = 
 			"findAssessmentCategoryOverrideReasonExcluding";
+	
+	private final static String FIND_BY_ASSESSMENT_CATEGORY_OVERRIDE_QUERY_NAME =
+			"findAssessmentCategoryOverrideReasonsByAssessmentCategoryOverride";
 	
 	/* Parameters. */
 	
@@ -106,5 +111,20 @@ public class AssessmentCategoryOverrideReasonDaoHibernateImpl
 						excludedAssessmentCategoryOverrideReason)
 				.uniqueResult();
 		return assessmentCategoryOverrideReason;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public List<AssessmentCategoryOverrideReason> 
+			findByAssessmentCategoryOverride(
+					final AssessmentCategoryOverride assessmentCategoryOverride) {
+		@SuppressWarnings("unchecked")
+		List<AssessmentCategoryOverrideReason> reasons = this
+				.getSessionFactory().getCurrentSession()
+				.getNamedQuery(FIND_BY_ASSESSMENT_CATEGORY_OVERRIDE_QUERY_NAME)
+				.setParameter(ASSESSMENT_CATEGORY_OVERRIDE_PARAM_NAME, 
+						assessmentCategoryOverride)
+				.list();
+		return reasons;
 	}
 }

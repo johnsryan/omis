@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="omis.hearing.domain">
+	<class entity-name="omis.hearing.domain.InfractionPlea"
+			proxy="omis.hearing.domain.InfractionPlea"
+			name="omis.hearing.domain.impl.InfractionPleaImpl"
+			table="`INFRACTION_PLEA`">
+			<id name="id" column="`ID`" type="java.lang.Long">
+				<generator class="sequence">
+					<param name="sequence">`INFRACTION_PLEA_SEQ`</param>
+				</generator>
+			</id>
+			<property name="name" column="`NAME`" type="java.lang.String" not-null="true" />
+			<property name="valid" column="`VALID`" type="yes_no" not-null="true" />
+			<component name="updateSignature">
+				<many-to-one name="userAccount" column="`UPDATE_ACCOUNT_ID`" not-null="true"/>
+				<property name="date" column="`UPDATE_DATE`" not-null="true"/>
+			</component>
+	</class>
+	<query name="findInfractionPlea"><![CDATA[
+		select infractionPlea
+		from
+			omis.hearing.domain.InfractionPlea infractionPlea
+		where
+			infractionPlea.name = :name
+	]]></query>
+	<query name="findInfractionPleaExcluding"><![CDATA[
+		select infractionPlea
+		from
+			omis.hearing.domain.InfractionPlea infractionPlea
+		where
+			infractionPlea.name = :name
+		and
+			infractionPlea != :infractionPlea
+	]]></query>
+	<query name="findAllInfractionPleas"><![CDATA[
+		select infractionPlea
+		from
+			omis.hearing.domain.InfractionPlea infractionPlea
+		where
+			infractionPlea.valid = true
+		order by
+			name
+	]]></query>
+</hibernate-mapping>

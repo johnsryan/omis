@@ -694,8 +694,14 @@ public class LocationTermController {
 				locationTermForm.getStartTime(),
 				locationTermForm.getEndDate(),
 				locationTermForm.getEndTime());
-		LocationTerm locationTerm = this.locationTermService.create(offender,
-				locationTermForm.getLocation(), dateRange);
+		Location location;
+		if (toLocation != null) {
+			location = toLocation;
+		} else {
+			location = locationTermForm.getLocation();
+		}
+		LocationTerm locationTerm = this.locationTermService.create(
+				offender, location, dateRange);
 		if (locationTermForm.getAllowMultipleReasonTerms() != null
 				&& locationTermForm.getAllowMultipleReasonTerms()
 				&& locationTermForm.getAssociateMultipleReasonTerms() != null

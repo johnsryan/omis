@@ -12,7 +12,7 @@ import omis.user.domain.UserAccount;
 /** Form for presentence investigation requests.
  * @author Ryan Johns
  * @author Annie Jacques
- * @version 0.1.2 (Jun 30, 2017)
+ * @version 0.1.3 (Mar 22, 2017)
  * @since OMIS 3.0 */ 
 public class PresentenceInvestigationRequestForm {
 	
@@ -39,6 +39,8 @@ public class PresentenceInvestigationRequestForm {
 	private String middleName;
 	
 	private String suffix;
+	
+	private Date submissionDate;
 	
 	private PresentenceInvestigationCategory category;
 	
@@ -258,6 +260,20 @@ public class PresentenceInvestigationRequestForm {
 	 */
 	public void setCategory(final PresentenceInvestigationCategory category) {
 		this.category = category;
+	}
+	
+	/** Sets submission date.
+	 * @param submissionDate - submission date.
+	 */
+	public void setSubmissionDate(final Date submissionDate) {
+		this.submissionDate = submissionDate;
+	}
+	
+	/** Gets submission date.
+	 * @return submission date. 
+	 */
+	public Date getSubmissionDate() {
+		return this.submissionDate;
 	}
 
 	/**

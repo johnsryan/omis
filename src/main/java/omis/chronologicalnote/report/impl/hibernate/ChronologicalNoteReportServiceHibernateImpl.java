@@ -20,6 +20,7 @@ package omis.chronologicalnote.report.impl.hibernate;
 import java.util.List;
 
 import omis.chronologicalnote.domain.ChronologicalNoteCategory;
+import omis.chronologicalnote.domain.ChronologicalNoteCategoryGroup;
 import omis.chronologicalnote.report.ChronologicalNoteReportService;
 import omis.chronologicalnote.report.ChronologicalNoteSummary;
 import omis.offender.domain.Offender;
@@ -44,6 +45,8 @@ public class ChronologicalNoteReportServiceHibernateImpl
 		= "findCategoryNamesByNoteId";
 	private static final String FIND_BY_OFFENDER_AND_CATEGORIES_QUERY_NAME
 		= "findChronologicalNoteSummaryByOffenderAndCategories";
+	private static final String FIND_CHRONO_NOTE_CAT_GROUPS_QUERY_NAME 
+		= "findChronologicalNoteCategoryGroups";
 	
 	/* Parameter names. */
 	private static final String OFFENDER_PARAM_NAME = "offender";
@@ -125,5 +128,16 @@ public class ChronologicalNoteReportServiceHibernateImpl
 			.setReadOnly(true)
 			.list();
 		return categoryNames;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public List<ChronologicalNoteCategoryGroup> findGroups() {
+		@SuppressWarnings("unchecked")
+		List<ChronologicalNoteCategoryGroup> groups = this.sessionFactory
+				.getCurrentSession()
+				.getNamedQuery(FIND_CHRONO_NOTE_CAT_GROUPS_QUERY_NAME)
+				.list();
+		return groups;
 	}
 }

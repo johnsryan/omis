@@ -21,6 +21,7 @@
   - Chronological note category mapping and queries.
   -
   - Author: Yidong Li
+  - Author: Stephen Abson
   -->
 <!DOCTYPE hibernate-mapping PUBLIC
        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
@@ -35,7 +36,10 @@
 				<param name="sequence">`CHRONO_NOTE_CATEGORY_SEQ`</param>
 			</generator>
 		</id>
-		<property name="name" column="`NAME`" type="java.lang.String" not-null="true" unique="true"/>
+		<properties name="uniqueChronologicalNoteCategory">
+			<property name="name" column="`NAME`" type="java.lang.String" not-null="true"/>
+			<many-to-one name="group" column="`GROUP_ID`" entity-name="omis.chronologicalnote.domain.ChronologicalNoteCategoryGroup" not-null="true"/>
+		</properties>
 		<property name="shortName" column="`SHORT_NAME`" type="java.lang.String" not-null="false" unique="false"/>
 		<property name="valid" type="yes_no" not-null="true" column="`VALID`"/>
 	</class>
@@ -43,13 +47,19 @@
 		select category
 		from
 			omis.chronologicalnote.domain.ChronologicalNoteCategory category
-		order by category.name
+			inner join category.group catGroup
+		order by catGroup.name, category.name
 	]]></query>
 	<query name="findValidChronologicalNoteCategories"><![CDATA[
 		select category
 		from omis.chronologicalnote.domain.ChronologicalNoteCategory category
 		where category.valid is true
-		order by category.name
+		order by category.group.name, category.name
+	]]></query>
+	<query name="findChronologicalNoteCategory"><![CDATA[
+		select category
+		from omis.chronologicalnote.domain.ChronologicalNoteCategory category
+		where category.name = :name and category.group = :group
 	]]></query>
 	<query name="findChronologicalNoteCategoryByName"><![CDATA[
 		select
@@ -58,5 +68,13 @@
 			omis.chronologicalnote.domain.ChronologicalNoteCategory category
 		where
 			category.name = :name
+	]]></query>
+	<query name="findChronologicalNoteCategoriesByGroup"><![CDATA[
+		select
+			category
+		from
+			omis.chronologicalnote.domain.ChronologicalNoteCategory category
+		where
+			category.group = :group
 	]]></query>
 </hibernate-mapping>

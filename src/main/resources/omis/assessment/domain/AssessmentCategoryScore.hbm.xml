@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ - OMIS - Offender Management Information System
+ - Copyright (C) 2011 - 2017 State of Montana
+ -
+ - This program is free software: you can redistribute it and/or modify
+ - it under the terms of the GNU General Public License as published by
+ - the Free Software Foundation, either version 3 of the License, or
+ - (at your option) any later version.
+ -
+ - This program is distributed in the hope that it will be useful,
+ - but WITHOUT ANY WARRANTY; without even the implied warranty of
+ - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ - GNU General Public License for more details.
+ -
+ - You should have received a copy of the GNU General Public License
+ - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="omis.assessment.domain">
+	<class	entity-name="omis.assessment.domain.AssessmentCategoryScore"
+			proxy="omis.assessment.domain.AssessmentCategoryScore"
+			name="omis.assessment.domain.impl.AssessmentCategoryScoreImpl"
+			table="`ASSESSMENT_CATEGORY_SCORE`">
+		<id name="id" type="java.lang.Long" column="`ID`">
+			<generator class="sequence">
+				<param name="sequence">`ASSESSMENT_CATEGORY_SCORE_SEQ`</param>
+			</generator>
+		</id>
+		<many-to-one name="administeredQuestionnaire" column="`ADMINISTERED_QUESTIONNAIRE_ID`" entity-name="omis.questionnaire.domain.AdministeredQuestionnaire" not-null="true"/>
+		<many-to-one name="ratingCategory" column="`RATING_CATEGORY_ID`" entity-name="omis.assessment.domain.RatingCategory" not-null="true"/>
+		<property name="score" column="`SCORE`" type="big_decimal" not-null="true"/>
+		<component name="creationSignature">
+			<many-to-one name="userAccount" column="`CREATE_ACCOUNT_ID`"
+			             not-null="true"/>
+			<property name="date" column="`CREATE_DATE`" not-null="true"/>
+		</component>
+		<component name="updateSignature">
+			<many-to-one name="userAccount" column="`UPDATE_ACCOUNT_ID`"
+			             not-null="true"/>
+			<property name="date" column="`UPDATE_DATE`" not-null="true"/>
+		</component>
+	</class>
+	<query name="findAssessmentCategoryScore"><![CDATA[
+		select assessmentCategoryScore
+		from omis.assessment.domain.AssessmentCategoryScore assessmentCategoryScore
+		where
+			assessmentCategoryScore.administeredQuestionnaire = :administeredQuestionnaire
+		and
+			assessmentCategoryScore.ratingCategory = :ratingCategory
+	]]></query>
+	<query name="findAssessmentCategoryScoreExcluding"><![CDATA[
+		select assessmentCategoryScore
+		from omis.assessment.domain.AssessmentCategoryScore assessmentCategoryScore
+		where
+			assessmentCategoryScore.administeredQuestionnaire = :administeredQuestionnaire
+		and
+			assessmentCategoryScore.ratingCategory = :ratingCategory
+		and
+			assessmentCategoryScore <> :excludedAssessmentCategoryScore
+	]]></query>
+</hibernate-mapping>

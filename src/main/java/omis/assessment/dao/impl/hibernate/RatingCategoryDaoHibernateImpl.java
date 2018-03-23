@@ -17,11 +17,14 @@
 */
 package omis.assessment.dao.impl.hibernate;
 
+import java.util.List;
+
 import org.hibernate.SessionFactory;
 
 import omis.assessment.dao.RatingCategoryDao;
 import omis.assessment.domain.RatingCategory;
 import omis.dao.impl.hibernate.GenericHibernateDaoImpl;
+import omis.questionnaire.domain.QuestionnaireType;
 
 /**
  * Hibernate implementation of the rating category data access object.
@@ -41,11 +44,17 @@ public class RatingCategoryDaoHibernateImpl
 	private final static String FIND_EXCLUDING_QUERY_NAME = 
 			"findRatingCategoryExcluding";
 	
+	private final static String FIND_BY_ADMINISTERED_QUESTIONNAIRE_QUERY_NAME = 
+			"findRatingCategoryByAdministeredQuestionnaire";
+	
 	/* Parameters. */
 	
 	private final static String DESCRIPTION_PARAM_NAME = "description";
 	
 	private final static String VALID_PARAM_NAME = "valid";
+	
+	private final static String QUESTIONNAIRE_TYPE_PARAM_NAME = 
+			"questionnaireType";
 	
 	private final static String EXCLUDED_RATING_CATEGORY_PARAM_NAME = 
 			"excludedRatingCategory";
@@ -87,5 +96,18 @@ public class RatingCategoryDaoHibernateImpl
 						excludedRatingCategory)
 				.uniqueResult();
 		return ratingCategory;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public List<RatingCategory> findByQuestionnaireType(
+			final QuestionnaireType questionnaireType) {
+		@SuppressWarnings("unchecked")
+		List<RatingCategory> categories = this.getSessionFactory()
+				.getCurrentSession()
+				.getNamedQuery(FIND_BY_ADMINISTERED_QUESTIONNAIRE_QUERY_NAME)
+				.setParameter(QUESTIONNAIRE_TYPE_PARAM_NAME, questionnaireType)
+				.list();
+		return categories;
 	}
 }

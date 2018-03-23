@@ -28,6 +28,7 @@ import omis.offender.domain.Offender;
  * Chronological note.
  * 
  * @author Joel Norris
+ * @author Sheronda Vaughn
  * @version 0.1.0 (January 29, 2018)
  * @since OMIS 3.0
  */
@@ -88,6 +89,22 @@ public interface ChronologicalNote extends Creatable, Updatable {
 	 * @param narrative narrative
 	 */
 	void setNarrative(String narrative);
+	
+	/**
+	 * Returns title.
+	 *
+	 *
+	 * @return title
+	 */
+	String getTitle();
+	
+	/**
+	 * Sets title.
+	 *
+	 *
+	 * @param title title
+	 */
+	void setTitle(String title);
 	
 	/**
 	 * Compares {@code this} and {@code obj} for equality.

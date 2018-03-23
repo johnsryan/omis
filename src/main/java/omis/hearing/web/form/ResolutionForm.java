@@ -1,18 +1,34 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.hearing.web.form;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import omis.hearing.domain.HearingStatusCategory;
 import omis.hearing.domain.ResolutionClassificationCategory;
 
 
 /**
- * ResolutionForm.java
+ * Resolution Form.
  * 
- *@author Annie Jacques 
- *@version 0.1.0 (Aug 8, 2017)
+ *@author Annie Wahl 
+ *@version 0.1.1 (Mar 1, 2018)
  *@since OMIS 3.0
  *
  */
@@ -20,11 +36,16 @@ public class ResolutionForm {
 	
 	private List<ViolationItem> violationItems = new ArrayList<ViolationItem>();
 	
+	private List<StaffAttendanceItem> staffAttendanceItems =
+			new ArrayList<StaffAttendanceItem>();
+	
 	private HearingStatusCategory category;
 	
 	private Date date;
 	
 	private String statusDescription;
+	
+	private Boolean inAttendance;
 	
 	private ResolutionClassificationCategory resolutionCategory;
 	
@@ -39,7 +60,7 @@ public class ResolutionForm {
 	}
 
 	/**
-	 * Returns the violationItems
+	 * Returns the violationItems.
 	 * @return violationItems - List<ViolationItem>
 	 */
 	public List<ViolationItem> getViolationItems() {
@@ -47,15 +68,32 @@ public class ResolutionForm {
 	}
 
 	/**
-	 * Sets the violationItems
+	 * Sets the violationItems.
 	 * @param violationItems - List<ViolationItem>
 	 */
 	public void setViolationItems(final List<ViolationItem> violationItems) {
 		this.violationItems = violationItems;
 	}
+	
+	/**
+	 * Returns the staffAttendanceItems.
+	 * @return staffAttendanceItems - List<StaffAttendanceItem>
+	 */
+	public List<StaffAttendanceItem> getStaffAttendanceItems() {
+		return this.staffAttendanceItems;
+	}
 
 	/**
-	 * Returns the category
+	 * Sets the staffAttendanceItems.
+	 * @param staffAttendanceItems - List<StaffAttendanceItem>
+	 */
+	public void setStaffAttendanceItems(
+			final List<StaffAttendanceItem> staffAttendanceItems) {
+		this.staffAttendanceItems = staffAttendanceItems;
+	}
+	
+	/**
+	 * Returns the category.
 	 * @return category - HearingStatusCategory
 	 */
 	public HearingStatusCategory getCategory() {
@@ -63,7 +101,7 @@ public class ResolutionForm {
 	}
 
 	/**
-	 * Sets the category
+	 * Sets the category.
 	 * @param category - HearingStatusCategory
 	 */
 	public void setCategory(final HearingStatusCategory category) {
@@ -71,7 +109,7 @@ public class ResolutionForm {
 	}
 
 	/**
-	 * Returns the date
+	 * Returns the date.
 	 * @return date - Date
 	 */
 	public Date getDate() {
@@ -79,7 +117,7 @@ public class ResolutionForm {
 	}
 
 	/**
-	 * Sets the date
+	 * Sets the date.
 	 * @param date - Date
 	 */
 	public void setDate(final Date date) {
@@ -87,7 +125,7 @@ public class ResolutionForm {
 	}
 
 	/**
-	 * Returns the statusDescription
+	 * Returns the statusDescription.
 	 * @return statusDescription - String
 	 */
 	public String getStatusDescription() {
@@ -95,7 +133,7 @@ public class ResolutionForm {
 	}
 
 	/**
-	 * Sets the statusDescription
+	 * Sets the statusDescription.
 	 * @param statusDescription - String
 	 */
 	public void setStatusDescription(final String statusDescription) {
@@ -103,7 +141,7 @@ public class ResolutionForm {
 	}
 
 	/**
-	 * Returns the resolutionCategory
+	 * Returns the resolutionCategory.
 	 * @return resolutionCategory - ResolutionClassificationCategory
 	 */
 	public ResolutionClassificationCategory getResolutionCategory() {
@@ -111,7 +149,7 @@ public class ResolutionForm {
 	}
 
 	/**
-	 * Sets the resolutionCategory
+	 * Sets the resolutionCategory.
 	 * @param resolutionCategory - ResolutionClassificationCategory
 	 */
 	public void setResolutionCategory(
@@ -120,7 +158,7 @@ public class ResolutionForm {
 	}
 
 	/**
-	 * Returns the violationItem
+	 * Returns the violationItem.
 	 * @return violationItem - ViolationItem
 	 */
 	public ViolationItem getViolationItem() {
@@ -128,7 +166,7 @@ public class ResolutionForm {
 	}
 
 	/**
-	 * Sets the violationItem
+	 * Sets the violationItem.
 	 * @param violationItem - ViolationItem
 	 */
 	public void setViolationItem(final ViolationItem violationItem) {
@@ -136,7 +174,7 @@ public class ResolutionForm {
 	}
 
 	/**
-	 * Returns the groupEdit
+	 * Returns the groupEdit.
 	 * @return groupEdit - Boolean
 	 */
 	public Boolean getGroupEdit() {
@@ -144,13 +182,25 @@ public class ResolutionForm {
 	}
 
 	/**
-	 * Sets the groupEdit
+	 * Sets the groupEdit.
 	 * @param groupEdit - Boolean
 	 */
 	public void setGroupEdit(final Boolean groupEdit) {
 		this.groupEdit = groupEdit;
 	}
-	
-	
+//	
+	/**
+	 * @return the inAttendance
+	 */
+	public Boolean getInAttendance() {
+		return inAttendance;
+	}
+
+	/**
+	 * @param inAttendance the inAttendance to set
+	 */
+	public void setInAttendance(final Boolean inAttendance) {
+		this.inAttendance = inAttendance;
+	}
 	
 }

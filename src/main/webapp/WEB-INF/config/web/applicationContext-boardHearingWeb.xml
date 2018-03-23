@@ -17,8 +17,20 @@
 			<constructor-arg name="sessionFactory" ref="sessionFactory"/>
 		</bean>
 		
+		<bean id="boardHearingProfileItemReportService" class="omis.boardhearing.report.impl.hibernate.BoardHearingProfileItemReportServiceHibernateImpl">
+			<constructor-arg name="sessionFactory" ref="sessionFactory"/>
+		</bean>
+		
+		<bean id="boardHearingDocumentSummaryReportService" class="omis.boardhearing.report.impl.hibernate.BoardHearingDocumentSummaryReportServiceHibernateImpl">
+			<constructor-arg name="sessionFactory" ref="sessionFactory"/>
+		</bean>
+		
 		<bean id="boardHearingFormValidator"
 			class="omis.boardhearing.web.validator.BoardHearingFormValidator">
+		</bean>
+		
+		<bean id="boardHearingDocumentFormValidator"
+			class="omis.boardhearing.web.validator.BoardHearingDocumentFormValidator">
 		</bean>
 		
 		<aop:config>
@@ -27,8 +39,36 @@
 			<aop:advisor advice-ref="transactionAdvice" pointcut-ref="boardHearingControllerOperation"/>	
 		</aop:config>
 		
+		<aop:config>
+			<aop:pointcut id="boardHearingDocumentControllerOperation"
+				expression="execution(* omis.boardhearing.web.controller.BoardHearingDocumentController.*(..))"/>
+			<aop:advisor advice-ref="transactionAdvice" pointcut-ref="boardHearingDocumentControllerOperation"/>
+		</aop:config>
+		
+		<aop:config>
+			<aop:pointcut id="boardHearingDocumentReportControllerOperation"
+				expression="execution(* omis.boardhearing.web.controller.BoardHearingDocumentReportController.*(..))"/>
+			<aop:advisor advice-ref="transactionAdvice" pointcut-ref="boardHearingDocumentReportControllerOperation"/>
+		</aop:config>
+		
 		<!-- Controller Delegates -->
 		<bean id="boardHearingSummaryModelDelegate" class="omis.boardhearing.web.controller.delegate.BoardHearingSummaryModelDelegate">
 			<constructor-arg name="boardHearingSummaryReportService" ref="boardHearingSummaryReportService"/>
 		</bean>
+		
+		<!-- Profile Items -->
+		<bean id="boardHearingProfileItem" class="omis.boardhearing.web.profile.BoardHearingProfileItem">
+			<constructor-arg name="requiredAuthorizations">
+				<set>
+					<value>BOARD_HEARING_LIST</value>
+					<value>ADMIN</value>
+				</set>
+			</constructor-arg>
+			<constructor-arg name="includePage" value="/WEB-INF/views/boardHearing/profile/includes/profileItem.jsp"/>
+			<constructor-arg name="name" value="boardHearing"/>
+			<constructor-arg name="profileItemRegistry" ref="boardOfPardonsAndParoleProfileItemRegistry"/>
+			<constructor-arg name="enabled" value="${boardHearingProfileItemEnabled}"/>
+			<constructor-arg name="boardHearingProfileItemReportService" ref="boardHearingProfileItemReportService"/>
+		</bean>
+		
 </beans>

@@ -28,6 +28,7 @@
 	       	<many-to-one name="userAccount" column="`UPDATE_ACCOUNT_ID`" not-null="true"/>
 	       	<property name="date" column="`UPDATE_DATE`" not-null="true"/>
 	       </component>
+	       <property name="submissionDate" column="SUBMISSION_DATE" type="java.util.Date"/>
 	</class>
 	<query name="findPresentenceInvestigationRequest"><![CDATA[
 		select psir

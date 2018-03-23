@@ -21,6 +21,7 @@
   - Chronological note mapping and queries.
   -
   - Author: Yidong Li
+  - Author: Sheronda Vaughn
   -->
 <!DOCTYPE hibernate-mapping PUBLIC
        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
@@ -39,6 +40,7 @@
 		<many-to-one name="offender" column="`OFFENDER_ID`" cascade="none" not-null="true"
 			entity-name="omis.offender.domain.Offender" unique="false"/>
 		<property name="narrative" type="java.lang.String" not-null="true" column="`NARRATIVE`"/>
+		<property name="title" type="java.lang.String" not-null="true" column="`TITLE`"/>
 		<component name="creationSignature" class="omis.audit.domain.CreationSignature">
 			<many-to-one name="userAccount" entity-name="omis.user.domain.UserAccount" column="`CREATE_ACCOUNT_ID`" not-null="true"/>
 			<property name="date" type="java.util.Date" column="`CREATE_DATE`" not-null="true"/>
@@ -64,7 +66,7 @@
 		where
 			note.offender = :offender
 			and note.date = :date
-			and note.narrative = :narrative
+			and note.title = :title
 		order by note.date
 	]]></query>
 	
@@ -75,7 +77,7 @@
 		where
 			note.offender = :offender
 			and note.date = :date
-			and note.narrative = :narrative
+			and note.title = :title
 			and note != :chronologicalNote
 		order by note.date
 	]]></query>

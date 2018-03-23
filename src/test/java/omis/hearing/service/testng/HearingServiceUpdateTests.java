@@ -26,10 +26,12 @@ import omis.hearing.domain.HearingNote;
 import omis.hearing.domain.HearingStatus;
 import omis.hearing.domain.HearingStatusCategory;
 import omis.hearing.domain.Infraction;
+import omis.hearing.domain.InfractionPlea;
 import omis.hearing.domain.ResolutionClassificationCategory;
 import omis.hearing.domain.StaffAttendance;
 import omis.hearing.domain.component.Resolution;
 import omis.hearing.service.HearingService;
+import omis.hearing.service.delegate.InfractionPleaDelegate;
 import omis.instance.factory.InstanceFactory;
 import omis.location.domain.Location;
 import omis.location.service.delegate.LocationDelegate;
@@ -56,10 +58,10 @@ import omis.violationevent.domain.ViolationEventCategory;
 import omis.violationevent.service.ViolationEventService;
 
 /**
- * HearinsServiceUpdateTests.java
+ * Hearins Service Update Tests.
  * 
- *@author Annie Jacques 
- *@version 0.1.0 (May 5, 2017)
+ *@author Annie Wahl 
+ *@version 0.1.1 (Mar 8, 2018)
  *@since OMIS 3.0
  *
  */
@@ -107,6 +109,9 @@ public class HearingServiceUpdateTests
 	@Autowired
 	@Qualifier("personDelegate")
 	private PersonDelegate personDelegate;
+
+	@Autowired
+	private InfractionPleaDelegate infractionPleaDelegate;
 	
 	@Autowired
 	private StaffTitleService staffTitleService;
@@ -128,7 +133,7 @@ public class HearingServiceUpdateTests
 	
 	
 	@Test
-	public void testHearingUpdate() throws DuplicateEntityFoundException{
+	public void testHearingUpdate() throws DuplicateEntityFoundException {
 		
 		final Organization organization = this.organizationDelegate.create(
 				"Organization22", "org22", null);
@@ -140,19 +145,23 @@ public class HearingServiceUpdateTests
 				"Cit2y", true, state, country);
 		final ZipCode zipCode = this.zipCodeDelegate.create(
 				city, "222333", null, true);
-		final Address address = this.addressDelegate.findOrCreate("321", "123", null,
+		final Address address = this.addressDelegate.findOrCreate(
+				"321", "123", null,
 				null, zipCode);
-		final Person person = this.personDelegate.create("Pennyworth2", "Alfred2", "J2", null);
+		final Person person = this.personDelegate.create(
+				"Pennyworth2", "Alfred2", "J2", null);
 		final SupervisoryOrganization supervisoryOrganization =
 				this.supervisoryOrganizationDelegate
 			.create("The Batcave2", "TBC2", organization);
 		
-		StaffAssignment officer = this.staffAssignmentInstanceFactory.createInstance();
+		StaffAssignment officer = this.staffAssignmentInstanceFactory
+				.createInstance();
 		officer.setStaffMember(person);
 		officer.setStaffId("2221");
 		officer.setSupervisoryOrganization(supervisoryOrganization);
 		officer.setSupervisory(true);
-		officer.setTitle(this.staffTitleService.create("Butler2", (short)2, true));
+		officer.setTitle(this.staffTitleService.create(
+				"Butler2", (short) 2, true));
 		officer = this.staffAssignmentDao.makePersistent(officer);
 		final Boolean inAttendance = false;
 		final Location location = this.locationDelegate.create(organization,
@@ -191,7 +200,7 @@ public class HearingServiceUpdateTests
 	}
 	
 	@Test
-	public void testHearingStatusCreate() throws DuplicateEntityFoundException{
+	public void testHearingStatusCreate() throws DuplicateEntityFoundException {
 		final Hearing hearing = this.createHearing();
 		final String description = "Status Description";
 		final Date date = this.parseDateText("05/05/2017");
@@ -205,21 +214,24 @@ public class HearingServiceUpdateTests
 				description, date, category);
 		
 		assert hearing.equals(hearingStatus.getHearing())
-		: String.format("Wrong hearing for hearingStatus: %d found; %d expected",
+		: String.format("Wrong hearing for hearingStatus: "
+				+ "%d found; %d expected",
 				hearingStatus.getHearing().getId(), hearing.getId());
 		assert description.equals(hearingStatus.getDescription())
-		: String.format("Wrong description for hearingStatus: %s found; %s expected",
+		: String.format("Wrong description for hearingStatus: "
+				+ "%s found; %s expected",
 				hearingStatus.getDescription(), description);
 		assert date.equals(hearingStatus.getDate())
 		: String.format("Wrong date for HearingStatus: %s found; %s expected",
 				hearingStatus.getDate(), date);
 		assert category.equals(hearingStatus.getCategory())
-		: String.format("Wrong category for hearingStatus: %s found; %s expected",
+		: String.format("Wrong category for hearingStatus: "
+				+ "%s found; %s expected",
 				hearingStatus.getCategory(), category);
 	}
 	
 	@Test
-	public void testHearingNoteUpdate() throws DuplicateEntityFoundException{
+	public void testHearingNoteUpdate() throws DuplicateEntityFoundException {
 		final Hearing hearing = this.createHearing();
 		final String description = "Note Description";
 		final Date date = this.parseDateText("05/05/2017");
@@ -233,7 +245,8 @@ public class HearingServiceUpdateTests
 		: String.format("Wrong hearing for hearingNote: %d found; %d expected",
 				hearingNote.getHearing().getId(), hearing.getId());
 		assert description.equals(hearingNote.getDescription())
-		: String.format("Wrong description for hearingNote: %s found; %s expected",
+		: String.format("Wrong description for hearingNote: "
+				+ "%s found; %s expected",
 				hearingNote.getDescription(), description);
 		assert date.equals(hearingNote.getDate())
 		: String.format("Wrong date for hearingNote: %s found; %s expected",
@@ -245,7 +258,8 @@ public class HearingServiceUpdateTests
 	//creation implementation for StaffAssignment, I think. 
 	//But I am certain the staffAttendance update works in practice.
 	//@Test
-	public void testStaffAttendanceUpdate() throws DuplicateEntityFoundException{
+	public void testStaffAttendanceUpdate()
+			throws DuplicateEntityFoundException {
 		final Hearing hearing = this.createHearing();
 		final SupervisoryOrganization supervisoryOrganization =
 				this.supervisoryOrganizationDelegate
@@ -253,7 +267,7 @@ public class HearingServiceUpdateTests
 		final Person person = this.personDelegate.create(
 				"Grayson", "Richard", "J", null);
 		final StaffTitle staffTitle = this.staffTitleService.create(
-				"Robin", (short)12, true);
+				"Robin", (short) 12, true);
 		StaffAttendance staffAttendance = this.hearingService
 				.createStaffAttendance(hearing, this.createStaffAssignment(
 						supervisoryOrganization, staffTitle));
@@ -266,7 +280,8 @@ public class HearingServiceUpdateTests
 		staffAssignment.setSupervisoryOrganization(supervisoryOrganization);
 		staffAssignment.setSupervisory(true);
 		staffAssignment.setTitle(staffTitle);
-		staffAssignment = this.staffAssignmentDao.makePersistent(staffAssignment);
+		staffAssignment = this.staffAssignmentDao
+				.makePersistent(staffAssignment);
 		
 		
 		
@@ -276,19 +291,21 @@ public class HearingServiceUpdateTests
 				staffAttendance, staffAssignment);
 		
 		assert hearing.equals(staffAttendance.getHearing())
-		: String.format("Wrong hearing for staffAttendance: %d found; %d expected",
+		: String.format("Wrong hearing for staffAttendance: "
+				+ "%d found; %d expected",
 				staffAttendance.getHearing().getId(), hearing.getId());
 		assert staffAssignment.equals(staffAttendance.getStaff())
 		: String.format("Wrong staffAssignment for staffAttendance: "
 				+ "%s found; %s expected",
-				staffAttendance.getStaff().getStaffMember().getName().getFirstName(),
+				staffAttendance.getStaff().getStaffMember()
+				.getName().getFirstName(),
 				staffAssignment.getStaffMember().getName().getFirstName());
 	}
 	
 	
 	
 	@Test
-	public void testInfractionUpdate() throws DuplicateEntityFoundException{
+	public void testInfractionUpdate() throws DuplicateEntityFoundException {
 		final Hearing hearing = this.createHearing();
 		final Resolution resolution2 = new Resolution();
 		resolution2.setCategory(ResolutionClassificationCategory.DISMISSED);
@@ -298,11 +315,14 @@ public class HearingServiceUpdateTests
 		resolution2.setDisposition(DispositionCategory.NO_FINDING);
 		resolution2.setAuthority(this.personDelegate.create("Butthead", "Joel", 
 				"Trevor", null));
+		final InfractionPlea plea2 = this.infractionPleaDelegate
+				.create("Guilty", true);
 		this.infraction = this.hearingService.createInfraction(
-				hearing, null, null, resolution2);
+				hearing, null, null, resolution2, plea2);
 		final SupervisoryOrganization supervisoryOrganization =
 				this.supervisoryOrganizationDelegate
-			.create("Batcave21", "TBC", hearing.getLocation().getOrganization());
+			.create("Batcave21", "TBC",
+					hearing.getLocation().getOrganization());
 		final DisciplinaryCode disciplinaryCode = this.disciplinaryCodeService
 				.createDisciplinaryCode("Code Value", "Code Description",
 						"Extended Description");
@@ -331,18 +351,21 @@ public class HearingServiceUpdateTests
 		resolution.setReason(reason);
 		resolution.setDisposition(disposition);
 		resolution.setAuthority(authority);
-		Infraction infraction = this.hearingService.updateInfraction(this.infraction,
-				null, disciplinaryCodeViolation, resolution);
+		final InfractionPlea plea = this.infractionPleaDelegate
+				.create("Not Guilty", true);
+		Infraction infraction = this.hearingService.updateInfraction(
+				this.infraction, null, disciplinaryCodeViolation,
+				resolution, plea);
 		
 		assert hearing.equals(infraction.getHearing())
 		: String.format("Wrong hearing for infraction: %s found; %s expected",
 				infraction.getHearing().getId(), hearing.getId());
-		/*assert conditionViolation.equals(infraction.getConditionViolation())
-		: String.format("Wrong conditionViolation for infraction: %s found; %s expected",
-				infraction.getConditionViolation(), conditionViolation);*/
-		assert disciplinaryCodeViolation.equals(infraction.getDisciplinaryCodeViolation())
-		: String.format("Wrong disciplinaryCodeViolation for infraction: %s found; %s expected",
-				infraction.getDisciplinaryCodeViolation().getDisciplinaryCode().getValue(),
+		assert disciplinaryCodeViolation.equals(
+				infraction.getDisciplinaryCodeViolation())
+		: String.format("Wrong disciplinaryCodeViolation for infraction: "
+				+ "%s found; %s expected",
+				infraction.getDisciplinaryCodeViolation()
+				.getDisciplinaryCode().getValue(),
 				disciplinaryCodeViolation.getDisciplinaryCode().getValue());
 		assert descision.equals(infraction.getResolution().getDescision())
 		: String.format("Wrong descision for infraction: %s found; %s expected",
@@ -350,16 +373,23 @@ public class HearingServiceUpdateTests
 		assert reason.equals(infraction.getResolution().getReason())
 		: String.format("Wrong reason for infraction: %s found; %s expected",
 				infraction.getResolution().getReason(), reason);
-		assert resolutionCategory.equals(infraction.getResolution().getCategory())
-		: String.format("Wrong resolutionCategory for infraction: %s found; %s expected",
+		assert resolutionCategory.equals(
+				infraction.getResolution().getCategory())
+		: String.format("Wrong resolutionCategory for infraction: "
+				+ "%s found; %s expected",
 				infraction.getResolution().getCategory(), resolutionCategory);
 		assert disposition.equals(infraction.getResolution().getDisposition())
-		: String.format("Wrong disposition for infraction: %s found; %s expected",
+		: String.format("Wrong disposition for infraction: "
+				+ "%s found; %s expected",
 				infraction.getResolution().getDisposition(), disposition);
 		assert authority.equals(infraction.getResolution().getAuthority())
 		: String.format("Wrong authority found: %s found; %s expected.",
-				infraction.getResolution().getAuthority().getName().getFirstName(),
+				infraction.getResolution().getAuthority()
+				.getName().getFirstName(),
 				authority.getName().getFirstName());
+		assert plea.equals(infraction.getPlea())
+		: String.format("Wrong plea for infraction: %s found; %s expected",
+				infraction.getPlea().getName(), plea.getName());
 	}
 	
 	
@@ -375,19 +405,23 @@ public class HearingServiceUpdateTests
 				"City", true, state, country);
 		final ZipCode zipCode = this.zipCodeDelegate.create(
 				city, "12345", null, true);
-		final Address address = this.addressDelegate.findOrCreate("123", "321", null,
+		final Address address = this.addressDelegate.findOrCreate(
+				"123", "321", null,
 				null, zipCode);
-		final Person person = this.personDelegate.create("Pennyworth", "Alfred", "J", null);
+		final Person person = this.personDelegate.create(
+				"Pennyworth", "Alfred", "J", null);
 		final SupervisoryOrganization supervisoryOrganization =
 				this.supervisoryOrganizationDelegate
 			.create("The Batcave", "TBC", organization);
 		
-		StaffAssignment officer = this.staffAssignmentInstanceFactory.createInstance();
+		StaffAssignment officer = this.staffAssignmentInstanceFactory
+				.createInstance();
 		officer.setStaffMember(person);
 		officer.setStaffId("999");
 		officer.setSupervisoryOrganization(supervisoryOrganization);
 		officer.setSupervisory(true);
-		officer.setTitle(this.staffTitleService.create("Butler", (short)1, true));
+		officer.setTitle(this.staffTitleService.create(
+				"Butler", (short) 1, true));
 		officer = this.staffAssignmentDao.makePersistent(officer);
 		final Offender offender = this.offenderDelegate.createWithoutIdentity(
 				"Wayne", "Bruce", "Alen", null);
@@ -405,7 +439,7 @@ public class HearingServiceUpdateTests
 	private StaffAssignment createStaffAssignment(
 			final SupervisoryOrganization supervisoryOrganization,
 			final StaffTitle staffTitle)
-			throws DuplicateEntityFoundException{
+			throws DuplicateEntityFoundException {
 		final Person person = this.personDelegate.create(
 				"Grayson2", "Richard2", "J2", null);
 		StaffAssignment staffAssignment2 =

@@ -28,7 +28,7 @@
 <body>
 	<jsp:include page="/WEB-INF/views/offender/includes/offenderHeader.jsp"/>
 	<h1>
-		<a class="actionMenuItem" id="actionMenuLink" href="${pageContext.request.contextPath}/boardHearing/boardHearingActionMenu.html?paroleEligibility=${paroleEligibility.id}"></a>
+		<a class="actionMenuItem" id="actionMenuLink" href="${pageContext.request.contextPath}/boardHearing/boardHearingActionMenu.html?paroleEligibility=${paroleEligibility.id}&boardHearing=${boardHearing.id}"></a>
 		<c:if test="${empty boardHearing}">
 			<fmt:message key="createBoardHearingHeader" />
 		</c:if>

@@ -17,6 +17,8 @@
 */
 package omis.assessment.service.delegate;
 
+import java.util.List;
+
 import omis.assessment.dao.CategoryOverrideReasonDao;
 import omis.assessment.domain.CategoryOverrideReason;
 import omis.assessment.domain.RatingCategory;
@@ -94,7 +96,7 @@ public class CategoryOverrideReasonDelegate {
 	 * @return category override reason
 	 * @throws DuplicateEntityFoundException if duplicate entity exists
 	 */
-	public CategoryOverrideReason create(
+	public CategoryOverrideReason update(
 			final CategoryOverrideReason categoryOverrideReason, 
 			final String name, final RatingCategory ratingCategory, 
 			final Boolean valid) throws DuplicateEntityFoundException {
@@ -118,6 +120,15 @@ public class CategoryOverrideReasonDelegate {
 		this.categoryOverrideReasonDao.makeTransient(categoryOverrideReason);
 	}
 
+	/**
+	 * Returns a list of category override reasons.
+	 * 
+	 * @return list of category override reasons
+	 */
+	public List<CategoryOverrideReason> findAll() {
+		return this.categoryOverrideReasonDao.findAll();
+	}
+	
 	// Populates a category override reason
 	private void populateCategoryOverrideReason(
 			final CategoryOverrideReason categoryOverrideReason, 

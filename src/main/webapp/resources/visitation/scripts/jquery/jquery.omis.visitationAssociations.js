@@ -29,9 +29,18 @@ function applyVisitRowsOnClick() {
  * @param target target element to show
  */
 function showOnClick(ele, target) {
+
 	return function (diffEle, diffTarget) {
+//		$(ele.find(".visitationAssociationRemoveLink")).click(
+//			function() {
+//				ui.confirm("visitation", "visitationAssociationRemoveOnClick");
+//		});
+		var visitationAssociationValue = $(ele).attr("id").replace("visitationAssociationRowActionMenuLink", "");
+		$("#visitorSummary" + visitationAssociationValue + "RemoveLink").click(
+				function() {
+					return ui.confirm("omis.visitation.msgs.visitation", "visitationRemoveConfirmationMessage");
+				});
 		$(diffTarget.find(".checkInLink")[0]).click(function () {
-			var visitationAssociationValue = $(ele).attr("id").replace("visitationAssociationRowActionMenuLink", "");
 			$("#visitationAssociation").val(visitationAssociationValue);
 			$(target).removeClass("hidden");
 		});		

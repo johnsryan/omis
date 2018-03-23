@@ -37,6 +37,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import omis.beans.factory.PropertyEditorFactory;
 import omis.beans.factory.spring.CustomDateEditorFactory;
+import omis.boardhearing.domain.BoardHearing;
+import omis.boardhearing.service.BoardHearingService;
 import omis.exception.DuplicateEntityFoundException;
 import omis.hearinganalysis.domain.HearingAnalysis;
 import omis.hearinganalysis.domain.HearingAnalysisCategory;
@@ -59,7 +61,8 @@ import omis.web.controller.delegate.BusinessExceptionHandlerDelegate;
  * Controller for managing hearing analyses.
  *
  * @author Josh Divine
- * @version 0.1.0 (Dec 19, 2017)
+ * @author Annie Wahl
+ * @version 0.1.1 (Mar 21, 2018)
  * @since OMIS 3.0
  */
 @Controller
@@ -122,6 +125,8 @@ public class ManageHearingAnalysisController {
 	private static final String HEARING_ANALYSIS_CATEGORIES_MODEL_KEY = 
 			"categories";
 	
+	private static final String BOARD_HEARING_MODEL_KEY = "boardHearing";
+	
 	private static final String OFFENDER_MODEL_KEY = "offender";
 
 	/* Message keys. */
@@ -140,6 +145,10 @@ public class ManageHearingAnalysisController {
 	@Autowired
 	@Qualifier("hearingAnalysisService")
 	private HearingAnalysisService hearingAnalysisService;
+	
+	@Autowired
+	@Qualifier("boardHearingService")
+	private BoardHearingService boardHearingService;
 	
 	/* Property editor factories. */
 	
@@ -376,15 +385,23 @@ public class ManageHearingAnalysisController {
 	/**
 	 * Displays action menu for screen to create/edit a hearing analysis.
 	 * 
+	 * @param paroleEligibility - Parole Eligibility
 	 * @return action menu for screen to create/edit a hearing analysis
 	 */
 	@RequestMapping(value = "/hearingAnalysisActionMenu.html", 
 			method = RequestMethod.GET)
 	public ModelAndView showActionMenu(
-			@RequestParam(value = "offender", required = true)
-				final Offender offender) {
+			@RequestParam(value = "paroleEligibility", required = true)
+				final ParoleEligibility paroleEligibility) {
 		ModelAndView mav = new ModelAndView(ACTION_MENU_VIEW_NAME);
-		mav.addObject(OFFENDER_MODEL_KEY, offender);
+		HearingAnalysis hearingAnalysis = this.hearingAnalysisService
+				.findHearingAnalysisByParoleEligibility(paroleEligibility);
+		BoardHearing boardHearing = this.boardHearingService
+				.findBoardHearingByParoleEligibility(paroleEligibility);
+		mav.addObject(OFFENDER_MODEL_KEY, paroleEligibility.getOffender());
+		mav.addObject(HEARING_ANALYSIS_MODEL_KEY, hearingAnalysis);
+		mav.addObject(BOARD_HEARING_MODEL_KEY, boardHearing);
+		mav.addObject(ELIGIBILITY_MODEL_KEY, paroleEligibility);
 		return mav;
 	}
 

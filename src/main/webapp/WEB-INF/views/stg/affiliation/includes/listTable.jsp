@@ -15,6 +15,7 @@
 			<th class="operations"/>
 			<th><fmt:message key="securityThreatGroupLabel"/></th>
 			<th><fmt:message key="stgChapterLabel"/></th>
+			<th><fmt:message key="stgMonikerLabel"/></th>
 			<th><fmt:message key="stgRankLabel"/></th>
 			<th><fmt:message key="cityLabel" bundle="${regionBundle}"/></th>
 			<th><fmt:message key="stateLabel" bundle="${stateBundle}"/></th>

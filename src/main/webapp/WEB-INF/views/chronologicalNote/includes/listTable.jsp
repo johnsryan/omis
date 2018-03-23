@@ -19,6 +19,7 @@
 <%--
  - Table of listed chronological notes 
  - Author: Yidong Li
+ - Author: Sheronda Vaughn
  - Version: 0.1.1 (Feb 1, 2018)
  - Since: OMIS 3.0
  --%>
@@ -29,6 +30,7 @@
 		<thead>
 			<tr>
 				<th class = "operations"> </th>
+				<th><fmt:message key="titleLabel"/></th>
 				<th><fmt:message key="startDateLabel"/></th>
 				<th><fmt:message key="categoriesLabel"/></th>
 				<th><fmt:message key="narrativeLabel"/></th>

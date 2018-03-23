@@ -94,5 +94,7 @@
 		    or securityThreatGroupAffiliation.dateRange.startDate is null)
 		   and (securityThreatGroupAffiliation.dateRange.endDate > :effectiveDate
 		    or securityThreatGroupAffiliation.dateRange.endDate is null))
+		   and (upper(securityThreatGroupAffiliation.activityLevel.name) = 'MEMBER'
+		    or upper(securityThreatGroupAffiliation.activityLevel.name) = 'ASSOCIATE')
 	]]></query>
 </hibernate-mapping>

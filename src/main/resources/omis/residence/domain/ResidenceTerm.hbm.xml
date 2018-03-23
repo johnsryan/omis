@@ -65,10 +65,6 @@
 		(residenceTerm.dateRange.endDate is null and :endDate is null))	
 	and
 		residenceTerm.address = :address
-	and 
-		residenceTerm.category = :category
-	and
-		residenceTerm.status = :status
 	
 	]]></query>
 <!-- 	find residenceTerm by person excluding the one in view -->
@@ -87,10 +83,6 @@
 		(residenceTerm.dateRange.endDate is null and :endDate is null))
 	and 
 		residenceTerm.address = :address	
-	and 
-		residenceTerm.category = :category	
-	and 
-		residenceTerm.status = :status
 	and
 		residenceTerm != :residenceTerm	
 	]]></query>

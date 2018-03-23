@@ -29,6 +29,7 @@ public class PresentenceInvestigationRequestImpl
 	private Docket docket;
 	private Date completionDate;
 	private PresentenceInvestigationCategory category;
+	private Date submissionDate;
 	private UpdateSignature updateSignature;
 	private CreationSignature creationSignature;
 
@@ -57,6 +58,18 @@ public class PresentenceInvestigationRequestImpl
 	@Override
 	public UpdateSignature getUpdateSignature() {
 		return this.updateSignature;
+	}
+	
+	/** {@inheritDoc} */
+	@Override
+	public Date getSubmissionDate() {
+		return this.submissionDate;
+	}
+	
+	/** {@inheritDoc} */
+	@Override
+	public void setSubmissionDate(final Date submissionDate) {
+		this.submissionDate = submissionDate;
 	}
 
 	

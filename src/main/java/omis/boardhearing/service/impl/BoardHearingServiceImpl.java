@@ -241,4 +241,12 @@ public class BoardHearingServiceImpl implements BoardHearingService {
 		return this.boardHearingCategoryDelegate.findByAppearanceCategory(
 				appearanceCategory);
 	}
+
+	/**{@inheritDoc} */
+	@Override
+	public BoardHearing findBoardHearingByParoleEligibility(
+			final ParoleEligibility paroleEligibility) {
+		return this.boardHearingDelegate.findByParoleEligibility(
+				paroleEligibility);
+	}
 }

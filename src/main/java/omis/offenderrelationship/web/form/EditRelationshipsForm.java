@@ -42,6 +42,7 @@ public class EditRelationshipsForm implements Serializable {
 	private VerificationMethod verificationMethod;
 	private Boolean enterAddress;
 	private Boolean enterPoBox;
+	private boolean validateSocialSecurityNumber;
 	
 	/**
 	 * Instantiates a default instance of edit relationships form.
@@ -321,4 +322,24 @@ public class EditRelationshipsForm implements Serializable {
 	public void setEnterPoBox(final Boolean enterPoBox) {
 		this.enterPoBox = enterPoBox;
 	}
+	
+	/**
+	 * Returns whether to validate social security number.
+	 * 
+	 * @return whether to validate social security number
+	 */
+	public boolean getValidateSocialSecurityNumber() {
+		return this.validateSocialSecurityNumber;
+	}
+
+	/**
+	 * Sets whether to validate social security number.
+	 * 
+	 * @param validateSocialSecurityNumber whether to validate social security
+	 * number
+	 */
+	public void setValidateSocialSecurityNumber(
+			final boolean validateSocialSecurityNumber) {
+		this.validateSocialSecurityNumber = validateSocialSecurityNumber;
+	}	
 }

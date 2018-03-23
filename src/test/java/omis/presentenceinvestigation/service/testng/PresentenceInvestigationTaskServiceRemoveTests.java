@@ -183,7 +183,8 @@ public class PresentenceInvestigationTaskServiceRemoveTests
 				this.presentenceInvestigationRequestDelegate.create(
 						userAccount, this.parseDateText("01/01/2016"),
 						this.parseDateText("12/31/2017"),
-						docket, null, this.parseDateText("03/25/2015"), category);
+						docket, null, this.parseDateText("03/25/2015"), category,
+						this.parseDateText("04/01/2017"));
 		final TaskTemplateGroup group = this.taskTemplateGroupDelegate.create(
 				"TaskTemplateGroup");
 		final TaskTemplate taskTemplate = this.taskTemplateDelegate.create(

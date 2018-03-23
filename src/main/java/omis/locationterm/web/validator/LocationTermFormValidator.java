@@ -35,7 +35,9 @@ public class LocationTermFormValidator
 	@Override
 	public void validate(final Object target, final Errors errors) {
 		LocationTermForm locationTermForm = (LocationTermForm) target;
-		if (locationTermForm.getLocation() == null) {
+		if (locationTermForm.getAllowLocation() != null
+				&& locationTermForm.getAllowLocation()
+				&& locationTermForm.getLocation() == null) {
 			errors.rejectValue("location", "location.empty");
 		}
 		if (locationTermForm.getStartDate() != null

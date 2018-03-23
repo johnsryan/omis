@@ -47,6 +47,14 @@ public interface PresentenceInvestigationRequest
 	 */
 	public Date getSentenceDate();
 	
+	/** Gets submission Date.
+	 * @return submission date. */
+	public Date getSubmissionDate();
+	
+	/** Sets submission date.
+	 * @param submissionDate - submission date. */
+	public void setSubmissionDate(Date submissionDate);
+	
 	/** Sets id.
 	 * @param id - id. */
 	public void setId(Long id);

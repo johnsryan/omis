@@ -59,6 +59,7 @@ public class PresentenceInvestigationRequestDelegate {
 	 * @param completionDate - completion date.
 	 * @param sentenceDate - sentence date.
 	 * @param category - PresentenceInvestigationCategory
+	 * @param submissionDate - submission date.
 	 * @return Presentence investigation request.
 	 * @throws DuplicateEntityFoundException - entity with given court case 
 	 * exists */
@@ -67,7 +68,7 @@ public class PresentenceInvestigationRequestDelegate {
 			final Date requestDate, final  Date expectedCompletionDate, 
 			final Docket docket, final Date completionDate, 
 			final Date sentenceDate,
-			final PresentenceInvestigationCategory category) 
+			final PresentenceInvestigationCategory category, final Date submissionDate) 
 					throws DuplicateEntityFoundException {
 		if (this.presentenceInvestigationRequestDao.find(docket) != null) {
 			throw new DuplicateEntityFoundException(
@@ -85,6 +86,7 @@ public class PresentenceInvestigationRequestDelegate {
 		presentenceInvestigationRequest.setAssignedUser(assignedUser);
 		presentenceInvestigationRequest.setSentenceDate(sentenceDate);
 		presentenceInvestigationRequest.setCategory(category);
+		presentenceInvestigationRequest.setSubmissionDate(submissionDate);
 		presentenceInvestigationRequest.setCreationSignature(
 				new CreationSignature(
 						this.auditComponenetRetriever.retrieveUserAccount(), 
@@ -109,6 +111,7 @@ public class PresentenceInvestigationRequestDelegate {
 	 * @param docket - docket. 
 	 * @param sentenceDate - sentence date.
 	 * @param category - PresentenceInvestigationCategory
+	 * @param submissionDate - submission date.
 	 * @return presentence investigation request.
 	 * @throws DuplicateEntityFoundException - when presentence investigation
 	 * request exists for given court case. */
@@ -119,7 +122,7 @@ public class PresentenceInvestigationRequestDelegate {
 			final Date completionDate,
 			final Date expectedCompletionDate, final Docket docket,
 			final Date sentenceDate,
-			final PresentenceInvestigationCategory category)
+			final PresentenceInvestigationCategory category, final Date submissionDate)
 	throws DuplicateEntityFoundException {
 		
 		if (this.presentenceInvestigationRequestDao.findExcluding(
@@ -136,6 +139,7 @@ public class PresentenceInvestigationRequestDelegate {
 		presentenceInvestigationRequest.setAssignedUser(assignedUser);
 		presentenceInvestigationRequest.setSentenceDate(sentenceDate);
 		presentenceInvestigationRequest.setCategory(category);
+		presentenceInvestigationRequest.setSubmissionDate(submissionDate);
 		presentenceInvestigationRequest.setUpdateSignature(
 				new UpdateSignature(
 						this.auditComponenetRetriever.retrieveUserAccount(),

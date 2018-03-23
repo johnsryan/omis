@@ -10,18 +10,9 @@
   	<div class="profileItem">
   			<a href="${pageContext.request.contextPath}/commitStatus/list.html?offender=${offenderSummary.id}">
   				<span>
-    				<c:choose>
-						<c:when test="${not empty commitStatusTerm}">
-							<fmt:message key="commitStatusTermCountLabel">
-								<fmt:param value="${commitStatusTerm.status.name}"/>
-							</fmt:message>
-						</c:when>
-						<c:otherwise>
-							<fmt:message key="commitStatusTermCountLabel">
-								<fmt:param value="None"/>
-							</fmt:message>
-						</c:otherwise>
-					</c:choose>
+					<fmt:message key="commitStatusTermCountLabel">
+						<fmt:param value="${commitStatusTermCount}"/>
+					</fmt:message>
     			</span>
     		</a>
    	</div>

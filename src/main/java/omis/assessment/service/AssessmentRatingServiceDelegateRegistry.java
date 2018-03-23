@@ -17,6 +17,7 @@
 */
 package omis.assessment.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,19 +27,30 @@ import java.util.List;
  * @version 0.1.0 (Feb 26, 2018)
  * @since OMIS 3.0
  */
-public interface AssessmentRatingServiceDelegateRegistry {
+public class AssessmentRatingServiceDelegateRegistry {
 
+	private final List<AssessmentRatingServiceDelegate> items = 
+			new ArrayList<AssessmentRatingServiceDelegate>();
+	
+	public AssessmentRatingServiceDelegateRegistry() {
+		// Default constructor
+	}
+	
 	/**
 	 * Registers an assessment rating service delegate.
 	 * 
 	 * @param item assessment rating service delegate
 	 */
-	void register(AssessmentRatingServiceDelegate item);
+	public void register(AssessmentRatingServiceDelegate item) {
+		this.items.add(item);
+	}
 	
 	/**
 	 * Returns the list of assessment rating service delegates.
 	 * 
 	 * @return list of assessment rating service delegates
 	 */
-	List<AssessmentRatingServiceDelegate> getItems();
+	public List<AssessmentRatingServiceDelegate> getItems() {
+		return items;
+	}
 }

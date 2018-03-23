@@ -3,6 +3,8 @@ package omis.residence.dao.impl.hibernate;
 import java.util.Date;
 import java.util.List;
 
+import org.hibernate.SessionFactory;
+
 import omis.address.domain.Address;
 import omis.dao.impl.hibernate.GenericHibernateDaoImpl;
 import omis.datatype.DateRange;
@@ -13,8 +15,6 @@ import omis.residence.dao.ResidenceTermDao;
 import omis.residence.domain.ResidenceCategory;
 import omis.residence.domain.ResidenceStatus;
 import omis.residence.domain.ResidenceTerm;
-
-import org.hibernate.SessionFactory;
 
 /**
  * Hibernate implementation of the residence term data access object.
@@ -102,8 +102,7 @@ public class ResidenceTermDaoHibernateImpl
 	/** {@inheritDoc} */
 	@Override
 	public ResidenceTerm find(final Person person, final DateRange dateRange, 
-			final Address address, final ResidenceCategory category, 
-			final ResidenceStatus status) {
+			final Address address) {
 		ResidenceTerm residenceTerm = 
 				(ResidenceTerm) this.getSessionFactory().getCurrentSession()
 			.getNamedQuery(FIND_RESIDENCE_TERM_QUERY_NAME)
@@ -113,8 +112,6 @@ public class ResidenceTermDaoHibernateImpl
 			.setTimestamp(END_DATE_PARAMETER_NAME,
 					DateRange.getEndDate(dateRange))
 			.setParameter(ADDRESS_PARAMETER_NAME, address)
-			.setParameter(RESIDENCE_CATEGORY_PARAMETER_NAME, category)
-			.setParameter(STATUS_PARAMETER_NAME, status)
 			.uniqueResult();
 		return residenceTerm;
 	}
@@ -123,8 +120,7 @@ public class ResidenceTermDaoHibernateImpl
 	@Override
 	public ResidenceTerm findExcluding(final Person person, 
 			final DateRange dateRange, final Address address, 
-			final ResidenceTerm residenceTerm, final ResidenceCategory category,
-			final ResidenceStatus status) {
+			final ResidenceTerm residenceTerm) {
 		ResidenceTerm term = (ResidenceTerm) 
 				this.getSessionFactory().getCurrentSession()
 			.getNamedQuery(FIND_EXCLUDING_QUERY_NAME)
@@ -135,8 +131,6 @@ public class ResidenceTermDaoHibernateImpl
 					DateRange.getEndDate(dateRange))
 			.setParameter(ADDRESS_PARAMETER_NAME, address)
 			.setParameter(RESIDENCE_TERM_PARAMETER_NAME, residenceTerm)
-			.setParameter(RESIDENCE_CATEGORY_PARAMETER_NAME, category)
-			.setParameter(STATUS_PARAMETER_NAME, status)
 			.uniqueResult();
 		return term;
 	}

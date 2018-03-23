@@ -93,7 +93,7 @@ Place after XML declaration (<?xml version="1.0" encoding="UTF-8"?> - screen
 JSPs require this) and before other XHTML/JSP content including the purpose of
 the screen.
 
-Use JSP comments (<%-- -->) so the comment is not included in the content sent
+Use JSP comments (<%-- --%>) so the comment is not included in the content sent
 to the web client.
 
 <?xml version="1.0" encoding="UTF-8"?>
@@ -132,7 +132,7 @@ Place at the beginning of the file starting on the first line. JSP snippets that
 generate parts of an XHTML document or dynamic CSS or JavaScript do not require
 an XML declaration (it is only required at the start of the XML document).
 
-Use JSP comments (<%-- -->) so the comment is not included in the content sent
+Use JSP comments (<%-- --%>) so the comment is not included in the content sent
 to the web client.
 
 Example:
