@@ -187,5 +187,18 @@ public class SupervisoryOrganizationTermImpl implements
 		hashCode = 29 * hashCode + this.getDateRange().hashCode();
 		hashCode = 29 * hashCode + this.getSupervisoryOrganization().hashCode();
 		return hashCode;
-	}	
+	}
+	
+	/**
+	 * Returns string representation of supervisory organization including
+	 * offender, supervisory organization and date range.
+	 * 
+	 * @return string representation of supervisory organization
+	 */
+	@Override
+	public String toString() {
+		return String.format(
+			"#%d: [%s] [%s] %s", this.getId(), this.getOffender(),
+			this.getSupervisoryOrganization(), this.getDateRange());
+	}
 }

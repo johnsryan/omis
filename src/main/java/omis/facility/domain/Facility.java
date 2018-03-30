@@ -9,6 +9,7 @@ import omis.location.domain.Location;
 
 /**
  * @author Joel Norris 
+ * @author Sheronda Vaughn
  * @version 0.1.0 (Feb, 08 2013)
  * @since OMIS 3.0
  */
@@ -83,6 +84,20 @@ public interface Facility extends Serializable {
 	 * @param active active
 	 */
 	void setActive(Boolean active);
+	
+	/**
+	 * Sets the telephone number.
+	 * 
+	 * @param telephoneNumber telephone number
+	 */
+	void setTelephoneNumber(Long telephoneNumber);
+	
+	/**
+	 * Returns the telephone number.
+	 * 
+	 * @return telephone number
+	 */
+	Long getTelephoneNumber();
 	
 		/**
 	 * Returns a hash code for {@code this}.

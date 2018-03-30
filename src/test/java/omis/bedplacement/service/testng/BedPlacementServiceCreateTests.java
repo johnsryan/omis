@@ -139,10 +139,11 @@ public class BedPlacementServiceCreateTests
 				true);
 		Address address = this.addressDelegate.findOrCreate("1 Easy Street", 
 				null, null, null, zipCode);
+		final Long telephoneNumber = new Long("1234567");
 		Location location = this.locationDelegate.create(organization, 
 				locationDateRange, address);
 		Facility facility = this.facilityDelegate.create(location, "Facility", 
-				"F", true);
+				"F", true, telephoneNumber);
 		Room room = this.roomDelegate.create("Room", facility, null, null, null, 
 				null, true);
 		Bed bed = this.bedDelegate.create(room, 1, true);
@@ -192,12 +193,13 @@ public class BedPlacementServiceCreateTests
 		City city = this.cityDelegate.create("City", true, state, country);
 		ZipCode zipCode = this.zipCodeDelegate.create(city, "12345", null, 
 				true);
+		final Long telephoneNumber = new Long("1234567");
 		Address address = this.addressDelegate.findOrCreate("1 Easy Street", 
 				null, null, null, zipCode);
 		Location location = this.locationDelegate.create(organization, 
 				locationDateRange, address);
 		Facility facility = this.facilityDelegate.create(location, "Facility", 
-				"F", true);
+				"F", true, telephoneNumber);
 		Room room = this.roomDelegate.create("Room", facility, null, null, null, 
 				null, true);
 		Bed bed = this.bedDelegate.create(room, 1, true);
@@ -239,12 +241,13 @@ public class BedPlacementServiceCreateTests
 		City city = this.cityDelegate.create("City", true, state, country);
 		ZipCode zipCode = this.zipCodeDelegate.create(city, "12345", null, 
 				true);
+		final Long telephoneNumber = new Long("1234567");
 		Address address = this.addressDelegate.findOrCreate("1 Easy Street", 
 				null, null, null, zipCode);
 		Location location = this.locationDelegate.create(organization, 
 				locationDateRange, address);
 		Facility facility = this.facilityDelegate.create(location, "Facility", 
-				"F", true);
+				"F", true, telephoneNumber);
 		Room room = this.roomDelegate.create("Room", facility, null, null, null, 
 				null, true);
 		Bed bed = this.bedDelegate.create(room, 1, true);
@@ -284,6 +287,7 @@ public class BedPlacementServiceCreateTests
 		Country country = this.countryDelegate.create("Country", "C", true);
 		State state = this.stateDelegate.create("State", "S", country, false, 
 				true);
+		final Long telephoneNumber = new Long("1234567");
 		City city = this.cityDelegate.create("City", true, state, country);
 		ZipCode zipCode = this.zipCodeDelegate.create(city, "12345", null, 
 				true);
@@ -292,7 +296,7 @@ public class BedPlacementServiceCreateTests
 		Location location = this.locationDelegate.create(organization, 
 				locationDateRange, address);
 		Facility facility = this.facilityDelegate.create(location, "Facility", 
-				"F", true);
+				"F", true, telephoneNumber);
 		Room room = this.roomDelegate.create("Room", facility, null, null, null, 
 				null, true);
 		Bed bed = this.bedDelegate.create(room, 1, true);

@@ -505,6 +505,18 @@ public class ManageVictimAssociationController {
 				birthCity = victimAssociationForm.getPersonFields()
 						.getBirthCity();
 			}
+			Integer socialSecurityNumber;
+			if (victimAssociationForm.getPersonFields()
+						.getSocialSecurityNumber() != null
+						&& !victimAssociationForm
+								.getPersonFields()
+									.getSocialSecurityNumber().isEmpty()) {
+				socialSecurityNumber = Integer.valueOf(
+						victimAssociationForm.getPersonFields()
+							.getSocialSecurityNumber().replaceAll("-", ""));
+			} else {
+				socialSecurityNumber = null;
+			}
 			victimToAssociate = this.victimAssociationService.createVictim(
 					victimAssociationForm.getPersonFields().getLastName(),
 					victimAssociationForm.getPersonFields().getFirstName(),
@@ -514,9 +526,7 @@ public class ManageVictimAssociationController {
 					victimAssociationForm.getPersonFields().getBirthDate(),
 					victimAssociationForm.getPersonFields().getBirthCountry(),
 					victimAssociationForm.getPersonFields().getBirthState(),
-					birthCity,
-					Integer.valueOf(victimAssociationForm.getPersonFields()
-						.getSocialSecurityNumber().replaceAll("-", "")),
+					birthCity, socialSecurityNumber,
 					victimAssociationForm.getPersonFields().getStateIdNumber(),
 					victimAssociationForm.getPersonFields().getDeceased(),
 					victimAssociationForm.getPersonFields().getDeathDate());

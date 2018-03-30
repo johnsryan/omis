@@ -46,6 +46,7 @@ import omis.util.PropertyValueAsserter;
  * Tests method to confirm bed placements.
  *
  * @author Josh Divine
+ * @author Sheronda Vaughn
  * @version 0.0.1
  * @since OMIS 3.0
  */
@@ -129,6 +130,7 @@ public class BedPlacementServiceConfirmTests
 				"John", "Jay", null);
 		Organization organization = this.organizationDelegate.create("Org", "O", 
 				null);
+		final Long telephoneNumber = new Long("1234567");
 		DateRange locationDateRange = 
 				new DateRange(this.parseDateText("01/01/2000"), null);
 		Country country = this.countryDelegate.create("Country", "C", true);
@@ -142,7 +144,7 @@ public class BedPlacementServiceConfirmTests
 		Location location = this.locationDelegate.create(organization, 
 				locationDateRange, address);
 		Facility facility = this.facilityDelegate.create(location, "Facility", 
-				"F", true);
+				"F", true, telephoneNumber);
 		Room room = this.roomDelegate.create("Room", facility, null, null, null, 
 				null, true);
 		Bed bed = this.bedDelegate.create(room, 1, true);
@@ -186,6 +188,7 @@ public class BedPlacementServiceConfirmTests
 				"John", "Jay", null);
 		Organization organization = this.organizationDelegate.create("Org", "O", 
 				null);
+		final Long telephoneNumber = new Long("1234567");
 		DateRange locationDateRange = 
 				new DateRange(this.parseDateText("01/01/2000"), null);
 		Country country = this.countryDelegate.create("Country", "C", true);
@@ -199,7 +202,7 @@ public class BedPlacementServiceConfirmTests
 		Location location = this.locationDelegate.create(organization, 
 				locationDateRange, address);
 		Facility facility = this.facilityDelegate.create(location, "Facility", 
-				"F", true);
+				"F", true, telephoneNumber);
 		Room room = this.roomDelegate.create("Room", facility, null, null, null, 
 				null, true);
 		Bed bed = this.bedDelegate.create(room, 1, true);
@@ -237,6 +240,7 @@ public class BedPlacementServiceConfirmTests
 				"John", "Jay", null);
 		Organization organization = this.organizationDelegate.create("Org", "O", 
 				null);
+		final Long telephoneNumber = new Long("1234567");
 		DateRange locationDateRange = 
 				new DateRange(this.parseDateText("01/01/2000"), null);
 		Country country = this.countryDelegate.create("Country", "C", true);
@@ -250,7 +254,7 @@ public class BedPlacementServiceConfirmTests
 		Location location = this.locationDelegate.create(organization, 
 				locationDateRange, address);
 		Facility facility = this.facilityDelegate.create(location, "Facility", 
-				"F", true);
+				"F", true, telephoneNumber);
 		Room room = this.roomDelegate.create("Room", facility, null, null, null, 
 				null, true);
 		Bed bed = this.bedDelegate.create(room, 1, true);

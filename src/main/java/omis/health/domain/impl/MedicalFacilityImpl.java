@@ -27,6 +27,8 @@ public class MedicalFacilityImpl
 	
 	private Boolean hospital;
 	
+	private Long telephoneNumber;
+	
 	/** Instantiates an implementation of medical center. */
 	public MedicalFacilityImpl() {
 		// Default instantiation
@@ -102,6 +104,18 @@ public class MedicalFacilityImpl
 	@Override
 	public Boolean getHospital() {
 		return this.hospital;
+	}
+	
+	/** {@inheritDoc} */
+	@Override
+	public void setTelephoneNumber(Long telephoneNumber) {
+		this.telephoneNumber = telephoneNumber;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public Long getTelephoneNumber() {
+		return this.telephoneNumber;
 	}
 
 	/** {@inheritDoc} */

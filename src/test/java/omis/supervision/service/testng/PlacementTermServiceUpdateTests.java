@@ -161,65 +161,6 @@ public class PlacementTermServiceUpdateTests
 	private CustomDateEditorFactory customDateEditorFactory;
 	
 	/**
-	 * Tests for duplicate entities
-	 * 
-	 * @throws DuplicateEntityFoundException
-	 * @throws CorrectionalStatusTermConflictException
-	 * @throws SupervisoryOrganizationTermConflictException
-	 * @throws PlacementTermConflictException
-	 * @throws PlacementTermLockedException if placement term is locked
-	 */
-	@Test(expectedExceptions = {DuplicateEntityFoundException.class})
-	public void testDuplicateEntityFoundException() throws
-		DuplicateEntityFoundException, CorrectionalStatusTermConflictException, 
-		SupervisoryOrganizationTermConflictException, 
-		PlacementTermConflictException, PlacementTermLockedException {
-		// Arrangements
-		Offender offender = this.createOffender();
-		
-		SupervisoryOrganization supervisoryOrganization 
-			= this.createSupervisoryOrganization("SuperOrg", "SO");
-		
-		CorrectionalStatus correctionalStatus = this.createCorrectionalStatus(
-				"SECURE", "SEC", true, (short) 1);
-		
-		Date startDate = this.parseDateText("09/12/2001");
-		Date endDate = this.parseDateText("12/03/2012");
-		DateRange dateRange = new DateRange(startDate, endDate);
-
-		SupervisoryOrganizationTerm supervisoryOrganizationTerm 
-			= this.supervisoryOrganizationTermDelegate.create(offender, 
-				dateRange, supervisoryOrganization);
-		CorrectionalStatusTerm correctionalStatusTerm 
-			= this.correctionalStatusTermDelegate.create(offender, dateRange, 
-				correctionalStatus);
-		
-		PlacementTermChangeReason changeReason = this.createChangeReason(
-				"Sentence Imposed, Initial Status", (short) 1, true, true);
-		
-		PlacementTerm placementTerm = this.placementTermDelegate.create(
-				offender, dateRange, 
-				supervisoryOrganizationTerm, correctionalStatusTerm, 
-				changeReason, changeReason, false);
-	
-		Date newStartDate = this.parseDateText("12/04/2012");
-		Date newEndDate = this.parseDateText("12/03/2016");
-		DateRange newDateRange = new DateRange(newStartDate, newEndDate);
-		
-		this.placementTermDelegate.create(offender, newDateRange, 
-				supervisoryOrganizationTerm, correctionalStatusTerm, 
-				changeReason, changeReason, false);
-		
-		PlacementStatus newStatus = PlacementStatus.PLACED;
-		DateRange newStatusDate = null;
-		
-		// Action
-		this.placementTermService.update(placementTerm, supervisoryOrganization, 
-				newStatus, newStatusDate, newDateRange, changeReason, 
-				changeReason);
-	}
-	
-	/**
 	 * Tests for overlapping correctional status terms
 	 * 
 	 * @throws SupervisoryOrganizationTermConflictException 
@@ -241,8 +182,8 @@ public class PlacementTermServiceUpdateTests
 		CorrectionalStatus correctionalStatus = this.createCorrectionalStatus(
 				"SECURE", "SEC", true, (short) 1);
 		
-		Date startDate = this.parseDateText("09/12/2001");
-		Date endDate = this.parseDateText("12/03/2012");
+		Date startDate = this.parseDateText("12/03/2013");
+		Date endDate = this.parseDateText("12/04/2014");
 		DateRange dateRange = new DateRange(startDate, endDate);
 
 		this.correctionalStatusTermDelegate.create(offender, dateRange, 
@@ -251,8 +192,10 @@ public class PlacementTermServiceUpdateTests
 		PlacementTermChangeReason changeReason = this.createChangeReason(
 				"Sentence Imposed, Initial Status", (short) 1, true, true);
 	
-		Date secondStartDate = this.parseDateText("12/04/2012");
-		DateRange secondDateRange = new DateRange(secondStartDate, null);
+		Date secondStartDate = this.parseDateText("12/02/2012");
+		Date secondEndDate = this.parseDateText("12/03/2013");
+		DateRange secondDateRange = new DateRange(
+				secondStartDate, secondEndDate);
 		CorrectionalStatusTerm correctionalStatusTerm 
 			= this.correctionalStatusTermDelegate.create(offender, 
 					secondDateRange, correctionalStatus);
@@ -264,16 +207,137 @@ public class PlacementTermServiceUpdateTests
 					supervisoryOrganizationTerm, correctionalStatusTerm, 
 					changeReason, null, false);
 		
-		Date updateStartDate = this.parseDateText("12/02/2012");
-		DateRange updateDateRange = new DateRange(updateStartDate, null);
-		
 		PlacementStatus updatedStatus = PlacementStatus.PLACED;
 		DateRange updatedStatusDate = null;
 		
+		// Attempt to set end date of correctional status term of placement
+		// term to this should cause conflict exception
+		Date conflictingEndDate = this.parseDateText("06/04/2014");
+		
 		// Action
-		this.placementTermService.update(placementTerm, 
-				supervisoryOrganization, updatedStatus, updatedStatusDate,
-				updateDateRange, changeReason, null);
+		this.placementTermService.update(placementTerm,
+				conflictingEndDate, updatedStatus,
+				updatedStatusDate, changeReason, null);
+	}
+	
+	/**
+	 * Tests that {@code CorrectionalStatusTermConflictException} is thrown when
+	 * a placement term's end date is set to {@code null} using
+	 * {@code PlacementTermServce#update(...)}, causing it to conflict with a
+	 * future correctional status term.
+	 * 
+	 * @throws CorrectionalStatusTermConflictException if conflicting
+	 * correctional status exists (asserted)
+	 * @throws DuplicateEntityFoundException if duplicate entities are found
+	 * @throws PlacementTermLockedException  if placement term is locked when
+	 * update is attempted
+	 * @throws SupervisoryOrganizationTermConflictException if conflicting
+	 * supervisory organization term exists
+	 */
+	@Test(expectedExceptions = {CorrectionalStatusTermConflictException.class},
+			enabled = false)
+	// TODO Enable once bug in service method is fixed - SA
+	public void
+	testCorrectionalStatusTermConflictExceptionWithNullConflictingEndDate()
+			throws CorrectionalStatusTermConflictException,
+				DuplicateEntityFoundException,
+				SupervisoryOrganizationTermConflictException,
+				PlacementTermLockedException {
+		
+		// Arrangements - secure Blofeld in prison
+		Offender blofeld = this.offenderDelegate
+				.createWithoutIdentity("Blofeld", "Ernst", "Stavro", null);
+		SupervisoryOrganization prison = this.supervisoryOrganizationDelegate
+				.create("Prison", "PRI", null);
+		CorrectionalStatus secure = this.correctionalStatusDelegate
+				.create("Secure", "SEC", true, (short) 2, true);
+		DateRange secureDateRange = new DateRange(
+				this.parseDateText("12/02/2012"),
+				this.parseDateText("12/03/2013"));
+		SupervisoryOrganizationTerm prisonOrganizationTerm
+			= this.supervisoryOrganizationTermDelegate.create(
+					blofeld, secureDateRange, prison);
+		CorrectionalStatusTerm secureStatusTerm
+			= this.correctionalStatusTermDelegate.create(
+					blofeld, secureDateRange, secure);
+		PlacementTerm placementTerm = this.placementTermDelegate
+				.create(blofeld, secureDateRange,
+						prisonOrganizationTerm, secureStatusTerm,
+						null, null, false);
+		
+		// More arrangements - parole Blofeld
+		CorrectionalStatus parole = this.correctionalStatusDelegate
+				.create("Parole", "PAR", false, (short) 1, true);
+		this.correctionalStatusTermDelegate.create(
+					blofeld,
+					new DateRange(
+							this.parseDateText("12/03/2013"),
+							this.parseDateText("12/04/2014")),
+					parole);
+		
+		// Action - updates secure placement term with null end date
+		// This should conflict with parole status term and be caught in
+		// service layer check
+		this.placementTermService.update(placementTerm, null,
+				PlacementStatus.PLACED, null, null, null);
+	}
+	
+	/**
+	 * Tests that {@code CorrectionalStatusTermConflictException} is thrown when
+	 * a placement term's end date is set to a date using
+	 * {@code PlacementTermServce#update()}, causing it to conflict with a
+	 * future correctional status term that has a {@code null} end date.
+	 * 
+	 * @throws CorrectionalStatusTermConflictException if conflicting
+	 * correctional status exists (asserted)
+	 * @throws DuplicateEntityFoundException if duplicate entities are found
+	 * @throws PlacementTermLockedException  if placement term is locked when
+	 * update is attempted
+	 * @throws SupervisoryOrganizationTermConflictException if conflicting
+	 * supervisory organization term exists
+	 */
+	@Test(expectedExceptions = {CorrectionalStatusTermConflictException.class})
+	public void
+	testCorrectionalStatusTermConflictExceptionNullOriginalEndDate()
+			throws DuplicateEntityFoundException,
+				CorrectionalStatusTermConflictException,
+				SupervisoryOrganizationTermConflictException,
+				PlacementTermLockedException {
+		
+		// Arrangements - place Largo at a pre-release
+		Offender largo = this.offenderDelegate
+				.createWithoutIdentity("Largo", "Emilio", null, null);
+		DateRange preReleaseDateRange = new DateRange(
+				this.parseDateText("12/02/2012"),
+				this.parseDateText("12/03/2013"));
+		SupervisoryOrganization preRelease
+			= this.supervisoryOrganizationDelegate.create(
+					"Pre-release", "PRC", null);
+		SupervisoryOrganizationTerm preReleaseOrganizationTerm
+			= this.supervisoryOrganizationTermDelegate
+				.create(largo, preReleaseDateRange, preRelease);
+		CorrectionalStatus altSecure = this.correctionalStatusDelegate
+				.create("Alt-secure", "ALT", true, (short) 1, false);
+		CorrectionalStatusTerm altStatusTerm
+			= this.correctionalStatusTermDelegate
+				.create(largo, preReleaseDateRange, altSecure);
+		PlacementTerm placementTerm = this.placementTermDelegate
+				.create(largo, preReleaseDateRange, preReleaseOrganizationTerm,
+						altStatusTerm, null, null, false);
+		
+		// More arrangements - parole Largo
+		CorrectionalStatus parole = this.correctionalStatusDelegate
+				.create("Parole", "PAR", false, (short) 1, true);
+		this.correctionalStatusTermDelegate.create(largo,
+				new DateRange(this.parseDateText("12/03/2013"), null), parole);
+		
+		// Action - updates pre-release placement term with end date that's
+		// after parole start date
+		// This should conflict with parole status term and be caught in
+		//service layer check
+		this.placementTermService.update(placementTerm,
+				this.parseDateText("06/04/2014"), PlacementStatus.PLACED,
+				null, null, null);
 	}
 	
 	/**
@@ -300,8 +364,8 @@ public class PlacementTermServiceUpdateTests
 		CorrectionalStatus correctionalStatus = this.createCorrectionalStatus(
 				"SECURE", "SEC", true, (short) 1);
 		
-		Date startDate = this.parseDateText("09/12/2001");
-		Date endDate = this.parseDateText("12/03/2012");
+		Date startDate = this.parseDateText("12/02/2012");
+		Date endDate = this.parseDateText("12/03/2013");
 		DateRange dateRange = new DateRange(startDate, endDate);
 		this.supervisoryOrganizationTermDelegate.create(offender, dateRange, 
 				supervisoryOrganization);
@@ -309,8 +373,10 @@ public class PlacementTermServiceUpdateTests
 		PlacementTermChangeReason changeReason = this.createChangeReason(
 				"Sentence Imposed, Initial Status", (short) 1, true, true);
 		
-		Date secondStartDate = this.parseDateText("12/04/2012");
-		DateRange secondDateRange = new DateRange(secondStartDate, null);
+		Date secondStartDate = this.parseDateText("12/01/2011");
+		Date secondEndDate = this.parseDateText("12/02/2012");
+		DateRange secondDateRange
+			= new DateRange(secondStartDate, secondEndDate);
 		CorrectionalStatusTerm correctionalStatusTerm 
 			= this.correctionalStatusTermDelegate.create(offender, 
 					secondDateRange, correctionalStatus);
@@ -321,19 +387,139 @@ public class PlacementTermServiceUpdateTests
 			= this.placementTermDelegate.create(offender, secondDateRange, 
 					supervisoryOrganizationTerm, correctionalStatusTerm, 
 					changeReason, null, false);
-	
-		Date updateStartDate = this.parseDateText("12/02/2012");
-		DateRange updateDateRange = new DateRange(updateStartDate, null);
 		
 		PlacementStatus updatedStatus = PlacementStatus.PLACED;
 		DateRange updatedStatusDate = null;
 		
+		Date conflictingEndDate = this.parseDateText("06/06/2013");
+		
 		// Action
 		this.placementTermService.update(placementTerm, 
-				supervisoryOrganization, updatedStatus, updatedStatusDate,
-				updateDateRange, changeReason, null);
+				conflictingEndDate, updatedStatus, updatedStatusDate,
+				changeReason, null);
 	}
 	
+	/**
+	 * Tests that {@code SupervisoryOrganizationTermConflictException} is thrown
+	 * when a placement term's end date is set to {@code null} using
+	 * {@code PlacementTermService#update(...)}, causing it to conflict with a
+	 * future supervisory organization term.
+	 * 
+	 * @throws DuplicateEntityFoundException if duplicate entities are found
+	 * @throws CorrectionalStatusTermConflictException if conflicting
+	 * correctional status term exists
+	 * @throws SupervisoryOrganizationTermConflictException if conflicting
+	 * supervisory organization term exists (asserted)
+	 * @throws PlacementTermLockedException if placement term is locked
+	 */
+	// TODO Enable once bug in service method is fixed - SA
+	@Test(expectedExceptions = {
+			SupervisoryOrganizationTermConflictException.class},
+		enabled = false)
+	public void
+	testSupervisoryOrganizationTermConflictExceptionWithNullConflictingEndDate()
+			throws DuplicateEntityFoundException,
+			CorrectionalStatusTermConflictException,
+			SupervisoryOrganizationTermConflictException,
+			PlacementTermLockedException {
+		
+		// Arrangements - secure Blofeld in prison
+		Offender blofeld = this.offenderDelegate
+				.createWithoutIdentity("Blofeld", "Ernst", "Stavro", null);
+		DateRange secureDateRange = new DateRange(
+				this.parseDateText("12/02/2012"),
+				this.parseDateText("12/03/2013"));
+		SupervisoryOrganization prison = this.supervisoryOrganizationDelegate
+				.create("Prison", "PRSN", null);
+		SupervisoryOrganizationTerm prisonOrganizationTerm
+			= this.supervisoryOrganizationTermDelegate
+				.create(blofeld, secureDateRange, prison);
+		CorrectionalStatus secure = this.correctionalStatusDelegate
+				.create("Secure", "SEC", true, (short) 1, true);
+		CorrectionalStatusTerm secureStatusTerm
+			= this.correctionalStatusTermDelegate.create(
+					blofeld, secureDateRange, secure);
+		PlacementTerm placementTerm = this.placementTermDelegate
+				.create(blofeld, secureDateRange, prisonOrganizationTerm,
+						secureStatusTerm, null, null, false);
+		
+		// More arrangements - supervise Blofeld at P&P office after secure
+		// placement
+		SupervisoryOrganization pnpOffice
+			= this.supervisoryOrganizationDelegate
+				.create("P&P Office", "PNP", null);
+		this.supervisoryOrganizationTermDelegate.create(blofeld,
+				new DateRange(
+						this.parseDateText("12/03/2013"),
+						this.parseDateText("12/04/2014")), pnpOffice);
+		
+		// Action - updates secure placement term with null end date
+		// This should conflict with P&P supervisory organization term and be
+		// caught in service layer check
+		this.placementTermService.update(
+				placementTerm, null, PlacementStatus.PLACED, null, null, null);
+	}
+	
+	/**
+	 * Tests that {@code SupervisoryOrganizationTermConflictException} is thrown
+	 * when a placement term's end date is set to a date using
+	 * {@code PlacementTermService#update(...)}, causing it to conflict with a
+	 * future correctional status that has a {@code null} end date.
+	 * 
+	 * @throws DuplicateEntityFoundException if entities exist
+	 * @throws CorrectionalStatusTermConflictException if conflicting
+	 * correctional status terms exist
+	 * @throws SupervisoryOrganizationTermConflictException if conflicting
+	 * supervisory organization terms exist (asserted)
+	 * @throws PlacementTermLockedException if placement term is locked
+	 */
+	@Test(expectedExceptions = {
+			SupervisoryOrganizationTermConflictException.class})
+	public void
+	testSupervisoryOrganizationTermConflictExceptionWithNullOriginalEndDate()
+			throws DuplicateEntityFoundException,
+			CorrectionalStatusTermConflictException,
+			SupervisoryOrganizationTermConflictException,
+			PlacementTermLockedException {
+		
+		// Arrangements - place Dr No at a treatment center
+		Offender drNo = this.offenderDelegate
+				.createWithoutIdentity("No", "Julius", null, null);
+		DateRange treatmentCenterDateRange = new DateRange(
+				this.parseDateText("12/02/2012"),
+				this.parseDateText("12/03/2013"));
+		SupervisoryOrganization treatmentCenter
+			= this.supervisoryOrganizationDelegate
+				.create("Treatment Center", "TC", null);
+		SupervisoryOrganizationTerm treatmentCenterStay
+			= this.supervisoryOrganizationTermDelegate
+				.create(drNo, treatmentCenterDateRange, treatmentCenter);
+		CorrectionalStatus altSecure
+			= this.correctionalStatusDelegate.create(
+					"Alt-Secure", "ALT", true, (short) 1, true);
+		CorrectionalStatusTerm treatmentCenterStatusTerm
+			= this.correctionalStatusTermDelegate
+				.create(drNo, treatmentCenterDateRange, altSecure);
+		PlacementTerm placementTerm = this.placementTermDelegate
+				.create(drNo, treatmentCenterDateRange, treatmentCenterStay,
+						treatmentCenterStatusTerm, null, null, false);
+		
+		// More arrangements - parole Dr No
+		SupervisoryOrganization pnpOffice = this.supervisoryOrganizationDelegate
+				.create("P&P Office", "PNP", null);
+		this.supervisoryOrganizationTermDelegate.create(drNo,
+				new DateRange(
+						this.parseDateText("12/03/2013"), null),
+				pnpOffice);
+		
+		// Action - updates treatment center placement term with end date that
+		// after parole start date
+		// This should conflict with parole status term and be caugh in
+		// service layer check
+		this.placementTermService.update(placementTerm,
+				this.parseDateText("06/04/2014"), PlacementStatus.PLACED,
+				null, null, null);
+	}
 	
 	/**
 	 * Tests supervisory organization updates correctly
@@ -377,24 +563,21 @@ public class PlacementTermServiceUpdateTests
 			= this.placementTermDelegate.create(offender, dateRange,
 				supervisoryOrganizationTerm, correctionalStatusTerm,  
 				changeReason, null, false);
-		
-		SupervisoryOrganization newSupervisoryOrganization 
-			= this.createSupervisoryOrganization("NEW SUPER ORG", "NSO");
 
 		PlacementStatus status = PlacementStatus.PLACED;
 		DateRange statusDate = null;
 		
 		// Action
 		placementTerm = this.placementTermService.update(placementTerm, 
-				newSupervisoryOrganization, status, statusDate, dateRange,
+				DateRange.getEndDate(dateRange), status, statusDate,
 				changeReason, null);
 		
-		assertValues(placementTerm, newSupervisoryOrganization, 
+		assertValues(placementTerm, supervisoryOrganization, 
 				correctionalStatus, dateRange, changeReason, null);
 	}
 	
 	/**
-	 * Tests date range updates correctly
+	 * Tests end date updates correctly
 	 * 
 	 * @throws DuplicateEntityFoundException
 	 * @throws CorrectionalStatusTermConflictException
@@ -434,17 +617,16 @@ public class PlacementTermServiceUpdateTests
 					supervisoryOrganizationTerm, correctionalStatusTerm, 
 					changeReason, null, false);
 		
-		Date newStartDate = this.parseDateText("08/31/2001");
 		Date newEndDate = this.parseDateText("12/01/2012");
-		DateRange newDateRange = new DateRange(newStartDate, newEndDate);
+		DateRange newDateRange = new DateRange(
+				DateRange.getStartDate(dateRange), newEndDate);
 		
 		PlacementStatus status = PlacementStatus.PLACED;
 		DateRange statusDate = null;
 		
 		// Action
 		placementTerm = this.placementTermService.update(placementTerm, 
-				supervisoryOrganization, status, statusDate, newDateRange,
-				changeReason, null);
+				newEndDate, status, statusDate,	changeReason, null);
 		
 		assertValues(placementTerm, supervisoryOrganization, 
 				correctionalStatus, newDateRange, changeReason, null);
@@ -499,7 +681,7 @@ public class PlacementTermServiceUpdateTests
 		
 		// Action
 		placementTerm = this.placementTermService.update(placementTerm, 
-				supervisoryOrganization, status, statusDate, dateRange,
+				DateRange.getEndDate(dateRange), status, statusDate,
 				newChangeReason, null);
 		
 		assertValues(placementTerm, supervisoryOrganization, 
@@ -555,7 +737,7 @@ public class PlacementTermServiceUpdateTests
 		
 		// Action
 		placementTerm = this.placementTermService.update(placementTerm, 
-				supervisoryOrganization, status, statusDate, dateRange,
+				DateRange.getEndDate(dateRange), status, statusDate,
 				changeReason, newChangeReason);
 		
 		assertValues(placementTerm, supervisoryOrganization, 
@@ -627,7 +809,7 @@ public class PlacementTermServiceUpdateTests
 		
 		// Action
 		placementTerm = this.placementTermService.update(placementTerm, 
-				supervisoryOrganization, status, statusDate, dateRange,
+				DateRange.getEndDate(dateRange), status, statusDate,
 				changeReason, null);
 		
 		// Assert
@@ -699,12 +881,9 @@ public class PlacementTermServiceUpdateTests
 		
 		// Action
 		this.placementTermService.update(placementTerm,
-				placementTerm.getSupervisoryOrganizationTerm()
-					.getSupervisoryOrganization(),
+				this.parseDateText("07/23/2013"),
 				placementTerm.getStatus(),
 				placementTerm.getStatusDateRange(),
-				new DateRange(placementTerm.getDateRange().getStartDate(),
-						this.parseDateText("07/23/2013")),
 				placementTerm.getStartChangeReason(),
 				placementTerm.getEndChangeReason());
 	}

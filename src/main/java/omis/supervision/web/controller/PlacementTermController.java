@@ -65,7 +65,9 @@ import omis.supervision.exception.OffenderNotUnderSupervisionException;
 import omis.supervision.exception.PlacementTermConflictException;
 import omis.supervision.exception.PlacementTermExistsAfterException;
 import omis.supervision.exception.PlacementTermExistsBeforeException;
+import omis.supervision.exception.PlacementTermExistsException;
 import omis.supervision.exception.PlacementTermLockedException;
+import omis.supervision.exception.PlacementTermNoteExistsException;
 import omis.supervision.exception.SupervisoryOrganizationTermConflictException;
 import omis.supervision.report.PlacementTermReportService;
 import omis.supervision.report.PlacementTermSummary;
@@ -219,7 +221,8 @@ public class PlacementTermController {
 	private static final String CORRECTIONAL_STATUS_TERM_CONFLICT_MESSAGE_KEY
 			= "placementTerm.correctionalStatusTermConflicts";
 
-	private static final String SUPERVISORY_ORGANIZATION_TERM_CONFLICT_MESSAGE_KEY
+	private static final String
+	SUPERVISORY_ORGANIZATION_TERM_CONFLICT_MESSAGE_KEY
 			= "placementTerm.supervisoryOrganizationTermConflicts";
 
 	private static final String PLACEMENT_TERM_CONFLICT_MESSAGE_KEY
@@ -236,6 +239,13 @@ public class PlacementTermController {
 	
 	private static final String OFFENDER_NOT_UNDER_SUPERVISION_MESSAGE_KEY
 			= "offender.notUnderSupervision";
+	
+	private static final String PLACEMENT_TERM_EXISTS_MESSAGE_KEY
+			= "placementTerm.exists";
+
+	private static final String PLACEMENT_TERM_NOTE_EXISTS_MESSAGE_KEY
+			= "placementTermNote.exists";
+
 	
 	/* Report names. */
 	
@@ -405,6 +415,11 @@ public class PlacementTermController {
 		Date effectiveDate = new Date();
 		PlacementTermForm placementTermForm = new PlacementTermForm();
 		placementTermForm.setAllowStatusFields(false);
+		placementTermForm.setAllowCorrectionalStatus(true);
+		placementTermForm.setAllowSupervisoryOrganization(true);
+		placementTermForm.setAllowState(true);
+		placementTermForm.setAllowStartDate(true);
+		placementTermForm.setAllowStartTime(true);
 		placementTermForm.setStartDate(effectiveDate);
 		placementTermForm.setStartTime(effectiveDate);
 		if (allowCorrectionalStatusChange != null
@@ -449,6 +464,10 @@ public class PlacementTermController {
 		PlacementTermForm placementTermForm = new PlacementTermForm();
 		placementTermForm.setAllowStatusFields(true);
 		placementTermForm.setAllowCorrectionalStatus(false);
+		placementTermForm.setAllowSupervisoryOrganization(false);
+		placementTermForm.setAllowState(false);
+		placementTermForm.setAllowStartDate(false);
+		placementTermForm.setAllowStartTime(false);
 		placementTermForm.setCorrectionalStatus(
 				placementTerm.getCorrectionalStatusTerm()
 					.getCorrectionalStatus());
@@ -683,6 +702,7 @@ public class PlacementTermController {
 	 * terms exist before end date
 	 * @throws PlacementTermExistsAfterException if end date is null and terms 
 	 * exist after start date 
+	 * @throws PlacementTermNoteExistsException if placement term note exists
 	 */
 	@RequestMapping(value = "/create", method = RequestMethod.POST)
 	@PreAuthorize("hasRole('ADMIN') or hasRole('PLACEMENT_TERM_CREATE')")
@@ -695,13 +715,14 @@ public class PlacementTermController {
 				final Boolean allowCorrectionalStatusChange,
 			final PlacementTermForm placementTermForm,
 			final BindingResult result,
-			final HttpSession session) throws DuplicateEntityFoundException,
+			final HttpSession session) throws PlacementTermExistsException,
 				CorrectionalStatusTermConflictException,
 				SupervisoryOrganizationTermConflictException,
 				PlacementTermConflictException, 
 				OffenderNotUnderSupervisionException, 
 				PlacementTermExistsAfterException, 
-				PlacementTermExistsBeforeException {
+				PlacementTermExistsBeforeException,
+				PlacementTermNoteExistsException {
 		this.placementTermFormValidator.validate(placementTermForm, result);
 		if (result.hasErrors()) {
 			return this.prepareRedisplayMav(
@@ -862,13 +883,10 @@ public class PlacementTermController {
 			statusDateRange = null;
 		}
 		this.placementTermService.update(placementTerm,
-						placementTermForm.getSupervisoryOrganization(),
-						status, statusDateRange,
-						this.createDateRange(
-								placementTermForm.getStartDate(),
-								placementTermForm.getStartTime(),
+						this.calculateDateTime(
 								placementTermForm.getEndDate(),
 								placementTermForm.getEndTime()),
+						status, statusDateRange,
 						placementTermForm.getStartChangeReason(),
 						placementTermForm.getEndChangeReason());
 		
@@ -1352,6 +1370,38 @@ public class PlacementTermController {
 	}
 	
 	/* Exception handlers. */
+	
+	/**
+	 * Handles {@code PlacementTermExistsException}.
+	 * 
+	 * @param placementTermExistsException exception to handle
+	 * @return model and view to handle {@code PlacementTermExistsException}.
+	 */
+	@ExceptionHandler(PlacementTermExistsException.class)
+	public ModelAndView handlePlacementTermExistsException(
+			final PlacementTermExistsException
+				placementTermExistsException) {
+		return this.businessExceptionHandlerDelegate.prepareModelAndView(
+				PLACEMENT_TERM_EXISTS_MESSAGE_KEY,
+				ERROR_MESSAGE_BUNDLE_NAME,
+				placementTermExistsException);
+	}
+	
+	/**
+	 * Handles {@code PlacementTermNoteExistsException}.
+	 * 
+	 * @param placementTermNoteExistsException exception to handle
+	 * @return model and view to handle {@code PlacementTermNoteExistsException}
+	 */
+	@ExceptionHandler(PlacementTermNoteExistsException.class)
+	public ModelAndView handlePlacementTermNotExistsException(
+			final PlacementTermNoteExistsException
+				placementTermNoteExistsException) {
+		return this.businessExceptionHandlerDelegate.prepareModelAndView(
+				PLACEMENT_TERM_NOTE_EXISTS_MESSAGE_KEY,
+				ERROR_MESSAGE_BUNDLE_NAME,
+				placementTermNoteExistsException);
+	}
 	
 	/**
 	 * Handles {@code CorrectionalStatusTermConflictException}.

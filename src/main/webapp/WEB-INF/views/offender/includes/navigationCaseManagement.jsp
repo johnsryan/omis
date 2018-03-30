@@ -4,7 +4,7 @@
 <fmt:bundle basename="omis.offender.msgs.navigation">
 <div class="navItems">
 <c:if test="${offenderProfileItemsProperties.chronologicalNoteProfileItemEnabled}">
-		<div class="foregroundUltraLight navItemContainer">
+		<div class="foregroundUltraLight navItemContainer hoverable">
 			<div class="navItem">
 				<a href="${pageContext.request.contextPath}/chronologicalNote/list.html?offender=${offenderSummary.id}">
 					<span>
@@ -15,7 +15,7 @@
 		</div>
 	</c:if>
 	<c:if test="${offenderProfileItemsProperties.offenderContactProfileItemEnabled}">
-		<div class="foregroundUltraLight navItemContainer">
+		<div class="foregroundUltraLight navItemContainer hoverable">
 			<div class="navItem">
 				<a href="${pageContext.request.contextPath}/offenderContact/edit.html?offender=${offenderSummary.id}">
 					<span>
@@ -26,7 +26,7 @@
 		</div>
 	</c:if>
 	<c:if test="${offenderProfileItemsProperties.educationProfileItemEnabled}">
-		<div class="foregroundUltraLight navItemContainer">
+		<div class="foregroundUltraLight navItemContainer hoverable">
 			<div class="navItem">
 				<a href="${pageContext.request.contextPath}/education/list.html?offender=${offenderSummary.id}">
 					<span>
@@ -37,7 +37,7 @@
 		</div>
 	</c:if>
 	<c:if test="${offenderProfileItemsProperties.employmentProfileItemEnabled}">
-		<div class="foregroundUltraLight navItemContainer">
+		<div class="foregroundUltraLight navItemContainer hoverable">
 			<div class="navItem">
 				<a href="${pageContext.request.contextPath}/employment/list.html?offender=${offenderSummary.id}">
 					<span>
@@ -48,7 +48,7 @@
 		</div>
 	</c:if>
 	<c:if test="${offenderProfileItemsProperties.financialProfileItemEnabled}">
-		<div class="foregroundUltraLight navItemContainer">
+		<div class="foregroundUltraLight navItemContainer hoverable">
 			<div class="navItem">
 				<a href="${pageContext.request.contextPath}/financial/edit.html?offender=${offenderSummary.id}">
 					<span>
@@ -59,7 +59,7 @@
 		</div>
 	</c:if>
 	<c:if test="${offenderProfileItemsProperties.grievanceProfileItemEnabled}">
-		<div class="foregroundUltraLight navItemContainer">
+		<div class="foregroundUltraLight navItemContainer hoverable">
 			<div class="navItem">
 				<a href="${pageContext.request.contextPath}/grievance/listByOffender.html?offender=${offenderSummary.id}">
 					<span>
@@ -70,7 +70,7 @@
 		</div>
 	</c:if>
 	<c:if test="${offenderProfileItemsProperties.residenceProfileItemEnabled}">
-		<div class="foregroundUltraLight navItemContainer">
+		<div class="foregroundUltraLight navItemContainer hoverable">
 			<div class="navItem">
 				<a href="${pageContext.request.contextPath}/residence/list.html?offender=${offenderSummary.id}">
 					<span>
@@ -81,7 +81,7 @@
 		</div>
 	</c:if>
 	<c:if test="${offenderProfileItemsProperties.vehicleProfileItemEnabled}">
-		<div class="foregroundUltraLight navItemContainer">
+		<div class="foregroundUltraLight navItemContainer hoverable">
 			<div class="navItem">
 				<a href="${pageContext.request.contextPath}/vehicle/list.html?offender=${offenderSummary.id}">
 					<span>

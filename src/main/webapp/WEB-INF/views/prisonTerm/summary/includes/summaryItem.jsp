@@ -17,6 +17,11 @@
 			<span class="offenderHeaderFieldValue"><fmt:formatDate value="${prisonTermSummary.projectedDischargeDate}" pattern="MM/dd/yyyy"/></span>
 		</a>
 	</div>
+	<div class="headerCell">
+		<c:if test="${prisonTermSummary.sentenceToFollow}">
+		<span class="offenderHeaderField"><fmt:message key="sentenceToFollowLabel"/></span>
+		</c:if>
+	</div>
 </div>
 </c:if>
 </fmt:bundle>

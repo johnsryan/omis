@@ -25,3 +25,19 @@ form.editForm fieldset span.groupCategoryContainer {
 form.editForm fieldset legend a.groupsVisibilityLink {
 	padding: 0px 0px 0px 5px;
 }
+
+form fieldset span.groupButton {
+	cursor: pointer;
+	display: inline-block;
+   font-size: 16px;
+   vertical-align: middle;
+   width: 24%;
+   min-width: 300px;
+   text-align: center;
+   margin: 5px 0px 5px 0px;
+   padding: 5px 0px 5px 0px;
+}
+
+/* form fieldset span.groupButton.active { */
+/* 	box-shadow: inset 0 0 5px 10px rgba(0, 0, 0, 0.1); */
+/* } */

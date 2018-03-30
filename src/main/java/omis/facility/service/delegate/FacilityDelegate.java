@@ -16,6 +16,7 @@ import omis.organization.domain.Organization;
  * @author Stephen Abson
  * @author Annie Jacques
  * @author Josh Divine
+ * @author Sheronda Vaughn
  * @version 0.0.2 (Aug 2, 2017)
  * @since OMIS 3.0
  */
@@ -98,14 +99,16 @@ public class FacilityDelegate {
 	 * @throws DuplicateEntityFoundException if entity already exists
 	 */
 	public Facility create(final Location location, final String name,
-			final String abbreviation, final Boolean active) 
+			final String abbreviation, final Boolean active, 
+			final Long telephoneNumber) 
 					throws DuplicateEntityFoundException{
 		if (this.facilityDao.find(name, location) != null) {
 			throw new DuplicateEntityFoundException(
 					"The facility already exists.");
 		}
 		Facility facility = this.facilityInstanceFactory.createInstance();
-		populateFacility(facility, location, name, abbreviation, active);
+		populateFacility(facility, location, name, abbreviation, active, 
+				telephoneNumber);
 		return this.facilityDao.makePersistent(facility);
 	}
 	
@@ -121,13 +124,15 @@ public class FacilityDelegate {
 	 * @throws DuplicateEntityFoundException if entity already exists
 	 */
 	public Facility update(final Facility facility, final Location location, 
-			final String name, final String abbreviation, final Boolean active) 
+			final String name, final String abbreviation, final Boolean active,
+			final Long telephoneNumber) 
 					throws DuplicateEntityFoundException {
 		if (this.facilityDao.findExcluding(name, location, facility) != null) {
 			throw new DuplicateEntityFoundException(
 					"The facility already exists.");
 		}
-		populateFacility(facility, location, name, abbreviation, active);
+		populateFacility(facility, location, name, abbreviation, active, 
+				telephoneNumber);
 		return this.facilityDao.makePersistent(facility);
 	}
 
@@ -143,11 +148,12 @@ public class FacilityDelegate {
 	// Populates a facility
 	private void populateFacility(final Facility facility, 
 			final Location location, final String name, 
-			final String abbreviation, final Boolean active) {
+			final String abbreviation, final Boolean active, 
+			final Long telephoneNumber) {
 		facility.setLocation(location);
 		facility.setName(name);
 		facility.setAbbreviation(abbreviation);
 		facility.setActive(active);
-	}
-	
+		facility.setTelephoneNumber(telephoneNumber);
+	}	
 }

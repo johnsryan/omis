@@ -184,4 +184,17 @@ public class CorrectionalStatusTermImpl implements CorrectionalStatusTerm {
 		hashCode = 29 * hashCode + this.getCorrectionalStatus().hashCode();
 		return hashCode;
 	}
+	
+	/**
+	 * Returns string representation of correctional status term including
+	 * offender, correctional status and date range.
+	 * 
+	 * @return string representation of correctional status term
+	 */
+	@Override
+	public String toString() {
+		return String.format("#%s [%s] [%s] %s",
+				this.getId(), this.getOffender(), this.getCorrectionalStatus(),
+				this.getDateRange());
+	}
 }

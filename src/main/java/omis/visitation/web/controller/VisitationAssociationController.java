@@ -543,10 +543,18 @@ public class VisitationAssociationController {
 		final Person visitor;
 		if (form.getNewVisitor()) {
 			PersonFields personFields = form.getPersonFields();
+			Integer socialSecurityNumber;
+			if (personFields.getSocialSecurityNumber() != null
+					&& !personFields.getSocialSecurityNumber().isEmpty()) {
+				socialSecurityNumber = Integer.valueOf(personFields
+						.getSocialSecurityNumber().replaceAll("-", ""));
+			} else {
+				socialSecurityNumber = null;
+			}
 			visitor = this.visitationAssociationService.createVisitor(
 					personFields.getLastName(), personFields.getFirstName(),
 					personFields.getMiddleName(), personFields.getSuffix(),
-					Integer.valueOf(personFields.getSocialSecurityNumber().replaceAll("-", "")),
+					socialSecurityNumber,
 					personFields.getBirthDate(), personFields.getBirthCity(),
 					personFields.getBirthState(),
 					personFields.getBirthCountry(), personFields.getSex(),

@@ -208,7 +208,8 @@ public class UpdateOffenderRelationServiceImpl
 		if (person.getIdentity() != null) {
 			this.personIdentityDelegate.update(person.getIdentity(), sex, 
 				birthDate,	birthCountry, birthState, birthCity, 
-				null, stateId, deceased, deathDate);
+				person.getIdentity().getSocialSecurityNumber(), 
+				stateId, deceased, deathDate);
 		} else {
 			if (sex != null || birthDate != null || birthCountry != null 
 					|| birthState != null || birthCity != null 

@@ -50,34 +50,70 @@
 			</c:choose>
 			<form:errors path="correctionalStatus" cssClass="error"/>
 		</span>
+		<form:hidden path="allowState"/>
 		<span class="fieldGroup">
 			<form:label path="state" class="fieldLabel">
 				<fmt:message key="stateLabel" bundle="${stateBundle}"/></form:label>
-			<form:select id="state" path="state">
-				<form:option value=""><fmt:message key="allStatesLabel" bundle="${stateBundle}"/></form:option>
-				<form:options itemValue="id" itemLabel="name" items="${states}"/>
-			</form:select>
+			<c:choose>
+				<c:when test="${placementTermForm.allowState}">
+					<form:select id="state" path="state">
+						<form:option value=""><fmt:message key="allStatesLabel" bundle="${stateBundle}"/></form:option>
+						<form:options itemValue="id" itemLabel="name" items="${states}"/>
+					</form:select>
+				</c:when>
+				<c:otherwise>
+					<form:hidden path="state"/>
+					<span><c:out value="${placementTermForm.state.name}"/></span>
+				</c:otherwise>
+			</c:choose>
 			<form:errors path="state" cssClass="error"/>
 		</span>
+		<form:hidden path="allowSupervisoryOrganization"/>
 		<span class="fieldGroup">
 			<form:label path="supervisoryOrganization" class="fieldLabel">
 				<fmt:message key="supervisoryOrganizationLabel"/></form:label>
-			<form:select id="supervisoryOrganization" path="supervisoryOrganization">
-				<form:option value=""><fmt:message key="nullLabel" bundle="${commonBundle}"/></form:option>
-				<form:options itemValue="id" itemLabel="name" items="${supervisoryOrganizations}"/>
-			</form:select>
+			<c:choose>
+				<c:when test="${placementTermForm.allowSupervisoryOrganization}">
+					<form:select id="supervisoryOrganization" path="supervisoryOrganization">
+						<form:option value=""><fmt:message key="nullLabel" bundle="${commonBundle}"/></form:option>
+						<form:options itemValue="id" itemLabel="name" items="${supervisoryOrganizations}"/>
+					</form:select>
+				</c:when>
+				<c:otherwise>
+					<form:hidden path="supervisoryOrganization"/>
+					<span><c:out value="${placementTermForm.supervisoryOrganization.name}"/></span>
+				</c:otherwise>
+			</c:choose>		
 			<form:errors path="supervisoryOrganization" cssClass="error"/>
 		</span>
+		<form:hidden path="allowStartDate"/>
 		<span class="fieldGroup">
 			<form:label path="startDate" class="fieldLabel">
 				<fmt:message key="startDateLabel"/></form:label>
-			<form:input path="startDate" class="date"/>
+			<c:choose>
+				<c:when test="${placementTermForm.allowStartDate}">
+					<form:input path="startDate" class="date"/>
+				</c:when>
+				<c:otherwise>
+					<form:hidden path="startDate"/>
+					<span><fmt:formatDate value="${placementTermForm.startDate}" pattern="MM/dd/yyyy"/></span>
+				</c:otherwise>
+			</c:choose>
 			<form:errors path="startDate" cssClass="error"/>
 		</span>
+		<form:hidden path="allowStartTime"/>
 		<span class="fieldGroup">
 			<form:label path="startTime" class="fieldLabel">
 				<fmt:message key="startTimeLabel" bundle="${commonBundle}"/></form:label>
-			<form:input path="startTime" class="time"/>
+			<c:choose>
+				<c:when test="${placementTermForm.allowStartTime}">
+					<form:input path="startTime" class="time"/>
+				</c:when>
+				<c:otherwise>
+					<form:hidden path="startTime"/>
+					<span><fmt:formatDate value="${placementTermForm.startTime}" pattern="h:mm a"/></span>
+				</c:otherwise>
+			</c:choose>
 			<form:errors path="startTime" cssClass="error"/>
 		</span>
 		<span class="fieldGroup">

@@ -4,7 +4,7 @@
 <fmt:bundle basename="omis.offender.msgs.navigation">
 <div class="navItems">
 	<c:if test="${offenderProfileItemsProperties.hearingProfileItemEnabled}">
-		<div class="foregroundUltraLight navItemContainer">
+		<div class="foregroundUltraLight navItemContainer hoverable">
 			<div class="navItem">
 				<a href="${pageContext.request.contextPath}/hearing/list.html?offender=${offenderSummary.id}">
 					<span>
@@ -15,7 +15,7 @@
 		</div>
 	</c:if>
 	<c:if test="${offenderProfileItemsProperties.substanceTestProfileItemEnabled}">
-		<div class="foregroundUltraLight navItemContainer">
+		<div class="foregroundUltraLight navItemContainer hoverable">
 			<div class="navItem">
 				<a href="${pageContext.request.contextPath}/substanceTest/list.html?offender=${offenderSummary.id}">
 					<span>
@@ -26,7 +26,7 @@
 		</div>
 	</c:if>
 	<c:if test="${offenderProfileItemsProperties.supervisionFeeProfileItemEnabled}">
-		<div class="foregroundUltraLight navItemContainer">
+		<div class="foregroundUltraLight navItemContainer hoverable">
 			<div class="navItem">
 				<a href="${pageContext.request.contextPath}/supervisionFee/list.html?offender=${offenderSummary.id}">
 					<span>
@@ -37,7 +37,7 @@
 		</div>
 	</c:if>
 	<c:if test="${offenderProfileItemsProperties.violationProfileItemEnabled}">
-		<div class="foregroundUltraLight navItemContainer">
+		<div class="foregroundUltraLight navItemContainer hoverable">
 			<div class="navItem">
 				<a href="${pageContext.request.contextPath}/hearing/violations/list.html?offender=${offenderSummary.id}">
 					<span>
@@ -48,7 +48,7 @@
 		</div>
 	</c:if>
 	<c:if test="${offenderProfileItemsProperties.violationEventProfileItemEnabled}">
-		<div class="foregroundUltraLight navItemContainer">
+		<div class="foregroundUltraLight navItemContainer hoverable">
 			<div class="navItem">
 				<a href="${pageContext.request.contextPath}/violationEvent/list.html?offender=${offenderSummary.id}">
 					<span>

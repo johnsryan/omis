@@ -127,26 +127,18 @@ window.onload = function() {
 	var groupCategoryContainers = document.getElementsByClassName("groupCategoryContainer");
 	var groupVisibilityLinks = document.getElementsByClassName("groupVisibilityLink");
 	document.getElementById("groupsVisibilityLink").onclick = function() {
-		if (document.getElementById("groupsVisibilityLink").classList.contains("expandLink")) {
-			document.getElementById("groupsVisibilityLink").classList.add("collapseLink");
-			document.getElementById("groupsVisibilityLink").classList.remove("expandLink");
+		if (document.getElementById("groupsVisibilityLink").classList.contains("expandAll")) {
+			document.getElementById("groupsVisibilityLink").classList.add("collapseAll");
+			document.getElementById("groupsVisibilityLink").classList.remove("expandAll");
 			for (var i = 0; i < groupCategoryContainers.length; i++) {
 				groupCategoryContainers[i].classList.remove("hidden");
 				
 			}
-			for (var g = 0; g < groupVisibilityLinks.length; g++) {
-				groupVisibilityLinks[g].classList.add("collapseLink");
-				groupVisibilityLinks[g].classList.remove("expandLink");
-			}
 		} else {
-			document.getElementById("groupsVisibilityLink").classList.remove("collapseLink");
-			document.getElementById("groupsVisibilityLink").classList.add("expandLink");
+			document.getElementById("groupsVisibilityLink").classList.remove("collapseAll");
+			document.getElementById("groupsVisibilityLink").classList.add("expandAll");
 			for (var t = 0; t < groupCategoryContainers.length; t++) {
 				groupCategoryContainers[t].classList.add("hidden");
-			}
-			for (var g = 0; g < groupVisibilityLinks.length; g++) {
-				groupVisibilityLinks[g].classList.remove("collapseLink");
-				groupVisibilityLinks[g].classList.add("expandLink");
 			}
 		}
 	}
@@ -161,8 +153,8 @@ function assignGroupVisibilityLinkOnClick(index) {
 	link.onclick = function() {
 		var groupContainer = document.getElementById("groupCategoryContainer" + index);
 		toggleElementVisibility(groupContainer);
-		link.classList.toggle("collapseLink");
-		link.classList.toggle("expandLink");
+//		link.classList.toggle("collapseLink");
+//		link.classList.toggle("expandLink");
 	};
 }
 

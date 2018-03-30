@@ -25,6 +25,8 @@ public class FacilityImpl implements Facility {
 	
 	private Boolean active;
 	
+	private Long telephoneNumber;
+	
 	/**Instantiates a default facility implementation. */
 	public FacilityImpl() {
 		//Empty constructor
@@ -88,6 +90,18 @@ public class FacilityImpl implements Facility {
 	@Override
 	public void setActive(final Boolean active) {
 		this.active = active;
+	}
+	
+	/** {@inheritDoc} */
+	@Override
+	public void setTelephoneNumber(Long telephoneNumber) {
+		this.telephoneNumber = telephoneNumber;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public Long getTelephoneNumber() {
+		return this.telephoneNumber;
 	}
 	
 	/** {@inheritDoc} */

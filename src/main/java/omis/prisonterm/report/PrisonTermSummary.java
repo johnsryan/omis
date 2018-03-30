@@ -117,7 +117,8 @@ public class PrisonTermSummary {
 	 */
 	public PrisonTermSummary(
 			final Date paroleEligibilityDate,
-			final Date projectedDischargeDate) {
+			final Date projectedDischargeDate,
+			final Boolean sentenceToFollow) {
 		this.id = null;
 		this.offenderId = null;
 		this.offenderLastName = null;
@@ -133,7 +134,7 @@ public class PrisonTermSummary {
 		this.paroleEligibilityDate = paroleEligibilityDate;
 		this.projectedDischargeDate = projectedDischargeDate;
 		this.maximumDischargeDate = null;
-		this.sentenceToFollow = null;
+		this.sentenceToFollow = sentenceToFollow;
 		this.comments = null;
 		this.status = null;
 	}

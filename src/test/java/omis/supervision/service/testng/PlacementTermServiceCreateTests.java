@@ -35,6 +35,7 @@ import omis.supervision.domain.PlacementTermChangeReason;
 import omis.supervision.domain.SupervisoryOrganization;
 import omis.supervision.exception.CorrectionalStatusTermConflictException;
 import omis.supervision.exception.PlacementTermConflictException;
+import omis.supervision.exception.PlacementTermExistsException;
 import omis.supervision.exception.SupervisoryOrganizationTermConflictException;
 import omis.supervision.service.PlacementTermService;
 import omis.supervision.service.delegate.CorrectionalStatusDelegate;
@@ -89,7 +90,8 @@ public class PlacementTermServiceCreateTests
 	/**
 	 * Tests creation of placement term.
 	 * 
-	 * @throws DuplicateEntityFoundException if placement term exists
+	 * @throws PlacementTermExistsException if placement term exists
+	 * @throws DuplicateEntityFoundException if other entities exist
 	 * @throws PlacementTermConflictException if placement term conflicts
 	 * @throws SupervisoryOrganizationTermConflictException if supervisory
 	 * organization term conflicts
@@ -97,7 +99,8 @@ public class PlacementTermServiceCreateTests
 	 * term conflicts 
 	 */
 	public void testCreation()
-			throws DuplicateEntityFoundException,
+			throws PlacementTermExistsException,
+				DuplicateEntityFoundException,
 				CorrectionalStatusTermConflictException,
 				SupervisoryOrganizationTermConflictException,
 				PlacementTermConflictException {

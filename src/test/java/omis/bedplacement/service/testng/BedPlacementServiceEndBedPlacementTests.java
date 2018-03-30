@@ -46,6 +46,7 @@ import omis.util.PropertyValueAsserter;
  * Tests method to end bed placements.
  *
  * @author Josh Divine
+ * @author Sheronda Vaughn
  * @version 0.0.1
  * @since OMIS 3.0
  */
@@ -137,12 +138,13 @@ public class BedPlacementServiceEndBedPlacementTests
 		City city = this.cityDelegate.create("City", true, state, country);
 		ZipCode zipCode = this.zipCodeDelegate.create(city, "12345", null, 
 				true);
+		final Long telephoneNumber = new Long("1234567");
 		Address address = this.addressDelegate.findOrCreate("1 Easy Street", 
 				null, null, null, zipCode);
 		Location location = this.locationDelegate.create(organization, 
 				locationDateRange, address);
 		Facility facility = this.facilityDelegate.create(location, "Facility", 
-				"F", true);
+				"F", true, telephoneNumber);
 		Room room = this.roomDelegate.create("Room", facility, null, null, null, 
 				null, true);
 		Bed bed = this.bedDelegate.create(room, 1, true);

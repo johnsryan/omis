@@ -18,6 +18,7 @@
 			<property name="abbreviation" column="`ABBREVIATION`" not-null="true" type="string"/>
 			<property name="active" column="`ACTIVE`" not-null="true" type="yes_no"/>
 			<property name="hospital" column="`HOSPITAL`" not-null="true" type="yes_no"/>
+			<property name="telephoneNumber" type="java.lang.Long" not-null="false" column="`TELEPHONE_NUMBER`"/>
 		</class>
 		<query name="findMedicalFacilityByLocation"><![CDATA[
 			select medicalFacility

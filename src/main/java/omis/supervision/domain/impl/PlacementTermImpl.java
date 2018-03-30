@@ -291,5 +291,20 @@ public class PlacementTermImpl
 		hashCode = 29 * hashCode + this.getCorrectionalStatusTerm()
 				.getCorrectionalStatus().hashCode();
 		return hashCode;
-	}	
+	}
+	
+	/**
+	 * Returns string representation of placement term including offender,
+	 * correctional status, supervisory organization and date range information.
+	 * 
+	 * @return string representation of placement term
+	 */
+	@Override
+	public String toString() {
+		return String.format(
+				"#%d: [%s] [%s] [%s] %s",
+				this.getId(), this.getOffender(),
+				this.getCorrectionalStatusTerm(),
+				this.getSupervisoryOrganizationTerm(), this.getDateRange());
+	}
 }

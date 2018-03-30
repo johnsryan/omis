@@ -70,7 +70,7 @@
 			assessmentCategoryScore.score <= assessmentRating.max
 	]]></query>
 	<query name="findAssessmentQuestionCategories"><![CDATA[
-		select questionnaireCategory
+		select distinct questionnaireCategory
 		from omis.assessment.domain.AssessmentRating assessmentRating
 		inner join assessmentRating.questionnaireType questionnaireType
 		inner join questionnaireType.questionnaireCategory questionnaireCategory

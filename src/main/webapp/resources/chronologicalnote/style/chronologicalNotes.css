@@ -87,3 +87,15 @@ form.listForm fieldset legend a.groupsVisibilityLink {
    text-align: left;
    margin: 3px 0px 3px 0px;
 }
+
+form fieldset span.groupButton {
+	cursor: pointer;
+	display: inline-block;
+   font-size: 16px;
+   vertical-align: middle;
+   width: 24%;
+   min-width: 300px;
+   text-align: center;
+   margin: 5px 0px 5px 0px;
+   padding: 5px 0px 5px 0px;
+}

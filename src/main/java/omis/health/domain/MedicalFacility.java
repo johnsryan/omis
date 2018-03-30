@@ -99,6 +99,20 @@ public interface MedicalFacility
 	Boolean getHospital();
 	
 	/**
+	 * Sets the telephone number.
+	 * 
+	 * @param telephoneNumber telephone number
+	 */
+	void setTelephoneNumber(Long telephoneNumber);
+	
+	/**
+	 * Returns the telephone number.
+	 * 
+	 * @return telephone number
+	 */
+	Long getTelephoneNumber();
+	
+	/**
 	 * Compares {@code this} and {@code obj} for equality.
 	 * 
 	 * <p>Any mandatory property may be used in the comparison. If a  mandatory

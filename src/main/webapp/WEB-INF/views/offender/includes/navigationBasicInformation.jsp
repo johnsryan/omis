@@ -4,7 +4,7 @@
 <fmt:bundle basename="omis.offender.msgs.navigation">
 <div class="navItems">
 	<c:if test="${offenderProfileItemsProperties.offenderAlternativeIdentityProfileItemEnabled}">
-		<div class="foregroundUltraLight navItemContainer">
+		<div class="foregroundUltraLight navItemContainer hoverable">
 			<div class="navItem">
 				<a href="${pageContext.request.contextPath}/offender/identity/alternative/list.html?offender=${offenderSummary.id}">
 					<span>
@@ -15,7 +15,7 @@
 		</div>
 	</c:if>
 	<c:if test="${offenderProfileItemsProperties.offenderAlternativeNameProfileItemEnabled}">
-		<div class="foregroundUltraLight navItemContainer">
+		<div class="foregroundUltraLight navItemContainer hoverable">
 			<div class="navItem">
 				<a href="${pageContext.request.contextPath}/offender/name/alternative/list.html?offender=${offenderSummary.id}">
 					<span>
@@ -26,7 +26,7 @@
 		</div>
 	</c:if>
 	<c:if test="${offenderProfileItemsProperties.offenderDemographicsProfileItemEnabled}">
-		<div class="foregroundUltraLight navItemContainer">
+		<div class="foregroundUltraLight navItemContainer hoverable">
 			<div class="navItem">
 				<a href="${pageContext.request.contextPath}/offender/demographics/edit.html?offender=${offenderSummary.id}">
 					<span>
@@ -37,7 +37,7 @@
 		</div>
 	</c:if>
 	<c:if test="${offenderProfileItemsProperties.dnaProfileItemEnabled}">
-		<div class="foregroundUltraLight navItemContainer">
+		<div class="foregroundUltraLight navItemContainer hoverable">
 			<div class="navItem">
 				<a href="${pageContext.request.contextPath}/dna/list.html?offender=${offenderSummary.id}">
 					<span>
@@ -48,7 +48,7 @@
 		</div>
 	</c:if>
 	<c:if test="${offenderProfileItemsProperties.offenderFlagProfileItemEnabled}">
-		<div class="foregroundUltraLight navItemContainer">
+		<div class="foregroundUltraLight navItemContainer hoverable">
 			<div class="navItem">
 				<a href="${pageContext.request.contextPath}/offenderFlag/edit.html?offender=${offenderSummary.id}">
 					<span>
@@ -59,7 +59,7 @@
 		</div>
 	</c:if>
 	<c:if test="${offenderProfileItemsProperties.identificationNumberProfileItemEnabled}">
-		<div class="foregroundUltraLight navItemContainer">
+		<div class="foregroundUltraLight navItemContainer hoverable">
 			<div class="navItem">
 				<a href="${pageContext.request.contextPath}/identificationNumber/list.html?offender=${offenderSummary.id}">
 					<span>
@@ -70,7 +70,7 @@
 		</div>
 	</c:if>
 	<c:if test="${offenderProfileItemsProperties.offenderDetailsProfileItemEnabled}">
-		<div class="foregroundUltraLight navItemContainer">
+		<div class="foregroundUltraLight navItemContainer hoverable">
 			<div class="navItem">
 				<a href="${pageContext.request.contextPath}/offender/personalDetails/edit.html?offender=${offenderSummary.id}">
 					<span>
@@ -81,7 +81,7 @@
 		</div>
 	</c:if>
 	<c:if test="${offenderProfileItemsProperties.militaryProfileItemEnabled}">
-		<div class="foregroundUltraLight navItemContainer">
+		<div class="foregroundUltraLight navItemContainer hoverable">
 			<div class="navItem">
 				<a href="${pageContext.request.contextPath}/military/list.html?offender=${offenderSummary.id}">
 					<span>
@@ -92,7 +92,7 @@
 		</div>
 	</c:if>
 	<c:if test="${offenderProfileItemsProperties.offenderPhotoProfileItemEnabled}">
-		<div class="foregroundUltraLight navItemContainer">
+		<div class="foregroundUltraLight navItemContainer hoverable">
 			<div class="navItem">
 				<a href="${pageContext.request.contextPath}/offenderPhoto/list.html?offender=${offenderSummary.id}">
 					<span>
@@ -103,7 +103,7 @@
 		</div>
 	</c:if>
 	<c:if test="${offenderProfileItemsProperties.religionProfileItemEnabled}">
-		<div class="foregroundUltraLight navItemContainer">
+		<div class="foregroundUltraLight navItemContainer hoverable">
 			<div class="navItem">
 				<a href="${pageContext.request.contextPath}/religion/religiousPreference/list.html?offender=${offenderSummary.id}">
 					<span>
@@ -114,7 +114,7 @@
 		</div>
 	</c:if>
 	<c:if test="${offenderProfileItemsProperties.physicalFeatureProfileItemEnabled}">
-		<div class="foregroundUltraLight navItemContainer">
+		<div class="foregroundUltraLight navItemContainer hoverable">
 			<div class="navItem">
 				<a href="${pageContext.request.contextPath}/physicalFeature/list.html?offender=${offenderSummary.id}">
 					<span>

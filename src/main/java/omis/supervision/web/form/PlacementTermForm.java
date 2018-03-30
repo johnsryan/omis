@@ -76,6 +76,14 @@ public class PlacementTermForm
 	
 	private boolean allowCorrectionalStatus;
 	
+	private boolean allowState;
+	
+	private boolean allowSupervisoryOrganization;
+	
+	private boolean allowStartDate;
+	
+	private boolean allowStartTime;
+	
 	private boolean allowStatusFields;
 	
 	private boolean allowSendToLocation;
@@ -411,6 +419,80 @@ public class PlacementTermForm
 	 */
 	public void setAllowCorrectionalStatus(boolean allowCorrectionalStatus) {
 		this.allowCorrectionalStatus = allowCorrectionalStatus;
+	}
+	
+	/**
+	 * Returns whether State is allowed.
+	 * 
+	 * @return whether State is allowed
+	 */
+	public boolean getAllowState() {
+		return this.allowState;
+	}
+	
+	/**
+	 * Sets whether State is allowed.
+	 * 
+	 * @param allowState whether State is allowed
+	 */
+	public void setAllowState(final boolean allowState) {
+		this.allowState = allowState;
+	}
+	
+	/**
+	 * Returns whether supervisory organization is allowed.
+	 * 
+	 * @return whether supervisory organization is allowed
+	 */
+	public boolean getAllowSupervisoryOrganization() {
+		return this.allowSupervisoryOrganization;
+	}
+	
+	/**
+	 * Sets whether supervisory organization is allowed.
+	 * 
+	 * @param allowSupervisoryOrganization whether supervisory organization
+	 * is allowed
+	 */
+	public void setAllowSupervisoryOrganization(
+			final boolean allowSupervisoryOrganization) {
+		this.allowSupervisoryOrganization = allowSupervisoryOrganization;
+	}
+	
+	/**
+	 * Returns whether to allow start date.
+	 * 
+	 * @return whether to allow start date
+	 */
+	public boolean getAllowStartDate() {
+		return this.allowStartDate;
+	}
+	
+	/**
+	 * Sets whether to allow start date.
+	 * 
+	 * @param allowStartDate whether to allow start date
+	 */
+	public void setAllowStartDate(final boolean allowStartDate) {
+		this.allowStartDate = allowStartDate;
+	}
+	
+	/**
+	 * Returns whether to allow start time.
+	 * 
+	 * @return whether to allow start time
+	 */
+	public boolean getAllowStartTime() {
+		return this.allowStartTime;
+	}
+	
+	/**
+	 * Sets whether to allow start time.
+	 * 
+	 * @param allowStartTime whether to allow start time
+	 */
+	public void setAllowStartTime(final boolean allowStartTime) {
+		this.allowStartTime = allowStartTime;
 	}
 	
 	/**

@@ -1325,6 +1325,19 @@ public class CreateOffenderRelationshipController {
 				
 			if (!createRelationshipsForm.getPersonFields().getNewCity()) {
 				// Exiting city
+				Integer socialSecurityNumber;
+				if (createRelationshipsForm.getPersonFields()
+						.getSocialSecurityNumber() != null
+						&& !createRelationshipsForm.getPersonFields()
+							.getSocialSecurityNumber().isEmpty()) {
+					socialSecurityNumber
+						= Integer.valueOf(createRelationshipsForm
+								.getPersonFields()
+									.getSocialSecurityNumber()
+										.replaceAll("-", ""));
+				} else {
+					socialSecurityNumber = null;
+				}
 				Person newCreatedAssociated = this.createRelationshipsService
 					.createRelation(
 					createRelationshipsForm.getPersonFields().getLastName(), 
@@ -1336,8 +1349,7 @@ public class CreateOffenderRelationshipController {
 					createRelationshipsForm.getPersonFields().getBirthCountry(),
 					createRelationshipsForm.getPersonFields().getBirthState(), 
 					createRelationshipsForm.getPersonFields().getBirthCity(), 
-					Integer.valueOf(createRelationshipsForm.getPersonFields()
-						.getSocialSecurityNumber().replaceAll("-", "")), 
+					socialSecurityNumber, 
 					createRelationshipsForm.getPersonFields()
 					.getStateIdNumber(),
 					createRelationshipsForm.getPersonFields().getDeceased(), 
@@ -1474,6 +1486,19 @@ public class CreateOffenderRelationshipController {
 				}
 			} else {
 				// New city
+				Integer socialSecurityNumber;
+				if (createRelationshipsForm.getPersonFields()
+						.getSocialSecurityNumber() != null
+						&& !createRelationshipsForm.getPersonFields()
+							.getSocialSecurityNumber().isEmpty()) {
+					socialSecurityNumber
+						= Integer.valueOf(createRelationshipsForm
+								.getPersonFields()
+									.getSocialSecurityNumber()
+										.replaceAll("-", ""));
+				} else {
+					socialSecurityNumber = null;
+				}
 				Person newCreatedAssociated = this.createRelationshipsService
 					.createRelation(
 					createRelationshipsForm.getPersonFields().getLastName(), 
@@ -1485,8 +1510,7 @@ public class CreateOffenderRelationshipController {
 					createRelationshipsForm.getPersonFields().getBirthCountry(),
 					createRelationshipsForm.getPersonFields().getBirthState(), 
 					newCreatedPersonFieldsCity,
-					Integer.valueOf(createRelationshipsForm.getPersonFields()
-						.getSocialSecurityNumber().replaceAll("-", "")), 
+					socialSecurityNumber, 
 					createRelationshipsForm.getPersonFields()
 						.getStateIdNumber(), 
 					createRelationshipsForm.getPersonFields().getDeceased(), 

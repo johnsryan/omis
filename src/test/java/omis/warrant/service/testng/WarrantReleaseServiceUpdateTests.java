@@ -45,6 +45,7 @@ import omis.warrant.service.delegate.WarrantReleaseDelegate;
  * WarrantReleaseServiceUpdateTests.java
  * 
  *@author Annie Jacques 
+ *@author Sheronda Vaughn
  *@version 0.1.0 (May 15, 2017)
  *@since OMIS 3.0
  *
@@ -109,6 +110,7 @@ public class WarrantReleaseServiceUpdateTests
 				city, "12345", null, true);
 		final Address address = this.addressDelegate.findOrCreate("123", "321", null,
 				null, zipCode);
+		final Long telephoneNumber = new Long("1234567");
 		final Location location = this.locationDelegate.create(organization,
 				new DateRange(this.parseDateText("01/01/2001"),
 						this.parseDateText("01/01/2020")), address);
@@ -116,7 +118,7 @@ public class WarrantReleaseServiceUpdateTests
 				new DateRange(this.parseDateText("01/02/2001"),
 						this.parseDateText("01/01/2021")), address);
 		final Facility facility0 = this.facilityDelegate.create(location0,
-				"Some Other Place", "OP", true);
+				"Some Other Place", "OP", true, telephoneNumber);
 		final County county0 = this.countyDelegate.create("Metrocity County",
 				state, true);
 		final Person clearedBy0 = this.personDelegate.create("Grayson", "Richard",
@@ -130,7 +132,7 @@ public class WarrantReleaseServiceUpdateTests
 		final County county = this.countyDelegate.create("Gotham County",
 				state, true);
 		final Facility facility = this.facilityDelegate.create(location,
-				"Arkham Asylum", "AA", true);
+				"Arkham Asylum", "AA", true, telephoneNumber);
 		final Date releaseTimestamp = this.parseDateText("01/01/2017");
 		final String addressee = "Addressee";
 		final Person clearedBy = this.personDelegate.create("Dent", "Harvey",

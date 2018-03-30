@@ -21,7 +21,6 @@ import java.util.Date;
 import java.util.List;
 
 import omis.datatype.DateRange;
-import omis.exception.DuplicateEntityFoundException;
 import omis.locationterm.domain.LocationTerm;
 import omis.offender.domain.Offender;
 import omis.region.domain.State;
@@ -38,6 +37,7 @@ import omis.supervision.exception.OffenderNotUnderSupervisionException;
 import omis.supervision.exception.PlacementTermConflictException;
 import omis.supervision.exception.PlacementTermExistsAfterException;
 import omis.supervision.exception.PlacementTermExistsBeforeException;
+import omis.supervision.exception.PlacementTermExistsException;
 import omis.supervision.exception.PlacementTermLockedException;
 import omis.supervision.exception.PlacementTermNoteExistsException;
 import omis.supervision.exception.SupervisoryOrganizationTermConflictException;
@@ -82,7 +82,7 @@ public interface PlacementTermService {
 	 * @param startChangeReason start change reason
 	 * @param endChangeReason end change reason
 	 * @return new placement term
-	 * @throws DuplicateEntityFoundException if placement term exists
+	 * @throws PlacementTermExistsException if placement term exists
 	 * @throws CorrectionalStatusTermConflictException if conflicting
 	 * correctional status terms exist
 	 * @throws SupervisoryOrganizationTermConflictException if conflicting
@@ -96,7 +96,7 @@ public interface PlacementTermService {
 			DateRange dateRange,
 			PlacementTermChangeReason startChangeReason,
 			PlacementTermChangeReason endChangeReason)
-					throws DuplicateEntityFoundException,
+					throws PlacementTermExistsException,
 						CorrectionalStatusTermConflictException,
 						SupervisoryOrganizationTermConflictException,
 						PlacementTermConflictException;
@@ -113,7 +113,7 @@ public interface PlacementTermService {
 	 * @param startChangeReason start change reason
 	 * @param endChangeReason end change reason
 	 * @return new placement term
-	 * @throws DuplicateEntityFoundException if placement term exists
+	 * @throws PlacementTermExistsException if placement term exists
 	 * @throws SupervisoryOrganizationTermConflictException if conflicting
 	 * supervisory organization terms exist
 	 * @throws PlacementTermConflictException if the placement term
@@ -130,8 +130,7 @@ public interface PlacementTermService {
 			DateRange dateRange,
 			PlacementTermChangeReason startChangeReason,
 			PlacementTermChangeReason endChangeReason)
-					throws DuplicateEntityFoundException,
-						SupervisoryOrganizationTermConflictException,
+					throws SupervisoryOrganizationTermConflictException,
 						PlacementTermConflictException, 
 						OffenderNotUnderSupervisionException,
 						PlacementTermExistsAfterException,
@@ -148,14 +147,12 @@ public interface PlacementTermService {
 	 * start date.
 	 * 
 	 * @param placementTerm placement term to update
-	 * @param supervisoryOrganization supervisory organization
+	 * @param endDate end date
 	 * @param status status
 	 * @param statusDateRange status date range
-	 * @param dateRange date range
 	 * @param startChangeReason start change reason
 	 * @param endChangeReason end change reason
 	 * @return updated placement term
-	 * @throws DuplicateEntityFoundException if placement term exists
 	 * @throws CorrectionalStatusTermConflictException if conflicting
 	 * correctional status terms exist
 	 * @throws SupervisoryOrganizationTermConflictException of conflicting
@@ -163,14 +160,12 @@ public interface PlacementTermService {
 	 * @throws PlacementTermLockedException if placement term is locked
 	 */
 	PlacementTerm update(PlacementTerm placementTerm,
-			SupervisoryOrganization supervisoryOrganization,
+			Date endDate,
 			PlacementStatus status,
 			DateRange statusDateRange,
-			DateRange dateRange,
 			PlacementTermChangeReason startChangeReason,
 			PlacementTermChangeReason endChangeReason)
-					throws DuplicateEntityFoundException,
-						CorrectionalStatusTermConflictException,
+					throws CorrectionalStatusTermConflictException,
 						SupervisoryOrganizationTermConflictException,
 						PlacementTermLockedException;
 	

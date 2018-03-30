@@ -635,8 +635,16 @@ div.panel {
 /* Hoverable Colors. */
 
 .hoverable:hover, .profileItem a:hover, .moduleLink > a:hover {
-	background-color: hsla(${backgroundHue}, ${backgroundSaturation}%, 85%, 1);
-	color: black;
+	box-shadow: inset 0 0 15px 15px  hsla(0, 100%, 100%, .33);
+}
+
+.hoverable:hover:after, .profileItem a:hover:after, .moduleLink > a:hover:after {
+	box-shadow: inset 0 0 15px 15px  hsla(0, 100%, 100%, .33);
+}
+
+.active {
+	color: white;
+<%-- 	text-shadow: 0px 0px 3px black, 0 0 10px hsla(${accentHue}, 100%, 50%, 1), 0 0 5px hsla(${accentHue}, 100%, 85%, 1); --%>
 }
 
 span.banner {

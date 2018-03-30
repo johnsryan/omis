@@ -4,7 +4,7 @@
 <fmt:bundle basename="omis.offender.msgs.navigation">
 <div class="navItems">
 	<c:if test="${offenderProfileItemsProperties.boardHearingProfileItemEnabled}">
-		<div class="foregroundUltraLight navItemContainer">
+		<div class="foregroundUltraLight navItemContainer hoverable">
 			<div class="navItem">
 				<a href="${pageContext.request.contextPath}/boardHearing/list.html?offender=${offenderSummary.id}">
 					<span>
@@ -15,7 +15,7 @@
 		</div>
 	</c:if>
 	<c:if test="${offenderProfileItemsProperties.paroleBoardAgreementProfileItemEnabled}">
-		<div class="foregroundUltraLight navItemContainer">
+		<div class="foregroundUltraLight navItemContainer hoverable">
 			<div class="navItem">
 				<a href="${pageContext.request.contextPath}/paroleBoardCondition/list.html?offender=${offenderSummary.id}">
 					<span>
@@ -26,7 +26,7 @@
 		</div>
 	</c:if>
 	<c:if test="${offenderProfileItemsProperties.paroleEligibilityProfileItemEnabled}">
-		<div class="foregroundUltraLight navItemContainer">
+		<div class="foregroundUltraLight navItemContainer hoverable">
 			<div class="navItem">
 				<a href="${pageContext.request.contextPath}/paroleEligibility/list.html?offender=${offenderSummary.id}">
 					<span>

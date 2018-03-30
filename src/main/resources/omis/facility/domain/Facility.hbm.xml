@@ -17,6 +17,7 @@
 			entity-name="omis.location.domain.Location" not-null="true" unique="true"/>
 			<property name="abbreviation" column="`ABBREVIATION`" not-null="true" type="string"/>
 			<property name="active" column="`VALID`" not-null="true" type="yes_no"/>
+			<property name="telephoneNumber" type="java.lang.Long" not-null="false" column="`TELEPHONE_NUMBER`"/>
 		</class>
 		<query name="countBedsByFacility">
 			select count(*)

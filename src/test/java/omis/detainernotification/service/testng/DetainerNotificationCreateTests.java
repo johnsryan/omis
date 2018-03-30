@@ -53,6 +53,7 @@ import omis.testng.AbstractHibernateTransactionalTestNGSpringContextTests;
  * DetainerNotificationCreateTests.java
  * 
  *@author Annie Jacques 
+ *@author Sheronda Vaughn
  *@version 0.1.0 (Apr 10, 2017)
  *@since OMIS 3.0
  *
@@ -206,7 +207,7 @@ public class DetainerNotificationCreateTests
 		
 		final String refusedToSignComment = "Refused to sign!";
 		final String waiverRequiredComment = "Waiver required.";
-		
+		final Long telephoneNumber2 = new Long("1234567");
 		final DetainerWarrantCancellationReason detainerWarrantCancellationReason =
 				DetainerWarrantCancellationReason.DROPPED_BY_AGENCY;
 		
@@ -217,7 +218,7 @@ public class DetainerNotificationCreateTests
 						this.parseDateText("01/01/2020")), address);
 				
 		Facility facility = this.facilityDelegate
-				.create(location, "FACILITY", "FAC", true);
+				.create(location, "FACILITY", "FAC", true, telephoneNumber2);
 		
 		Complex complex = this.complexDelegate
 				.create("COMPLEX", "COM", true, facility);

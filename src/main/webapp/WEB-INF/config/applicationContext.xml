@@ -97,6 +97,7 @@
     			<value>/WEB-INF/classes/omis/adaaccommodation/msgs/form</value>
     			<value>/WEB-INF/classes/omis/address/msgs/form</value>
     			<value>/WEB-INF/classes/omis/alert/msgs/form</value>
+    			<value>/WEB-INF/classes/omis/assessment/msgs/form</value>
     			<value>/WEB-INF/classes/omis/audit/msgs/form</value>
     			<value>/WEB-INF/classes/omis/biographicandcontactsection/msgs/form</value>
     			<value>/WEB-INF/classes/omis/bedplacement/msgs/form</value>

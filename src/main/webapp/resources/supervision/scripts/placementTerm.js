@@ -24,12 +24,21 @@
 window.onload = function() {
 	var allowCorrectionalStatus = document.getElementById("allowCorrectionalStatus");
 	var correctionalStatus = document.getElementById("correctionalStatus");
-	var state = document.getElementById("state");
+	var allowState = document.getElementById("allowState");
+	var state;
+	if (allowState.value) {
+		 state = document.getElementById("state");
+	} else {
+		state = null;
+	}
 	var allowStatusFields = document.getElementById("allowStatusFields");
 	if (allowCorrectionalStatus.value == "true") {
 		correctionalStatus.onchange = function() {
 			var elt = this;
-			populateSupervisoryOrganizations(elt.options[elt.selectedIndex].value, state.options[state.selectedIndex].value);
+			var allowSupervisoryOrganization = document.getElementById("allowSupervisoryOrganization");
+			if (allowSupervisoryOrganization.value && allowState.value) {
+				populateSupervisoryOrganizations(elt.options[elt.selectedIndex].value, state.options[state.selectedIndex].value);
+			}
 			if (allowStatusFields.value == "true") {
 				populatePlacementStatuses(elt.options[elt.selectedIndex].value);
 				toggleStatusDateAndReturnedByStatus(status);
@@ -66,16 +75,18 @@ window.onload = function() {
 			}
 		};
 	}
-	state.onchange = function() {
-		var elt = this;
-		var correctionalStatusValue;
-		if (allowCorrectionalStatus.value == "true") {
-			correctionalStatusValue = correctionalStatus.options[correctionalStatus.selectedIndex].value;
-		} else {
-			correctionalStatusValue = correctionalStatus.value;
-		}
-		populateSupervisoryOrganizations(correctionalStatusValue, elt.options[elt.selectedIndex].value);
-	};
+	if (allowState.value) {
+		state.onchange = function() {
+			var elt = this;
+			var correctionalStatusValue;
+			if (allowCorrectionalStatus.value == "true") {
+				correctionalStatusValue = correctionalStatus.options[correctionalStatus.selectedIndex].value;
+			} else {
+				correctionalStatusValue = correctionalStatus.value;
+			}
+			populateSupervisoryOrganizations(correctionalStatusValue, elt.options[elt.selectedIndex].value);
+		};
+	}
 	if (allowStatusFields.value == "true") {
 		var status = document.getElementById("status");
 		status.onchange = function() {
@@ -90,8 +101,14 @@ window.onload = function() {
 		applyDatePicker(document.getElementById("statusReturnedDate"));
 		applyTimePicker(document.getElementById("statusReturnedTime"));
 	}
-	applyDatePicker(document.getElementById("startDate"));
-	applyTimePicker(document.getElementById("startTime"));
+	var allowStartDate = document.getElementById("allowStartDate");
+	if (allowStartDate.value) {
+		applyDatePicker(document.getElementById("startDate"));
+	}
+	var allowStartTime = document.getElementById("startTime");
+	if (allowStartTime.value) {
+		applyTimePicker(document.getElementById("startTime"));
+	}
 	applyDatePicker(document.getElementById("endDate"));
 	applyTimePicker(document.getElementById("endTime"));
 	for (var currentNoteItemIndex = 0; currentNoteItemIndex < placementTermNoteIndex; currentNoteItemIndex++) {

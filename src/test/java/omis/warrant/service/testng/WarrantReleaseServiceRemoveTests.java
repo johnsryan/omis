@@ -44,6 +44,7 @@ import omis.warrant.service.WarrantService;
  * WarrantReleaseServiceRemoveTests.java
  * 
  *@author Annie Jacques 
+ *@author Sheronda Vaughn
  *@version 0.1.0 (May 15, 2017)
  *@since OMIS 3.0
  *
@@ -105,11 +106,12 @@ public class WarrantReleaseServiceRemoveTests
 				city, "12345", null, true);
 		final Address address = this.addressDelegate.findOrCreate("123", "321", null,
 				null, zipCode);
+		final Long telephoneNumber = new Long("1234567");
 		final Location location = this.locationDelegate.create(organization,
 				new DateRange(this.parseDateText("01/01/2001"),
 						this.parseDateText("01/01/2020")), address);
 		final Facility facility = this.facilityDelegate.create(location,
-				"Arkham Asylum", "AA", true);
+				"Arkham Asylum", "AA", true, telephoneNumber);
 		final County county = this.countyDelegate.create("Gotham County",
 				state, true);
 		final String instructions = "Instructions!";

@@ -15,31 +15,31 @@
 		<div id="navRightArrow" class="arrow"></div>
 	<div id="navBarWrapper">
 		<div id="navBar" class="noSelect">
-			<a href="#" class="navBarItem accentDark" id="basicInformationNav">
+			<a href="#" class="navBarItem accentDark hoverable" id="basicInformationNav">
 				<fmt:message key="basicInformationLabel"/>
 			</a>
-			<a href="#" class="navBarItem accentDark" id="placementNav">
+			<a href="#" class="navBarItem accentDark hoverable" id="placementNav">
 				<fmt:message key="placementLabel"/>
 			</a>
-			<a href="#" class="navBarItem accentDark" id="legalNav">
+			<a href="#" class="navBarItem accentDark hoverable" id="legalNav">
 				<fmt:message key="legalLabel"/>
 			</a>
-			<a href="#" class="navBarItem accentDark" id="caseManagementNav">
+			<a href="#" class="navBarItem accentDark hoverable" id="caseManagementNav">
 				<fmt:message key="caseManagementLabel"/>
 			</a>
-			<a href="#" class="navBarItem accentDark" id="safetyNav">
+			<a href="#" class="navBarItem accentDark hoverable" id="safetyNav">
 				<fmt:message key="safetyLabel"/>
 			</a>
-			<a href="#" class="navBarItem accentDark" id="complianceNav">
+			<a href="#" class="navBarItem accentDark hoverable" id="complianceNav">
 				<fmt:message key="complianceLabel"/>
 			</a>
 			<%-- <a href="#" class="navBarItem accentDark" id="healthNav">
 				<fmt:message key="healthLabel"/>
 			</a> --%>
-			<a href="#" class="navBarItem accentDark" id="relationshipsNav">
+			<a href="#" class="navBarItem accentDark hoverable" id="relationshipsNav">
 				<fmt:message key="relationshipsLabel"/>
 			</a>
-			<a href="#" class="navBarItem accentDark" id="boardOfPardonsAndParoleNav">
+			<a href="#" class="navBarItem accentDark hoverable" id="boardOfPardonsAndParoleNav">
 				<fmt:message key="boardPardonsParoleLabel"/>
 			</a>
 		</div>

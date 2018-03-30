@@ -33,7 +33,16 @@
 				<c:otherwise></c:otherwise>
 			</c:choose>
 			<fieldset>
-				<legend><fmt:message key="categoryLegendLabel"/><a href="#" id="groupsVisibilityLink" class="groupsVisibilityLink expandLink"></a></legend>
+				<legend class="foregroundLight"><fmt:message key="groupsFieldsetLegendLabel"/></legend>
+					<span class="groupButton accentDark hoverable expandAll" id="groupsVisibilityLink"><fmt:message key="allCategoriesLinkLabel"/></span>
+					<c:forEach items="${groups}" var="group" varStatus="groupStatus">
+						<span class="groupButton groupVisibilityLink accentDark hoverable" id="groupVisibilityLink${groupStatus.index}"><c:out value="${group.name}"/></span>
+					</c:forEach>
+			</fieldset>
+			<fieldset>
+				<legend><fmt:message key="categoryLegendLabel"/>
+<!-- 				<a href="#" id="groupsVisibilityLink" class="groupsVisibilityLink expandLink"></a> -->
+				</legend>
 				<c:forEach items="${groups}" var="group" varStatus="groupStatus">
 					<c:set value="${groupCategoryMap[group.name]}" var="categoryItems" scope="page"/>
 					<c:set value="groupCategoryContainer hidden" var="groupCategoryContainerDisplayClass"/>
@@ -41,11 +50,12 @@
 					<c:forEach items="${categoryItems}" var="item" varStatus="status">
 						<c:if test="${item.associated and item.operation ne 'DISSOCIATE'  or item.operation eq 'ASSOCIATE'}">
 							<c:set value="groupCategoryContainer" var="groupCategoryContainerDisplayClass"/>
-							<c:set value="groupVisibilityLink collapseLink" var="groupVisibilityLinkDisplayClass"/>
+<%-- 							<c:set value="groupVisibilityLink collapseLink" var="groupVisibilityLinkDisplayClass"/> --%>
 						</c:if>
 					</c:forEach>
-					<h2><c:out value="${group.name}"/> <a href="javascript:;" id="groupVisibilityLink${groupStatus.index}" class="${groupVisibilityLinkDisplayClass}"></a></h2>
-					<span class="${groupCategoryContainerDisplayClass}" id="groupCategoryContainer${groupStatus.index}">
+					
+					<div class="${groupCategoryContainerDisplayClass}" id="groupCategoryContainer${groupStatus.index}">
+					<h2><c:out value="${group.name}"/></h2>
 					<c:forEach items="${categoryItems}" var="item" varStatus="status">
 						<span class="categoryItem" id="categoryItemContainer${itemCount}">
 							<form:input type="hidden" value="${item.name}" path="items[${itemCount}].name"/>
@@ -63,7 +73,7 @@
 						</span>
 						<c:set var="itemCount" value="${itemCount + 1}"/>
 					</c:forEach>
-					</span>
+					</div>
 				</c:forEach>				
 			</fieldset>
 		<fieldset>

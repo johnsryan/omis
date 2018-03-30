@@ -1439,6 +1439,17 @@ public class ManageFamilyAssociationController {
 			}
 			
 			Person familyMember;
+			Integer socialSecurityNumber;
+			if (familyAssociationForm.getPersonFields()
+					.getSocialSecurityNumber() != null
+					&& !familyAssociationForm.getPersonFields()
+						.getSocialSecurityNumber().isEmpty()) {
+				socialSecurityNumber = Integer.valueOf(
+						familyAssociationForm.getPersonFields()
+							.getSocialSecurityNumber().replaceAll("-", ""));
+			} else {
+				socialSecurityNumber = null;
+			}
 			if (!familyAssociationForm.getPersonFields().getNewCity()) {
 				familyMember = this.familyAssociationService
 					.createFamilyMember(
@@ -1451,8 +1462,7 @@ public class ManageFamilyAssociationController {
 					familyAssociationForm.getPersonFields().getBirthCountry(),
 					familyAssociationForm.getPersonFields().getBirthState(),
 					familyAssociationForm.getPersonFields().getBirthCity(),
-					Integer.valueOf(familyAssociationForm.getPersonFields()
-					.getSocialSecurityNumber().replaceAll("-", "")),
+					socialSecurityNumber,
 					familyAssociationForm.getPersonFields().getStateIdNumber(),
 					familyAssociationForm.getPersonFields().getDeceased(),
 					familyAssociationForm.getPersonFields().getDeathDate());
@@ -1468,8 +1478,7 @@ public class ManageFamilyAssociationController {
 					familyAssociationForm.getPersonFields().getBirthCountry(),
 					familyAssociationForm.getPersonFields().getBirthState(),
 					newCreatedPersonFieldsCity,
-					Integer.valueOf(familyAssociationForm.getPersonFields()
-					.getSocialSecurityNumber().replaceAll("-", "")),
+					socialSecurityNumber,
 					familyAssociationForm.getPersonFields().getStateIdNumber(),
 					familyAssociationForm.getPersonFields().getDeceased(),
 					familyAssociationForm.getPersonFields().getDeathDate());

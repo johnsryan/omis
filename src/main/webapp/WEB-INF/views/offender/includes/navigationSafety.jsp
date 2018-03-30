@@ -4,7 +4,7 @@
 <fmt:bundle basename="omis.offender.msgs.navigation">
 <div class="navItems">
 	<c:if test="${offenderProfileItemsProperties.adaProfileItemEnabled}">
-		<div class="foregroundUltraLight navItemContainer">
+		<div class="foregroundUltraLight navItemContainer hoverable">
 			<div class="navItem">
 				<a href="${pageContext.request.contextPath}/adaAccommodation/list.html?offender=${offenderSummary.id}">
 					<span>
@@ -15,7 +15,7 @@
 		</div>
 	</c:if>
 	<c:if test="${offenderProfileItemsProperties.offenderAlertProfileItemEnabled}">
-		<div class="foregroundUltraLight navItemContainer">
+		<div class="foregroundUltraLight navItemContainer hoverable">
 			<div class="navItem">
 				<a href="${pageContext.request.contextPath}/alert/list.html?offender=${offenderSummary.id}">
 					<span>
@@ -26,7 +26,7 @@
 		</div>
 	</c:if>
 	<c:if test="${offenderProfileItemsProperties.cautionProfileItemEnabled}">
-		<div class="foregroundUltraLight navItemContainer">
+		<div class="foregroundUltraLight navItemContainer hoverable">
 			<div class="navItem">
 				<a href="${pageContext.request.contextPath}/caution/list.html?offender=${offenderSummary.id}">
 					<span>
@@ -37,7 +37,7 @@
 		</div>
 	</c:if>
 	<c:if test="${offenderProfileItemsProperties.stgProfileItemEnabled}">
-		<div class="foregroundUltraLight navItemContainer">
+		<div class="foregroundUltraLight navItemContainer hoverable">
 			<div class="navItem">
 				<a href="${pageContext.request.contextPath}/stg/list.html?offender=${offenderSummary.id}">
 					<span>
@@ -48,7 +48,7 @@
 		</div>
 	</c:if>
 	<c:if test="${offenderProfileItemsProperties.separationNeedProfileItemEnabled}">
-		<div class="foregroundUltraLight navItemContainer">
+		<div class="foregroundUltraLight navItemContainer hoverable">
 			<div class="navItem">
 				<a href="${pageContext.request.contextPath}/separationNeed/list.html?offender=${offenderSummary.id}">
 					<span>
@@ -59,7 +59,7 @@
 		</div>
 	</c:if>
 	<c:if test="${offenderProfileItemsProperties.specialNeedProfileItemEnabled}">
-		<div class="foregroundUltraLight navItemContainer">
+		<div class="foregroundUltraLight navItemContainer hoverable">
 			<div class="navItem">
 				<a href="${pageContext.request.contextPath}/specialNeed/list.html?offender=${offenderSummary.id}">
 					<span>
@@ -70,7 +70,7 @@
 		</div>
 	</c:if>
 	<c:if test="${offenderProfileItemsProperties.workRestrictionProfileItemEnabled}">
-		<div class="foregroundUltraLight navItemContainer">
+		<div class="foregroundUltraLight navItemContainer hoverable">
 			<div class="navItem">
 				<a href="${pageContext.request.contextPath}/workRestriction/list.html?offender=${offenderSummary.id}">
 					<span>

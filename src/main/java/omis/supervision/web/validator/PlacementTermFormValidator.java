@@ -67,7 +67,8 @@ public class PlacementTermFormValidator
 	@Override
 	public void validate(final Object target, final Errors errors) {
 		PlacementTermForm placementTermForm = (PlacementTermForm) target;
-		if (placementTermForm.getSupervisoryOrganization() == null) {
+		if (placementTermForm.getAllowSupervisoryOrganization()
+				&& placementTermForm.getSupervisoryOrganization() == null) {
 			errors.rejectValue("supervisoryOrganization",
 					"placementTermForm.supervisoryOrganization.empty");
 		}
@@ -76,10 +77,12 @@ public class PlacementTermFormValidator
 			errors.rejectValue("correctionalStatus",
 					"placementTermForm.correctionalStatus.empty");
 		}
-		if (placementTermForm.getStartDate() == null) {
+		if (placementTermForm.getAllowStartDate()
+				&& placementTermForm.getStartDate() == null) {
 			errors.rejectValue("startDate", "startDate.empty");
 		}
-		if (placementTermForm.getStartTime() == null) {
+		if (placementTermForm.getAllowStartTime()
+				&& placementTermForm.getStartTime() == null) {
 			errors.rejectValue("startTime", "startTime.empty");
 		}
 		if (placementTermForm.getStartDate() != null
@@ -194,8 +197,8 @@ public class PlacementTermFormValidator
 								"noteItems[" + noteItemIndex + "].fields",
 								errors);
 				}
+				noteItemIndex++;
 			}
-			noteItemIndex++;
 		}
 	}
 	

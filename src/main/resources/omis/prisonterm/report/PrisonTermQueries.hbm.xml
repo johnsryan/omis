@@ -36,7 +36,8 @@
 	<query name="findPrisonTermSummaryByOffenderAndEffectiveDate"><![CDATA[
 		select new omis.prisonterm.report.PrisonTermSummary(
 				prisonTerm.paroleEligibilityDate,
-				prisonTerm.projectedDischargeDate
+				prisonTerm.projectedDischargeDate,
+				prisonTerm.sentenceToFollow
 			)
 		from
 			omis.prisonterm.domain.PrisonTerm prisonTerm

@@ -96,7 +96,7 @@ div.item a, .navDetailsWrapper a{
 }
 
 div.item a:hover, .navDetailsWrapper a:hover{
-	opacity: .7;
+/* 	opacity: .7; */
 	text-decoration: none;
 }
 
@@ -110,6 +110,10 @@ span.offenderHeaderFieldLabel:after {
 
 /* Field value. */
 span.offenderHeaderFieldValue {
+}
+
+span.offenderHeaderField {
+	font-weight: bold;
 }
 
 span.offenderNameValue{
@@ -328,10 +332,6 @@ it ensures that the last pane can scroll to the far left as needed */
 	}
 }
 
-.navBarItem:not(.activeNavItem ):hover {
-	opacity: .7;
-}
-
 .navBarItem:hover {
 	cursor: pointer;
 	text-decoration: none;
@@ -410,9 +410,9 @@ div.navItemContainer {
 	height: 20px;
 }
 
-div.navItemContainer:hover {
-	opacity: .7;
-}
+/* div.navItemContainer:hover { */
+/* 	opacity: .7; */
+/* } */
 
 /* Nav Item (Button Links) */
 div.navItem {
@@ -425,7 +425,7 @@ div.navItem {
 
 
 div.navItem a {
-	width: 90%;
+/* 	width: 90%; */
 	margin: 1px;
 	padding-left: 5px;
 	padding-right: 5px;

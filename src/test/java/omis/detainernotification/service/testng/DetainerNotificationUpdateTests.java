@@ -55,6 +55,7 @@ import omis.testng.AbstractHibernateTransactionalTestNGSpringContextTests;
  * 
  *@author Annie Jacques 
  *@author Joel Norris
+ *@author Sheronda Vaughn
  *@version 0.1.1 (May 26, 2017)
  *@since OMIS 3.0
  *
@@ -204,7 +205,7 @@ public class DetainerNotificationUpdateTests
 		
 		final String refusedToSignCommentOld = "refused to sign commment old";
 		final String waiverRequiredCommentOld = "waiver required comment old";
-		
+		final Long telephoneNumber2 = new Long("1234567");
 		final DetainerWarrantCancellationReason detainerWarrantCancellationReasonOld =
 				DetainerWarrantCancellationReason.DROPPED_BY_AGENCY;
 		
@@ -216,7 +217,7 @@ public class DetainerNotificationUpdateTests
 		
 		//Facility facilityOld = this.facilityInstanceFactory.createInstance();
 		Facility facilityOld = this.facilityDelegate.create(
-				locationOld, "Facility", "fac", true);
+				locationOld, "Facility", "fac", true, telephoneNumber2);
 		
 		Complex complexOld = this.complexDelegate.create("COMPLEX", "com", true,
 				facilityOld);
@@ -312,7 +313,6 @@ public class DetainerNotificationUpdateTests
 		final String refusedToSignComment = "Refused to sign comment new.";
 		final String waiverRequiredComment = "Waiver required comment new.";
 		
-		
 		final DetainerWarrantCancellationReason detainerWarrantCancellationReason =
 				DetainerWarrantCancellationReason.RELEASED_TO_AGENCY;
 		
@@ -323,7 +323,7 @@ public class DetainerNotificationUpdateTests
 						this.parseDateText("01/01/2040")), address);
 		
 		Facility facility = this.facilityDelegate.create(location, "NEWNEW",
-				"FACNEW", true);
+				"FACNEW", true, telephoneNumber2);
 		Complex complex = this.complexDelegate.create("COMOM", "ABBCOM", true,
 				facility);
 		Unit unit = this.unitDelegate.create("UNUN", "ABBUN", true, facility,
