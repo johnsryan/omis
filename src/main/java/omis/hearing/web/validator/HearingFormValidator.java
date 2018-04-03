@@ -5,6 +5,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 import omis.hearing.domain.HearingCategory;
+import omis.hearing.domain.HearingStatusCategory;
 import omis.hearing.web.form.HearingForm;
 import omis.hearing.web.form.HearingNoteItem;
 import omis.hearing.web.form.ItemOperation;
@@ -85,7 +86,9 @@ public class HearingFormValidator implements Validator {
 		if (form.getDate() != null) {
 			if (form.getDate().getTime() > new Date().getTime()) {
 				if (form.getStatus() != null) {
-					if (form.getStatus().getAdjudicated()) {
+					if (form.getStatus().getAdjudicated()
+							&& !HearingStatusCategory.DISMISSED.equals(
+									form.getStatus())) {
 						errors.rejectValue("status",
 								HELD_IN_FUTURE_MSG_KEY);
 					}

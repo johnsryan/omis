@@ -138,6 +138,16 @@ public interface LocationReasonTermDao
 			LocationReasonTerm excludedLocationReasonTerm);
 
 	/**
+	 * Returns reason term with start date.
+	 * 
+	 * @param locationTerm location term
+	 * @param startDate start date
+	 * @return reason term with start date
+	 */
+	LocationReasonTerm findWithStartDate(LocationTerm locationTerm,
+			Date startDate);
+	
+	/**
 	 * Removes location reason terms by location term.
 	 * 
 	 * @param locationTerm location term by which to remove

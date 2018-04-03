@@ -9,6 +9,13 @@
 		<c:if test="${not empty offender}"><li><a class="createLink" href="${pageContext.request.contextPath}/stg/affiliation/create.html?offender=${offender.id}"><span class="visibleLinkLabel"><fmt:message key="createStgAffiliationLink"/></span></a></li>	
 		</c:if>
 	</sec:authorize>
+	<sec:authorize access="hasRole('STG_ACTIVITY_VIEW') or hasRole('ADMIN')">
+			<c:if test="${not empty offender}">
+			<li>
+				<a href="${pageContext.request.contextPath}/stg/stgAffiliationActivityListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="stgAffiliationActivityListingReportLinkLabel"/></a>
+			</li>
+			</c:if>
+	</sec:authorize>	
 	<sec:authorize access="hasRole('STG_AFFILIATION_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty offender}">
 			<li>

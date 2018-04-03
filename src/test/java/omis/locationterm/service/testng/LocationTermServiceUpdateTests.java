@@ -141,7 +141,8 @@ public class LocationTermServiceUpdateTests
 	
 	/* Tests. */
 	
-	/** Test update of location term. 
+	/**
+	 * Test update of location term. 
 	 * 
 	 * @throws DuplicateEntityFoundException if location term exists
 	 * @throws DateRangeOutOfBoundsException if location term is out of bounds
@@ -170,17 +171,17 @@ public class LocationTermServiceUpdateTests
 				true, mt, unitedStates);
 		ZipCode mt59602 = this.zipCodeDelegate
 				.create(helena, "59602", null, true);
-		Address megaJailAddress = this.addressDelegate.findOrCreate(
+		Address jailAddress = this.addressDelegate.findOrCreate(
 				"1000", null, null, BuildingCategory.APARTMENT,
 				mt59602);
-		Organization megaJailOrg = this.organizationDelegate
-				.create("Mega Jail", "MEGA", null);
-		Organization megaPnpOrg = this.organizationDelegate
-				.create("Mega PnP", "MPNP", null);
-		Location megaJailLoc = this.locationDelegate.create(
-				megaJailOrg, null, megaJailAddress);
-		Location megaPnpLoc = this.locationDelegate
-				.create(megaPnpOrg, null, megaJailAddress);
+		Organization jail = this.organizationDelegate
+				.create("Jail", "JL", null);
+		Organization pnp = this.organizationDelegate
+				.create("PnP", "PNP", null);
+		Location jailLocation = this.locationDelegate.create(
+				jail, null, jailAddress);
+		Location pnpLocation = this.locationDelegate
+				.create(pnp, null, jailAddress);
 		Date startDate = this.parseDateText("09/12/2001");
 		Date endDate = this.parseDateText("12/03/2016");
 		DateRange dateRange = new DateRange(this.parseDateText("09/12/2001"), 
@@ -199,16 +200,16 @@ public class LocationTermServiceUpdateTests
 				supervisoryOrganizationTerm, correctionalStatusTerm, null, null, 
 				false);
 		LocationTerm locationTerm = this.locationTermDelegate
-				.create(offender, megaJailLoc, startDate, endDate, false);
+				.create(offender, jailLocation, startDate, endDate, false);
 		
 		// Action
-		locationTerm = this.locationTermService.update(locationTerm, megaPnpLoc,
+		locationTerm = this.locationTermService.update(locationTerm, pnpLocation,
 				new DateRange(startDate, endDate));
 
 		// Assertions
 		PropertyValueAsserter.create()
 			.addExpectedValue("offender", offender)
-			.addExpectedValue("location", megaPnpLoc)
+			.addExpectedValue("location", pnpLocation)
 			.addExpectedValue("dateRange", new DateRange(startDate, endDate))
 			.performAssertions(locationTerm);
 	}
@@ -216,6 +217,9 @@ public class LocationTermServiceUpdateTests
 	/** 
 	 * Tests whether business exception {@code LocationTermConflictException} is
 	 * thrown. 
+	 * 
+	 * <p>Consider removing this as it may be a duplicate of
+	 * {@code testUpdateEarlierLocationTermWithNullEndDateFails}.
 	 * 
 	 * @throws DuplicateEntityFoundException if location term exists
 	 * @throws DateRangeOutOfBoundsException if location term is out of bounds
@@ -245,17 +249,17 @@ public class LocationTermServiceUpdateTests
 				true, mt, unitedStates);
 		ZipCode mt59602 = this.zipCodeDelegate
 				.create(helena, "59602", null, true);
-		Address megaJailAddress = this.addressDelegate.findOrCreate(
+		Address jailAddress = this.addressDelegate.findOrCreate(
 				"1000", null, null, BuildingCategory.APARTMENT,
 				mt59602);
-		Organization megaJailOrg = this.organizationDelegate
-				.create("Mega Jail", "MEGA", null);
-		Organization megaPnpOrg = this.organizationDelegate
-				.create("Mega PnP", "MPNP", null);
+		Organization jail = this.organizationDelegate
+				.create("Jail", "JAIL", null);
+		Organization pnp = this.organizationDelegate
+				.create("PnP", "PNP", null);
 		Location megaJailLoc = this.locationDelegate.create(
-				megaJailOrg, null, megaJailAddress);
+				jail, null, jailAddress);
 		Location megaPnpLoc = this.locationDelegate
-				.create(megaPnpOrg, null, megaJailAddress);
+				.create(pnp, null, jailAddress);
 		Date startDate = this.parseDateText("09/12/2001");
 		Date endDate = this.parseDateText("12/03/2016");
 		DateRange dateRange = new DateRange(startDate, 
@@ -309,6 +313,7 @@ public class LocationTermServiceUpdateTests
 			LocationTermExistsAfterException,
 			LocationTermLockedException, 
 			OffenderNotUnderSupervisionException {
+		
 		// Arrangements
 		Offender offender = this.offenderDelegate
 				.createWithoutIdentity("Blofeld", "Ernst", null, null);
@@ -320,17 +325,17 @@ public class LocationTermServiceUpdateTests
 				true, mt, unitedStates);
 		ZipCode mt59602 = this.zipCodeDelegate
 				.create(helena, "59602", null, true);
-		Address megaJailAddress = this.addressDelegate.findOrCreate(
+		Address jailAddress = this.addressDelegate.findOrCreate(
 				"1000", null, null, BuildingCategory.APARTMENT,
 				mt59602);
-		Organization megaJailOrg = this.organizationDelegate
-				.create("Mega Jail", "MEGA", null);
-		Organization megaPnpOrg = this.organizationDelegate
-				.create("Mega PnP", "MPNP", null);
-		Location megaJailLoc = this.locationDelegate.create(
-				megaJailOrg, null, megaJailAddress);
-		Location megaPnpLoc = this.locationDelegate
-				.create(megaPnpOrg, null, megaJailAddress);
+		Organization jail = this.organizationDelegate
+				.create("Jail", "JAIL", null);
+		Organization pnp = this.organizationDelegate
+				.create("PnP", "PNP", null);
+		Location jailLocation = this.locationDelegate.create(
+				jail, null, jailAddress);
+		Location pnpLocation = this.locationDelegate
+				.create(pnp, null, jailAddress);
 		Date startDate = this.parseDateText("09/12/2001");
 		Date endDate = this.parseDateText("12/03/2016");
 		DateRange dateRange = new DateRange(startDate, 
@@ -349,15 +354,15 @@ public class LocationTermServiceUpdateTests
 				supervisoryOrganizationTerm, correctionalStatusTerm, null, null, 
 				false);
 		LocationTerm locationTerm = this.locationTermDelegate
-				.create(offender, megaJailLoc, startDate, endDate, false);
+				.create(offender, jailLocation, startDate, endDate, false);
 		
 		Date conflictStartDate = endDate;
 		Date conflictEndDate = this.parseDateText("1/1/2017");
-		this.locationTermDelegate.create(offender, megaJailLoc, 
+		this.locationTermDelegate.create(offender, jailLocation, 
 				conflictStartDate, conflictEndDate, false);
 		
 		// Action
-		locationTerm = this.locationTermService.update(locationTerm, megaPnpLoc,
+		this.locationTermService.update(locationTerm, pnpLocation,
 				new DateRange(startDate, null));
 	}
 	
@@ -444,22 +449,279 @@ public class LocationTermServiceUpdateTests
 		Address megaJailAddress = this.addressDelegate.findOrCreate(
 				"1000", null, null, BuildingCategory.APARTMENT,
 				mt59602);
-		Organization megaJailOrg = this.organizationDelegate
-				.create("Mega Jail", "MEGA", null);
-		Organization megaPnpOrg = this.organizationDelegate
-				.create("Mega PnP", "MPNP", null);
-		Location megaJailLoc = this.locationDelegate.create(
-				megaJailOrg, null, megaJailAddress);
-		Location megaPnpLoc = this.locationDelegate
-				.create(megaPnpOrg, null, megaJailAddress);
+		Organization jail = this.organizationDelegate
+				.create("Jail", "JAIL", null);
+		Organization pnp = this.organizationDelegate
+				.create("PnP", "PNP", null);
+		Location jailLocation = this.locationDelegate.create(
+				jail, null, megaJailAddress);
+		Location pnpLocation = this.locationDelegate
+				.create(pnp, null, megaJailAddress);
 		Date startDate = this.parseDateText("09/12/2001");
 		Date endDate = this.parseDateText("12/03/2016");
 		LocationTerm locationTerm = this.locationTermDelegate
-				.create(offender, megaJailLoc, startDate, endDate, false);
+				.create(offender, jailLocation, startDate, endDate, false);
 		
 		// Action
-		locationTerm = this.locationTermService.update(locationTerm, megaPnpLoc,
-				new DateRange(startDate, endDate));
+		locationTerm = this.locationTermService.update(
+				locationTerm, pnpLocation, new DateRange(startDate, endDate));
+	}
+	
+	/**
+	 * Tests that the earliest of two location terms immediately following
+	 * one another can be updated with its original values.
+	 * 
+	 * @throws DuplicateEntityFoundException if duplicate entities exist
+	 * @throws LocationTermConflictException if original location term
+	 * conflicts
+	 * @throws DateRangeOutOfBoundsException if date range is out of bounds
+	 * @throws LocationTermExistsAfterException if location terms exist
+	 * after original that conflict
+	 * @throws LocationTermLockedException if location term is locked
+	 * @throws OffenderNotUnderSupervisionException if offender is not under
+	 * supervision
+	 */
+	public void testUpdateEarlierLocationTermWithOriginalValues()
+			throws DuplicateEntityFoundException,
+				LocationTermConflictException,
+				DateRangeOutOfBoundsException,
+				LocationTermExistsAfterException,
+				LocationTermLockedException,
+				OffenderNotUnderSupervisionException {
+		
+		// Arrangements - place Blofeld in prison
+		Offender offender = this.offenderDelegate
+				.createWithoutIdentity("Blofeld", "Ernst", "Stavro", null);
+		Country unitedStates = this.countryDelegate.create(
+				"United States", "USA", true);
+		State montana = this.stateDelegate.create(
+				"Montana", "MT", unitedStates, true, true);
+		City helenaMontana = this.cityDelegate.create(
+				"Helena", true, montana, unitedStates);
+		ZipCode mt59602 = this.zipCodeDelegate.create(
+				helenaMontana, "59602", null, true);
+		Address prisonAddress
+			= this.addressDelegate.findOrCreate(
+					"1000 1ST ST", null, null, null, mt59602);
+		SupervisoryOrganization prison
+			= this.supervisoryOrganizationDelegate
+				.create("Prison", "PRSN", null);
+		Location prisonLocation = this.locationDelegate
+				.create(prison, new DateRange(), prisonAddress);
+		Date prisonStartDate = this.parseDateText("02/02/2002");
+		Date prisonEndDate = this.parseDateText("03/03/2003");
+		DateRange prisonDateRange = new DateRange(
+				prisonStartDate, prisonEndDate);
+		LocationTerm prisonTerm = this.locationTermDelegate
+				.create(offender, prisonLocation, prisonStartDate,
+						prisonEndDate, false);
+		SupervisoryOrganizationTerm prereleaseOrganizationTerm
+			= this.supervisoryOrganizationTermDelegate
+				.create(offender, prisonDateRange, prison);
+		CorrectionalStatus altSecure = this.correctionalStatusDelegate
+				.create("Alt-Secure", "ALT", true, (short) 1, true);
+		CorrectionalStatusTerm correctionalStatusTerm
+			= this.correctionalStatusTermDelegate
+				.create(offender, prisonDateRange, altSecure);
+		this.placementTermDelegate.create(offender, prisonDateRange,
+				prereleaseOrganizationTerm, correctionalStatusTerm, null, null,
+				true);
+		
+		// More arrangements - place Blofeld in a prerelease immediately after
+		// Add placement term for location as offender must be supervised in
+		// order to invoke update method for location term
+		Date prereleaseStartDate = this.parseDateText("03/03/2003");
+		Date prereleaseEndDate = this.parseDateText("04/04/2004");
+		Organization prerelease
+			= this.organizationDelegate.create("Prerelease", "PRE", null);
+		Address prereleaseAddress = this.addressDelegate
+				.findOrCreate("2000 2ND ST", null, null, null, mt59602);
+		Location prereleaseLocation = this.locationDelegate
+				.create(prerelease, new DateRange(), prereleaseAddress);
+		this.locationTermDelegate.create(offender, prereleaseLocation,
+				prereleaseStartDate, prereleaseEndDate, false);
+		
+		// Action - attempt to update prison term with original values
+		this.locationTermService.update(prisonTerm, prisonLocation,
+				new DateRange(prisonStartDate, prisonEndDate));
+		
+		// Assertions
+		PropertyValueAsserter.create()
+			.addExpectedValue("dateRange.startDate", prisonStartDate)
+			.addExpectedValue("dateRange.endDate", prisonEndDate)
+			.addExpectedValue("location", prisonLocation)
+			.addExpectedValue("offender", offender)
+			.performAssertions(prisonTerm);
+	}
+	
+	/**
+	 * Tests that the earliest of two location terms immediately following
+	 * one another cannot be updated with values conflicting with the later
+	 * location term without throwing a {@code LocationTermConflictException}.
+	 * 
+	 * @throws LocationTermConflictException if update is prevented due to
+	 * conflicting dates - asserted
+	 * @throws DuplicateEntityFoundException if entities exist
+	 * @throws OffenderNotUnderSupervisionException if offender is not under
+	 * supervision
+	 * @throws LocationTermLockedException if location term is locked 
+	 * @throws LocationTermExistsAfterException if location terms exist after
+	 * location term that is to be updated
+	 * @throws DateRangeOutOfBoundsException if date range is out of bounds 
+	 */
+	@Test(expectedExceptions = {LocationTermConflictException.class})
+	public void testUpdateEarlierLocationTermWithConflictingEndDate()
+			throws LocationTermConflictException,
+				DuplicateEntityFoundException,
+				DateRangeOutOfBoundsException,
+				LocationTermExistsAfterException,
+				LocationTermLockedException,
+				OffenderNotUnderSupervisionException {
+		
+		// Arrangements - place Blofeld securely at a prison
+		Offender blofeld = this.offenderDelegate.createWithoutIdentity(
+				"Blofeld", "Ernst", "Stavro", null);
+		CorrectionalStatus secure = this.correctionalStatusDelegate
+				.create("Secure", "SEC", true, (short) 1, true);
+		DateRange placementDateRange = new DateRange(
+				this.parseDateText("01/01/2011"),
+				this.parseDateText("03/03/2013"));
+		CorrectionalStatusTerm secureTerm
+				= this.correctionalStatusTermDelegate
+					.create(blofeld, placementDateRange, secure);
+		SupervisoryOrganization prison = this.supervisoryOrganizationDelegate
+				.create("Prison", "PRSN", null);
+		SupervisoryOrganizationTerm prisonSupervisoryTerm
+				= this.supervisoryOrganizationTermDelegate
+					.create(blofeld, placementDateRange, prison);
+		this.placementTermDelegate.create(blofeld, placementDateRange,
+				prisonSupervisoryTerm, secureTerm, null, null, false);
+		
+		// More arrangements - locate Blofeld in prison for the earlier
+		// part of his prison placement
+		Country unitedStates = this.countryDelegate.create(
+				"United States", "USA", true);
+		State montana = this.stateDelegate.create(
+				"Montana", "MT", unitedStates, true, true);
+		City helenaMontana = this.cityDelegate.create(
+				"Helena", true, montana, unitedStates);
+		ZipCode mt59602 = this.zipCodeDelegate.create(
+				helenaMontana, "59602", null, true);
+		Address prisonAddress = this.addressDelegate.findOrCreate(
+				"1000 1ST ST", null, null, null, mt59602);
+		Location prisonLocation = this.locationDelegate.create(
+				prison, placementDateRange, prisonAddress);
+		Date prisonLocationEndDate = this.parseDateText("02/02/2012");
+		LocationTerm prisonTerm = this.locationTermDelegate
+				.create(blofeld, prisonLocation,
+						DateRange.getStartDate(placementDateRange),
+						prisonLocationEndDate, false);
+		
+		// Even more arrangements - locate Blofeld in jail immediately after
+		// prison term - this might represent going out to court
+		Address jailAddress = this.addressDelegate
+				.findOrCreate("2000 2ND ST", null, null, null, mt59602);
+		Organization jail = this.organizationDelegate.create(
+				"Jail", "JAIL", null);
+		Location jailLocation = this.locationDelegate
+				.create(jail, new DateRange(prisonLocationEndDate,
+						DateRange.getEndDate(placementDateRange)),
+						jailAddress);
+		this.locationTermDelegate.create(
+				blofeld, jailLocation, prisonLocationEndDate,
+				DateRange.getEndDate(placementDateRange), false);
+		
+		// Action - update prison location term with an end date that conflicts
+		// with prison term
+		Date conflictingPrisonEndDate = this.parseDateText("02/03/2012");
+		this.locationTermService.update(prisonTerm, prisonLocation,
+				new DateRange(
+						DateRange.getStartDate(placementDateRange),
+						conflictingPrisonEndDate));
+	}
+	
+	/**
+	 * Tests that the earliest of two location terms immediately following
+	 * one another cannot be updated with a {@code null} end date which
+	 * would conflict with a future location term without throwing
+	 * a {@code LocationTermConflictException}.
+	 * 
+	 * @throws DuplicateEntityFoundException if entities exist
+	 * @throws OffenderNotUnderSupervisionException if offender is not under
+	 * supervision
+	 * @throws LocationTermLockedException if location term is locked 
+	 * @throws LocationTermExistsAfterException if location terms exist after
+	 * location term that is to be updated - asserted
+	 * @throws DateRangeOutOfBoundsException if date range is out of bounds 
+	 */
+	@Test(expectedExceptions = {LocationTermExistsAfterException.class})
+	public void testUpdateEarlierLocationTermWithNullEndDateFails()
+			throws LocationTermConflictException,
+				DuplicateEntityFoundException,
+				DateRangeOutOfBoundsException,
+				LocationTermExistsAfterException,
+				LocationTermLockedException,
+				OffenderNotUnderSupervisionException {
+		
+		// Arrangements - place Blofeld securely at a prison
+		Offender blofeld = this.offenderDelegate.createWithoutIdentity(
+				"Blofeld", "Ernst", "Stavro", null);
+		CorrectionalStatus secure = this.correctionalStatusDelegate
+				.create("Secure", "SEC", true, (short) 1, true);
+		DateRange placementDateRange = new DateRange(
+				this.parseDateText("01/01/2011"),
+				this.parseDateText("03/03/2013"));
+		CorrectionalStatusTerm secureTerm
+				= this.correctionalStatusTermDelegate
+					.create(blofeld, placementDateRange, secure);
+		SupervisoryOrganization prison = this.supervisoryOrganizationDelegate
+				.create("Prison", "PRSN", null);
+		SupervisoryOrganizationTerm prisonSupervisoryTerm
+				= this.supervisoryOrganizationTermDelegate
+					.create(blofeld, placementDateRange, prison);
+		this.placementTermDelegate.create(blofeld, placementDateRange,
+				prisonSupervisoryTerm, secureTerm, null, null, false);
+		
+		// More arrangements - locate Blofeld in prison for the earlier
+		// part of his prison placement
+		Country unitedStates = this.countryDelegate.create(
+				"United States", "USA", true);
+		State montana = this.stateDelegate.create(
+				"Montana", "MT", unitedStates, true, true);
+		City helenaMontana = this.cityDelegate.create(
+				"Helena", true, montana, unitedStates);
+		ZipCode mt59602 = this.zipCodeDelegate.create(
+				helenaMontana, "59602", null, true);
+		Address prisonAddress = this.addressDelegate.findOrCreate(
+				"1000 1ST ST", null, null, null, mt59602);
+		Location prisonLocation = this.locationDelegate.create(
+				prison, placementDateRange, prisonAddress);
+		Date prisonLocationEndDate = this.parseDateText("02/02/2012");
+		LocationTerm prisonTerm = this.locationTermDelegate
+				.create(blofeld, prisonLocation,
+						DateRange.getStartDate(placementDateRange),
+						prisonLocationEndDate, false);
+		
+		// Even more arrangements - locate Blofeld in jail immediately after
+		// prison term - this might represent going out to court
+		Address jailAddress = this.addressDelegate
+				.findOrCreate("2000 2ND ST", null, null, null, mt59602);
+		Organization jail = this.organizationDelegate.create(
+				"Jail", "JAIL", null);
+		Location jailLocation = this.locationDelegate
+				.create(jail, new DateRange(prisonLocationEndDate,
+						DateRange.getEndDate(placementDateRange)),
+						jailAddress);
+		this.locationTermDelegate.create(
+				blofeld, jailLocation, prisonLocationEndDate,
+				DateRange.getEndDate(placementDateRange), false);
+		
+		// Action - update prison location term with a null end date that
+		// conflicts with the future jail location term
+		this.locationTermService.update(prisonTerm, prisonLocation,
+				new DateRange(
+						DateRange.getStartDate(placementDateRange),
+						null));
 	}
 	
 	/* Helper methods. */
@@ -471,5 +733,4 @@ public class LocationTermServiceUpdateTests
 		customEditor.setAsText(dateText);
 		return (Date) customEditor.getValue();
 	}
-	
 }

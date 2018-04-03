@@ -152,6 +152,9 @@ public class ReportSecurityThreatGroupAffiliationsController {
 	
 	private static final String STG_LISTING_REPORT_NAME 
 		= "/Safety/SecurityThreatGroup/STG_Listing";
+	
+	private static final String STG_ACTIVITY_LISTING_REPORT_NAME 
+	= "/Safety/SecurityThreatGroup/STG_Affiliation_Activity_Listing";	
 
 	private static final String STG_DETAILS_REPORT_NAME 
 		= "/Safety/SecurityThreatGroup/STG_Details";
@@ -285,6 +288,31 @@ public class ReportSecurityThreatGroupAffiliationsController {
 	}
 	
 	/**
+	 * Returns the report for the specified offenders security threat groups and activity.
+	 * 
+	 * @param offender offender
+	 * @param reportFormat report format
+	 * @return response entity with report
+	 */
+	@RequestMapping(value = "/stgAffiliationActivityListingReport.html",
+			method = RequestMethod.GET)
+	@PreAuthorize("hasRole('STG_ACTIVITY_LIST') or hasRole('ADMIN')")
+	public ResponseEntity<byte []> reportSTGActivityListing(@RequestParam(
+			value = "offender", required = true)
+			final Offender offender,
+			@RequestParam(value = "reportFormat", required = true)
+			final ReportFormat reportFormat) {
+		Map<String, String> reportParamMap = new HashMap<String, String>();
+		reportParamMap.put(DOC_ID_REPORT_PARAM_NAME,
+				Long.toString(offender.getOffenderNumber()));
+		byte[] doc = this.reportRunner.runReport(
+				STG_ACTIVITY_LISTING_REPORT_NAME,
+				reportParamMap, reportFormat);
+		return this.reportControllerDelegate.constructReportResponseEntity(
+				doc, reportFormat);
+	}
+	
+	/**
 	 * Returns the report for the specified security threat group affiliation.
 	 * 
 	 * @param affiliation security threat group affiliation
@@ -310,7 +338,7 @@ public class ReportSecurityThreatGroupAffiliationsController {
 	}
 	
 	/**
-	 * Returns the report for the specified security threat group affiliation.
+	 * Returns the report for the specified security threat group activities.
 	 * 
 	 * @param activity security threat group activity
 	 * @param offender offender
@@ -319,7 +347,7 @@ public class ReportSecurityThreatGroupAffiliationsController {
 	 */
 	@RequestMapping(value = "/stgActivityDetailsReport.html",
 			method = RequestMethod.GET)
-	@PreAuthorize("hasRole('STG_AFFILIATION_LIST') or hasRole('ADMIN')")
+	@PreAuthorize("hasRole('STG_ACTIVITY_LIST') or hasRole('ADMIN')")
 	public ResponseEntity<byte []> reportSTGActivityDetails(@RequestParam(
 			value = "activity", required = true)
 			final SecurityThreatGroupActivity activity,

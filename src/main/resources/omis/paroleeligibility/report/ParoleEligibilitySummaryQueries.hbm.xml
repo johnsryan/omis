@@ -26,5 +26,6 @@
 	 	  left join eligibility.status as status
 	  	  left join status.reason as reason
 		where eligibility.offender = :offender
+		order by eligibility.hearingEligibilityDate desc
 	]]></query>
 </hibernate-mapping>

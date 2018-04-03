@@ -781,8 +781,15 @@ public class PlacementTermServiceImpl
 					.equals(correctionalStatusTermOnEndDate)) {
 				
 				// Figures out date bounds
-				Date searchStartDate
-					= DateManipulator.findEarliest(endDate, oldEndDate);
+				Date searchStartDate;
+				if (endDate != null && oldEndDate == null) {
+					searchStartDate = endDate;
+				} else if (oldEndDate != null && endDate == null) {
+					searchStartDate = oldEndDate;
+				} else {
+					searchStartDate
+						= DateManipulator.findEarliest(endDate, oldEndDate);
+				}
 				Date searchEndDate
 					= DateManipulator.findLatest(endDate, oldEndDate);
 				
@@ -988,8 +995,15 @@ public class PlacementTermServiceImpl
 					.equals(supervisoryOrganizationTermOnEndDate)) {
 				
 				// Figures out date bounds
-				Date searchStartDate
-					= DateManipulator.findEarliest(endDate, oldEndDate);
+				Date searchStartDate;
+				if (endDate != null && oldEndDate == null) {
+					searchStartDate = endDate;
+				} else if (oldEndDate != null && endDate == null) {
+					searchStartDate = oldEndDate;
+				} else {
+					searchStartDate
+						= DateManipulator.findEarliest(endDate, oldEndDate);
+				}
 				Date searchEndDate
 					= DateManipulator.findLatest(endDate, oldEndDate);
 				

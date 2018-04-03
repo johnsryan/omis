@@ -15,10 +15,6 @@
 	<fmt:bundle basename="omis.family.msgs.form">
 	<head>
 		<title><fmt:message key="familyAssociationFieldsHeaderLabel" bundle="${family}"/></title>
-		<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1"/>
-		<meta http-equiv="pragma" content="no-cache"/>
-		<meta http-equiv="cache-control" content="no-cache"/>
-		<meta http-equiv="X-UA-Compatible" content="no-cache"/>
 		<jsp:include page="/WEB-INF/views/common/includes/headerOffenderListResources.jsp"/>
 		<jsp:include page="/WEB-INF/views/common/includes/toolsResources.jsp"/>
 		<jsp:include page="/WEB-INF/views/common/includes/linksResources.jsp"/>

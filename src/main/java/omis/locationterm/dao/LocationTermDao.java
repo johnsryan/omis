@@ -128,4 +128,13 @@ public interface LocationTermDao
 	 */
 	@Deprecated
 	LocationTerm endLocationTerm(Offender offender, Date effectiveDate);
+
+	/**
+	 * Returns location term with start date.
+	 * 
+	 * @param offender offender
+	 * @param startDate start date
+	 * @return location term with start date
+	 */
+	LocationTerm findWithStartDate(Offender offender, Date startDate);
 }

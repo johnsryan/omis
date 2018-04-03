@@ -643,7 +643,7 @@ div.panel {
 }
 
 .active {
-	color: white;
+	color: #FF1493;
 <%-- 	text-shadow: 0px 0px 3px black, 0 0 10px hsla(${accentHue}, 100%, 50%, 1), 0 0 5px hsla(${accentHue}, 100%, 85%, 1); --%>
 }
 

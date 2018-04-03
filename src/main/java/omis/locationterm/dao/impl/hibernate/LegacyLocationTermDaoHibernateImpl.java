@@ -134,4 +134,11 @@ public class LegacyLocationTermDaoHibernateImpl
 				.setReadOnly(true)
 				.uniqueResult();
 	}
+
+	/** {@inheritDoc} */
+	@Override
+	public LocationTerm findWithStartDate(
+			final Offender offender, final Date startDate) {
+		throw new UnsupportedOperationException("Not yet implemented");
+	}
 }

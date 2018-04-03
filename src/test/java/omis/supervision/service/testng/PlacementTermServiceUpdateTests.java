@@ -234,9 +234,7 @@ public class PlacementTermServiceUpdateTests
 	 * @throws SupervisoryOrganizationTermConflictException if conflicting
 	 * supervisory organization term exists
 	 */
-	@Test(expectedExceptions = {CorrectionalStatusTermConflictException.class},
-			enabled = false)
-	// TODO Enable once bug in service method is fixed - SA
+	@Test(expectedExceptions = {CorrectionalStatusTermConflictException.class})
 	public void
 	testCorrectionalStatusTermConflictExceptionWithNullConflictingEndDate()
 			throws CorrectionalStatusTermConflictException,
@@ -412,10 +410,8 @@ public class PlacementTermServiceUpdateTests
 	 * supervisory organization term exists (asserted)
 	 * @throws PlacementTermLockedException if placement term is locked
 	 */
-	// TODO Enable once bug in service method is fixed - SA
-	@Test(expectedExceptions = {
-			SupervisoryOrganizationTermConflictException.class},
-		enabled = false)
+	@Test(expectedExceptions
+			= {SupervisoryOrganizationTermConflictException.class})
 	public void
 	testSupervisoryOrganizationTermConflictExceptionWithNullConflictingEndDate()
 			throws DuplicateEntityFoundException,

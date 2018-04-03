@@ -126,6 +126,12 @@
 		  and (locationReasonTerm <> :excludedLocationReasonTerm
 		  	or :excludedLocationReasonTerm is null)
 	]]></query>
+	<query name="findLocationReasonTermWithStartDate"><![CDATA[
+		select locationReasonTerm
+		from omis.locationterm.domain.LocationReasonTerm locationReasonTerm
+		where locationReasonTerm.locationTerm = :locationTerm
+		  and locationReasonTerm.dateRange.startDate = :startDate
+	]]></query>
 	<query name="deleteLocationReasonTermsByLocationTerm"><![CDATA[
 		delete from omis.locationterm.domain.LocationReasonTerm reasonTerm
 		where reasonTerm.locationTerm = :locationTerm

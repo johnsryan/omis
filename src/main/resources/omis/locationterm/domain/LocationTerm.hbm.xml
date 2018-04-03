@@ -72,6 +72,12 @@
 			and 
 				(locationTerm.endDate > :date or locationTerm.endDate is null))
 	]]></query>
+	<query name="findLocationTermForOffenderWithStartDate"><![CDATA[
+		select locationTerm
+		from omis.locationterm.domain.LocationTerm locationTerm
+		where locationTerm.offender = :offender
+		  and locationTerm.dateRange.startDate = :startDate
+	]]></query>
 	<query name="countLocationTermsForOffenderBetweenDates"><![CDATA[
 		select count(locationTerm)
 		from omis.locationterm.domain.LocationTerm locationTerm

@@ -486,8 +486,6 @@ public class LocationTermServiceUpdateReasonTermTests
 	 * @throws LocationReasonTermExistsAfterException if reason terms exist
 	 * after 
 	 */
-	// TODO Fix service implementation so that this test passes and enable - SA
-	@Test(enabled = false)
 	public void testUpdateEarliestAllowedMultipleReasonSameValues()
 			throws DuplicateEntityFoundException,
 				LocationReasonTermExistsAfterException,
@@ -564,8 +562,6 @@ public class LocationTermServiceUpdateReasonTermTests
 	 * @throws DateRangeOutOfBoundsException if date range is out of
 	 * bounds
 	 */
-	// TODO Fix service implementation so that this test passes and enable - SA
-	@Test(enabled = false)
 	public void testUpdateEarliestAllowedMultipleReasonDifferentValues()
 			throws DuplicateEntityFoundException,
 			LocationReasonTermExistsAfterException,

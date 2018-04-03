@@ -345,10 +345,23 @@ public class LocationTermServiceImpl
 			throw new DuplicateEntityFoundException("Location term exists");
 		}
 		
-		// Throws exception if conflicting location terms exist
-		long conflictingCount = this.locationTermDao.countExcluding(
-				locationTerm.getOffender(), DateRange.getStartDate(dateRange),
-				DateRange.getEndDate(dateRange), locationTerm);
+		// Throws exception if conflicting location terms exist (exclude
+		// location terms that start on end date)
+		LocationTerm locationTermStartingOnEndDate
+			= this.locationTermDao.findWithStartDate(
+					locationTerm.getOffender(),
+					DateRange.getEndDate(dateRange));
+		long conflictingCount;
+		if (locationTermStartingOnEndDate != null) {
+			conflictingCount = this.locationTermDao.countExcluding(
+					locationTerm.getOffender(), DateRange.getStartDate(dateRange),
+					DateRange.getEndDate(dateRange), locationTerm,
+					locationTermStartingOnEndDate);
+		} else {
+			conflictingCount = this.locationTermDao.countExcluding(
+					locationTerm.getOffender(), DateRange.getStartDate(dateRange),
+					DateRange.getEndDate(dateRange), locationTerm);
+		}
 		if (conflictingCount > 0) {
 			throw new LocationTermConflictException(
 					conflictingCount + " conflicting location term(s) exist");
@@ -469,11 +482,25 @@ public class LocationTermServiceImpl
 			}
 		}
 		
-		// Throws exception if conflicts exist
+		// Throws exception if conflicts exist - exclude reason term with
+		// start date of end date
+		LocationReasonTerm reasonTermStartingOnEndDate
+			= this.locationReasonTermDelegate
+				.findWithStartDate(reasonTerm.getLocationTerm(),
+						DateRange.getEndDate(dateRange));
+		LocationReasonTerm[] excludedReasonTerms;
+		if (reasonTermStartingOnEndDate != null) {
+			excludedReasonTerms = new LocationReasonTerm[] {
+				reasonTerm, reasonTermStartingOnEndDate
+			};
+		} else {
+			excludedReasonTerms = new LocationReasonTerm[] { reasonTerm };
+		}
 		long countConflicting = this.locationReasonTermDelegate.countExcluding(
 				reasonTerm.getLocationTerm(), 
 				DateRange.getStartDate(dateRange),
-				DateRange.getEndDate(dateRange), reasonTerm);
+				DateRange.getEndDate(dateRange),
+				excludedReasonTerms);
 		if (countConflicting > 0) {
 			throw new LocationReasonTermConflictException(countConflicting
 					+ " conflicting location reason term(s) exist");

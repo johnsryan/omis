@@ -58,16 +58,6 @@
 		and
 			eligibility <> :excludedEligibility
 	]]></query>
-	<query name="findParoleEligibilitySummaryByOffender"><![CDATA[
-		select paroleEligibility
-		from
-			omis.paroleeligibility.domain.ParoleEligibility paroleEligibility
-		where
-			paroleEligibility.offender = :offender
-		order by paroleEligibility.offender.name.lastName, 
-		paroleEligibility.offender.name.firstName, paroleEligibility.offender.offenderNumber,
-		paroleEligibility.hearingEligibilityDate
-	]]></query>
 	<query name="findParoleEligibilityCountByEligibilities"><![CDATA[
 		select count(paroleEligibility.id)
 		from

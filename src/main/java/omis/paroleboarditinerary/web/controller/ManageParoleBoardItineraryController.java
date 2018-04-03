@@ -107,6 +107,8 @@ public class ManageParoleBoardItineraryController {
 	private static final String PAROLE_BOARD_LOCATIONS_MODEL_KEY =
 			"paroleBoardLocations";
 	
+	private static final String SORT_ORDER_MODEL_KEY = "sortOrder";
+	
 	/* Message keys. */
 
 
@@ -186,7 +188,6 @@ public class ManageParoleBoardItineraryController {
 	public ModelAndView create() {
 		ParoleBoardItineraryForm paroleBoardItineraryForm = 
 				new ParoleBoardItineraryForm();
-		paroleBoardItineraryForm.setStartDate(new Date());
 		ModelAndView mav = this.prepareMav(paroleBoardItineraryForm);
 		return mav;
 	}
@@ -446,6 +447,7 @@ public class ManageParoleBoardItineraryController {
 					this.paroleBoardItineraryService
 					.findTreatmentAndSactionCenterLocations());
 		}
+		mav.addObject(SORT_ORDER_MODEL_KEY, (short) 1);
 		return mav;
 	}
 	

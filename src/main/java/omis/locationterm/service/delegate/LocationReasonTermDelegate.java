@@ -310,6 +310,19 @@ public class LocationReasonTermDelegate {
 	}
 
 	/**
+	 * Returns reason term with start date.
+	 * 
+	 * @param locationTerm location term
+	 * @param startDate start date
+	 * @return reason term with start date
+	 */
+	public LocationReasonTerm findWithStartDate(
+			final LocationTerm locationTerm, final Date startDate) {
+		return this.locationReasonTermDao.findWithStartDate(
+				locationTerm, startDate);
+	}
+	
+	/**
 	 * Removes location reason terms by location term.
 	 * 
 	 * @param locationTerm location term by which to remove

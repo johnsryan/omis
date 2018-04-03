@@ -52,6 +52,9 @@ public class LocationTermDaoHibernateImpl
 	private static final String FIND_FOR_OFFENDER_BETWEEN_DATES_QUERY_NAME
 		= "findLocationTermsByOffenderBetweenDates";
 	
+	private static final String FIND_FOR_OFFENDER_WITH_START_DATE_QUERY_NAME
+		= "findLocationTermForOffenderWithStartDate";
+	
 	/* Parameters. */
 	
 	private static final String OFFENDER_PARAM_NAME = "offender";
@@ -211,6 +214,19 @@ public class LocationTermDaoHibernateImpl
 				.setParameter(EXCLUDED_LOCATION_TERM_PARAM_NAME, 
 						excludedLocationTerm).uniqueResult();
 		return count;
+	}
+	
+	/** {@inheritDoc} */
+	@Override
+	public LocationTerm findWithStartDate(
+			final Offender offender, final Date startDate) {
+		LocationTerm locationTerm = (LocationTerm) this.getSessionFactory()
+				.getCurrentSession().getNamedQuery(
+						FIND_FOR_OFFENDER_WITH_START_DATE_QUERY_NAME)
+				.setParameter(OFFENDER_PARAM_NAME, offender)
+				.setTimestamp(START_DATE_PARAM_NAME, startDate)
+				.uniqueResult();
+		return locationTerm;
 	}
 	
 	/** {@inheritDoc} */

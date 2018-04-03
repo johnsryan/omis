@@ -32,7 +32,15 @@
 		<form:errors path="boardMeetingSiteItems[${boardMeetingSiteIndex}].location" cssClass="error"/>
 	</td>
 	<td>
-		<input name="boardMeetingSiteItems[${boardMeetingSiteIndex}].order" type="text" class="veryShortNumber" value="${paroleBoardItineraryForm.boardMeetingSiteItems[boardMeetingSiteIndex].order}"/>
+		<c:choose>
+			<c:when test="${not empty paroleBoardItineraryForm.boardMeetingSiteItems[boardMeetingSiteIndex].order}">
+				<input name="boardMeetingSiteItems[${boardMeetingSiteIndex}].order" type="text" class="veryShortNumber" value="${paroleBoardItineraryForm.boardMeetingSiteItems[boardMeetingSiteIndex].order}"/>
+			</c:when>
+			<c:otherwise>
+				<input name="boardMeetingSiteItems[${boardMeetingSiteIndex}].order" type="text" class="veryShortNumber" value="${sortOrder}"/>
+			</c:otherwise>
+		</c:choose>
+		
 		<form:errors path="boardMeetingSiteItems[${boardMeetingSiteIndex}].order" cssClass="error"/>
 	</td>
 	<td>

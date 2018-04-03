@@ -55,6 +55,9 @@ public class LocationReasonTermDaoHibernateImpl
 	private static final String COUNT_AFTER_DATE_EXCLUDING_QUERY_NAME
 		= "countLocationReasonTermsForOffenderAfterDateExcluding";
 	
+	private static final String FIND_WITH_START_DATE_QUERY_NAME
+		= "findLocationReasonTermWithStartDate";
+	
 	/* Parameters. */
 	
 	private static final String OFFENDER_PARAM_NAME = "offender";
@@ -246,6 +249,19 @@ public class LocationReasonTermDaoHibernateImpl
 		return count;
 	}
 
+	/** {@inheritDoc} */
+	@Override
+	public LocationReasonTerm findWithStartDate(
+			final LocationTerm locationTerm, final Date startDate) {
+		LocationReasonTerm locationReasonTerm = (LocationReasonTerm)
+				this.getSessionFactory().getCurrentSession()
+					.getNamedQuery(FIND_WITH_START_DATE_QUERY_NAME)
+					.setParameter(LOCATION_TERM_PARAM_NAME, locationTerm)
+					.setTimestamp(START_DATE_PARAM_NAME, startDate)
+					.uniqueResult();
+		return locationReasonTerm;
+	}
+	
 	/** {@inheritDoc} */
 	@Override
 	public int removeByLocationTerm(final LocationTerm locationTerm) {
