@@ -1,4 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<%--
+ - OMIS - Offender Management Information System
+ - Copyright (C) 2011 - 2017 State of Montana
+ -
+ - This program is free software: you can redistribute it and/or modify
+ - it under the terms of the GNU General Public License as published by
+ - the Free Software Foundation, either version 3 of the License, or
+ - (at your option) any later version.
+ -
+ - This program is distributed in the hope that it will be useful,
+ - but WITHOUT ANY WARRANTY; without even the implied warranty of
+ - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ - GNU General Public License for more details.
+ -
+ - You should have received a copy of the GNU General Public License
+ - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ --%>
+
 <%--
  - Screen to edit location terms.
  -
@@ -43,6 +62,7 @@
 		var offender = <c:choose><c:when test="${not empty offenderSummary}">${offenderSummary.id}</c:when><c:otherwise>null</c:otherwise></c:choose>;
 		var changeAction = <c:choose><c:when test="${not empty changeAction}">${changeAction.id}</c:when><c:otherwise>null</c:otherwise></c:choose>;
 		var locationTerm = <c:choose><c:when test="${not empty locationTerm}">${locationTerm.id}</c:when><c:otherwise>null</c:otherwise></c:choose>;
+		var locationTermLocation = <c:choose><c:when test="${not empty locationTerm}">${locationTerm.location.id}</c:when><c:otherwise>null</c:otherwise></c:choose>;
     /* ]]> */</script>
 </head>
 <body>

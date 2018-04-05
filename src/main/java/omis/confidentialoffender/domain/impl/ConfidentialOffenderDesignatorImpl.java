@@ -96,12 +96,6 @@ public class ConfidentialOffenderDesignatorImpl
 		if (!this.getOffender().equals(that.getOffender())) {
 			return false;
 		}
-		if (this.getCategory() == null) {
-			throw new IllegalStateException("Category required");
-		}
-		if (!this.getCategory().equals(that.getCategory())) {
-			return false;
-		}
 		return true;
 	}
 	
@@ -111,12 +105,8 @@ public class ConfidentialOffenderDesignatorImpl
 		if (getOffender() == null) {
 			throw new IllegalArgumentException("Offender required");
 		}
-		if (this.getCategory() == null) {
-			throw new IllegalArgumentException("Category required");
-		}
 		int hashCode = 14;
 		hashCode = 29 * hashCode + this.getOffender().hashCode();
-		hashCode = 29 * hashCode + this.getCategory().hashCode();
 		return hashCode;
 	}
 }

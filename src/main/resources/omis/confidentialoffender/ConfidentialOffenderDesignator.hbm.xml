@@ -10,10 +10,10 @@
 <hibernate-mapping package="omis.confidentialoffender.domain">
 	<class entity-name="omis.confidentialoffender.domain.ConfidentialOffenderDesignator"
 		proxy="omis.confidentialoffender.domain.ConfidentialOffenderDesignator" name="omis.confidentialoffender.domain.impl.ConfidentialOffenderDesignatorImpl"
-		table="`CONF_OFF_DESG_SEQ`">
+		table="`CONFIDENTIAL_OFNDR_DES`">
 		<id name="id" column="`ID`" type="java.lang.Long">
 			<generator class="sequence">
-				<param name="sequence">`CONF_OFF_DESG_SEQ`</param>
+				<param name="sequence">`CONFIDENTIAL_OFNDR_DES_SEQ`</param>
 			</generator>
 		</id>		
 		<many-to-one name="offender" column="`OFFENDER_ID`"	
@@ -21,6 +21,13 @@
 		<many-to-one name="category" column="`CATEGORY_ID`"
 			entity-name="omis.offender.domain.ConfidentialOffenderDesignatorCategory" 
 			not-null="true" />
-	</class>
-	
+		<component name="creationSignature">
+			<many-to-one name="userAccount" column="`CREATE_ACCOUNT_ID`" not-null="true"/>
+			<property name="date" column="`CREATE_DATE`" not-null="true"/>
+		</component>
+		<component name="updateSignature">
+			<many-to-one name="userAccount" column="`UPDATE_ACCOUNT_ID`" not-null="true"/>
+			<property name="date" column="`UPDATE_DATE`" not-null="true"/>
+		</component>
+	</class>	
 </hibernate-mapping>

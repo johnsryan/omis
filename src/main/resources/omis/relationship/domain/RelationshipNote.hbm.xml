@@ -61,7 +61,14 @@
 	<query name="findRelationshipNotesByRelationship"><![CDATA[
       select note
       from omis.relationship.domain.RelationshipNote note
+      inner join note.category category
       where note.relationship = :relationship
+      and category in 
+      (
+      	select desCategory
+      	from omis.family.domain.FamilyAssociationNoteCategoryDesignator des
+      	inner join des.relationshipNoteCategory desCategory
+      )
 		order by note.date
 	]]></query>
 </hibernate-mapping>

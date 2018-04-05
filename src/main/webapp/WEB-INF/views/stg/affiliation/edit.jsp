@@ -29,7 +29,7 @@
 	<jsp:include page="/WEB-INF/views/common/includes/toolsResources.jsp"/>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/common/scripts/SessionConfig.js"> </script>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/user/scripts/searchUserAccount.js"> </script>
-	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/stg/scripts/includes/jquery.omis.affiliation.js"> </script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/stg/scripts/JQuery/jquery.omis.affiliation.js"> </script>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/stg/scripts/affiliation.js"> </script>
 	<script type="text/javascript">
 		/* <![CDATA[ */

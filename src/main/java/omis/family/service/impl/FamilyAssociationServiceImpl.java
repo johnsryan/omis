@@ -52,12 +52,10 @@ import omis.family.domain.FamilyAssociationNote;
 import omis.family.domain.component.FamilyAssociationFlags;
 import omis.family.exception.FamilyAssociationConflictException;
 import omis.family.exception.FamilyAssociationExistsException;
-import omis.family.exception.FamilyAssociationNoteExistsException;
 import omis.family.service.FamilyAssociationService;
 import omis.family.service.delegate.FamilyAssociationCategoryDelegate;
 import omis.family.service.delegate.FamilyAssociationDelegate;
 import omis.family.service.delegate.FamilyAssociationNoteCategoryDesignatorDelegate;
-import omis.family.service.delegate.FamilyAssociationNoteDelegate;
 import omis.instance.factory.InstanceFactory;
 import omis.offender.domain.Offender;
 import omis.person.domain.Person;
@@ -96,7 +94,6 @@ import omis.residence.service.delegate.ResidenceTermDelegate;
 public class FamilyAssociationServiceImpl implements FamilyAssociationService {
 	private final FamilyAssociationCategoryDelegate 
 		familyAssociationCategoryDelegate;
-	private final FamilyAssociationNoteDelegate familyAssociationNoteDelegate;
 	private final FamilyAssociationDelegate familyAssociationDelegate;
 	private final AddressDelegate addressDelegate;
 	private final ResidenceTermDelegate residenceTermDelegate;
@@ -113,7 +110,7 @@ public class FamilyAssociationServiceImpl implements FamilyAssociationService {
 	private final SuffixDelegate suffixDelegate;
 	private final RelationshipNoteDelegate relationshipNoteDelegate;
 	private final FamilyAssociationNoteCategoryDesignatorDelegate
-	familyAssociationNoteCategoryDesignatorDelegate;
+			familyAssociationNoteCategoryDesignatorDelegate;
 	
 	/**
 	 * Instantiates an instance of family association service with the
@@ -125,7 +122,6 @@ public class FamilyAssociationServiceImpl implements FamilyAssociationService {
 	 * @param relationshipInstanceFactory relationship instance factory
 	 * @param familyAssociationNoteInstanceFactory family association note 
 	 * 	instance factory
-	 * @param familyAssociationNoteDelegate family association note delegate
 	 * @param familyAssociationDelegate family association delegate
 	 * @param addressDelegate address delegate
 	 * @param residenceTermDelegate residence term delegate
@@ -139,16 +135,16 @@ public class FamilyAssociationServiceImpl implements FamilyAssociationService {
 	 * @param zipCodeDelegate zip code delegate
 	 * @param stateDelegate state delegate
 	 * @param cityDelegate city delegate
-	 * @param streetSuffixDelegate street suffix delegate
-	 * @param addressUnitDesignatorDelegate address unit designator delegate
 	 * @param personIdentityDelegate person identity delegate 
 	 * @param suffixDelegate suffix delegate
 	 * @param relationshipNoteDelegate relationship note delegate
+	 * @param familyAssociationNoteCategoryDesignatorDelegate family association
+	 * @param familyAssociationDelegate familyAssociationDelegate
+	 * note category designator delegate
 	 */
 	public FamilyAssociationServiceImpl(
 		final FamilyAssociationCategoryDelegate 
 		familyAssociationCategoryDelegate,
-		final FamilyAssociationNoteDelegate familyAssociationNoteDelegate,
 		final AuditComponentRetriever auditComponentRetriever,
 		final InstanceFactory<Relationship> relationshipInstanceFactory,
 		final InstanceFactory<FamilyAssociationNote> 
@@ -173,7 +169,6 @@ public class FamilyAssociationServiceImpl implements FamilyAssociationService {
 		familyAssociationNoteCategoryDesignatorDelegate) {
 		this.familyAssociationCategoryDelegate 
 			= familyAssociationCategoryDelegate;
-		this.familyAssociationNoteDelegate = familyAssociationNoteDelegate;
 		this.familyAssociationDelegate = familyAssociationDelegate;
 		this.addressDelegate = addressDelegate;
 		this.residenceTermDelegate = residenceTermDelegate;
@@ -190,7 +185,7 @@ public class FamilyAssociationServiceImpl implements FamilyAssociationService {
 		this.suffixDelegate = suffixDelegate;
 		this.relationshipNoteDelegate = relationshipNoteDelegate;
 		this.familyAssociationNoteCategoryDesignatorDelegate
-		= familyAssociationNoteCategoryDesignatorDelegate;
+			= familyAssociationNoteCategoryDesignatorDelegate;
 	}
 	
 	/**{@inheritDoc} */
@@ -379,33 +374,9 @@ public class FamilyAssociationServiceImpl implements FamilyAssociationService {
 	
 	/**{@inheritDoc}*/
 	@Override
-	public FamilyAssociationNote addNote(final FamilyAssociation association, 
-		final Date date, final String value) 
-				throws FamilyAssociationNoteExistsException {
-		return this.familyAssociationNoteDelegate.create(association, 
-				date, value);
-	}
-	
-	/**{@inheritDoc}*/
-	@Override
-	public FamilyAssociationNote updateNote(final FamilyAssociationNote note, 
-		final Date date, final String value) 
-				throws FamilyAssociationNoteExistsException {
-		return this.familyAssociationNoteDelegate.update(note, date, value);
-	}
-	
-	/**{@inheritDoc}*/
-	@Override
-	public List<FamilyAssociationNote> findNotesByAssociation(
-		final FamilyAssociation	association) {
-		return this.familyAssociationNoteDelegate
-				.findByAssociation(association);
-	}
-	
-	/**{@inheritDoc}*/
-	@Override
-	public void removeNote(final FamilyAssociationNote note) {
-		this.familyAssociationNoteDelegate.remove(note);
+	public List<RelationshipNote> findNotesByRelationship(
+		final Relationship relationship) {
+		return this.relationshipNoteDelegate.findByRelationship(relationship);
 	}
 	
 	/**{@inheritDoc}*/
@@ -529,7 +500,7 @@ public class FamilyAssociationServiceImpl implements FamilyAssociationService {
 	/** {@inheritDoc} */
 	@Override
 	public List<RelationshipNoteCategory>
-	findDesignatedRelationshipNoteCategories() {
+		findDesignatedRelationshipNoteCategories() {
 		return this.familyAssociationNoteCategoryDesignatorDelegate
 			.findDesignatedRelationshipNoteCategories();
 	};

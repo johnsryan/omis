@@ -18,6 +18,7 @@
 		<constructor-arg name="personFieldsValidatorDelegate" ref="personFieldsValidatorDelegate"/>
 		<constructor-arg name="telephoneNumberFieldsValidatorDelegate" ref="telephoneNumberFieldsValidatorDelegate"/>
 		<constructor-arg name="onlineAccountFieldsValidatorDelegate" ref="onlineAccountFieldsValidatorDelegate"/>
+		<constructor-arg name="offenderRelationshipNoteFieldsValidatorDelegate" ref="offenderRelationshipNoteFieldsValidatorDelegate"/>
 	</bean>
   	<bean id="familyAssociationFieldsCreateValidatorDelegate"
 		class="omis.family.web.validator.delegate.FamilyAssociationFieldsCreateValidatorDelegate">
@@ -27,6 +28,7 @@
 		<constructor-arg name="familyAssociationFieldsValidatorDelegate" ref="familyAssociationFieldsValidatorDelegate"/>
 	</bean> 
 	<bean id="familyAssociationFieldsEditValidator" class="omis.family.web.validator.FamilyAssociationFieldsEditValidator">
+		<constructor-arg name="offenderRelationshipNoteFieldsValidatorDelegate" ref="offenderRelationshipNoteFieldsValidatorDelegate"/>
 	</bean>
 
 	<!-- Profile Items -->

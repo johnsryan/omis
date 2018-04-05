@@ -10,10 +10,10 @@
 <hibernate-mapping package="omis.confidentialoffender.domain">
 	<class entity-name="omis.confidentialoffender.domain.ConfidentialOffenderDesignatorCategory"
 		proxy="omis.confidentialoffender.domain.ConfidentialOffenderDesignatorCategory" name="omis.confidentialoffender.domain.impl.ConfidentialOffenderDesignatorCategoryImpl"
-		table="`CONF_OFF_DESG_CAT_SEQ`">
+		table="`CONFIDENTIAL_OFNDR_DES_CAT`">
 		<id name="id" column="`ID`" type="java.lang.Long">
 			<generator class="sequence">
-				<param name="sequence">`CONF_OFF_DESG_CAT_SEQ`</param>
+				<param name="sequence">`CONFIDENTIAL_OFNDR_DES_CAT_SEQ`</param>
 			</generator>
 		</id>
 		<property name="description" column="`DESCRIPTION`" not-null="true" type="string" />

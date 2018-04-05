@@ -1,3 +1,21 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 /**
  * Behavior for location term screen.
  *
@@ -99,6 +117,26 @@ window.onload = function() {
 			updateLocations();
 		};
 	}
+	var allowSingleReasonTerm = document.getElementById("allowSingleReasonTerm");
+	if (allowLocation.value == "true" && allowSingleReasonTerm.value == "true") {
+		var location = document.getElementById("location");
+		location.onchange = function() {
+			var reason = document.getElementById("reason");
+			var url = config.ServerConfig.getContextPath() + "/locationTerm/findAllowedReasons.html?location=" + location.value;
+			if (reason.value != "" && reason.value != null) {
+				url = url + "&defaultReason=" + reason.value;
+			}
+			var request = new XMLHttpRequest();
+			request.open("GET", url, false);
+			request.send(null);
+			if (request.status == 200) {
+				reason.innerHTML = request.responseText;
+			} else {
+				alert("Error - status: " + request.status + "; status text:" + request.statusText + "; URL: " + url);
+			}
+			return false;
+		};
+	}
 	applyDatePicker(document.getElementById("endDate"));
 	applyTimePicker(document.getElementById("endTime"));
 	var allowMultipleReasonTerms = document.getElementById("allowMultipleReasonTerms");
@@ -186,6 +224,9 @@ window.onload = function() {
 			var createReasonTermLink = document.getElementById("createReasonTermLink");
 			createReasonTermLink.onclick = function() {
 				var url = createReasonTermLink.getAttribute("href") + "?itemIndex=" + locationReasonTermItemIndex;
+				if (locationTermLocation != null) {
+					url = url + "&location=" + locationTermLocation;
+				}
 				var request = new XMLHttpRequest();
 				request.open("GET", url + "&timestamp=" + new Date().getTime(), false);
 				request.send();

@@ -4,6 +4,23 @@
  * Date: June 19, 2015
  */
 window.onload = function() {
+	applyActionMenu(document.getElementById("noteItemsActionMenuLink"), function() {
+		var createNoteLink = document.getElementById("addFamilyAssociationNoteItemLink");
+		createNoteLink.onclick = function() {
+		var url = createNoteLink.getAttribute("href") + "?" + "&noteItemIndex=" + offenderRelationshipNoteItemIndex;
+		var request = new XMLHttpRequest();
+		request.open("GET", url, false);
+		request.send();
+		if (request.status == 200) {
+			ui.appendHtml(document.getElementById("relationshipNotesTableBody"), request.responseText);
+			applyNoteRowBehavior(offenderRelationshipNoteItemIndex);
+			offenderRelationshipNoteItemIndex++;
+		} else {
+			alert("Error - status: " + request.status + "; URL: " + url);
+		}
+		return false;
+		};
+	});
 	if(existingFamilyMember==false){
 		var queryInput = document.getElementById("familySearchAddressQuery");
 		var searchAddress = document.getElementById("searchAddress");
@@ -50,25 +67,6 @@ window.onload = function() {
 			};
 		});
 		
-		applyActionMenu(document.getElementById("noteActionMenuLink"), function() {
-			var createNoteLink = document.getElementById("addFamilyAssociationNoteItemLink");
-			createNoteLink.onclick = function() {
-			var url = createNoteLink.getAttribute("href") + "?" + "&noteItemIndex=" + familyAssociationNoteIndex;
-			var request = new XMLHttpRequest();
-			request.open("GET", url, false);
-			request.send();
-			if (request.status == 200) {
-				ui.appendHtml(document.getElementById("noteBody"), request.responseText);
-				applyNoteRowBehavior(familyAssociationNoteIndex);
-				applyDatePicker(document.getElementById("noteDate"+familyAssociationNoteIndex));
-				familyAssociationNoteIndex++;
-			} else {
-				alert("Error - status: " + request.status + "; URL: " + url);
-			}
-			return false;
-			};
-		});
-		
 		applyValueLabelAutoComplete(queryInput, searchAddress, config.ServerConfig.getContextPath() + "/family/findOffenderRelationshipAddress.json");
 		var marriageDateContainer = document.getElementById("marriageDateContainer");
 		var divorceDateContainer = document.getElementById("divorceDateContainer");
@@ -83,7 +81,7 @@ window.onload = function() {
 			document.getElementById("clearAddress")
 		);
 		
-		for (var x = 0; x < familyAssociationNoteIndex; x++) {
+		for (var x = 0; x < offenderRelationshipNoteItemIndex; x++) {
 			applyNoteRowBehavior(x);
 			applyDatePicker(document.getElementById("noteDate"+x));
 		}
@@ -207,6 +205,11 @@ window.onload = function() {
 		var relationship = document.getElementById("relationship");
 		
 		var categoryId = document.getElementById("categoryId").value;
+
+		for (var x = 0; x < offenderRelationshipNoteItemIndex; x++) {
+			applyNoteRowBehavior(x);
+			applyDatePicker(document.getElementById("noteDate"+x));
+		}
 		
 		relationship.onchange = function() {
 			if($("#relationship").val()!=""){
@@ -254,11 +257,21 @@ window.onload = function() {
 	}
 	
 	function applyNoteRowBehavior(noteItemIndex) {
-		var newNoteItemRemoveLink = document.getElementById("removeNoteItem[" + noteItemIndex + "]");
-		newNoteItemRemoveLink.onclick = function() {
-			noteTableRow = document.getElementById(this.getAttribute("id").replace("removeNoteItem", "noteRow"));
-			noteTableRow.parentNode.removeChild(noteTableRow);
+		rowItem = document.getElementById("familyAssociationNoteItems[" + noteItemIndex + "].row");
+		var noteItemDate = document.getElementById("familyAssociationNoteItems[" + noteItemIndex + "].fields.date");
+		applyDatePicker(noteItemDate);
+		var removeLink = document.getElementById("familyAssociationNoteItems[" + noteItemIndex + "].removeLink");
+		removeLink.onclick = function() {
+			var noteItemIndex = this.getAttribute("id").replace("familyAssociationNoteItems[", "").replace("].removeLink", "");
+			var noteItemTableRow = document.getElementById("familyAssociationNoteItems[" + noteItemIndex + "].row");
+			var noteItemTableRowOperation = document.getElementById("familyAssociationNoteItems[" + noteItemIndex + "].operation");
+			if(noteItemTableRowOperation.value=="UPDATE"){
+				noteItemTableRow.hidden = true;
+				noteItemTableRowOperation.value="REMOVE"
+			} else {
+				noteItemTableRow.parentNode.removeChild(noteItemTableRow);
+			}
 			return false;
-		};
+		}
 	}
 };

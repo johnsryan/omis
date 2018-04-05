@@ -12,7 +12,6 @@
         <bean id="familyAssociationService"
         	class="omis.family.service.impl.FamilyAssociationServiceImpl">
         	<constructor-arg name="familyAssociationCategoryDelegate" ref="familyAssociationCategoryDelegate"/>
-        	<constructor-arg name="familyAssociationNoteDelegate" ref="familyAssociationNoteDelegate"/>
         	<constructor-arg name="auditComponentRetriever" ref="auditComponentRetriever"/>
         	<constructor-arg name="relationshipInstanceFactory" ref="relationshipInstanceFactory"/>
         	<constructor-arg name="familyAssociationNoteInstanceFactory" ref="familyAssociationNoteInstanceFactory"/>

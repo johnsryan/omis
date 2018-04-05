@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.locationterm.web.controller;
 
 import java.beans.PropertyEditor;
@@ -87,6 +104,9 @@ public class LocationTermController {
 	private static final String BOOLEAN_VALUE_VIEW_NAME
 		= "common/json/booleanValue";
 	
+	private static final String REASONS_VIEW_NAME
+		= "locationTerm/includes/locationReasons";
+	
 	/* Redirects. */
 	
 	private static final String LIST_REDIRECT
@@ -116,6 +136,8 @@ public class LocationTermController {
 	private static final String LOCATIONS_MODEL_KEY = "locations";
 	
 	private static final String REASONS_MODEL_KEY = "reasons";
+	
+	private static final String DEFAULT_REASON_MODEL_KEY = "defaultReason";
 
 	private static final String OFFENDER_MODEL_KEY = "offender";
 	
@@ -445,8 +467,15 @@ public class LocationTermController {
 		if (changeAction != null) {
 			reasons = this.locationTermService
 					.findReasonsForChangeAction(changeAction);
+		} else if (toLocation != null) {
+			reasons = this.locationTermService
+					.findReasonsAllowedForLocation(toLocation);
+		} else if (locationTermForm.getLocation() != null) {
+			reasons = this.locationTermService
+					.findReasonsAllowedForLocation(
+							locationTermForm.getLocation());
 		} else {
-			reasons = this.locationTermService.findReasons();
+			reasons = Collections.emptyList();
 		}
 		ModelAndView mav = this.prepareEditMav(
 				offender, locationTermForm, locations, reasons);
@@ -569,7 +598,8 @@ public class LocationTermController {
 			locationTermForm.setAssociateMultipleReasonTerms(false);
 			locationTermForm.setAllowSingleReasonTerm(true);
 		}
-		List<LocationReason> reasons = this.locationTermService.findReasons();
+		List<LocationReason> reasons = this.locationTermService
+				.findReasonsAllowedForLocation(locationTerm.getLocation());
 		ModelAndView mav = this.prepareEditMav(
 				locationTerm.getOffender(), locationTermForm,
 				locations, reasons);
@@ -670,11 +700,18 @@ public class LocationTermController {
 				placementTerm = null;
 			}
 			List<LocationReason> reasons;
-			if (changeAction != null) {
+			if (locationTermForm.getLocation() != null) {
+				reasons = this.locationTermService
+					.findReasonsAllowedForLocation(
+							locationTermForm.getLocation());
+			} else if (changeAction != null) {
 				reasons = this.locationTermService
 						.findReasonsForChangeAction(changeAction);
+			} else if (toLocation != null) {
+				reasons = this.locationTermService
+						.findReasonsAllowedForLocation(toLocation);
 			} else {
-				reasons = this.locationTermService.findReasons();
+				reasons = Collections.emptyList();
 			}
 			ModelAndView mav = this.prepareRedisplayEditMav(
 					offender, locations, reasons, locationTermForm, result);
@@ -790,7 +827,7 @@ public class LocationTermController {
 						.findLocationsAllowedForPlacement();
 			}
 			List<LocationReason> reasons = this.locationTermService
-					.findReasons();
+					.findReasonsAllowedForLocation(locationTerm.getLocation());
 			ModelAndView mav =  this.prepareRedisplayEditMav(
 					locationTerm.getOffender(), locations, reasons,
 					locationTermForm, result);
@@ -800,6 +837,9 @@ public class LocationTermController {
 		DateRange dateRange = this.createDateRange(
 			locationTermForm.getStartDate(), locationTermForm.getStartTime(),
 			locationTermForm.getEndDate(), locationTermForm.getEndTime());
+		LocationTerm updatedLocationTerm
+				= this.locationTermService.update(locationTerm,
+						locationTerm.getLocation(), dateRange);
 		if (locationTermForm.getAllowMultipleReasonTerms() != null
 				&& locationTermForm.getAllowMultipleReasonTerms()
 				&& locationTermForm.getAssociateMultipleReasonTerms() != null
@@ -808,7 +848,8 @@ public class LocationTermController {
 					: locationTermForm.getReasonTermItems()) {
 				if (LocationReasonTermItemOperation.CREATE
 						.equals(reasonTermItem.getOperation())) {
-					this.locationTermService.createReasonTerm(locationTerm,
+					this.locationTermService.createReasonTerm(
+							updatedLocationTerm,
 							this.createDateRange(
 									reasonTermItem.getStartDate(),
 									reasonTermItem.getStartTime(),
@@ -837,11 +878,12 @@ public class LocationTermController {
 			}
 		} else {
 			List<LocationReasonTerm> reasonTerms = this.locationTermService
-					.findReasonTerms(locationTerm);
+					.findReasonTerms(updatedLocationTerm);
 			if (reasonTerms.size() == 0) {
 				if (locationTermForm.getReason() != null) {
 					this.locationTermService.createReasonTerm(
-						locationTerm, dateRange, locationTermForm.getReason());
+							updatedLocationTerm, dateRange,
+							locationTermForm.getReason());
 				}
 			} else if (reasonTerms.size() == 1) {
 				LocationReasonTerm reasonTerm = reasonTerms.get(0);
@@ -857,10 +899,8 @@ public class LocationTermController {
 				throw new IllegalStateException("Multiple reasons exist");
 			}
 		}
-		this.locationTermService.update(locationTerm,
-				locationTerm.getLocation(), dateRange);
 		return new ModelAndView(String.format(LIST_REDIRECT,
-				locationTerm.getOffender().getId()));
+				updatedLocationTerm.getOffender().getId()));
 	}
 
 	/**
@@ -894,12 +934,20 @@ public class LocationTermController {
 			value = "/createReasonTermRow.html", method = RequestMethod.GET)
 	public ModelAndView createReasonTermRow(
 			@RequestParam(value = "itemIndex", required = true)
-				final Integer itemIndex) {
+				final Integer itemIndex,
+			@RequestParam(value = "location", required = false)
+				final Location location) {
 		LocationReasonTermItem locationReasonTermItem
 			= new LocationReasonTermItem();
 		locationReasonTermItem.setOperation(
 				LocationReasonTermItemOperation.CREATE);
-		List<LocationReason> reasons = this.locationTermService.findReasons();
+		List<LocationReason> reasons;
+		if (location != null) {
+			reasons = this.locationTermService
+					.findReasonsAllowedForLocation(location);
+		} else {
+			reasons = this.locationTermService.findReasons();
+		}
 		ModelAndView mav = new ModelAndView(
 				REASON_TERM_EDIT_TABLE_ROW_VIEW_NAME);
 		mav.addObject(REASON_TERM_ITEM_MODEL_KEY, locationReasonTermItem);
@@ -992,6 +1040,27 @@ public class LocationTermController {
 		if (defaultLocation != null) {
 			mav.addObject(DEFAULT_LOCATION_MODEL_KEY, defaultLocation);
 		}
+		return mav;
+	}
+	
+	/**
+	 * Returns reasons allowed for location.
+	 * 
+	 * @param location location
+	 * @return reasons allowed for location
+	 */
+	@RequestMapping(
+			value = "/findAllowedReasons.html", method = RequestMethod.GET)
+	public ModelAndView findAllowedReasons(
+			@RequestParam(value = "location", required = true)
+				final Location location,
+			@RequestParam(value = "defaultReason", required = false)
+				final LocationReason defaultReason) {
+		List<LocationReason> reasons = this.locationTermService
+				.findReasonsAllowedForLocation(location);
+		ModelAndView mav = new ModelAndView(REASONS_VIEW_NAME);
+		mav.addObject(REASONS_MODEL_KEY, reasons);
+		mav.addObject(DEFAULT_REASON_MODEL_KEY, defaultReason);
 		return mav;
 	}
 	

@@ -6,7 +6,11 @@
 window.onload = function() {
 	applyRemoveLinkConfirmation();
 	applyActionMenu(document.getElementById("actionMenuLink"));
-	applyActionMenu(document.getElementById("activityActionMenuLink"));
+	
+	var activityActionMenuLink = document.getElementById("activityActionMenuLink");
+	if (activityActionMenuLink != null) {
+		applyActionMenu(activityActionMenuLink);
+	}
 	var affiliationsTableBody = document.getElementById("affiliations");
 	var rowLinks = affiliationsTableBody.getElementsByTagName("a");
 	for (var rowLinkIndex = 0; rowLinkIndex < rowLinks.length; rowLinkIndex++) {
@@ -18,19 +22,21 @@ window.onload = function() {
 		}
 	}
 	var activitiesTableBody = document.getElementById("activities");
-	var activityRowLinks = activitiesTableBody.getElementsByTagName("a");
-	for (var rowLinkIndex = 0; rowLinkIndex < activityRowLinks.length; rowLinkIndex++) {
-		var rowLink = activityRowLinks[rowLinkIndex];
-		if (rowLink.getAttribute("class") != null && rowLink.getAttribute("class").indexOf("actionMenuItem") > -1) {
-			applyActionMenu(rowLink, function() {
-				applyRemoveLinkConfirmation();
-			});
-		}
-		if (rowLink.getAttribute("class") !=null && rowLink.getAttribute("class").indexOf("showLink") != -1) {
-			rowLink.onclick = function() {
-				listInvolvedOffenders(this);
-				return false;
-			};
+	if (activitiesTableBody != null) {
+		var activityRowLinks = activitiesTableBody.getElementsByTagName("a");
+		for (var rowLinkIndex = 0; rowLinkIndex < activityRowLinks.length; rowLinkIndex++) {
+			var rowLink = activityRowLinks[rowLinkIndex];
+			if (rowLink.getAttribute("class") != null && rowLink.getAttribute("class").indexOf("actionMenuItem") > -1) {
+				applyActionMenu(rowLink, function() {
+					applyRemoveLinkConfirmation();
+				});
+			}
+			if (rowLink.getAttribute("class") !=null && rowLink.getAttribute("class").indexOf("showLink") != -1) {
+				rowLink.onclick = function() {
+					listInvolvedOffenders(this);
+					return false;
+				};
+			}
 		}
 	}
 	return false;

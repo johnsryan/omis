@@ -215,13 +215,16 @@
 			<form:errors path="cohabitant" cssClass="error"/>
 		</span>
 	</fieldset>
-	<c:if test="${empty familyMember}">
+	<%-- <c:if test="${empty familyMember}"> --%>
 		<fieldset>
 			<legend><fmt:message key="offenderToFamilyAssociationNotesLabel"/></legend>
-			<c:set var="familyAssociationNotes" value="${familyAssociationNotes}" scope="request"/>
-			<jsp:include page="noteTable.jsp"/>
+			<form:errors cssClass="error" path="familyAssociationNoteItems"/>
+			<c:set var="offenderRelationshipNoteItems" value="${familyAssociationForm.familyAssociationNoteItems}" scope="request"/>
+			<c:set var="offenderRelationshipNoteItemsFieldName" value="familyAssociationNoteItems" scope="request"/>
+			<c:set var="baseUrl" value="${pageContext.request.contextPath}/family" scope="request"/>
+			<jsp:include page="/WEB-INF/views/offenderRelationship/includes/offenderRelationshipNoteItemsTable.jsp"/>
 		</fieldset>
-	</c:if>
+	<%-- </c:if> --%>
 	<c:if test="${not empty familyAssociation}">
 		<c:set var="updatable" value="${familyAssociation}" scope="request"/>
 		<jsp:include page="/WEB-INF/views/audit/includes/updateSignature.jsp"/>

@@ -12,6 +12,7 @@ import omis.audit.domain.VerificationMethod;
 import omis.contact.web.form.PoBoxFields;
 import omis.family.domain.FamilyAssociationCategory;
 import omis.family.web.controller.FamilyAddressOperation;
+import omis.offenderrelationship.web.form.OffenderRelationshipNoteItem;
 import omis.person.web.form.PersonFields;
 import omis.user.domain.UserAccount;
 
@@ -45,8 +46,8 @@ public class FamilyAssociationForm implements Serializable {
 	private Boolean emergencyContact;
 	private Boolean dependent;
 	private Boolean cohabitant;
-	private List<FamilyAssociationNoteItem> familyAssociationNoteItems 
-		= new ArrayList<FamilyAssociationNoteItem>();
+	private List<OffenderRelationshipNoteItem> familyAssociationNoteItems 
+		= new ArrayList<OffenderRelationshipNoteItem>();
 	private FamilyAddressOperation addressOperation;
 	private Address address;
 	private String addressQuery;
@@ -351,7 +352,7 @@ public class FamilyAssociationForm implements Serializable {
 	 *
 	 * @return the familyAssociationNoteItems
 	 */
-	public List<FamilyAssociationNoteItem> getFamilyAssociationNoteItems() {
+	public List<OffenderRelationshipNoteItem> getFamilyAssociationNoteItems() {
 		return this.familyAssociationNoteItems;
 	}
 
@@ -361,7 +362,7 @@ public class FamilyAssociationForm implements Serializable {
 	 * @param familyAssociationNoteItems family association note items
 	 */
 	public void setFamilyAssociationNoteItems(
-			final List<FamilyAssociationNoteItem> familyAssociationNoteItems) {
+		final List<OffenderRelationshipNoteItem> familyAssociationNoteItems) {
 		this.familyAssociationNoteItems = familyAssociationNoteItems;
 	}
 

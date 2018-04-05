@@ -40,17 +40,16 @@ import omis.datatype.DateRange;
 import omis.demographics.domain.Sex;
 import omis.family.domain.FamilyAssociation;
 import omis.family.domain.FamilyAssociationCategory;
-import omis.family.domain.FamilyAssociationNote;
 import omis.family.domain.component.FamilyAssociationFlags;
 import omis.family.exception.FamilyAssociationConflictException;
 import omis.family.exception.FamilyAssociationExistsException;
-import omis.family.exception.FamilyAssociationNoteExistsException;
 import omis.offender.domain.Offender;
 import omis.person.domain.Person;
 import omis.person.domain.Suffix;
 import omis.region.domain.City;
 import omis.region.domain.State;
 import omis.region.exception.CityExistsException;
+import omis.relationship.domain.Relationship;
 import omis.relationship.domain.RelationshipNote;
 import omis.relationship.domain.RelationshipNoteCategory;
 import omis.relationship.exception.ReflexiveRelationshipException;
@@ -326,42 +325,11 @@ public interface FamilyAssociationService {
 	List<OnlineAccountHost> findOnlineAccountHosts();
 	
 	/**
-	 * Add note.
-	 * @param association family association
-	 * @param date date
-	 * @param value text
-	 * @return family association note
-	 * @throws FamilyAssociationNoteExistsException family association
-	 * exists exception
-	 */
-	FamilyAssociationNote addNote(FamilyAssociation association, Date date, 
-		String value) throws FamilyAssociationNoteExistsException;
-	
-	/**
-	 * Update note.
-	 * @param note family association note
-	 * @param date date
-	 * @param value text
-	 * @return family association note
-	 * @throws FamilyAssociationNoteExistsException family association
-	 * exists exception
-	 */
-	FamilyAssociationNote updateNote(FamilyAssociationNote note, Date date, 
-		String value) throws FamilyAssociationNoteExistsException;
-	
-	/**
-	 * Find notes by association.
-	 * @param association family association
+	 * Find notes by relationship.
+	 * @param relationship relationship
 	 * @return a list of family association notes
 	 */
-	List<FamilyAssociationNote> findNotesByAssociation(
-			FamilyAssociation association);
-	
-	/**
-	 * Remove note.
-	 * @param note family association note
-	 */
-	void removeNote(FamilyAssociationNote note);
+	List<RelationshipNote> findNotesByRelationship(Relationship relationship);
 	
 	/**
 	 * Find contact.

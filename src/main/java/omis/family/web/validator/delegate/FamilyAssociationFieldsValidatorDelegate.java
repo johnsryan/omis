@@ -17,6 +17,8 @@
  */
 package omis.family.web.validator.delegate;
 
+import java.io.Serializable;
+
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
@@ -29,13 +31,15 @@ import omis.contact.web.validator.delegate.TelephoneNumberFieldsValidatorDelegat
 import omis.family.domain.FamilyAssociationCategoryClassification;
 import omis.family.web.controller.FamilyAddressOperation;
 import omis.family.web.form.FamilyAssociationForm;
-import omis.family.web.form.FamilyAssociationNoteItem;
-import omis.family.web.form.FamilyAssociationNoteItemOperation;
 import omis.family.web.form.FamilyAssociationOnlineAccountItem;
 import omis.family.web.form.FamilyAssociationOnlineAccountItemOperation;
 import omis.family.web.form.FamilyAssociationTelephoneNumberItem;
 import omis.family.web.form.FamilyAssociationTelephoneNumberItemOperation;
+import omis.offenderrelationship.web.form.OffenderRelationshipNoteItem;
+import omis.offenderrelationship.web.form.OffenderRelationshipNoteItemOperation;
+import omis.offenderrelationship.web.validator.OffenderRelationshipNoteFieldsValidatorDelegate;
 import omis.person.web.validator.delegate.PersonFieldsValidatorDelegate;
+import omis.util.EqualityChecker;
 
 /**
  * Validator for family association fields.
@@ -54,6 +58,8 @@ public class FamilyAssociationFieldsValidatorDelegate implements Validator {
 		telephoneNumberFieldsValidatorDelegate;
 	private OnlineAccountFieldsValidatorDelegate 
 		onlineAccountFieldsValidatorDelegate;
+	private OffenderRelationshipNoteFieldsValidatorDelegate
+		offenderRelationshipNoteFieldsValidatorDelegate;
 	
 	/** Instantiates a validator for family form. 
 	 * 
@@ -64,6 +70,9 @@ public class FamilyAssociationFieldsValidatorDelegate implements Validator {
 	 * validator delegate
 	 * @param onlineAccountFieldsValidatorDelegate online account fields
 	 * validator delegate
+	 * @param offenderRelationshipNoteFieldsValidatorDelegate offender
+	 * relationship note fields validator delegate
+	 * 
 	 */
 	public FamilyAssociationFieldsValidatorDelegate(
 			final AddressFieldsValidatorDelegate addressFieldsValidatorDelegate,
@@ -72,7 +81,9 @@ public class FamilyAssociationFieldsValidatorDelegate implements Validator {
 			final TelephoneNumberFieldsValidatorDelegate 
 					telephoneNumberFieldsValidatorDelegate,
 			final OnlineAccountFieldsValidatorDelegate 
-					onlineAccountFieldsValidatorDelegate) {
+					onlineAccountFieldsValidatorDelegate,
+			final OffenderRelationshipNoteFieldsValidatorDelegate
+			offenderRelationshipNoteFieldsValidatorDelegate) {
 		// Default instantiation
 		this.addressFieldsValidatorDelegate = addressFieldsValidatorDelegate;
 		this.poBoxFieldsValidatorDelegate = poBoxFieldsValidatorDelegate;
@@ -81,6 +92,8 @@ public class FamilyAssociationFieldsValidatorDelegate implements Validator {
 				telephoneNumberFieldsValidatorDelegate;
 		this.onlineAccountFieldsValidatorDelegate = 
 				onlineAccountFieldsValidatorDelegate;
+		this.offenderRelationshipNoteFieldsValidatorDelegate
+			= offenderRelationshipNoteFieldsValidatorDelegate;
 	}
 
 	/** {@inheritDoc} */
@@ -95,7 +108,7 @@ public class FamilyAssociationFieldsValidatorDelegate implements Validator {
 		FamilyAssociationForm form = (FamilyAssociationForm) target;
 		if (form.getPersonFields() != null) {
 			this.personFieldsValidatorDelegate.validatePersonFields(
-			 form.getPersonFields(), "personFields", errors);
+				form.getPersonFields(), "personFields", errors);
 		}
 		
 		if (form.getCategory() == null) {
@@ -114,24 +127,46 @@ public class FamilyAssociationFieldsValidatorDelegate implements Validator {
 		if (form.getFamilyAssociationNoteItems() != null) {
 			for (int index = 0; index < form.getFamilyAssociationNoteItems()
 					.size(); index++) {
-				FamilyAssociationNoteItem item = form
+				OffenderRelationshipNoteItem item = form
 						.getFamilyAssociationNoteItems().get(index);
 				
-				if (FamilyAssociationNoteItemOperation.CREATE.equals(
-						item.getOperation())) {
-					if (item.getDate() == null) {
-						errors.rejectValue("familyAssociationNoteItems[" 
-								+ index + "].date", 
-								"familyAssociationFields.familyAssociationNote"
-								+ ".date.empty");
-					}
-					if (item.getNote() == null || item.getNote().isEmpty()) {
-						errors.rejectValue("familyAssociationNoteItems[" 
-								+ index + "].note", "familyAssociationFields"
-							+ ".familyAssociationNote.note.empty");
+				if (item.getOperation() != null
+						&& !OffenderRelationshipNoteItemOperation.REMOVE
+							.equals(item.getOperation())) {
+					this.offenderRelationshipNoteFieldsValidatorDelegate
+							.validate(
+								String.format(
+									"familyAssociationNoteItems[%d].fields",
+									index),
+								item.getFields(), errors);
+					
+					for (int innerNoteIndex = 0; innerNoteIndex < index;
+							innerNoteIndex++) {
+						OffenderRelationshipNoteItem innerItem
+							= form.getFamilyAssociationNoteItems()
+							.get(innerNoteIndex);
+						
+						if (innerItem.getOperation() != null
+								&& !OffenderRelationshipNoteItemOperation.REMOVE
+									.equals(innerItem.getOperation())) {
+							if (EqualityChecker.create(Serializable.class)
+									.add(item.getFields().getDate(),
+											innerItem.getFields().getDate())
+									.add(item.getFields().getCategory(),
+											innerItem.getFields().getCategory())
+									.add(item.getFields().getValue(),
+											innerItem.getFields().getValue())
+									.check()) {
+								errors.rejectValue(
+										String.format(
+											"familyAssociationNoteItems[%d]"
+											+ ".fields", index),
+										"offenderRelationshipNote.duplicate");
+								break;
+							}
+						}
 					}
 				}
-				index++;
 			}
 		}
 		
@@ -144,7 +179,7 @@ public class FamilyAssociationFieldsValidatorDelegate implements Validator {
 					    && !form.getSecondAddressDesignator().isEmpty()) 
 							|| form.getAddressFields() != null) {
 						this.addressFieldsValidatorDelegate
-						 .validateAddressFields(form.getAddressFields(), 
+						 	.validateAddressFields(form.getAddressFields(), 
 								"addressFields", errors);
 					} 
 				} else if (form.getAddressOperation().equals(
@@ -234,8 +269,8 @@ public class FamilyAssociationFieldsValidatorDelegate implements Validator {
 								.get(innerIndex)
 								.getTelephoneNumberFields()
 								.getValue()) 
-							   && !FamilyAssociationTelephoneNumberItemOperation
-							 .REMOVE.equals(form
+							    && !FamilyAssociationTelephoneNumberItemOperation
+							    .REMOVE.equals(form
 									.getFamilyAssociationTelephoneNumberItems()
 									.get(innerIndex).getOperation())) {
 								errors.rejectValue(
@@ -268,8 +303,8 @@ public class FamilyAssociationFieldsValidatorDelegate implements Validator {
 					if (fields != null) {
 						this.onlineAccountFieldsValidatorDelegate
 							 .validateOnlineAccountFields(fields, 
-									"familyAssociationOnlineAccountItems[" + 
-											index + "].onlineAccountFields",
+									"familyAssociationOnlineAccountItems["
+							 + index + "].onlineAccountFields",
 											errors);
 						if (fields.getPrimary() != null 
 								&& fields.getPrimary().equals(true)) {

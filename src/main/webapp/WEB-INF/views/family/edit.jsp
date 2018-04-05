@@ -34,7 +34,7 @@
 		<jsp:include page="/WEB-INF/views/common/includes/contactSummaryResources.jsp"/> 
 		<script type="text/javascript" src="${pageContext.request.contextPath}/resources/family/scripts/family.js"></script>
   		<script type="text/javascript">
-  			var familyAssociationNoteIndex= ${familyAssociationNoteIndex};
+  			var offenderRelationshipNoteItemIndex= ${offenderRelationshipNoteItemIndex};
   			var familyAssociationTelephoneNumberIndex= ${familyAssociationTelephoneNumberIndex};
   			var familyAssociationOnlineAccountIndex= ${familyAssociationOnlineAccountIndex};
 			var existingFamilyMember = ${existingFamilyMember};

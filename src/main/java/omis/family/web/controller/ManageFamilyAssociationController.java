@@ -1,5 +1,5 @@
 /*
- * OMIS - Offender Management Information System
+ * OMIS - Offender Management Information System.
  * Copyright (C) 2011 - 2017 State of Montana
  *
  * This program is free software: you can redistribute it and/or modify
@@ -22,24 +22,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
 import omis.address.domain.Address;
 import omis.address.domain.AddressUnitDesignator;
@@ -83,8 +65,6 @@ import omis.family.exception.FamilyAssociationNoteExistsException;
 import omis.family.report.FamilyAssociationReportService;
 import omis.family.service.FamilyAssociationService;
 import omis.family.web.form.FamilyAssociationForm;
-import omis.family.web.form.FamilyAssociationNoteItem;
-import omis.family.web.form.FamilyAssociationNoteItemOperation;
 import omis.family.web.form.FamilyAssociationOnlineAccountItem;
 import omis.family.web.form.FamilyAssociationOnlineAccountItemOperation;
 import omis.family.web.form.FamilyAssociationTelephoneNumberItem;
@@ -96,13 +76,21 @@ import omis.offender.beans.factory.OffenderPropertyEditorFactory;
 import omis.offender.domain.Offender;
 import omis.offender.report.OffenderReportService;
 import omis.offender.web.controller.delegate.OffenderSummaryModelDelegate;
+import omis.offenderrelationship.web.form.OffenderRelationshipNoteFields;
+import omis.offenderrelationship.web.form.OffenderRelationshipNoteItem;
+import omis.offenderrelationship.web.form.OffenderRelationshipNoteItemOperation;
 import omis.person.domain.Person;
 import omis.person.domain.Suffix;
 import omis.person.web.delegate.PersonFieldsControllerDelegate;
 import omis.person.web.form.PersonFields;
 import omis.region.domain.City;
 import omis.region.domain.State;
+import omis.relationship.domain.Relationship;
+import omis.relationship.domain.RelationshipNote;
+import omis.relationship.domain.RelationshipNoteCategory;
 import omis.relationship.exception.ReflexiveRelationshipException;
+import omis.relationship.exception.RelationshipNoteExistsException;
+import omis.relationship.service.delegate.RelationshipDelegate;
 import omis.report.ReportRunner;
 import omis.report.web.controller.delegate.ReportControllerDelegate;
 import omis.residence.exception.PrimaryResidenceExistsException;
@@ -111,6 +99,28 @@ import omis.residence.exception.ResidenceTermExistsException;
 import omis.user.domain.UserAccount;
 import omis.util.StringUtility;
 import omis.web.controller.delegate.BusinessExceptionHandlerDelegate;
+
+
+
+
+//import org.aspectj.asm.internal.Relationship;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  * Controller for Family.
@@ -128,14 +138,16 @@ import omis.web.controller.delegate.BusinessExceptionHandlerDelegate;
 @RequestMapping("/family")
 @PreAuthorize("hasRole('USER')")
 public class ManageFamilyAssociationController {
+	/* URLs. */
+	private static final String BASE_URL = "/family";
+	
+	// Used to add base URL to views
+	private static final String BASE_URL_MODEL_KEY = "baseUrl";
+	
 	/* views */
 	private static final String EDIT_VIEW_NAME = "family/edit";
 	private static final String FAMILY_ASSOCIATION_ACTION_MENU_VIEW_NAME
 		= "family/includes/familyAssociationActionMenu";
-	private static final String FAMILY_ASSOCIATION_NOTES_ACTION_MENU_VIEW_NAME
-		= "family/includes/familyAssociationNotesActionMenu";
-	private static final String NOTE_ITEM_VIEW_NAME 
-		= "family/includes/noteItem";
 	private static final String TELEPHONE_NUMBERS_ACTION_MENU_VIEW_NAME
 		= "family/includes/telephoneNumbersActionMenu";
 	private static final String EMAILS_ACTION_MENU_VIEW_NAME
@@ -148,6 +160,12 @@ public class ManageFamilyAssociationController {
 	private static final String 
 		CREATE_FAMILY_ASSOCIATION_ONLINE_ACCOUNT_TABLE_ROW_VIEW_NAME 
 		= "family/includes/createFamilyAssociationOnlineAccountTableRow";
+	private static final String CREATE_RELATIONSHIP_NOTE_TABLE_ROW_VIEW_NAME
+		= "offenderRelationship/includes/offenderRelationshipNoteItemTableRow";
+	private static final String
+		FAMILY_ASSOCIATION_NOTE_ITEMS_ACTION_MENU_VIEW_NAME
+		= "family/includes/"
+				+ "familyAssociationNotesActionMenu";
 	
 	/* model keys */
 	private static final String NAME_SUFFIXES_MODEL_KEY = "nameSuffixes";
@@ -165,7 +183,7 @@ public class ManageFamilyAssociationController {
 	private static final String FAMILY_ASSOCIATION_CATEGORIES_MODEL_KEY
 		= "categories";
 	private static final String FAMILY_ASSOCIATION_NOTE_INDEX_MODEL_KEY
-		= "familyAssociationNoteIndex";
+		= "offenderRelationshipNoteItemIndex";
 	private static final String FAMILY_ASSOCIATION_FIELDS_MODEL_KEY 
 		= "familyAssociationFields";
 	private static final String ONLINE_ACCOUNT_HOSTS_MODEL_KEY 
@@ -184,7 +202,9 @@ public class ManageFamilyAssociationController {
 	private static final String FAMILY_ASSOCIATION_EMAIL_ITEM_MODEL_KEY
 		= "familyAssociationOnlineAccountItem";
 	private static final String FAMILY_ASSOCIATION_NOTE_ITEM_MODEL_KEY
-		= "familyAssociationNoteItem";
+		= "offenderRelationshipNoteItem";
+	/*private static final String FAMILY_ASSOCIATION_NOTE_ITEMS_MODEL_KEY
+		= "offenderRelationshipNoteItems";*/
 	private static final String FAMILY_ASSOCIATION_NOTE_ITEMS_MODEL_KEY
 		= "familyAssociationNoteItems";
 	private static final String CREATE_FLAG_MODEL_KEY = "createFlag";
@@ -209,11 +229,29 @@ public class ManageFamilyAssociationController {
 		= "contact.Exists";
 	private static final String ZIPCODE_EXISTS_EXCEPTION_MESSAGE_KEY
 		= "zipCode.Exists";
+	private static final String NOTE_CATEGORIES_MODEL_KEY
+		= "offenderRelationshipNoteCategories";
+	private static final String NOTE_EXISTS_EXCEPTION_MESSAGE_KEY
+		= "note.Conflicts";
+	private final static String  REFLEXIVE_RELATIONSHIP_EXCEPTION_MESSAGE_KEY
+		= "family.reflexiveRelationship";
 	
 	/* Message bundles. */
 	private static final String ERROR_BUNDLE_NAME = "omis.family.msgs.form";
+	private static final String RELATIONSHIP_NOTE_ERROR_BUNDLE_NAME
+		= "omis.offenderrelationship.msgs.form";
+	private static final String FAMILY_ERROR_BUNDLE_NAME
+		= "omis.family.msgs.form";
 	
-				
+	// Field name of note items
+	private static final String
+		OFFENDER_RELATIONSHIP_NOTE_ITEMS_FIELD_NAME_MODEL_KEY
+		= "offenderRelationshipNoteItemsFieldName";
+	
+	/* Fields names. */
+	private static final String OFFENDER_RELATIONSHIP_NOTE_ITEMS_FIELD_NAME
+		= "familyAssociationNoteItems";
+	
 	/* Redirects. */
 	private static final String LIST_REDIRECT
 		= "redirect:/family/list.html?offender=%d";
@@ -306,6 +344,14 @@ public class ManageFamilyAssociationController {
 	@Qualifier("telephoneNumberPropertyEditorFactory")
 	private PropertyEditorFactory telephoneNumberPropertyEditorFactory;
 	
+	@Autowired
+	@Qualifier("relationshipNoteCategoryPropertyEditorFactory")
+	private PropertyEditorFactory relationshipNoteCategoryPropertyEditorFactory;
+	
+	@Autowired
+	@Qualifier("relationshipNotePropertyEditorFactory")
+	private PropertyEditorFactory relationshipNotePropertyEditorFactory;
+	
 	/* Services. */
 	@Autowired
 	@Qualifier("familyAssociationService")
@@ -363,6 +409,10 @@ public class ManageFamilyAssociationController {
 	@Qualifier("businessExceptionHandlerDelegate")
 	private BusinessExceptionHandlerDelegate businessExceptionHandlerDelegate;
 	
+	@Autowired
+	@Qualifier("relationshipDelegate")
+	private RelationshipDelegate relationshipDelegate;
+	
 	/* Validator */
 	@Autowired
 	@Qualifier("familyAssociationFormValidator")
@@ -377,9 +427,7 @@ public class ManageFamilyAssociationController {
 	@Qualifier("addressPropertyEditorFactory")
 	private PropertyEditorFactory addressPropertyEditorFactory;	
 	
-	
 	/* Report runners. */
-	
 	@Autowired
 	@Qualifier("reportRunner")
 	private ReportRunner reportRunner;
@@ -396,20 +444,24 @@ public class ManageFamilyAssociationController {
 	 * @param offender offender for whom to create a new family association
 	 * @param familyMember family member
 	 * @return model and view to create a new family association
+	 * @throws ReflexiveRelationshipException 
+	 * @throws RelationshipNoteExistsException 
 	 */
 	@RequestMapping(value = "/create.html", method = RequestMethod.GET)
 	@PreAuthorize("hasRole('FAMILY_ASSOCIATION_CREATE') or hasRole('ADMIN')")
 	public ModelAndView create(@RequestParam(value = "offender", 
 		required = true) final Offender offender,
 		@RequestParam(value = "familyMember", required = false) 
-		final Person familyMember) {
+		final Person familyMember) throws RelationshipNoteExistsException,
+		ReflexiveRelationshipException {
 		FamilyAssociationForm familyAssociationFields 
 			= new FamilyAssociationForm();		
 		if (familyMember == null) {  
 			// Create new family association
 			familyAssociationFields.setAddressOperation(
-					FamilyAddressOperation.EXISTING);
-			List<FamilyAssociationNoteItem> familyAssociationNoteItems = null;
+				FamilyAddressOperation.EXISTING);
+			List<OffenderRelationshipNoteItem> familyAssociationNoteItems
+				= new ArrayList<OffenderRelationshipNoteItem>();
 			List<FamilyAssociationTelephoneNumberItem> 
 				familyAssociationTelephoneNumberItems 
 				= new ArrayList<FamilyAssociationTelephoneNumberItem>();
@@ -444,7 +496,10 @@ public class ManageFamilyAssociationController {
 			// Create family association with existing .....
 			familyAssociationFields.setAddressOperation(
 				FamilyAddressOperation.EXISTING);
-			FamilyAssociation familyAssociation = null;
+			Relationship existingRelationship
+				= this.relationshipDelegate.find((Person) offender,
+					familyMember);
+
 			Boolean createFlag = true;			
 			FamilyAssociationForm familyAssociationForm
 				= new FamilyAssociationForm();		
@@ -548,25 +603,30 @@ public class ManageFamilyAssociationController {
 			int familyAssociationEmailIndex 
 				= familyAssociationEmailItems.size();
 			/* Set note section */
-			List<FamilyAssociationNoteItem> familyAssociationNoteItems 
-				= new ArrayList<FamilyAssociationNoteItem>();
-			for (FamilyAssociationNote familyAssociationNote 
-				: this.familyAssociationService.findNotesByAssociation(
-				familyAssociation)) {
-				FamilyAssociationNoteItem item 
-					= new FamilyAssociationNoteItem();
-				item.setDate(familyAssociationNote.getDate());
-				item.setNote(familyAssociationNote.getValue());
-				item.setOperation(FamilyAssociationNoteItemOperation.CREATE);
-				familyAssociationNoteItems.add(item);
-			}			
-			familyAssociationForm
-				.setFamilyAssociationNoteItems(familyAssociationNoteItems);
-			/*int familyAssociationNoteIndex = familyAssociationNoteItems
-			 * .size()+1;*/
+			List<OffenderRelationshipNoteItem> familyAssociationNoteItems 
+				= new ArrayList<OffenderRelationshipNoteItem>();
+			if (existingRelationship != null) {
+				for (RelationshipNote note : this.familyAssociationService
+					.findNotesByRelationship(existingRelationship)) {
+					OffenderRelationshipNoteItem item 
+						= new OffenderRelationshipNoteItem();
+					OffenderRelationshipNoteFields noteField
+						= new OffenderRelationshipNoteFields();
+					noteField.setCategory(note.getCategory());
+					noteField.setDate(note.getDate());
+					noteField.setValue(note.getValue());
+					item.setFields(noteField);
+					item.setNote(note);
+					item.setOperation(
+						OffenderRelationshipNoteItemOperation.UPDATE);
+					familyAssociationNoteItems.add(item);
+				}			
+			}
+			familyAssociationForm.setFamilyAssociationNoteItems(
+				familyAssociationNoteItems);
 			int familyAssociationNoteIndex = familyAssociationNoteItems.size();
 			return this.prepareEditMav(familyAssociationForm,  offender, 
-				familyAssociation, familyAssociationNoteItems, 
+				null, familyAssociationNoteItems, 
 				familyAssociationTelephoneNumberItems, 
 				familyAssociationEmailItems, familyAssociationNoteIndex, 
 				familyAssociationTelephoneNumberIndex, 
@@ -591,6 +651,7 @@ public class ManageFamilyAssociationController {
 	 * @throws FamilyAssociationNoteExistsException family association note
 	 * exists exception
 	 * @throws ResidenceTermExistsException residence term exists exception
+	 * @throws ContactExistsException contact exists exception
 	 */
 	@RequestMapping(value = "/create.html", method = RequestMethod.POST)
 	@PreAuthorize("hasRole('FAMILY_ASSOCIATION_CREATE') or hasRole('ADMIN')")
@@ -622,20 +683,21 @@ public class ManageFamilyAssociationController {
 			}			
 			int familyAssociationNoteIndex = 0;
 			if (familyAssociationForm.getFamilyAssociationNoteItems() != null) {
-				List<FamilyAssociationNoteItem> familyAssociationNoteItems 
-					= new ArrayList<FamilyAssociationNoteItem>();
-				for (FamilyAssociationNoteItem noteItem 
+				List<OffenderRelationshipNoteItem> familyAssociationNoteItems 
+					= new ArrayList<OffenderRelationshipNoteItem>();
+				for (OffenderRelationshipNoteItem noteItem 
 						: familyAssociationForm
-						 	.getFamilyAssociationNoteItems()) {
-					if (FamilyAssociationNoteItemOperation.CREATE.equals(
+						.getFamilyAssociationNoteItems()) {
+					if (OffenderRelationshipNoteItemOperation.CREATE.equals(
 						noteItem.getOperation())) {
 						familyAssociationNoteItems.add(noteItem);
 					}
 				}
 				familyAssociationForm.setFamilyAssociationNoteItems(
 					familyAssociationNoteItems);
-				familyAssociationNoteIndex = familyAssociationForm
-						.getFamilyAssociationNoteItems().size();
+				familyAssociationNoteIndex
+					= familyAssociationForm.getFamilyAssociationNoteItems()
+					.size();
 			} 
 			int familyAssociationTelephoneNumberIndex = 0;
 			if (familyAssociationForm
@@ -689,15 +751,7 @@ public class ManageFamilyAssociationController {
 					familyAssociationEmailIndex, createFlag, 
 					associatedPerson);		
 			}
-//			if((familyAssociationForm.getCategory()!=null
-//				&&FamilyAssociationCategoryClassification.CHILD.equals(
-//					familyAssociationForm.getCategory().getClassification()))
-//				&&((familyAssociationForm.getPersonFields()
-//			.getBirthDate()==null)
-//				||(familyAssociationForm.getPersonFields().getSex()==null))){
-//				throw new IllegalArgumentException(
-//			ILLEGAL_ARGUMENT_EXCEPTION_MSG1);
-//			}
+
 			if ((familyAssociationForm.getCategory() != null)) {
 				if (FamilyAssociationCategoryClassification.CHILD.equals(
 						familyAssociationForm.getCategory().getClassification())
@@ -1502,12 +1556,15 @@ public class ManageFamilyAssociationController {
 						familyAssociationForm.getMarriageDate(), 
 					familyAssociationForm.getDivorceDate());
 		/* Add/create family association notes. DuplicateEntityFoundException */
-			for (FamilyAssociationNoteItem item 
+			for (OffenderRelationshipNoteItem item 
 					: familyAssociationForm.getFamilyAssociationNoteItems()) {
-				if (FamilyAssociationNoteItemOperation.CREATE
+				if (OffenderRelationshipNoteItemOperation.CREATE
 					.equals(item.getOperation())) {
-					this.familyAssociationService.addNote(familyAssociation, 
-							item.getDate(), item.getNote());
+					this.familyAssociationService.addRelationshipNote(
+						familyAssociation,
+						item.getFields().getCategory(),
+						item.getFields().getDate(),
+						item.getFields().getValue());
 				}
 			}
 		
@@ -1666,17 +1723,33 @@ public class ManageFamilyAssociationController {
 		} else {  
 		// Existing... click the "Create Family Association" link on the left 
 			//side of each row on the search result screen
+			int familyAssociationNoteIndex = 0;
+			List<OffenderRelationshipNoteItem> removedNoteItems 
+				= new ArrayList<OffenderRelationshipNoteItem>();
+			for (OffenderRelationshipNoteItem noteItem
+				: familyAssociationForm.getFamilyAssociationNoteItems()){
+				if(noteItem.getOperation()!=null){
+					familyAssociationNoteIndex
+					= familyAssociationNoteIndex + 1;
+				} else {
+					removedNoteItems.add(noteItem);
+				}
+			}
+			familyAssociationForm.getFamilyAssociationNoteItems()
+			.removeAll(removedNoteItems);
 			this.familyAssociationFormValidator.validate(familyAssociationForm,
 				result);
 			if (result.hasErrors()) {
 				Boolean createFlag = true;
+				
 				return this.prepareRedisplayEditMav(familyAssociationForm, 
 				familyAssociationForm.getFamilyAssociationNoteItems(),
 				offender, null, null, 
 				familyAssociationForm
 				.getFamilyAssociationTelephoneNumberItems(),
 				familyAssociationForm.getFamilyAssociationOnlineAccountItems(),
-				0, result, 0, 0, createFlag, associatedPerson);
+				familyAssociationNoteIndex,	result, 0, 0, createFlag,
+				associatedPerson);
 			}
 			
 			DateRange dateRange = new DateRange();
@@ -1687,11 +1760,36 @@ public class ManageFamilyAssociationController {
 						.getCohabitant(),
 				familyAssociationForm.getDependent(),
 				familyAssociationForm.getEmergencyContact());
-			this.familyAssociationService
+			FamilyAssociation newFamilyAssociation
+				= this.familyAssociationService
 				.associate(offender, associatedPerson, 
 				dateRange, familyAssociationForm.getCategory(), 
 				familyAssociationFalgs, familyAssociationForm.getMarriageDate(),
 				familyAssociationForm.getDivorceDate());
+			
+			for (OffenderRelationshipNoteItem noteItem
+				: familyAssociationForm.getFamilyAssociationNoteItems()) {
+				if (OffenderRelationshipNoteItemOperation.CREATE.equals(
+					noteItem.getOperation())) {
+					this.familyAssociationService.addRelationshipNote(
+						newFamilyAssociation,
+						noteItem.getFields().getCategory(),
+						noteItem.getFields().getDate(),
+						noteItem.getFields().getValue());
+				}
+				if (OffenderRelationshipNoteItemOperation.REMOVE.equals(
+					noteItem.getOperation())) {
+					this.familyAssociationService.removeRelationshipNote(
+						noteItem.getNote());
+				}
+				if (OffenderRelationshipNoteItemOperation.UPDATE.equals(
+					noteItem.getOperation())) {
+					this.familyAssociationService.updateRelationshipNote(
+						noteItem.getNote(), noteItem.getFields().getCategory(),
+						noteItem.getFields().getDate(),
+						noteItem.getFields().getValue());
+				}
+			}
 			return new ModelAndView(String.format(LIST_REDIRECT, 
 				offender.getId()));
 		}		
@@ -1700,14 +1798,19 @@ public class ManageFamilyAssociationController {
 	/** Edit an existing family association. 
 	 * @param familyAssociation family association.
 	 * @param offender offender
-	 * @return edited family association view. */
+	 * @return edited family association view. 
+	 * @throws RelationshipNoteExistsException relationship note exists
+	 * exception
+	 * @throws ReflexiveRelationshipException reflexive relationship exception
+	 * */
 	@RequestMapping(value = "/edit.html", method = RequestMethod.GET)
 	@PreAuthorize("hasRole('FAMILY_ASSOCIATION_VIEW') or hasRole('ADMIN')")
 	public ModelAndView edit(
 		@RequestParam(value = "familyAssociation", required = true)
 		final FamilyAssociation familyAssociation,
 		@RequestParam(value = "offender", required = true)
-		final Offender offender) {
+		final Offender offender) throws RelationshipNoteExistsException,
+		ReflexiveRelationshipException {
 		FamilyAssociationForm familyAssociationForm
 			= new FamilyAssociationForm();		
 		/* Set Address section */
@@ -1790,8 +1893,9 @@ public class ManageFamilyAssociationController {
 						socialSecurityNumber = "XXX-XX-"
 								+ socialSecurityNumber;
 					}				
-				personFields.setSocialSecurityNumber(socialSecurityNumber);
-				familyAssociationForm.setValidateSocialSecurityNumber(false);
+					personFields.setSocialSecurityNumber(socialSecurityNumber);
+					familyAssociationForm.setValidateSocialSecurityNumber(
+						false);
 				}
 			}
 			personFields.setStateIdNumber(
@@ -1880,23 +1984,28 @@ public class ManageFamilyAssociationController {
 		}
 		familyAssociationForm.setCategory(familyAssociation.getCategory());
 		/* Set family association notes */
-		List<FamilyAssociationNote> familyAssociationNotes 
-			= this.familyAssociationService
-				.findNotesByAssociation(familyAssociation);
-		List<FamilyAssociationNoteItem> familyAssociationNoteItems 
-			= new ArrayList<FamilyAssociationNoteItem>();
-		for (FamilyAssociationNote note : familyAssociationNotes) {
-			FamilyAssociationNoteItem familyAssociationNoteItem 
-				= new FamilyAssociationNoteItem();
-			familyAssociationNoteItem.setDate(note.getDate());
-			familyAssociationNoteItem.setNote(note.getValue());
+		List<RelationshipNote> familyAssociationNotes 
+			= this.familyAssociationService.findNotesByRelationship(
+				familyAssociation.getRelationship());
+		List<OffenderRelationshipNoteItem> familyAssociationNoteItems 
+			= new ArrayList<OffenderRelationshipNoteItem>();
+		for (RelationshipNote note : familyAssociationNotes) {
+			OffenderRelationshipNoteItem familyAssociationNoteItem 
+				= new OffenderRelationshipNoteItem();
+			OffenderRelationshipNoteFields fields
+				= new OffenderRelationshipNoteFields();
+			fields.setCategory(note.getCategory());
+			fields.setDate(note.getDate());
+			fields.setValue(note.getValue());
+			familyAssociationNoteItem.setFields(fields);
+			familyAssociationNoteItem.setNote(note);
 			familyAssociationNoteItem.setOperation(
-				FamilyAssociationNoteItemOperation.EDIT); 
+				OffenderRelationshipNoteItemOperation.UPDATE);
 			familyAssociationNoteItems.add(familyAssociationNoteItem);
 		}
-		familyAssociationForm
-			.setFamilyAssociationNoteItems(familyAssociationNoteItems);
-		int familyAssociationNoteIndex = familyAssociationNoteItems.size() + 1;
+		familyAssociationForm.setFamilyAssociationNoteItems(
+			familyAssociationNoteItems);
+		int familyAssociationNoteIndex = familyAssociationNoteItems.size();
 		int familyAssociationEmailIndex = familyAssociationEmailItems.size();
 		Boolean createFlag = false;
 		return this.prepareEditMav(familyAssociationForm,  offender, 
@@ -1918,7 +2027,8 @@ public class ManageFamilyAssociationController {
 	 * @throws FamilyAssociationConflictException 
 	 * family association conflict exception
 	 * @throws FamilyAssociationExistsException 
-	 * @throws FamilyAssociationNoteExistsException 
+	 * @throws RelationshipNoteExistsException relationship note exists
+	 * exception
 	 */
 	@RequestMapping(value = "/edit.html", method = RequestMethod.POST)
 	@PreAuthorize("hasRole('FAMILY_ASSOCIATION_EDIT') or hasRole('ADMIN')")
@@ -1930,16 +2040,32 @@ public class ManageFamilyAssociationController {
 		final FamilyAssociationForm familyAssociationForm,
 		final BindingResult result) throws 
 		FamilyAssociationConflictException, FamilyAssociationExistsException,
-		FamilyAssociationNoteExistsException {	
+		RelationshipNoteExistsException {
+		int familyAssociationNoteIndex = 0;
+		List<OffenderRelationshipNoteItem> removedNoteItems 
+			= new ArrayList<OffenderRelationshipNoteItem>();
+		for (OffenderRelationshipNoteItem noteItem
+			: familyAssociationForm.getFamilyAssociationNoteItems()){
+			if(noteItem.getOperation()!=null){
+				familyAssociationNoteIndex
+				= familyAssociationNoteIndex + 1;
+			} else {
+				removedNoteItems.add(noteItem);
+			}
+		}
+		familyAssociationForm.getFamilyAssociationNoteItems()
+		.removeAll(removedNoteItems);
 		this.familyAssociationFieldsEditValidator
-		 	.validate(familyAssociationForm,
-			result);
+		 	.validate(familyAssociationForm, result);
 		if (result.hasErrors()) {
-			int familyAssociationNoteIndex = 0;
-			if (familyAssociationForm.getFamilyAssociationNoteItems() != null) {
-				familyAssociationNoteIndex = familyAssociationForm
-				.getFamilyAssociationNoteItems().size();
-			} 
+			for (OffenderRelationshipNoteItem noteItem
+				: familyAssociationForm.getFamilyAssociationNoteItems()){
+				if(OffenderRelationshipNoteItemOperation.REMOVE.equals(
+					noteItem.getOperation())){
+					noteItem.setOperation(
+					OffenderRelationshipNoteItemOperation.UPDATE);
+				}
+			}
 			Boolean createFlag = true;
 			return this.prepareRedisplayEditMav(familyAssociationForm, 
 				familyAssociationForm.getFamilyAssociationNoteItems(),
@@ -1962,42 +2088,33 @@ public class ManageFamilyAssociationController {
 			familyAssociationForm.getCategory(), familyAssociationFalgs, 
 			familyAssociationForm.getMarriageDate(), 
 			familyAssociationForm.getDivorceDate());		
+		
 		/* Update/add family association notes */
-		List<FamilyAssociationNote> originalFamilyAssociationNotes 
-			= this.familyAssociationService
-				.findNotesByAssociation(familyAssociation);
-		int originalFamilyAssociationNoteIndex 
-			= originalFamilyAssociationNotes.size();	
-		List<FamilyAssociationNoteItem> familyAssociationNoteItems 
-			= familyAssociationForm.getFamilyAssociationNoteItems();
-		int newFamilyAssociationNoteIndex 
-			= familyAssociationNoteItems.size() - 1;
-		
-		for (int index = 0; index < originalFamilyAssociationNoteIndex; 
-				index++) {
-			if (FamilyAssociationNoteItemOperation.EDIT.equals(
-				familyAssociationNoteItems.get(index).getOperation())) {
-				this.familyAssociationService.updateNote(
-					originalFamilyAssociationNotes.get(index), 
-					familyAssociationNoteItems.get(index).getDate(), 
-					familyAssociationNoteItems.get(index).getNote());
+		for(OffenderRelationshipNoteItem noteItem
+			: familyAssociationForm.getFamilyAssociationNoteItems()){
+			if(OffenderRelationshipNoteItemOperation.UPDATE.equals(
+				noteItem.getOperation())){
+				this.familyAssociationService.updateRelationshipNote(
+					noteItem.getNote(),
+					noteItem.getFields().getCategory(),
+					noteItem.getFields().getDate(),
+					noteItem.getFields().getValue());
 			}
-			if (FamilyAssociationNoteItemOperation.REMOVE.equals(
-				familyAssociationNoteItems.get(index).getOperation())) {
-				this.familyAssociationService
-					.removeNote(originalFamilyAssociationNotes.get(index));
+			if(OffenderRelationshipNoteItemOperation.CREATE.equals(
+				noteItem.getOperation())){
+				this.familyAssociationService.addRelationshipNote(
+				familyAssociation, 
+				noteItem.getFields().getCategory(),
+				noteItem.getFields().getDate(),
+				noteItem.getFields().getValue());
 			}
-		}
-		
-		for (int index = originalFamilyAssociationNoteIndex; 
-			index <= newFamilyAssociationNoteIndex; index++) {
-			if (FamilyAssociationNoteItemOperation.CREATE.equals(
-				familyAssociationNoteItems.get(index).getOperation())) {
-				this.familyAssociationService.addNote(familyAssociation, 
-					familyAssociationNoteItems.get(index).getDate(), 
-					familyAssociationNoteItems.get(index).getNote());
+			if (OffenderRelationshipNoteItemOperation.REMOVE.equals(
+				noteItem.getOperation())) {
+				this.familyAssociationService.removeRelationshipNote(
+					noteItem.getNote());
 			}
 		}
+		
 		return new ModelAndView(String.format(LIST_REDIRECT, offender.getId()));
 	}
 	
@@ -2015,11 +2132,11 @@ public class ManageFamilyAssociationController {
 			final FamilyAssociation familyAssociation,
 			@RequestParam(value = "offender", required = true)
 			final Offender offender) {
-		List<FamilyAssociationNote> familyAssociationNotes 
-			= this.familyAssociationService.findNotesByAssociation(
-				familyAssociation);
-		for (FamilyAssociationNote note : familyAssociationNotes) {
-			this.familyAssociationService.removeNote(note);
+		List<RelationshipNote> familyAssociationNotes 
+			= this.familyAssociationService.findNotesByRelationship(
+				familyAssociation.getRelationship());
+		for (RelationshipNote note : familyAssociationNotes) {
+			this.familyAssociationService.removeRelationshipNote(note);
 		}
 		this.familyAssociationService.remove(familyAssociation);
 		return new ModelAndView(String.format(LIST_REDIRECT, offender.getId()));
@@ -2028,7 +2145,7 @@ public class ManageFamilyAssociationController {
 	private ModelAndView prepareEditMav(
 		final FamilyAssociationForm familyAssociationForm,
 		final Offender offender, final FamilyAssociation familyAssociation,
-		final List<FamilyAssociationNoteItem> familyAssociationNoteItems,
+		final List<OffenderRelationshipNoteItem> familyAssociationNoteItems,
 		final List<FamilyAssociationTelephoneNumberItem> 
 			familyAssociationTelephoneNumberItems,
 		final List<FamilyAssociationOnlineAccountItem> 
@@ -2438,16 +2555,20 @@ public class ManageFamilyAssociationController {
 			map.addAttribute(EXISTING_CONTACT_SUMMARY_MODEL_KEY,
 					existingContactSummary);
 		}
+		List<RelationshipNoteCategory> noteCategories
+			= this.familyAssociationService
+			.findDesignatedRelationshipNoteCategories();
+		mav.addObject(NOTE_CATEGORIES_MODEL_KEY, noteCategories);
 		return new ModelAndView(EDIT_VIEW_NAME, map);
 	}	
 	
 	// Prepares redisplay edit model and view
 	private ModelAndView prepareRedisplayEditMav(
 		final FamilyAssociationForm familyAssociationFields,
-		final List<FamilyAssociationNoteItem> familyAssociationNoteItems,
+		final List<OffenderRelationshipNoteItem> familyAssociationNoteItems,
 		final Offender offender,
 		final FamilyAssociation familyAssociation,
-		final List<FamilyAssociationNote> familyAssociationNotes,
+		final List<RelationshipNote> familyAssociationNotes,
 		final List<FamilyAssociationTelephoneNumberItem> 
 			familyAssociationTelephoneNumberItems,
 		final List<FamilyAssociationOnlineAccountItem> 
@@ -2463,23 +2584,22 @@ public class ManageFamilyAssociationController {
 			familyAssociationTelephoneNumberItems, familyAssociationEmailItems,
 			familyAssociationNoteIndex, familyAssociationTelephoneNumberIndex,
 			familyAssociationEmailIndex, createFlag, person);
-			
 		mav.addObject(BindingResult.MODEL_KEY_PREFIX
 			+ FAMILY_ASSOCIATION_FIELDS_MODEL_KEY, result);
 		return mav;
 	}	
 
 	// Returns whether the current user has the specified role
-		private boolean hasRole(final String role) {
-			for (GrantedAuthority authority :
-					SecurityContextHolder.getContext().getAuthentication()
-						.getAuthorities()) {
-				if (role.equals(authority.getAuthority())) {
-					return true;
-				}
+	private boolean hasRole(final String role) {
+		for (GrantedAuthority authority
+				: SecurityContextHolder.getContext().getAuthentication()
+					.getAuthorities()) {
+			if (role.equals(authority.getAuthority())) {
+				return true;
 			}
-			return false;
-		}	
+		}
+		return false;
+	}	
 
 	/**
 	 * Returns a view for family associations action menu pertaining to the 
@@ -2519,17 +2639,13 @@ public class ManageFamilyAssociationController {
 	 * Returns a view for family association notes action menu pertaining to the
 	 * specified offender.
 	 * 
-	 * @param offender offender
 	 * @return model and view for family associations action menu
 	 */
-	@RequestMapping(value = "/familyAssociationNotesActionMenu.html",
+	@RequestMapping(value = "/noteItemsActionMenu.html",
 			method = RequestMethod.GET)
-	public ModelAndView familyAssociationNotesActionMenu(@RequestParam(
-		value = "offender",	required = true) final Offender offender) {
-		ModelMap map = new ModelMap();
-		map.addAttribute(OFFENDER_MODEL_KEY, offender);
-		return new ModelAndView(FAMILY_ASSOCIATION_NOTES_ACTION_MENU_VIEW_NAME, 
-			map);
+	public ModelAndView familyAssociationNotesActionMenu() {
+		return new ModelAndView(
+			FAMILY_ASSOCIATION_NOTE_ITEMS_ACTION_MENU_VIEW_NAME);
 	}	
 	
 	/**
@@ -2586,16 +2702,24 @@ public class ManageFamilyAssociationController {
 	public ModelAndView addFamilyAssociationNoteItem(@RequestParam(
 			value = "noteItemIndex", required = true)
 			final int noteItemIndex) {
-		ModelMap map = new ModelMap();
-		FamilyAssociationNoteItem familyAssociationNoteItem 
-			= new FamilyAssociationNoteItem();
+		OffenderRelationshipNoteItem familyAssociationNoteItem 
+			= new OffenderRelationshipNoteItem();
 		familyAssociationNoteItem.setOperation(
-			FamilyAssociationNoteItemOperation.CREATE); 
-		map.addAttribute(FAMILY_ASSOCIATION_NOTE_ITEM_MODEL_KEY, 
-			familyAssociationNoteItem);
-		map.addAttribute(FAMILY_ASSOCIATION_NOTE_INDEX_MODEL_KEY, 
+			OffenderRelationshipNoteItemOperation.CREATE); 
+		List<RelationshipNoteCategory> noteCategories
+			= this.familyAssociationService
+			.findDesignatedRelationshipNoteCategories();
+		ModelAndView mav = new ModelAndView(
+			CREATE_RELATIONSHIP_NOTE_TABLE_ROW_VIEW_NAME);
+		mav.addObject(FAMILY_ASSOCIATION_NOTE_INDEX_MODEL_KEY, 
 				noteItemIndex);
-		return new ModelAndView(NOTE_ITEM_VIEW_NAME, map);
+		mav.addObject(FAMILY_ASSOCIATION_NOTE_ITEM_MODEL_KEY, 
+				familyAssociationNoteItem);
+		mav.addObject(OFFENDER_RELATIONSHIP_NOTE_ITEMS_FIELD_NAME_MODEL_KEY,
+				OFFENDER_RELATIONSHIP_NOTE_ITEMS_FIELD_NAME);
+		mav.addObject(BASE_URL_MODEL_KEY, BASE_URL);
+		mav.addObject(NOTE_CATEGORIES_MODEL_KEY, noteCategories);
+		return mav;
 	}
 	
 	/**
@@ -2946,6 +3070,11 @@ public class ManageFamilyAssociationController {
 			this.addressPropertyEditorFactory.createPropertyEditor());
 		binder.registerCustomEditor(TelephoneNumber.class,
 			this.telephoneNumberPropertyEditorFactory.createPropertyEditor());
+		binder.registerCustomEditor(RelationshipNoteCategory.class,
+			this.relationshipNoteCategoryPropertyEditorFactory
+			.createPropertyEditor());
+		binder.registerCustomEditor(RelationshipNote.class,
+			this.relationshipNotePropertyEditorFactory.createPropertyEditor());
 	}
 	
 	// Returns true if value is true; false otherwise
@@ -2981,5 +3110,34 @@ public class ManageFamilyAssociationController {
 		return this.businessExceptionHandlerDelegate
 				.prepareModelAndView(FAMILY_ASSOCIATION_CONFLICT_MESSAGE_KEY,
 						ERROR_BUNDLE_NAME, familyAssociationConflictException);
+	}
+	
+	/**
+	 * Handles {@code RelationshipNoteExistsException}.
+	 * 
+	 * @param relationshipNoteExistsException relationship note exists exception
+	 * @return screen to handle {@code RelationshipNoteExistsException}
+	 */
+	@ExceptionHandler(RelationshipNoteExistsException.class)
+	public ModelAndView handleRelationshipNoteExistsException(
+		final RelationshipNoteExistsException relationshipNoteExistsException) {
+		return this.businessExceptionHandlerDelegate.prepareModelAndView(
+			NOTE_EXISTS_EXCEPTION_MESSAGE_KEY,
+			RELATIONSHIP_NOTE_ERROR_BUNDLE_NAME,
+			relationshipNoteExistsException);
+	}
+	
+	/**
+	 * Handles {@code ReflexiveRelationshipException}.
+	 * 
+	 * @param exception reflexive relationship exception
+	 * @return screen to handle {@code ReflexiveRelationshipException}
+	 */
+	@ExceptionHandler(ReflexiveRelationshipException.class)
+	public ModelAndView handleReflexiveRelationshipException(
+			final ReflexiveRelationshipException exception) {
+		return this.businessExceptionHandlerDelegate.prepareModelAndView(
+				REFLEXIVE_RELATIONSHIP_EXCEPTION_MESSAGE_KEY,
+			FAMILY_ERROR_BUNDLE_NAME, exception);
 	}
 }

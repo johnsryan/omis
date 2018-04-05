@@ -93,6 +93,7 @@ import omis.person.web.form.PersonFields;
 import omis.region.domain.City;
 import omis.region.domain.State;
 import omis.region.exception.CityExistsException;
+import omis.relationship.domain.RelationshipNote;
 import omis.relationship.domain.RelationshipNoteCategory;
 import omis.relationship.exception.ReflexiveRelationshipException;
 import omis.relationship.exception.RelationshipNoteExistsException;
@@ -324,6 +325,10 @@ public class CreateOffenderRelationshipController {
 	@Autowired
 	@Qualifier("relationshipNoteCategoryPropertyEditorFactory")
 	private PropertyEditorFactory relationshipNoteCategoryPropertyEditorFactory;
+	
+	@Autowired
+	@Qualifier("relationshipNotePropertyEditorFactory")
+	private PropertyEditorFactory relationshipNotePropertyEditorFactory;
 	
 	/* Services. */
 	@Autowired
@@ -2739,6 +2744,9 @@ public class CreateOffenderRelationshipController {
 			this.telephoneNumberPropertyEditorFactory.createPropertyEditor());
 		binder.registerCustomEditor(OnlineAccount.class,
 			this.onlineAccountPropertyEditorFactory.createPropertyEditor());
+		binder.registerCustomEditor(RelationshipNote.class,
+				this.relationshipNotePropertyEditorFactory
+					.createPropertyEditor());
 		binder.registerCustomEditor(RelationshipNoteCategory.class,
 			this.relationshipNoteCategoryPropertyEditorFactory
 				.createPropertyEditor());
