@@ -323,4 +323,12 @@
 			<constructor-arg name="configuration" ref="hibernateConfiguration" />
 		</bean>
 		
+		<bean id="administeredQuestionValuePropertyEditorFactory"
+		class="omis.beans.factory.impl.hibernate.PropertyEditorFactoryHibernateImpl">
+			<constructor-arg name="dao" ref="administeredQuestionValueDao" />
+			<constructor-arg name="entityName"
+				value="omis.questionnaire.domain.AdministeredQuestionValue" />
+			<constructor-arg name="configuration" ref="hibernateConfiguration" />
+		</bean>
+		
 </beans>

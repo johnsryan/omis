@@ -108,27 +108,6 @@
 				</span>
 			</c:when>
 		</c:choose>
-		<span class="fieldGroup">
-			<form:label path="violationItem.date" class="fieldLabel">
-				<fmt:message key="dateLabel"/>
-			</form:label>
-			<form:input path="violationItem.date" class="date"/>
-			<form:errors path="violationItem.date" cssClass="error"/>
-		</span>
-		<span class="fieldGroup">
-			<form:label path="violationItem.authority" class="fieldLabel">
-				<fmt:message key="authorityLabel"/>
-			</form:label>
-			<input id="authorityInput"/>
-				<form:hidden id="violationItem.authority" path="violationItem.authority"/>
-				<a id="clearAuthority" class="clearLink"></a>
-			<span id="authorityDisplay">
-				<c:if test="${not empty resolutionForm.violationItem.authority}" >
-					<c:out value="${resolutionForm.violationItem.authority.name.lastName}, ${resolutionForm.violationItem.authority.name.firstName}"/>
-				</c:if>
-			</span>
-			<form:errors path="violationItem.authority" cssClass="error"/>
-		</span>
 		<c:choose>
 			<c:when test="${resolutionCategory eq 'INFORMAL'
 							or resolutionCategory eq 'DISMISSED'}">
@@ -138,6 +117,27 @@
 					</form:label>
 					<form:textarea path="violationItem.decision"/>
 					<form:errors path="violationItem.decision" cssClass="error"/>
+				</span>
+				<span class="fieldGroup">
+					<form:label path="violationItem.date" class="fieldLabel">
+						<fmt:message key="dateLabel"/>
+					</form:label>
+					<form:input path="violationItem.date" class="date"/>
+					<form:errors path="violationItem.date" cssClass="error"/>
+				</span>
+				<span class="fieldGroup">
+					<form:label path="violationItem.authority" class="fieldLabel">
+						<fmt:message key="authorityLabel"/>
+					</form:label>
+					<input id="authorityInput"/>
+						<form:hidden id="violationItem.authority" path="violationItem.authority"/>
+						<a id="clearAuthority" class="clearLink"></a>
+					<span id="authorityDisplay">
+						<c:if test="${not empty resolutionForm.violationItem.authority}" >
+							<c:out value="${resolutionForm.violationItem.authority.name.lastName}, ${resolutionForm.violationItem.authority.name.firstName}"/>
+						</c:if>
+					</span>
+					<form:errors path="violationItem.authority" cssClass="error"/>
 				</span>
 			</c:when>
 		</c:choose>
@@ -188,15 +188,13 @@
 				</span>
 			</c:when>
 		</c:choose>
-		<c:if test="${not empty resolutionForm.violationItem.infraction.resolution.date}">
-			<span class="fieldGroup">
-				<form:label path="violationItem.appealDate" class="fieldLabel">
-					<fmt:message key="appealDateLabel"/>
-				</form:label>
-				<form:input path="violationItem.appealDate" class="date"/>
-				<form:errors path="violationItem.appealDate" cssClass="error"/>
-			</span>
-		</c:if>
+		<span class="fieldGroup">
+			<form:label path="violationItem.appealDate" class="fieldLabel">
+				<fmt:message key="appealDateLabel"/>
+			</form:label>
+			<form:input path="violationItem.appealDate" class="date"/>
+			<form:errors path="violationItem.appealDate" cssClass="error"/>
+		</span>
 	</div>
 	</fieldset>
 	

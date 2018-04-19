@@ -25,6 +25,8 @@ public class ParoleBoardItineraryForm implements Serializable {
 	
 	private ParoleBoardLocation paroleBoardLocation;
 	
+	private OnsiteCategory onsite;
+	
 	private ParoleBoardMember boardMember1;
 
 	private ParoleBoardMember boardMember2;
@@ -97,6 +99,24 @@ public class ParoleBoardItineraryForm implements Serializable {
 	public void setParoleBoardLocation(
 			final ParoleBoardLocation paroleBoardLocation) {
 		this.paroleBoardLocation = paroleBoardLocation;
+	}
+
+	/**
+	 * Returns the on-site.
+	 *
+	 * @return on-site
+	 */
+	public OnsiteCategory getOnsite() {
+		return onsite;
+	}
+
+	/**
+	 * Sets the on-site.
+	 *
+	 * @param onsite on-site
+	 */
+	public void setOnsite(OnsiteCategory onsite) {
+		this.onsite = onsite;
 	}
 
 	/**

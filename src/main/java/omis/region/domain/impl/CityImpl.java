@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.region.domain.impl;
 
 import omis.country.domain.Country;
@@ -139,5 +156,29 @@ public class CityImpl
 			hashCode = 29 * hashCode + this.getState().hashCode();
 		}
 		return hashCode;
+	}
+	
+	/**
+	 * Returns string representation of {@code this} including name, state name
+	 * and country name.
+	 * 
+	 * @return string representation of {@code this}
+	 */
+	@Override
+	public String toString() {
+		final String stateName;
+		if (this.getState() != null) {
+			stateName = this.getState().getName();
+		} else {
+			stateName = null;
+		}
+		final String countryName;
+		if (this.getCountry() != null) {
+			countryName = this.getCountry().getName();
+		} else {
+			countryName = null;
+		}
+		return String.format("#%d - %s, %s, %s", this.getId(), this.getName(),
+				stateName, countryName);
 	}
 }

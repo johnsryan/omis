@@ -76,7 +76,7 @@ import omis.web.controller.delegate.BusinessExceptionHandlerDelegate;
  * Hearing Controller.
  * 
  *@author Annie Wahl
- *@version 0.1.2 (Feb 28, 2018)
+ *@version 0.1.2 (Apr 17, 2018)
  *@since OMIS 3.0
  *
  */
@@ -360,7 +360,6 @@ public class HearingController {
 					Resolution resolution = new Resolution();
 					resolution.setCategory(
 							ResolutionClassificationCategory.DISMISSED);
-					resolution.setDate(new Date());
 					
 					this.hearingService.createInfraction(hearing,
 						(infractionItem.getConditionViolation() != null ?
@@ -375,8 +374,8 @@ public class HearingController {
 					this.hearingService.createInfraction(hearing,
 						(infractionItem.getConditionViolation() != null ?
 							infractionItem.getConditionViolation() : null),
-						(infractionItem.getDisciplinaryCodeViolation() != null ?
-							infractionItem.getDisciplinaryCodeViolation()
+						(infractionItem.getDisciplinaryCodeViolation() != null
+							? infractionItem.getDisciplinaryCodeViolation()
 							: null), null, null);
 				}
 			}
@@ -507,7 +506,6 @@ public class HearingController {
 					Resolution resolution = new Resolution();
 					resolution.setCategory(
 							ResolutionClassificationCategory.DISMISSED);
-					resolution.setDate(new Date());
 					
 					this.hearingService.updateInfraction(
 						infraction,

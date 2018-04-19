@@ -40,7 +40,7 @@ import omis.paroleeligibility.domain.ParoleEligibility;
  * Implementation of service for hearing analysis.
  * 
  * @author Josh Divine
- * @version 0.1.0 (Dec 18, 2017)
+ * @version 0.1.2 (Apr 18, 2018)
  * @since OMIS 3.0
  */
 public class HearingAnalysisServiceImpl implements HearingAnalysisService {
@@ -90,21 +90,22 @@ public class HearingAnalysisServiceImpl implements HearingAnalysisService {
 	@Override
 	public HearingAnalysis createHearingAnalysis(
 			final ParoleEligibility eligibility, 
-			final BoardMeetingSite meetingSite,
+			final ParoleBoardItinerary paroleBoardItinerary, 
 			final BoardAttendee analyst, final HearingAnalysisCategory category) 
 					throws DuplicateEntityFoundException {
-		return this.hearingAnalysisDelegate.create(eligibility, meetingSite, 
-				category, analyst);
+		return this.hearingAnalysisDelegate.create(eligibility, 
+				paroleBoardItinerary, category, analyst);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public HearingAnalysis updateHearingAnalysis(
 			final HearingAnalysis hearingAnalysis, 
-			final BoardMeetingSite meetingSite,
+			final ParoleBoardItinerary paroleBoardItinerary, 
 			final BoardAttendee analyst, final HearingAnalysisCategory category) 
 					throws DuplicateEntityFoundException {
-		return this.hearingAnalysisDelegate.update(hearingAnalysis, meetingSite, 
+		return this.hearingAnalysisDelegate.update(hearingAnalysis, 
+				hearingAnalysis.getEligibility(), paroleBoardItinerary, 
 				category, analyst);
 	}
 
@@ -150,11 +151,12 @@ public class HearingAnalysisServiceImpl implements HearingAnalysisService {
 
 	/** {@inheritDoc} */
 	@Override
-	public List<ParoleBoardItinerary> findItinerariesAfterDate(
-			final Date effectiveDate) {
-		return this.paroleBoardItineraryDelegate.findAfterDate(effectiveDate);
+	public List<ParoleBoardItinerary> 
+			findItinerariesByEffectiveDate(final Date effectiveDate) {
+		return this.paroleBoardItineraryDelegate.findByEffectiveDate(
+				effectiveDate);
 	}
-
+	
 	/** {@inheritDoc} */
 	@Override
 	public List<BoardMeetingSite> findBoardMeetingSitesByItinerary(

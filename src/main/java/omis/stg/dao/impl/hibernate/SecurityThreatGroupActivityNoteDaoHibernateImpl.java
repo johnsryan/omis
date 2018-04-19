@@ -15,10 +15,10 @@ import omis.stg.domain.SecurityThreatGroupActivityNote;
  * activity note.
  * 
  * @author Trevor Isles
- * @version 0.1.0 (Nov 29, 2016)
+ * @author Josh Divine
+ * @version 0.1.1 (Apr 10, 2018)
  * @since OMIS 3.0
  */
-
 public class SecurityThreatGroupActivityNoteDaoHibernateImpl 
 		extends GenericHibernateDaoImpl<SecurityThreatGroupActivityNote> 
 		implements SecurityThreatGroupActivityNoteDao {
@@ -73,16 +73,17 @@ public class SecurityThreatGroupActivityNoteDaoHibernateImpl
 	/** {@inheritDoc} */
 	@Override
 	public SecurityThreatGroupActivityNote findExcluding(
-			final SecurityThreatGroupActivityNote excludedNote,
-			final Date date,
-			final String value) {
+			final SecurityThreatGroupActivity activity, final Date date,
+			final String value, 
+			final SecurityThreatGroupActivityNote excludedNote) {
 		SecurityThreatGroupActivityNote note 
 		= (SecurityThreatGroupActivityNote) 
 			getSessionFactory().getCurrentSession()
 			.getNamedQuery(FIND_EXCLUDING_QUERY_NAME)
-			.setParameter(EXCLUDED_NOTE_PARAM_NAME, excludedNote)
+			.setParameter(ACTIVITY_PARAM_NAME, activity)
 			.setParameter(DATE_PARAM_NAME, date)
 			.setParameter(VALUE_PARAM_NAME, value)
+			.setParameter(EXCLUDED_NOTE_PARAM_NAME, excludedNote)
 			.uniqueResult();
 		return note;
 	}

@@ -17,37 +17,37 @@
  */
 package omis.assessment.service.testng;
 
-import omis.assessment.service.AssessmentDocumentAssociationService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.testng.annotations.Test;
-import omis.testng.AbstractHibernateTransactionalTestNGSpringContextTests;
-import omis.util.PropertyValueAsserter;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.testng.annotations.Test;
+
 import omis.assessment.domain.AssessmentDocumentAssociation;
+import omis.assessment.service.AssessmentDocumentAssociationService;
+import omis.assessment.service.delegate.AssessmentDocumentAssociationDelegate;
 import omis.document.domain.Document;
-import omis.document.domain.DocumentTag;
+import omis.document.service.delegate.DocumentDelegate;
 import omis.exception.DuplicateEntityFoundException;
 import omis.person.domain.Person;
 import omis.person.service.delegate.PersonDelegate;
 import omis.questionnaire.domain.AdministeredQuestionnaire;
 import omis.questionnaire.domain.QuestionnaireCategory;
 import omis.questionnaire.domain.QuestionnaireType;
-import omis.assessment.service.delegate.AssessmentDocumentAssociationDelegate;
-import omis.document.service.delegate.DocumentDelegate;
 import omis.questionnaire.service.delegate.AdministeredQuestionnaireDelegate;
 import omis.questionnaire.service.delegate.QuestionnaireCategoryDelegate;
 import omis.questionnaire.service.delegate.QuestionnaireTypeDelegate;
+import omis.testng.AbstractHibernateTransactionalTestNGSpringContextTests;
+import omis.util.PropertyValueAsserter;
 
 /**
- * Tests method to TODO.
+ * Tests method to update assessment document associations.
  *
  * @author Annie Wahl
- * @version 0.0.1 (Mar 15, 2018)
+ * @author Josh Divine
+ * @version 0.1.1 (Apr 11, 2018)
  * @since OMIS 3.0
  */
 @Test
@@ -158,13 +158,11 @@ public class
 				this.parseDateText("10/31/2013"), "File2", ".file2",
 				"Filey File-o");
 		Date date2 = this.parseDateText("10/31/2013");
-		AssessmentDocumentAssociation assessmentDocumentAssociation2 =
-				this.assessmentDocumentAssociationDelegate.create(document2,
-						date2, administeredQuestionnaire);
+		this.assessmentDocumentAssociationDelegate.create(document2, date2, 
+				administeredQuestionnaire);
 		
 		// Action
-		assessmentDocumentAssociation =
-				this.assessmentDocumentAssociationService
+		this.assessmentDocumentAssociationService
 				.updateAssessmentDocumentAssociation(
 						assessmentDocumentAssociation, document2, date2,
 						administeredQuestionnaire);

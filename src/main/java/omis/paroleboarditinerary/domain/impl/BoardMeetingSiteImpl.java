@@ -4,6 +4,7 @@ import java.util.Date;
 
 import omis.audit.domain.CreationSignature;
 import omis.audit.domain.UpdateSignature;
+import omis.facility.domain.Unit;
 import omis.location.domain.Location;
 import omis.paroleboarditinerary.domain.BoardMeetingSite;
 import omis.paroleboarditinerary.domain.ParoleBoardItinerary;
@@ -12,7 +13,7 @@ import omis.paroleboarditinerary.domain.ParoleBoardItinerary;
  * Implementation of board meeting site.
  * 
  * @author Josh Divine
- * @version 0.1.0 (Nov 16, 2017)
+ * @version 0.1.1 (Apr 10, 2018)
  * @since OMIS 3.0
  */
 public class BoardMeetingSiteImpl implements BoardMeetingSite {
@@ -32,6 +33,8 @@ public class BoardMeetingSiteImpl implements BoardMeetingSite {
 	private Date date;
 	
 	private Integer order;
+	
+	private Unit unit;
 	
 	/** 
 	 * Instantiates an implementation of parole board itinerary. 
@@ -128,6 +131,18 @@ public class BoardMeetingSiteImpl implements BoardMeetingSite {
 
 	/** {@inheritDoc} */
 	@Override
+	public void setUnit(final Unit unit) {
+		this.unit = unit;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public Unit getUnit() {
+		return unit;
+	}
+	
+	/** {@inheritDoc} */
+	@Override
 	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
@@ -144,9 +159,10 @@ public class BoardMeetingSiteImpl implements BoardMeetingSite {
 			return false;
 		}
 		if (this.getLocation() == null) {
-			throw new IllegalStateException("Location required");
-		}
-		if (!this.getLocation().equals(that.getLocation())) {
+			if (that.getLocation() != null) {
+				return false;
+			}
+		} else if (!this.getLocation().equals(that.getLocation())) {
 			return false;
 		}
 		if (this.getDate() == null) {
@@ -156,9 +172,10 @@ public class BoardMeetingSiteImpl implements BoardMeetingSite {
 			return false;
 		}
 		if (this.getOrder() == null) {
-			throw new IllegalStateException("Order required");
-		}
-		if (!this.getOrder().equals(that.getOrder())) {
+			if (that.getOrder() != null) {
+				return false;
+			}
+		} else if (!this.getOrder().equals(that.getOrder())) {
 			return false;
 		}
 		return true;
@@ -170,20 +187,18 @@ public class BoardMeetingSiteImpl implements BoardMeetingSite {
 		if (this.getBoardItinerary() == null) {
 			throw new IllegalStateException("Parole board itinerary required");
 		}
-		if (this.getLocation() == null) {
-			throw new IllegalStateException("Location required");
-		}
 		if (this.getDate() == null) {
 			throw new IllegalStateException("Date required");
 		}
-		if (this.getOrder() == null) {
-			throw new IllegalStateException("Order required");
-		}
 		int hashCode = 14;
 		hashCode = 29 * hashCode + this.getBoardItinerary().hashCode();
-		hashCode = 29 * hashCode + this.getLocation().hashCode();
+		if (this.getLocation() != null) {
+			hashCode = 29 * hashCode + this.getLocation().hashCode();
+		}
 		hashCode = 29 * hashCode + this.getDate().hashCode();
-		hashCode = 29 * hashCode + this.getOrder().hashCode();
+		if (this.getOrder() != null) {
+			hashCode = 29 * hashCode + this.getOrder().hashCode();
+		}
 		
 		return hashCode;
 	}

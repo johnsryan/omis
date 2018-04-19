@@ -2,7 +2,6 @@ package omis.questionnaire.service.impl;
 
 import java.util.Date;
 import java.util.List;
-
 import omis.exception.DuplicateEntityFoundException;
 import omis.person.domain.Person;
 import omis.questionnaire.domain.AdministeredQuestionValue;
@@ -26,15 +25,15 @@ import omis.user.domain.UserAccount;
 import omis.user.service.delegate.UserAccountDelegate;
 
 /**
- * QuestionnaireServiceImpl.java
+ * Administered Questionnaire Service Implementation.
  * 
- *@author Annie Jacques 
- *@version 0.1.0 (Sep 12, 2016)
+ *@author Annie Wahl 
+ *@version 0.1.1 (Apr 5, 2018)
  *@since OMIS 3.0
  *
  */
 public class AdministeredQuestionnaireServiceImpl
-	implements AdministeredQuestionnaireService{
+	implements AdministeredQuestionnaireService {
 	/* Delegates */
 	
 	private final QuestionnaireTypeDelegate questionnaireTypeDelegate;
@@ -63,7 +62,7 @@ public class AdministeredQuestionnaireServiceImpl
 	
 	
 	/**
-	 * Constructor for QuestionnaireServiceImpl
+	 * Constructor for Administered Questionnaire Service Impl.
 	 * @param questionnaireTypeDelegate - questionnaire type delegate
 	 * @param administeredQuestionnaireDelegate - administered questionnaire 
 	 * delegate
@@ -129,10 +128,10 @@ public class AdministeredQuestionnaireServiceImpl
 	@Override
 	public AdministeredQuestionnaire editAdministeredQuestionnaire(
 			final AdministeredQuestionnaire administeredQuestionnaire,
-			final Person answerer, Boolean draft, final String comments, 
+			final Person answerer, final Boolean draft, final String comments, 
 			final Person assessor, final Date date,
 			final QuestionnaireType questionnaireType)
-					throws DuplicateEntityFoundException{
+					throws DuplicateEntityFoundException {
 		return this.administeredQuestionnaireDelegate.update(
 				administeredQuestionnaire, draft, comments, assessor, date, 
 				questionnaireType);
@@ -142,7 +141,8 @@ public class AdministeredQuestionnaireServiceImpl
 	@Override
 	public void removeAdministeredQuestionnaire(
 			final AdministeredQuestionnaire administeredQuestionnaire) {
-		this.administeredQuestionnaireDelegate.remove(administeredQuestionnaire);
+		this.administeredQuestionnaireDelegate.remove(
+				administeredQuestionnaire);
 	}
 
 	/**{@inheritDoc} */
@@ -153,7 +153,7 @@ public class AdministeredQuestionnaireServiceImpl
 			final QuestionnaireSection questionnaireSection, 
 			final AnswerValue answerValue, final  String answerValueText,
 			final String comments)
-					throws DuplicateEntityFoundException{
+					throws DuplicateEntityFoundException {
 		return this.administeredQuestionValueDelegate.create(
 				administeredQuestionnaire, question, questionnaireSection, 
 				answerValue, answerValueText, comments);
@@ -168,7 +168,7 @@ public class AdministeredQuestionnaireServiceImpl
 			final QuestionnaireSection questionnaireSection, 
 			final AnswerValue answerValue, final String answerValueText,
 			final String comments) 
-					throws DuplicateEntityFoundException{
+					throws DuplicateEntityFoundException {
 		return this.administeredQuestionValueDelegate.update(
 				administeredQuestionValue, administeredQuestionnaire, question, 
 				questionnaireSection, answerValue, answerValueText, comments);
@@ -189,7 +189,7 @@ public class AdministeredQuestionnaireServiceImpl
 				final AdministeredQuestionnaire administeredQuestionnaire, 
 				final QuestionnaireSection questionnaireSection,
 				final String comments)
-						throws DuplicateEntityFoundException{
+						throws DuplicateEntityFoundException {
 		return this.administeredQuestionnaireSectionNoteDelegate.create(
 				administeredQuestionnaire, questionnaireSection, comments);
 	}
@@ -202,7 +202,7 @@ public class AdministeredQuestionnaireServiceImpl
 					administeredQuestionnaireSectionNote,
 				final QuestionnaireSection questionnaireSection, 
 				final String comments) 
-						throws DuplicateEntityFoundException{
+						throws DuplicateEntityFoundException {
 		return this.administeredQuestionnaireSectionNoteDelegate.update(
 				administeredQuestionnaireSectionNote, questionnaireSection, 
 				comments);
@@ -247,8 +247,7 @@ public class AdministeredQuestionnaireServiceImpl
 			final QuestionnaireSection questionnaireSection) {
 		return this.administeredQuestionnaireSectionNoteDelegate
 				.findByQuestionnaireAndSection(administeredQuestionnaire,
-						questionnaireSection)
-				;
+						questionnaireSection);
 	}
 
 	/**{@inheritDoc} */
@@ -257,8 +256,8 @@ public class AdministeredQuestionnaireServiceImpl
 		createAdministeredQuestionnaireSectionStatus(
 			final QuestionnaireSection questionnaireSection,
 			final AdministeredQuestionnaire administeredQuestionnaire,
-			final Boolean draft,final Date date) 
-					throws DuplicateEntityFoundException{
+			final Boolean draft, final Date date) 
+					throws DuplicateEntityFoundException {
 		return this.administeredQuestionnaireSectionStatusDelegate
 				.create(questionnaireSection, administeredQuestionnaire, draft, 
 						date);
@@ -314,6 +313,17 @@ public class AdministeredQuestionnaireServiceImpl
 			final QuestionnaireType questionnaireType) {
 		return this.questionnaireSectionDelegate
 				.findByQuestionnaireType(questionnaireType);
+	}
+
+	/**{@inheritDoc} */
+	@Override
+	public AdministeredQuestionValue
+		findAdministeredQuestionValueByNoAnswerValue(
+			final Question question,
+			final AdministeredQuestionnaire administeredQuestionnaire,
+			final QuestionnaireSection questionnaireSection) {
+		return this.administeredQuestionValueDelegate.findByNoAnswerValue(
+				question, administeredQuestionnaire, questionnaireSection);
 	}
 
 }

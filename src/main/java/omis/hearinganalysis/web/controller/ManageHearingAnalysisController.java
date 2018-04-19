@@ -52,9 +52,9 @@ import omis.offender.beans.factory.OffenderPropertyEditorFactory;
 import omis.offender.domain.Offender;
 import omis.offender.web.controller.delegate.OffenderSummaryModelDelegate;
 import omis.paroleboarditinerary.domain.BoardAttendee;
-import omis.paroleboarditinerary.domain.BoardMeetingSite;
 import omis.paroleboarditinerary.domain.ParoleBoardItinerary;
 import omis.paroleeligibility.domain.ParoleEligibility;
+import omis.util.DateManipulator;
 import omis.web.controller.delegate.BusinessExceptionHandlerDelegate;
 
 /**
@@ -62,7 +62,7 @@ import omis.web.controller.delegate.BusinessExceptionHandlerDelegate;
  *
  * @author Josh Divine
  * @author Annie Wahl
- * @version 0.1.1 (Mar 21, 2018)
+ * @version 0.1.3 (Apr 18, 2018)
  * @since OMIS 3.0
  */
 @Controller
@@ -83,9 +83,6 @@ public class ManageHearingAnalysisController {
 	
 	private static final String BOARD_ATTENDEE_OPTIONS_VIEW_NAME = 
 			"hearingAnalysis/includes/boardAttendeeOptions";
-	
-	private static final String BOARD_MEETING_SITE_OPTIONS_VIEW_NAME = 
-			"hearingAnalysis/includes/boardMeetingSiteOptions";
 	
 	/* Action menus. */
 
@@ -114,9 +111,6 @@ public class ManageHearingAnalysisController {
 	private static final String ITEM_OPERATION_MODEL_KEY = "operation";
 	
 	private static final String BOARD_ATTENDEES_MODEL_KEY = "boardAttendees";
-
-	private static final String BOARD_MEETING_SITES_MODEL_KEY = 
-			"boardMeetingSites";
 
 	private static final String ELIGIBILITY_MODEL_KEY = "eligibility";
 	
@@ -163,10 +157,6 @@ public class ManageHearingAnalysisController {
 	@Autowired
 	@Qualifier("paroleEligibilityPropertyEditorFactory")
 	private PropertyEditorFactory  paroleEligibilityPropertyEditorFactory;
-	
-	@Autowired
-	@Qualifier("boardMeetingSitePropertyEditorFactory")
-	private PropertyEditorFactory boardMeetingSitePropertyEditorFactory;
 	
 	@Autowired
 	@Qualifier("boardAttendeePropertyEditorFactory")
@@ -228,17 +218,10 @@ public class ManageHearingAnalysisController {
 				.findHearingAnalysisByParoleEligibility(eligibility);
 		HearingAnalysisForm hearingAnalysisForm = new HearingAnalysisForm();
 		if (hearingAnalysis != null) {
-			hearingAnalysisForm.setBoardMeetingSite(hearingAnalysis
-					.getBoardMeetingSite());
 			hearingAnalysisForm.setCategory(hearingAnalysis.getCategory());
 			hearingAnalysisForm.setAnalyst(hearingAnalysis.getAnalyst());
-			if (hearingAnalysis.getBoardMeetingSite() != null) {
-				hearingAnalysisForm.setBoardItinerary(hearingAnalysis
-						.getBoardMeetingSite().getBoardItinerary());
-			} else if (hearingAnalysis.getAnalyst() != null) {
-				hearingAnalysisForm.setBoardItinerary(hearingAnalysis
-						.getAnalyst().getBoardItinerary());
-			}
+			hearingAnalysisForm.setBoardItinerary(hearingAnalysis
+					.getParoleBoardItinerary());
 			List<HearingAnalysisNote> notes = this.hearingAnalysisService
 					.findHearingAnalysisNotesByHearingAnalysis(hearingAnalysis);
 			List<HearingAnalysisNoteItem> noteItems = 
@@ -286,12 +269,12 @@ public class ManageHearingAnalysisController {
 				.findHearingAnalysisByParoleEligibility(eligibility);
 		if (hearingAnalysis == null) {
 			hearingAnalysis = this.hearingAnalysisService.createHearingAnalysis(
-					eligibility, hearingAnalysisForm.getBoardMeetingSite(), 
+					eligibility, hearingAnalysisForm.getBoardItinerary(),
 					hearingAnalysisForm.getAnalyst(), 
 					hearingAnalysisForm.getCategory());
 		} else {
 			hearingAnalysis = this.hearingAnalysisService.updateHearingAnalysis(
-					hearingAnalysis, hearingAnalysisForm.getBoardMeetingSite(), 
+					hearingAnalysis, hearingAnalysisForm.getBoardItinerary(),
 					hearingAnalysisForm.getAnalyst(), 
 					hearingAnalysisForm.getCategory());
 		}
@@ -356,26 +339,6 @@ public class ManageHearingAnalysisController {
 				BOARD_ATTENDEE_OPTIONS_VIEW_NAME);
 		mav.addObject(BOARD_ATTENDEES_MODEL_KEY, 
 				this.hearingAnalysisService.findBoardAttendeesByItinerary(
-						itinerary));
-		return mav;
-	}
-	
-	/**
-	 * Displays board meeting site options for the specified parole board 
-	 * itinerary.
-	 * 
-	 * @param itinerary parole board itinerary
-	 * @return board meeting site options
-	 */
-	@RequestMapping(value = "/findBoardMeetingSitesForItinerary.html", 
-			method = RequestMethod.GET)
-	public ModelAndView findBoardMeetingSitesForItinerary(
-			@RequestParam(value = "itinerary", required = true) 
-				final ParoleBoardItinerary itinerary) {
-		ModelAndView mav = new ModelAndView(
-				BOARD_MEETING_SITE_OPTIONS_VIEW_NAME);
-		mav.addObject(BOARD_MEETING_SITES_MODEL_KEY, 
-				this.hearingAnalysisService.findBoardMeetingSitesByItinerary(
 						itinerary));
 		return mav;
 	}
@@ -448,14 +411,11 @@ public class ManageHearingAnalysisController {
 		ModelAndView mav = new ModelAndView(VIEW_NAME);
 		mav.addObject(HEARING_ANALYSIS_FORM_MODEL_KEY, hearingAnalysisForm);
 		mav.addObject(ELIGIBILITY_MODEL_KEY, eligibility);
-		List<ParoleBoardItinerary> itineraries = this.hearingAnalysisService
-				.findItinerariesAfterDate(eligibility
-						.getHearingEligibilityDate());
-		mav.addObject(ITINERARIES_MODEL_KEY, itineraries);
+		DateManipulator dateManipulator = new DateManipulator(new Date());
+		dateManipulator.setToEarliestTimeInDay();
+		mav.addObject(ITINERARIES_MODEL_KEY, this.boardHearingService
+				.findItinerariesByEffectiveDate(dateManipulator.getDate()));
 		if (hearingAnalysisForm.getBoardItinerary() != null) {
-			mav.addObject(BOARD_MEETING_SITES_MODEL_KEY, this
-					.hearingAnalysisService.findBoardMeetingSitesByItinerary(
-							hearingAnalysisForm.getBoardItinerary()));
 			mav.addObject(BOARD_ATTENDEES_MODEL_KEY, this.hearingAnalysisService
 					.findBoardAttendeesByItinerary(
 							hearingAnalysisForm.getBoardItinerary()));
@@ -528,9 +488,6 @@ public class ManageHearingAnalysisController {
 				.createPropertyEditor());
 		binder.registerCustomEditor(HearingAnalysisNote.class,
 				this.hearingAnalysisNotePropertyEditorFactory
-				.createPropertyEditor());
-		binder.registerCustomEditor(BoardMeetingSite.class,
-				this.boardMeetingSitePropertyEditorFactory
 				.createPropertyEditor());
 		binder.registerCustomEditor(BoardAttendee.class,
 				this.boardAttendeePropertyEditorFactory.createPropertyEditor());

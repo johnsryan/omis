@@ -22,14 +22,14 @@ import omis.audit.domain.UpdateSignature;
 import omis.hearinganalysis.domain.HearingAnalysis;
 import omis.hearinganalysis.domain.HearingAnalysisCategory;
 import omis.paroleboarditinerary.domain.BoardAttendee;
-import omis.paroleboarditinerary.domain.BoardMeetingSite;
+import omis.paroleboarditinerary.domain.ParoleBoardItinerary;
 import omis.paroleeligibility.domain.ParoleEligibility;
 
 /**
  * Implementation of hearing analysis.
  * 
  * @author Josh Divine
- * @version 0.1.0 (Dec 18, 2017)
+ * @version 0.1.1 (Apr 18, 2018)
  * @since OMIS 3.0
  */
 public class HearingAnalysisImpl implements HearingAnalysis {
@@ -44,11 +44,11 @@ public class HearingAnalysisImpl implements HearingAnalysis {
 	
 	private ParoleEligibility eligibility;
 	
-	private BoardMeetingSite boardMeetingSite;
-	
 	private HearingAnalysisCategory category;
 	
 	private BoardAttendee analyst;
+	
+	private ParoleBoardItinerary paroleBoardItinerary;
 	
 	/** 
 	 * Instantiates an implementation of hearing analysis. 
@@ -79,18 +79,6 @@ public class HearingAnalysisImpl implements HearingAnalysis {
 	@Override
 	public ParoleEligibility getEligibility() {
 		return eligibility;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void setBoardMeetingSite(BoardMeetingSite boardMeetingSite) {
-		this.boardMeetingSite = boardMeetingSite;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public BoardMeetingSite getBoardMeetingSite() {
-		return boardMeetingSite;
 	}
 
 	/** {@inheritDoc} */
@@ -143,6 +131,19 @@ public class HearingAnalysisImpl implements HearingAnalysis {
 
 	/** {@inheritDoc} */
 	@Override
+	public void setParoleBoardItinerary(
+			final ParoleBoardItinerary paroleBoardItinerary) {
+		this.paroleBoardItinerary = paroleBoardItinerary;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public ParoleBoardItinerary getParoleBoardItinerary() {
+		return paroleBoardItinerary;
+	}
+	
+	/** {@inheritDoc} */
+	@Override
 	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
@@ -157,20 +158,18 @@ public class HearingAnalysisImpl implements HearingAnalysis {
 		if (!this.getEligibility().equals(that.getEligibility())) {
 			return false;
 		}
+		if (this.getParoleBoardItinerary() == null) {
+			throw new IllegalStateException("Parole board itinerary required");
+		}
+		if (!this.getParoleBoardItinerary().equals(
+				that.getParoleBoardItinerary())) {
+			return false;
+		}
 		if (this.getCategory() == null) {
 			throw new IllegalStateException("Catetgory required");
 		}
 		if (!this.getCategory().equals(that.getCategory())) {
 			return false;
-		}
-		if (this.getBoardMeetingSite() == null) { 
-			if (that.getBoardMeetingSite() != null) {
-				return false;
-			}
-		} else {
-			if (!this.getBoardMeetingSite().equals(that.getBoardMeetingSite())) {
-				return false;
-			}
 		}
 		if (this.getAnalyst() == null) { 
 			if (that.getAnalyst() != null) {
@@ -190,19 +189,19 @@ public class HearingAnalysisImpl implements HearingAnalysis {
 		if (this.getEligibility() == null) {
 			throw new IllegalStateException("Parole eligibility required");
 		}
+		if (this.getParoleBoardItinerary() == null) {
+			throw new IllegalStateException("Parole board itinerary required");
+		}
 		if (this.getCategory() == null) {
 			throw new IllegalStateException("Catetgory required");
 		}
 		int hashCode = 14;
 		hashCode = 29 * hashCode + this.getEligibility().hashCode();
+		hashCode = 29 * hashCode + this.getParoleBoardItinerary().hashCode();
 		hashCode = 29 * hashCode + this.getCategory().hashCode();
-		if (this.getBoardMeetingSite() != null) {
-			hashCode = 29 * hashCode + this.getBoardMeetingSite().hashCode();
-		}
 		if (this.getAnalyst() != null) {
 			hashCode = 29 * hashCode + this.getAnalyst().hashCode();
 		}
 		return hashCode;
 	}
-
 }

@@ -23,11 +23,11 @@ import omis.audit.AuditComponentRetriever;
 import omis.audit.domain.CreationSignature;
 import omis.audit.domain.UpdateSignature;
 import omis.datatype.DateRange;
-import omis.exception.DuplicateEntityFoundException;
 import omis.instance.factory.InstanceFactory;
 import omis.location.domain.Location;
 import omis.locationterm.dao.LocationTermDao;
 import omis.locationterm.domain.LocationTerm;
+import omis.locationterm.exception.LocationTermExistsException;
 import omis.offender.domain.Offender;
 
 /**
@@ -82,16 +82,16 @@ public class LocationTermDelegate {
 	 * @param endDate end date
 	 * @param locked whether locked
 	 * @return new location term
-	 * @throws DuplicateEntityFoundException if location term exists
+	 * @throws LocationTermExistsException if location term exists
 	 */
 	public LocationTerm create(
 			final Offender offender, final Location location,
 			final Date startDate, final Date endDate, final Boolean locked)
-				throws DuplicateEntityFoundException {
+				throws LocationTermExistsException {
 		
 		// Throws exception if location term exists
 		if (this.locationTermDao.find(offender, startDate, endDate) != null) {
-			throw new DuplicateEntityFoundException("Location term exists");
+			throw new LocationTermExistsException("Location term exists");
 		}
 		
 		// Creates and persists location term
@@ -119,18 +119,18 @@ public class LocationTermDelegate {
 	 * @param endDate end date
 	 * @param locked whether locked
 	 * @return update location term
-	 * @throws DuplicateEntityFoundException
+	 * @throws LocationTermExistsException if location term exists
 	 */
 	public LocationTerm update(
 				final LocationTerm locationTerm, final Location location,
 				final Date startDate, final Date endDate, final Boolean locked)
-			throws DuplicateEntityFoundException {
+			throws LocationTermExistsException {
 		
 		// Throws exception if location term exists
 		if (this.locationTermDao.findExcluding(
 				locationTerm.getOffender(), startDate, endDate, locationTerm)
 					!= null) {
-			throw new DuplicateEntityFoundException("Location term exists");
+			throw new LocationTermExistsException("Location term exists");
 		}
 		
 		// Updates and persists location term
@@ -180,15 +180,15 @@ public class LocationTermDelegate {
 	 * @param startDate start date
 	 * @param endDate end date
 	 * @return updated location term
-	 * @throws DuplicateEntityFoundException if term with changed dates exists
+	 * @throws LocationTermExistsException if term with changed dates exists
 	 */
 	public LocationTerm changeDateRange(
 			final LocationTerm locationTerm,
 			final Date startDate, final Date endDate)
-				throws DuplicateEntityFoundException {
+				throws LocationTermExistsException {
 		if (this.locationTermDao.find(locationTerm.getOffender(),
 				startDate, endDate) != null) {
-			throw new DuplicateEntityFoundException();
+			throw new LocationTermExistsException();
 		}
 		locationTerm.setDateRange(new DateRange(startDate, endDate));
 		locationTerm.setUpdateSignature(new UpdateSignature(

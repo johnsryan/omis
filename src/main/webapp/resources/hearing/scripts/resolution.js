@@ -19,19 +19,19 @@ window.onload = function() {
 			if(this.name.includes('[')){
 				var j = this.name.split('[')[1].split(']')[0];
 				if(this.value == "GUILTY"){
-					document.getElementById("violationItems"+j+".sanction").readOnly = false;
+					document.getElementById("sanction"+j).classList.remove("hidden");
 				}
 				else{
-					document.getElementById("violationItems"+j+".sanction").readOnly = true;
+					document.getElementById("sanction"+j).classList.add("hidden");
 					document.getElementById("violationItems"+j+".sanction").value = '';
 				}
 			}
 			else{
 				if(this.value == "GUILTY"){
-					document.getElementById("violationItem.sanction").readOnly = false;
+					document.getElementById("sanction"+j).classList.remove("hidden");
 				}
 				else{
-					document.getElementById("violationItem.sanction").readOnly = true;
+					document.getElementById("sanction"+j).classList.add("hidden");
 					document.getElementById("violationItem.sanction").value = '';
 				}
 			}

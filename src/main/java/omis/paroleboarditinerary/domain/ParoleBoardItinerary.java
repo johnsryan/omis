@@ -10,7 +10,7 @@ import omis.paroleboardlocation.domain.ParoleBoardLocation;
  *
  * @author Josh Divine
  * @author Annie Wahl
- * @version 0.1.1 (Jan 23, 2018)
+ * @version 0.1.2 (Apr 18, 2018)
  * @since OMIS 3.0
  */
 public interface ParoleBoardItinerary extends Creatable, Updatable {
@@ -44,16 +44,29 @@ public interface ParoleBoardItinerary extends Creatable, Updatable {
 	DateRange getDateRange();
 	
 	/**
-	 * Returns the ParoleBoardLocation for the Parole Board Itinerary.
-	 * @return paroleBoardLocation - ParoleBoardLocation
+	 * Returns the parole board location for the parole board itinerary.
+	 * 
+	 * @return parole board location
 	 */
 	ParoleBoardLocation getParoleBoardLocation();
 	
 	/**
-	 * Sets the ParoleBoardLocation for the Parole Board Itinerary.
-	 * @param paroleBoardLocation - ParoleBoardLocation
+	 * Sets the parole board location for the parole board itinerary.
+	 * 
+	 * @param paroleBoardLocation parole board location
 	 */
 	void setParoleBoardLocation(ParoleBoardLocation paroleBoardLocation);
+	
+	/**
+	 * Returns whether the parole board itinerary is on-site.
+	 * @return
+	 */
+	Boolean getOnsite();
+	
+	/**
+	 * @param onsite
+	 */
+	void setOnsite(Boolean onsite);
 	
 	/**
 	 * Compares {@code this} and {@code obj} for equality.

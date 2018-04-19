@@ -32,6 +32,7 @@ import omis.assessment.domain.AssessmentCategoryScore;
 import omis.assessment.domain.AssessmentRating;
 import omis.assessment.domain.CategoryOverrideReason;
 import omis.assessment.domain.RatingCategory;
+import omis.assessment.domain.RatingCategorySignificance;
 import omis.assessment.domain.RatingRank;
 import omis.assessment.service.AssessmentService;
 import omis.assessment.service.delegate.AssessmentCategoryOverrideDelegate;
@@ -65,7 +66,7 @@ import omis.util.PropertyValueAsserter;
  * Tests method to create assessment category override reasons.
  *
  * @author Josh Divine
- * @version 0.0.1 (Mar 6, 2018)
+ * @version 0.1.1 (Apr 11, 2018)
  * @since OMIS 3.0
  */
 @Test
@@ -149,7 +150,8 @@ public class AssessmentServiceCreateAssessmentCategoryOverrideReasonTests
 						"Comments", assessor, this.parseDateText("01/01/2018"), 
 						questionnaireType);
 		RatingCategory ratingCategory = this.ratingCategoryDelegate.create(
-				"Category", new BigDecimal(100), true);
+				"Category", new BigDecimal(100),
+				RatingCategorySignificance.PRIMARY, true);
 		AssessmentCategoryScore assessmentCategoryScore = this
 				.assessmentCategoryScoreDelegate.create(
 						administeredQuestionnaire, ratingCategory, 
@@ -214,7 +216,8 @@ public class AssessmentServiceCreateAssessmentCategoryOverrideReasonTests
 						"Comments", assessor, this.parseDateText("01/01/2018"), 
 						questionnaireType);
 		RatingCategory ratingCategory = this.ratingCategoryDelegate.create(
-				"Category", new BigDecimal(100), true);
+				"Category", new BigDecimal(100),
+				RatingCategorySignificance.PRIMARY, true);
 		AssessmentCategoryScore assessmentCategoryScore = this
 				.assessmentCategoryScoreDelegate.create(
 						administeredQuestionnaire, ratingCategory, 

@@ -28,6 +28,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+
+import omis.assessment.report.AssessmentSummaryReportService;
 import omis.beans.factory.PropertyEditorFactory;
 import omis.offender.beans.factory.OffenderPropertyEditorFactory;
 import omis.offender.domain.Offender;
@@ -51,8 +53,8 @@ public class AssessmentHomeController {
 	
 	/* Model Keys */
 	
-	@SuppressWarnings("unused")
-	private static final String ASSESSMENT_MODEL_KEY = "assessment";
+	private static final String ASSESSMENT_SUMMARY_MODEL_KEY =
+			"assessmentSummary";
 	
 	private static final String ADMINISTERED_QUESTIONNAIRE_MODEL_KEY =
 			"administeredQuestionnaire";
@@ -70,6 +72,10 @@ public class AssessmentHomeController {
 	@Qualifier("offenderSummaryModelDelegate")
 	private OffenderSummaryModelDelegate offenderSummaryModelDelegate;
 	
+	@Autowired
+	@Qualifier("assessmentSummaryReportService")
+	private AssessmentSummaryReportService assessmentSummaryReportService;
+	
 	/**
 	 * Displays the Assessment home model and View.
 	 * 
@@ -85,6 +91,9 @@ public class AssessmentHomeController {
 		ModelMap map = new ModelMap();
 		map.addAttribute(ADMINISTERED_QUESTIONNAIRE_MODEL_KEY,
 				administeredQuestionnaire);
+		map.addAttribute(ASSESSMENT_SUMMARY_MODEL_KEY,
+				this.assessmentSummaryReportService.summarize(
+						administeredQuestionnaire));
 		this.offenderSummaryModelDelegate.add(map,
 				(Offender) administeredQuestionnaire.getAnswerer());
 		return new ModelAndView(HOME_VIEW_NAME, map);

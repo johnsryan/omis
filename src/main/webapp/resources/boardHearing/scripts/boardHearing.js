@@ -3,7 +3,6 @@ window.onload = function() {
 	applyDatePicker(document.getElementById("hearingDate"));
 	applyActionMenu(document.getElementById("boardHearingNoteItemsActionMenuLink"), boardHearingNoteItemsCreateOnClick);
 	applyParoleBoardLocationOnClick();
-	applyHearingLocationOnClick();
 	for (var index = 0; index < currentBoardHearingNoteItemIndex; index++) {
 		boardHearingNoteItemRowOnClick(index);
 	}

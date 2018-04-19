@@ -24,6 +24,7 @@ import org.hibernate.SessionFactory;
 import omis.assessment.dao.AnswerRatingDao;
 import omis.assessment.domain.AnswerRating;
 import omis.assessment.domain.RatingCategory;
+import omis.assessment.domain.RatingScaleGroup;
 import omis.dao.impl.hibernate.GenericHibernateDaoImpl;
 import omis.questionnaire.domain.AdministeredQuestionnaire;
 import omis.questionnaire.domain.AnswerValue;
@@ -32,7 +33,7 @@ import omis.questionnaire.domain.AnswerValue;
  * Hibernate implementation of the answer rating data access object.
  * 
  * @author Josh Divine
- * @version 0.1.0 (Feb 26, 2018)
+ * @version 0.1.1 (Apr 9, 2018)
  * @since OMIS 3.0
  */
 public class AnswerRatingDaoHibernateImpl 
@@ -50,6 +51,14 @@ public class AnswerRatingDaoHibernateImpl
 			FIND_BY_RATING_CATEGORY_AND_ADMINISTERED_QUESTIONNAIRE_QUERY_NAME = 
 				"findAnswerRatingsByRatingCategoryAndAdministeredQuestionnaire";
 	
+	private final static String 
+			FIND_BY_RATING_SCALE_GROUP_AND_ADMINISTERED_QUESTIONNAIRE_QUERY_NAME 
+			= "findAnswerRatingsByRatingScaleGroupAndAdministeredQuestionnaire";
+	
+	private final static String 
+			FIND_BY_RATING_CATEGORY_AND_ADMINISTERED_QUESTIONNAIRE_EXCLUDING_SCALED_GROUPS_QUERY_NAME 
+			= "findAnswerRatingsByRatingCategoryAndAdministeredQuestionnaireExcludingScaledGroups";
+	
 	/* Parameters. */
 	
 	private final static String ANSWER_VALUE_PARAM_NAME = "answerValue";
@@ -58,6 +67,9 @@ public class AnswerRatingDaoHibernateImpl
 	
 	private final static String ADMINISTERED_QUESTIONNAIRE_PARAM_NAME = 
 			"administeredQuestionnaire";
+	
+	private final static String RATING_SCALE_GROUP_PARAM_NAME = 
+			"ratingScaleGroup";
 	
 	private final static String EXCLUDED_ANSWER_RATING_PARAM_NAME = 
 			"excludedAnswerRating";
@@ -113,6 +125,41 @@ public class AnswerRatingDaoHibernateImpl
 		.getCurrentSession()
 				.getNamedQuery(
 						FIND_BY_RATING_CATEGORY_AND_ADMINISTERED_QUESTIONNAIRE_QUERY_NAME)
+				.setParameter(RATING_CATEGORY_PARAM_NAME, ratingCategory)
+				.setParameter(ADMINISTERED_QUESTIONNAIRE_PARAM_NAME, 
+						administeredQuestionnaire)
+				.list();
+		return answerRatings;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public List<AnswerRating> findByRatingScaleGroupAndAdministeredQuestionnaire(
+			final RatingScaleGroup ratingScaleGroup,
+			final AdministeredQuestionnaire administeredQuestionnaire) {
+		@SuppressWarnings("unchecked")
+		List<AnswerRating> answerRatings = this.getSessionFactory()
+				.getCurrentSession()
+				.getNamedQuery(
+						FIND_BY_RATING_SCALE_GROUP_AND_ADMINISTERED_QUESTIONNAIRE_QUERY_NAME)
+				.setParameter(RATING_SCALE_GROUP_PARAM_NAME, ratingScaleGroup)
+				.setParameter(ADMINISTERED_QUESTIONNAIRE_PARAM_NAME, 
+						administeredQuestionnaire)
+				.list();
+		return answerRatings;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public List<AnswerRating> 
+			findByRatingCategoryAndAdministeredQuestionnaireExcludingScaledGroups(
+					final RatingCategory ratingCategory, 
+					final AdministeredQuestionnaire administeredQuestionnaire) {
+		@SuppressWarnings("unchecked")
+		List<AnswerRating> answerRatings = this.getSessionFactory()
+				.getCurrentSession()
+				.getNamedQuery(
+						FIND_BY_RATING_CATEGORY_AND_ADMINISTERED_QUESTIONNAIRE_EXCLUDING_SCALED_GROUPS_QUERY_NAME)
 				.setParameter(RATING_CATEGORY_PARAM_NAME, ratingCategory)
 				.setParameter(ADMINISTERED_QUESTIONNAIRE_PARAM_NAME, 
 						administeredQuestionnaire)

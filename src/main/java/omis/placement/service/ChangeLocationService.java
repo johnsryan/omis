@@ -3,14 +3,15 @@ package omis.placement.service;
 import java.util.Date;
 import java.util.List;
 
-import omis.exception.DuplicateEntityFoundException;
 import omis.location.domain.Location;
 import omis.locationterm.domain.LocationReason;
 import omis.locationterm.domain.LocationTerm;
 import omis.locationterm.domain.LocationTermChangeAction;
 import omis.locationterm.exception.EndedLocationTermException;
 import omis.locationterm.exception.LocationReasonTermConflictException;
+import omis.locationterm.exception.LocationReasonTermExistsException;
 import omis.locationterm.exception.LocationTermConflictException;
+import omis.locationterm.exception.LocationTermExistsException;
 import omis.offender.domain.Offender;
 import omis.supervision.domain.CorrectionalStatus;
 
@@ -35,20 +36,25 @@ public interface ChangeLocationService {
 	 * @param location location
 	 * @param reason location reason
 	 * @return location term
-	 * @throws DuplicateEntityFoundException if location term exists
 	 * @throws LocationTermConflictException if conflicting location terms
 	 * exist
 	 * @throws EndedLocationTermException if location term exists in effective
 	 * date that is ended
 	 * @throws LocationReasonTermConflictException if conflicting reason terms
 	 * exist
+	 * @throws LocationReasonTermExistsException if reason term exists for
+	 * changed location term
+	 * @throws LocationTermExistsException if location term to change to exists
+	 * @throws LocationReasonTermExistsException if reason term exists
+	 * for location term
 	 */
 	LocationTerm change(Offender offender, Date effectiveDate, Date endDate,
 			Location location, LocationReason reason)
-				throws DuplicateEntityFoundException,
-					LocationTermConflictException,
+				throws LocationTermConflictException,
 					EndedLocationTermException,
-					LocationReasonTermConflictException;
+					LocationReasonTermConflictException,
+					LocationTermExistsException,
+					LocationReasonTermExistsException;
 	
 	/**
 	 * Returns locations allowed for action with correctional status.

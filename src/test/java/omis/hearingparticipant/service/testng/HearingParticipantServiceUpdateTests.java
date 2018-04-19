@@ -65,10 +65,10 @@ import omis.util.PropertyValueAsserter;
 /**
  * Hearing Participant Service Update Tests.
  * 
- *@author Annie Wahl 
- *@version 0.1.0 (Jan 29, 2018)
- *@since OMIS 3.0
- *
+ * @author Annie Wahl 
+ * @author Josh Divine
+ * @version 0.1.3 (Apr 18, 2018)
+ * @since OMIS 3.0
  */
 public class HearingParticipantServiceUpdateTests
 		extends AbstractHibernateTransactionalTestNGSpringContextTests {
@@ -227,10 +227,10 @@ public class HearingParticipantServiceUpdateTests
 				this.paroleBoardLocationDelegate.create(location, true);
 		final ParoleBoardItinerary itinerary =
 				this.paroleBoardItineraryDelegate.create(paroleBoardLocation,
-						this.parseDateText("01/01/2015"), null);
-		return this.boardHearingDelegate
-				.create(itinerary, null, null, paroleEligibility, null, null,
-						false);
+						true, this.parseDateText("01/01/2015"), 
+						this.parseDateText("01/01/2015"));
+		return this.boardHearingDelegate.create(itinerary, null, 
+				paroleEligibility, null, null, false);
 	}
 	
 	private Date parseDateText(final String text) {

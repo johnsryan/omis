@@ -8,6 +8,7 @@
 <fmt:bundle basename="omis.warrant.msgs.warrant">
 <form:form commandName="warrantForm" class="editForm">
 	<fieldset>
+		<legend><fmt:message key="warrantDetailsFieldsetLegendLabel"/></legend>
 		<span class="fieldGroup">
 			<form:label path="date" class="fieldLabel">
 				<fmt:message key="dateLabel"/>
@@ -27,8 +28,8 @@
 				<fmt:message key="issuedByLabel"/>
 			</form:label>
 			<input id="issuedByInput"/>
-				<form:hidden id="issuedBy" path="issuedBy"/>
-				<a id="clearIssuedBy" class="clearLink"></a>
+			<form:hidden id="issuedBy" path="issuedBy"/>
+			<a id="clearIssuedBy" class="clearLink"></a>
 			<span id="issuedByDisplay">
 				<c:if test="${not empty warrantForm.issuedBy}" >
 					<c:out value="${warrantForm.issuedBy.name.lastName}, ${warrantForm.issuedBy.name.firstName}"/>
@@ -37,42 +38,8 @@
 			<form:errors path="issuedBy" cssClass="error"/>
 		</span>
 	</fieldset>
-	
 	<fieldset>
-		<!-- causeviolations -->
-		<span class="fieldGroup">
-			<c:set var="warrantCauseViolationItems" value="${warrantForm.warrantCauseViolationItems}" scope="request"/>
-			<jsp:include page="warrantCauseViolationTable.jsp"/>
-		</span>
-	</fieldset>
-	
-	<c:choose>
-		<c:when test="${warrantReasonCategory eq 'AUTHORIZATION_TO_PICKUP_AND_HOLD'}">
-			<fieldset>
-				<!-- Bond options -->
-				<form:errors path="bondRecommended" cssClass="error"/>
-				<span class="fieldGroup">
-					<form:radiobutton path="bondRecommended" name="bondRecommended" value="true" class="fieldOption" />
-					<label for="bondRecommended" class="fieldValueLabel">
-						<fmt:message key="bondRecommendationLabel"/>
-					</label>
-					<form:input path="bondRecommendation"/>
-					<form:errors path="bondRecommendation" cssClass="error"/>
-				</span>
-				<span class="fieldGroup">
-					<form:radiobutton  path="bondRecommended" name="noBond" value="false" class="fieldOption"/>
-					<label for="noBond" class="fieldValueLabel">
-						<fmt:message key="noBondLabel"/>
-					</label>
-				</span>
-			</fieldset>
-		</c:when>
-		<c:otherwise>
-			<form:input type="hidden" path="bondRecommended" />
-		</c:otherwise>
-	</c:choose>
-	
-	<fieldset>
+		<legend><fmt:message key="arrestFieldsetLegendLabel"/></legend>
 		<!-- arrest -->
 		<span class="fieldGroup">
 			<form:label path="arrested" class="fieldLabel">
@@ -121,8 +88,46 @@
 			</span>
 		</div>
 	</fieldset>
+	<fieldset>
+		<legend><fmt:message key="warrantCauseFieldsetLegendLabel"/></legend>
+		<!-- causeviolations -->
+		<span class="fieldGroup">
+			<c:set var="warrantCauseViolationItems" value="${warrantForm.warrantCauseViolationItems}" scope="request"/>
+			<jsp:include page="warrantCauseViolationTable.jsp"/>
+		</span>
+	</fieldset>
+	
+	<c:choose>
+		<c:when test="${warrantReasonCategory eq 'AUTHORIZATION_TO_PICKUP_AND_HOLD'}">
+			<fieldset>
+				<legend><fmt:message key="bondFieldsetLegendLabel"/></legend>
+				<!-- Bond options -->
+				<form:errors path="bondRecommended" cssClass="error"/>
+				<span class="fieldGroup">
+					<form:radiobutton path="bondRecommended" name="bondRecommended" value="true" class="fieldOption" />
+					<label for="bondRecommended" class="fieldValueLabel">
+						<fmt:message key="bondRecommendationLabel"/>
+					</label>
+					<form:input path="bondRecommendation"/>
+					<form:errors path="bondRecommendation" cssClass="error"/>
+				</span>
+				<span class="fieldGroup">
+					<form:radiobutton  path="bondRecommended" name="noBond" value="false" class="fieldOption"/>
+					<label for="noBond" class="fieldValueLabel">
+						<fmt:message key="noBondLabel"/>
+					</label>
+				</span>
+			</fieldset>
+		</c:when>
+		<c:otherwise>
+			<form:input type="hidden" path="bondRecommended" />
+		</c:otherwise>
+	</c:choose>
+	
+	
 	
 	<fieldset>
+		<legend><fmt:message key="warrantNotesFieldsetLegendLabel"/></legend>
 		<!-- notes -->
 		<span class="fieldGroup">
 			<c:set var="warrantNoteItems" value="${warrantForm.warrantNoteItems}" scope="request"/>

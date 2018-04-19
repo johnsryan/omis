@@ -33,7 +33,7 @@ import omis.questionnaire.domain.AdministeredQuestionnaire;
  * Implementation of category sum rating service delegate.
  * 
  * @author Josh Divine
- * @version 0.1.1 (Mar 22, 2018)
+ * @version 0.1.2 (Apr 9, 2018)
  * @since OMIS 3.0
  */
 public class CategorySumRatingServiceDelegateImpl 
@@ -51,8 +51,9 @@ public class CategorySumRatingServiceDelegateImpl
 	 * the specified delegates.
 	 * 
 	 * @param answerRatingDelegate answer rating delegate
-	 * @param sum rated category delegate
-	 * @param assessment rating service delegate registry
+	 * @param sumRatedCategoryDelegate sum rated category delegate
+	 * @param assessmentRatingServiceDelegateRegistry assessment rating service 
+	 * delegate registry
 	 */
 	public CategorySumRatingServiceDelegateImpl(
 			final AnswerRatingDelegate answerRatingDelegate,
@@ -66,7 +67,9 @@ public class CategorySumRatingServiceDelegateImpl
 	
 	/** {@inheritDoc} */
 	@Override
-	public Boolean isAssessable(final RatingCategory ratingCategory) {
+	public Boolean isAssessable(
+			final AdministeredQuestionnaire administeredQuestionnaire, 
+			final RatingCategory ratingCategory) {
 		return this.findSumRatedCategoryByRatingCategory(ratingCategory) != null;
 	}
 

@@ -11,7 +11,8 @@ import omis.stg.domain.SecurityThreatGroupActivityNote;
  * Data access object for security threat group activity note.
  * 
  * @author Trevor Isles
- * @version 0.1.0 (Nov 22, 2016)
+ * @author Josh Divine
+ * @version 0.1.1 (Apr 10, 2018)
  * @since OMIS 3.0
  */
 public interface SecurityThreatGroupActivityNoteDao
@@ -20,8 +21,8 @@ public interface SecurityThreatGroupActivityNoteDao
 	/**
 	 * Returns a list of security threat group activity notes.
 	 * 
-	 * @param SecurityThreatGroupActivity - activity
-	 * @return list of security threat group activity notes.
+	 * @param activity security threat group activity 
+	 * @return list of security threat group activity notes
 	 */
 	List<SecurityThreatGroupActivityNote> 
 		findNotes(SecurityThreatGroupActivity activity);
@@ -30,23 +31,23 @@ public interface SecurityThreatGroupActivityNoteDao
 	 * Finds security threat group activity notes excluding the specified 
 	 * activity note.
 	 * 
-	 * @param SecurityThreatGroupActivity - activity
-	 * @param Date - date
-	 * @param String - value
-	 * 
-	 * @return Finds a security threat group activity.
+	 * @param activity security threat group activity 
+	 * @param date date
+	 * @param value value
+	 * @param excludedNote excluded security threat group activity note
+	 * @return security threat group activity note
 	 */
-	SecurityThreatGroupActivityNote findExcluding( 
-			SecurityThreatGroupActivityNote excludedNote, 
-			Date date, String value);
+	SecurityThreatGroupActivityNote findExcluding(
+			SecurityThreatGroupActivity activity, Date date, String value,
+			SecurityThreatGroupActivityNote excludedNote);
 	
 	/**
 	 * Finds security threat group activity note.
 	 * 
-	 * @param Date - date
-	 * @param String - value
-	 * 
-	 * @return Finds a security threat group activity.
+	 * @param activity security threat group activity 
+	 * @param date date
+	 * @param value value
+	 * @return security threat group activity note
 	 */
 	SecurityThreatGroupActivityNote findNote(
 			SecurityThreatGroupActivity activity, Date date, String value);

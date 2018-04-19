@@ -14,10 +14,10 @@ import omis.questionnaire.domain.Question;
 import omis.questionnaire.domain.QuestionnaireSection;
 
 /**
- * AdministeredQuestionValueDelegate.java
+ * Administered Question Value Delegate.
  * 
- *@author Annie Jacques 
- *@version 0.1.0 (Sep 9, 2016)
+ *@author Annie Wahl 
+ *@version 0.1.1 (Apr 5, 2018)
  *@since OMIS 3.0
  *
  */
@@ -34,10 +34,11 @@ public class AdministeredQuestionValueDelegate {
 	private final AuditComponentRetriever auditComponentRetriever;
 
 	/**
-	 * Constructor for AdministeredQuestionValueDelegate
-	 * @param administeredQuestionValueDao
-	 * @param administeredQuestionValueInstanceFactory
-	 * @param auditComponentRetriever
+	 * Constructor for AdministeredQuestionValueDelegate.
+	 * @param administeredQuestionValueDao - Administered Question Value DAO
+	 * @param administeredQuestionValueInstanceFactory - Administered
+	 * Question Value Instance Factory
+	 * @param auditComponentRetriever - Audit Component Retriever
 	 */
 	public AdministeredQuestionValueDelegate(
 			final AdministeredQuestionValueDao administeredQuestionValueDao,
@@ -52,13 +53,13 @@ public class AdministeredQuestionValueDelegate {
 	
 	
 	/**
-	 * Creates a new AdministeredQuestionValue
-	 * @param administeredQuestionnaire
-	 * @param question
-	 * @param questionnaireSection
-	 * @param answerValue
-	 * @param answerValueText - String
-	 * @param comments - String
+	 * Creates a new AdministeredQuestionValue.
+	 * @param administeredQuestionnaire - Administered Questionnaire
+	 * @param question - Question
+	 * @param questionnaireSection - Questionnaire Section
+	 * @param answerValue - Answer Value
+	 * @param answerValueText - String - answer value text
+	 * @param comments - String comments
 	 * @return Newly created Administered
 	 * @throws DuplicateEntityFoundException - when administeredQuestionValue
 	 * already exists with all given properties
@@ -68,10 +69,10 @@ public class AdministeredQuestionValueDelegate {
 			final Question question, 
 			final QuestionnaireSection questionnaireSection,
 			final AnswerValue answerValue, final String answerValueText,
-			final String comments) throws DuplicateEntityFoundException{
-		if(this.administeredQuestionValueDao.find(question, answerValue, 
+			final String comments) throws DuplicateEntityFoundException {
+		if (this.administeredQuestionValueDao.find(question, answerValue,
 				answerValueText, administeredQuestionnaire,
-				questionnaireSection) != null){
+				questionnaireSection) != null) {
 			throw new DuplicateEntityFoundException(DUPLICATE_ENTITY_FOUND_MSG);
 		}
 		
@@ -100,14 +101,14 @@ public class AdministeredQuestionValueDelegate {
 	
 	
 	/**
-	 * Updates an existing administeredQuestionValue
+	 * Updates an existing administeredQuestionValue.
 	 * @param administeredQuestionValue - administeredQuestionValue to update
-	 * @param administeredQuestionnaire
-	 * @param question
-	 * @param questionnaireSection
-	 * @param answerValue
-	 * @param answerValueText - String
-	 * @param comments - String
+	 * @param administeredQuestionnaire - Administered Questionnaire
+	 * @param question - Question
+	 * @param questionnaireSection - Questionnaire Section
+	 * @param answerValue - Answer Value
+	 * @param answerValueText - String - answer value text
+	 * @param comments - String comments
 	 * @return Updated AdministeredQuestionValue
 	 * @throws DuplicateEntityFoundException - when administeredQuestionValue
 	 * already exists with all given properties 
@@ -118,11 +119,11 @@ public class AdministeredQuestionValueDelegate {
 			final Question question, 
 			final QuestionnaireSection questionnaireSection,
 			final AnswerValue answerValue, final String answerValueText,
-			final String comments) throws DuplicateEntityFoundException{
-		if(this.administeredQuestionValueDao.findExcluding(
+			final String comments) throws DuplicateEntityFoundException {
+		if (this.administeredQuestionValueDao.findExcluding(
 				question, answerValue, answerValueText,
 				administeredQuestionnaire, questionnaireSection, 
-				administeredQuestionValue) != null){
+				administeredQuestionValue) != null) {
 			throw new DuplicateEntityFoundException(DUPLICATE_ENTITY_FOUND_MSG);
 		}
 		
@@ -143,37 +144,59 @@ public class AdministeredQuestionValueDelegate {
 	}
 	
 	/**
-	 * Removes an AdministeredQuestionValue
+	 * Removes an AdministeredQuestionValue.
 	 * @param administeredQuestionValue - AdministeredQuestionValue to remove
 	 */
-	public void remove(AdministeredQuestionValue administeredQuestionValue){
+	public void remove(
+			final AdministeredQuestionValue administeredQuestionValue) {
 		this.administeredQuestionValueDao
 			.makeTransient(administeredQuestionValue);
 	}
 	
 	/**
-	 * Returns an AdministeredQuestionValue by specified question
-	 * @param question
-	 * @param administeredQuestionnaire
-	 * @return AdministeredQuestionValue
+	 * Returns an AdministeredQuestionValue by specified question and
+	 * administered questionnaire.
+	 * @param question - Question
+	 * @param administeredQuestionnaire - Administered Questionnaire
+	 * @return AdministeredQuestionValue found by specified question and
+	 * administered questionnaire.
 	 */
 	public AdministeredQuestionValue findByQuestionAndAdministeredQuestionnaire(
-		Question question, 
-			AdministeredQuestionnaire administeredQuestionnaire){
+			final Question question, 
+			final AdministeredQuestionnaire administeredQuestionnaire) {
 		return this.administeredQuestionValueDao
 			.findByQuestionAndAdministeredQuestionnaire(question, 
 				administeredQuestionnaire);
 	}
 	
 	/**
-	 * Returns a list of AdministeredQuestionValues by specified question
-	 * @param question
-	 * @param administeredQuestionnaire
-	 * @return List of AdministeredQuestionValue
+	 * Returns Administered Question Value with specified properties
+	 * and that does not contain an Answer Value.
+	 * @param question - Question
+	 * @param administeredQuestionnaire - Administered Questionnaire
+	 * @param questionnaireSection - Questionnaire Section
+	 * @return AdministeredQuestionValue - Administered Question Value with
+	 * specified properties and that does not contain an Answer Value. 
+	 */
+	public AdministeredQuestionValue findByNoAnswerValue(
+			final Question question,
+			final AdministeredQuestionnaire administeredQuestionnaire,
+			final QuestionnaireSection questionnaireSection) {
+		return this.administeredQuestionValueDao.findByNoAnswerValue(question,
+				administeredQuestionnaire, questionnaireSection);
+	}
+	
+	/**
+	 * Returns a list of AdministeredQuestionValues by specified question and
+	 * administered questionnaire.
+	 * @param question - Question
+	 * @param administeredQuestionnaire - Administered Questionnaire
+	 * @return List of AdministeredQuestionValues by specified question and
+	 * administered questionnaire.
 	 */
 	public List<AdministeredQuestionValue> 
-		findAllByQuestionAndAdministeredQuestionnaire(Question question, 
-			AdministeredQuestionnaire administeredQuestionnaire){
+		findAllByQuestionAndAdministeredQuestionnaire(final Question question, 
+			final AdministeredQuestionnaire administeredQuestionnaire) {
 		return this.administeredQuestionValueDao
 			.findAllByQuestionAndAdministeredQuestionnaire(question, 
 				administeredQuestionnaire);

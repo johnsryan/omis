@@ -81,4 +81,9 @@
 		where
 			warrant.offender = :offender
 	]]></query>
+	<query name="countWarrantsByOffender"><![CDATA[
+		select count(warrant.id)
+		from omis.warrant.domain.Warrant warrant
+		where warrant.offender = :offender
+	]]></query>
 </hibernate-mapping>

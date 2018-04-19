@@ -308,4 +308,30 @@ public class SentenceImpl
 		}
 		return hashCode;
 	}
+	
+	/**
+	 * Returns string representation of {@code this} including conviction
+	 * offender name, counts and effective date.
+	 * 
+	 * @return string representation of {@code this}
+	 */
+	@Override
+	public String toString() {
+		final String convictionOffenseName;
+		final Integer convictionCounts;
+		if (this.getConviction() != null) {
+			if (conviction.getOffense() != null) {
+				convictionOffenseName = this.getConviction().getOffense().getName();
+			} else {
+				convictionOffenseName = null;	
+			}
+			convictionCounts = this.getConviction().getCounts();
+		} else {
+			convictionOffenseName = null;
+			convictionCounts = null;
+		}
+		return String.format("#%d [%s - %d] %s", this.getId(),
+				convictionOffenseName, convictionCounts,
+				this.getEffectiveDate());
+	}
 }

@@ -24,7 +24,7 @@
 				where
 					disciplinaryCodeViolationSub = disciplinaryCodeViolation
 				and
-					infraction.resolution.date is not null
+					infraction.resolution.reason is not null
 			)
 	]]></query>
 	<query name="findUnresolvedSupervisionViolationCountByOffender"><![CDATA[
@@ -48,7 +48,7 @@
 				where
 					conditionViolationSub = conditionViolation
 				and
-					infraction.resolution.date is not null
+					infraction.resolution.reason is not null
 			)
 	]]></query>
 	<query name="findResolvedDisciplinaryViolationCountByOffender"><![CDATA[
@@ -60,7 +60,7 @@
 		and
 			infraction.disciplinaryCodeViolation.violationEvent.offender = :offender
 		and
-			infraction.resolution.date is not null
+			infraction.resolution.reason is not null
 	]]></query>
 	<query name="findResolvedSupervisionViolationCountByOffender"><![CDATA[
 		select count(*)
@@ -71,6 +71,6 @@
 		and
 			infraction.conditionViolation.violationEvent.offender = :offender
 		and
-			infraction.resolution.date is not null
+			infraction.resolution.reason is not null
 	]]></query>
 </hibernate-mapping>

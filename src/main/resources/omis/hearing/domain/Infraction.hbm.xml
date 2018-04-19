@@ -22,18 +22,18 @@
 				<many-to-one name="authority" column="`RESOLUTION_PERSON_ID`" entity-name="omis.person.domain.Person" not-null="true" />
 				<property name="appealDate" column="`RESOLUTION_APPEAL_DATE`" type="java.util.Date" not-null="false" />
 				<property name="category" column="`RESOLUTION_CATEGORY`" not-null="false" >
-				<type name="org.hibernate.type.EnumType">
-					<param name="enumClass">omis.hearing.domain.ResolutionClassificationCategory</param>
-					<param name="useNamed">true</param>
-					<param name="type">12</param>
-				</type>
+					<type name="org.hibernate.type.EnumType">
+						<param name="enumClass">omis.hearing.domain.ResolutionClassificationCategory</param>
+						<param name="useNamed">true</param>
+						<param name="type">12</param>
+					</type>
 				</property>
 				<property name="disposition" column="`RESOLUTION_DISPOSITION`" not-null="false" >
-				<type name="org.hibernate.type.EnumType">
-					<param name="enumClass">omis.hearing.domain.DispositionCategory</param>
-					<param name="useNamed">true</param>
-					<param name="type">12</param>
-				</type>
+					<type name="org.hibernate.type.EnumType">
+						<param name="enumClass">omis.hearing.domain.DispositionCategory</param>
+						<param name="useNamed">true</param>
+						<param name="type">12</param>
+					</type>
 				</property>
 			</component>
 			<many-to-one name="plea" column="`INFRACTION_PLEA_ID`" entity-name="omis.hearing.domain.InfractionPlea" not-null="false" />

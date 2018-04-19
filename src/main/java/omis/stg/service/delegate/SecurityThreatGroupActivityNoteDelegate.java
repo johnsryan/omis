@@ -16,10 +16,10 @@ import omis.stg.domain.SecurityThreatGroupActivityNote;
  * Security threat group affiliation note.
  * 
  * @author Trevor Isles
- * @version 0.1.0 (Nov 29, 2016)
+ * @author Josh Divine
+ * @version 0.1.1 (Apr 10, 2018)
  * @since OMIS 3.0
  */
-
 public class SecurityThreatGroupActivityNoteDelegate {
 
 	/* Instance factories. */
@@ -34,9 +34,14 @@ public class SecurityThreatGroupActivityNoteDelegate {
 	
 	/* Constructor. */
 	
-	/** Instantiates delegate for security threat group activity.
-	 * @param securityThreatGroupActivityDao data access object for
-	 * activity.
+	/** 
+	 * Instantiates delegate for security threat group activity note.
+	 * 
+	 * @param securityThreatGroupActivityNoteInstanceFactory security threat 
+	 * group activity note instance factory
+	 * @param securityThreatGroupActivityNoteDao security threat group activity 
+	 * note data access object 
+	 * @param auditComponentRetriever audit component retriever
 	 */
 	public SecurityThreatGroupActivityNoteDelegate(
 			final InstanceFactory<SecurityThreatGroupActivityNote> 
@@ -48,14 +53,15 @@ public class SecurityThreatGroupActivityNoteDelegate {
 		this.auditComponentRetriever = auditComponentRetriever;
 	}
 	
-	/** Creates a security threat group activity note.
-	 * @param Date - date
-	 * @param Person - reportedBy
-	 * @param String - summary
-	 * @param  - 
-	 * @return Creates a security threat group activity note. 
-	 * @throws DuplicateEntityFoundException - when an activity note already 
-	 * exists.
+	/** 
+	 * Creates a security threat group activity note.
+	 * 
+	 * @param activity security threat group activity
+	 * @param date date
+	 * @param value value
+	 * @return security threat group activity note
+	 * @throws DuplicateEntityFoundException when an activity note already 
+	 * exists
 	 */
 	public SecurityThreatGroupActivityNote addNote(
 			final SecurityThreatGroupActivity activity, 
@@ -66,32 +72,30 @@ public class SecurityThreatGroupActivityNoteDelegate {
 			throw new DuplicateEntityFoundException(
 					"Duplicate security threat group activity note found");
 		}
-		
 		SecurityThreatGroupActivityNote activityNote = 
 			this.activityNoteInstanceFactory.createInstance();
 				activityNote.setCreationSignature(new CreationSignature(
 			this.auditComponentRetriever.retrieveUserAccount(),
 			this.auditComponentRetriever.retrieveDate()));
-			this.populateSecurityThreatGroupActivityNote(activityNote, activity, date, 
-					value);
+			this.populateSecurityThreatGroupActivityNote(activityNote, activity, 
+					date, value);
 		return this.activityNoteDao.makePersistent(activityNote);
 	}
 	
-	/**Updates a security threat group activity note.
-	 * @param Date - date
-	 * @param Person - reportedBy
-	 * @param String - summary
-	 * @param  - 
-	 * @return Updates a security threat group activity. 
-	 * @throws DuplicateEntityFoundException - when an activity already exists.
+	/**
+	 * Updates a security threat group activity note.
+	 * 
+	 * @param note security threat group activity note
+	 * @param date date
+	 * @param value value
+	 * @return security threat group activity note
+	 * @throws DuplicateEntityFoundException if duplicate entity exists
 	 */
 	public SecurityThreatGroupActivityNote updateNote(
-			final SecurityThreatGroupActivityNote note,
-			final Date date,
-			final String value)
-					throws DuplicateEntityFoundException {
-		if (this.activityNoteDao.findExcluding(note, date, value) 
-				!= null) {
+			final SecurityThreatGroupActivityNote note, final Date date, 
+			final String value) throws DuplicateEntityFoundException {
+		if (this.activityNoteDao.findExcluding(note.getActivity(), date, value, 
+				note) != null) {
 			throw new DuplicateEntityFoundException(
 					"Duplicate security threat group activity note found.");
 		}
@@ -100,27 +104,26 @@ public class SecurityThreatGroupActivityNoteDelegate {
 		return this.activityNoteDao.makePersistent(note);
 	}
 
-	/** Removes a security threat group activity.
-	 * @param SecurityThreatGroupActivity - activity
-	 * @param  - .
-	 * @return Removes a security threat group activity.
-	 * @throws DuplicateEntityFoundException - when security threat group 
-	 * activity already exists. 
+	/** 
+	 * Removes a security threat group activity.
+	 * 
+	 * @param note security threat group activity note
 	 */
 	public void remove(final SecurityThreatGroupActivityNote note) {
 		this.activityNoteDao.makeTransient(note);
 	}
 	
 	/**
-	 * Populates the specified security threat group activity.
+	 * Returns a list of security threat group activity notes.
 	 * 
-	 * @param SecurityThreatGroupActivity - activity
-	 * @param Date - date
-	 * @param Person - reportedBy
-	 * @param String - summary
-	 *  
-	 * @return populated security threat group activity.
+	 * @return list of security threat group activity notes
 	 */
+	public List<SecurityThreatGroupActivityNote> findNotes(
+			SecurityThreatGroupActivity activity) {
+		return this.activityNoteDao.findNotes(activity);
+	}
+	
+	// Populates the specified security threat group activity.
 	private void populateSecurityThreatGroupActivityNote(
 			final SecurityThreatGroupActivityNote note,
 			final SecurityThreatGroupActivity activity,
@@ -132,11 +135,5 @@ public class SecurityThreatGroupActivityNoteDelegate {
 		note.setUpdateSignature(new UpdateSignature(
 				this.auditComponentRetriever.retrieveUserAccount(),
 				this.auditComponentRetriever.retrieveDate()));
-}
-
-	public List<SecurityThreatGroupActivityNote> findNotes(
-			SecurityThreatGroupActivity activity) {
-		return this.activityNoteDao.findNotes(activity);
 	}
-	
 }

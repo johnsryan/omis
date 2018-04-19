@@ -17,6 +17,10 @@
 			<constructor-arg name="sessionFactory" ref="sessionFactory"/>
 		</bean>
 		
+		<bean id="warrantProfileItemReportService" class="omis.warrant.report.impl.hibernate.WarrantProfileItemReportServiceHibernateImpl">
+			<constructor-arg name="sessionFactory" ref="sessionFactory"/>
+		</bean>
+		
 		<bean id="warrantFormValidator"
 			class="omis.warrant.web.validator.WarrantFormValidator">
 		</bean>
@@ -34,5 +38,21 @@
 				expression="execution(* omis.warrant.web.controller.WarrantController.*(..))"/>
 			<aop:advisor advice-ref="transactionAdvice" pointcut-ref="warrantControllerOperation"/>	
 		</aop:config>
+		
+		<!-- Profile items. -->
+		<bean id="warrantProfileItem"
+			class="omis.warrant.web.profile.WarrantProfileItem">
+			<constructor-arg name="requiredAuthorizations">
+				<set>
+					<value>WARRANT_LIST</value>
+					<value>ADMIN</value>
+				</set>
+			</constructor-arg>
+			<constructor-arg name="includePage" value="/WEB-INF/views/warrant/profile/includes/profileItem.jsp"/>
+			<constructor-arg name="name" value="warrant"/>
+			<constructor-arg name="profileItemRegistry" ref="complianceProfileItemRegistry"/>
+			<constructor-arg name="warrantProfileItemReportService" ref="warrantProfileItemReportService"/>
+			<constructor-arg name="enabled" value="${warrantProfileItemEnabled}"/>
+		</bean>
 		
 </beans>

@@ -1,8 +1,14 @@
 package omis.paroleboarditinerary.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import omis.exception.DuplicateEntityFoundException;
+import omis.facility.domain.Facility;
+import omis.facility.domain.Unit;
+import omis.facility.service.delegate.FacilityDelegate;
+import omis.facility.service.delegate.UnitDelegate;
 import omis.location.domain.Location;
 import omis.location.service.delegate.LocationDelegate;
 import omis.paroleboarditinerary.domain.AttendeeRoleCategory;
@@ -25,7 +31,7 @@ import omis.paroleboardmember.service.delegate.ParoleBoardMemberDelegate;
  * 
  * @author Josh Divine
  * @author Annie Wahl 
- * @version 0.1.1 (Jan 23, 2018)
+ * @version 0.1.3 (Apr 18, 2018)
  * @since OMIS 3.0
  */
 public class ParoleBoardItineraryServiceImpl 
@@ -48,6 +54,10 @@ public class ParoleBoardItineraryServiceImpl
 	
 	private final ParoleBoardLocationDelegate paroleBoardLocationDelegate;
 	
+	private final FacilityDelegate facilityDelegate;
+	
+	private final UnitDelegate unitDelegate;
+	
 	/**
 	 * Instantiates a parole board itinerary service implementation with the 
 	 * specified delegates.
@@ -69,7 +79,9 @@ public class ParoleBoardItineraryServiceImpl
 			final BoardMeetingSiteDelegate boardMeetingSiteDelegate,
 			final LocationDelegate locationDelegate,
 			final ParoleBoardMemberDelegate paroleBoardMemberDelegate,
-			final ParoleBoardLocationDelegate paroleBoardLocationDelegate) {
+			final ParoleBoardLocationDelegate paroleBoardLocationDelegate,
+			final FacilityDelegate facilityDelegate,
+			final UnitDelegate unitDelegate) {
 		this.paroleBoardItineraryDelegate = paroleBoardItineraryDelegate;
 		this.paroleBoardItineraryNoteDelegate = 
 				paroleBoardItineraryNoteDelegate;
@@ -78,27 +90,29 @@ public class ParoleBoardItineraryServiceImpl
 		this.locationDelegate = locationDelegate;
 		this.paroleBoardMemberDelegate = paroleBoardMemberDelegate;
 		this.paroleBoardLocationDelegate = paroleBoardLocationDelegate;
+		this.facilityDelegate = facilityDelegate;
+		this.unitDelegate = unitDelegate;
 	}
 	
 	/** {@inheritDoc} */
 	@Override
 	public ParoleBoardItinerary create(
-			final ParoleBoardLocation paroleBoardLocation, 
+			final ParoleBoardLocation paroleBoardLocation, final Boolean onsite,
 			final Date startDate, final Date endDate) 
 					throws DuplicateEntityFoundException {
 		return this.paroleBoardItineraryDelegate.create(
-				paroleBoardLocation, startDate, endDate);
+				paroleBoardLocation, onsite, startDate, endDate);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public ParoleBoardItinerary update(
 			final ParoleBoardItinerary paroleBoardItinerary, 
-			final ParoleBoardLocation paroleBoardLocation,
+			final ParoleBoardLocation paroleBoardLocation, final Boolean onsite,
 			final Date startDate, final Date endDate) 
 					throws DuplicateEntityFoundException {
 		return this.paroleBoardItineraryDelegate.update(paroleBoardItinerary, 
-				paroleBoardLocation, startDate, endDate);
+				paroleBoardLocation, onsite, startDate, endDate);
 	}
 
 	/** {@inheritDoc} */
@@ -190,20 +204,21 @@ public class ParoleBoardItineraryServiceImpl
 	@Override
 	public BoardMeetingSite createBoardMeetingSite(
 			final ParoleBoardItinerary boardItinerary, final Location location, 
-			final Date date, final Integer order) 
+			final Unit unit, final Date date, final Integer order) 
 					throws DuplicateEntityFoundException {
 		return this.boardMeetingSiteDelegate.create(boardItinerary, location,
-				date, order);
+				unit, date, order);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public BoardMeetingSite updateBoardMeetingSite(
 			final BoardMeetingSite boardMeetingSite, final Location location, 
-			final Date date, final Integer order) 
+			final Unit unit, final Date date, final Integer order) 
 					throws DuplicateEntityFoundException {
 		return this.boardMeetingSiteDelegate.update(boardMeetingSite, 
-				boardMeetingSite.getBoardItinerary(), location, date, order);
+				boardMeetingSite.getBoardItinerary(), location, unit, date, 
+				order);
 	}
 
 	/** {@inheritDoc} */
@@ -283,5 +298,16 @@ public class ParoleBoardItineraryServiceImpl
 	@Override
 	public List<ParoleBoardLocation> findParoleBoardLocations() {
 		return this.paroleBoardLocationDelegate.findAll();
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public List<Unit> findUnitsByLocation(final Location location) {
+		Facility facility = this.facilityDelegate.findByLocation(location);
+		if (facility != null) {
+			return this.unitDelegate.findByFacility(facility);
+		} else {
+			return new ArrayList<Unit>();
+		}
 	}
 }

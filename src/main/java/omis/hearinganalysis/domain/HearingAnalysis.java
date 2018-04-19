@@ -20,19 +20,15 @@ package omis.hearinganalysis.domain;
 import omis.audit.domain.Creatable;
 import omis.audit.domain.Updatable;
 import omis.paroleboarditinerary.domain.BoardAttendee;
-import omis.paroleboarditinerary.domain.BoardMeetingSite;
+import omis.paroleboarditinerary.domain.ParoleBoardItinerary;
 import omis.paroleeligibility.domain.ParoleEligibility;
 
 /**
  * Hearing analysis.
  *
  * @author Josh Divine
- * @version 0.1.0 (Dec 18, 2017)
+ * @version 0.1.1 (Apr 18, 2018)
  * @since OMIS 3.0
- */
-/**
- * @author CID017
- *
  */
 public interface HearingAnalysis extends Creatable, Updatable {
 
@@ -65,21 +61,6 @@ public interface HearingAnalysis extends Creatable, Updatable {
 	ParoleEligibility getEligibility();
 	
 	/**
-	 * Sets the board meeting site.
-	 * 
-	 * @param boardMeetingSite board meeting site
-	 */
-	void setBoardMeetingSite(BoardMeetingSite boardMeetingSite);
-	
-	/**
-	 * Returns the board meeting site.
-	 * 
-	 * @return board meeting site
-	 */
-	BoardMeetingSite getBoardMeetingSite();
-	
-	
-	/**
 	 * Sets the hearing analysis category.
 	 * 
 	 * @param category hearing analysis category
@@ -106,6 +87,20 @@ public interface HearingAnalysis extends Creatable, Updatable {
 	 * @return analyst
 	 */
 	BoardAttendee getAnalyst();
+	
+	/**
+	 * Sets the parole board itinerary.
+	 * 
+	 * @param paroleBoardItinerary parole board itinerary
+	 */
+	void setParoleBoardItinerary(ParoleBoardItinerary paroleBoardItinerary);
+	
+	/**
+	 * Returns the parole board itinerary.
+	 * 
+	 * @return parole board itinerary
+	 */
+	ParoleBoardItinerary getParoleBoardItinerary();
 	
 	/**
 	 * Compares {@code this} and {@code obj} for equality.

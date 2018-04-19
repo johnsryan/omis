@@ -19,7 +19,9 @@ package omis.paroleboarditinerary.dao.impl.hibernate;
 
 import java.util.Date;
 import java.util.List;
+
 import org.hibernate.SessionFactory;
+
 import omis.dao.impl.hibernate.GenericHibernateDaoImpl;
 import omis.paroleboarditinerary.dao.ParoleBoardItineraryDao;
 import omis.paroleboarditinerary.domain.ParoleBoardItinerary;
@@ -30,7 +32,7 @@ import omis.paroleboardlocation.domain.ParoleBoardLocation;
  *
  * @author Josh Divine
  * @author Annie Wahl
- * @version 0.1.2 (Jan 23, 2018)
+ * @version 0.1.3 (Apr 12, 2018)
  * @since OMIS 3.0
  */
 public class ParoleBoardItineraryDaoHibernateImpl 
@@ -45,8 +47,8 @@ public class ParoleBoardItineraryDaoHibernateImpl
 	private static final String FIND_EXCLUDING_QUERY_NAME = 
 			"findParoleBoardItineraryExcluding";
 	
-	private static final String FIND_AFTER_DATE_QUERY_NAME = 
-			"findParoleBoardItineraryAfterDate";
+	private static final String FIND_BY_EFFECTIVE_DATE_QUERY_NAME = 
+			"findParoleBoardItineraryByEffectiveDate";
 	
 	/* Parameters. */
 	
@@ -61,6 +63,7 @@ public class ParoleBoardItineraryDaoHibernateImpl
 			"excludedItinerary";
 
 	private static final String DATE_PARAM_NAME = "date";
+	
 	
 	/** Instantiates a hibernate implementation of the data access object for 
 	 *  parole board itinerary.
@@ -109,14 +112,14 @@ public class ParoleBoardItineraryDaoHibernateImpl
 
 	/** {@inheritDoc} */
 	@Override
-	public List<ParoleBoardItinerary> findAfterDate(final Date effectiveDate) {
+	public List<ParoleBoardItinerary> findByEffectiveDate(
+			final Date effectiveDate) {
 		@SuppressWarnings("unchecked")
 		List<ParoleBoardItinerary> itineraries = (List<ParoleBoardItinerary>) 
 				this.getSessionFactory().getCurrentSession()
-				.getNamedQuery(FIND_AFTER_DATE_QUERY_NAME)
+				.getNamedQuery(FIND_BY_EFFECTIVE_DATE_QUERY_NAME)
 				.setParameter(DATE_PARAM_NAME, effectiveDate)
 				.list();
 		return itineraries;
 	}
-
 }

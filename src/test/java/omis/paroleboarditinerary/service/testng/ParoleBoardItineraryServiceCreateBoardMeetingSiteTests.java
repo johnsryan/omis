@@ -14,6 +14,10 @@ import omis.country.domain.Country;
 import omis.country.service.delegate.CountryDelegate;
 import omis.datatype.DateRange;
 import omis.exception.DuplicateEntityFoundException;
+import omis.facility.domain.Facility;
+import omis.facility.domain.Unit;
+import omis.facility.service.delegate.FacilityDelegate;
+import omis.facility.service.delegate.UnitDelegate;
 import omis.location.domain.Location;
 import omis.location.service.delegate.LocationDelegate;
 import omis.organization.domain.Organization;
@@ -34,7 +38,7 @@ import omis.util.PropertyValueAsserter;
  * Tests method to create board meeting sites.
  *
  * @author Josh Divine
- * @version 0.0.1
+ * @version 0.1.2 (Apr 18, 2018)
  * @since OMIS 3.0
  */
 public class ParoleBoardItineraryServiceCreateBoardMeetingSiteTests
@@ -78,6 +82,14 @@ public class ParoleBoardItineraryServiceCreateBoardMeetingSiteTests
 	@Qualifier("paroleBoardLocationDelegate")
 	private ParoleBoardLocationDelegate paroleBoardLocationDelegate;
 	
+	@Autowired
+	@Qualifier("facilityDelegate")
+	private FacilityDelegate facilityDelegate;
+	
+	@Autowired
+	@Qualifier("unitDelegate")
+	private UnitDelegate unitDelegate;
+	
 	/* Services. */
 
 	@Autowired
@@ -110,7 +122,7 @@ public class ParoleBoardItineraryServiceCreateBoardMeetingSiteTests
 		Date startDate = this.parseDateText("01/01/2017");
 		Date endDate = this.parseDateText("12/31/2017");
 		ParoleBoardItinerary boardItinerary = this.paroleBoardItineraryDelegate
-				.create(paroleBoardLocation, startDate, endDate);
+				.create(paroleBoardLocation, true, startDate, endDate);
 		Organization secondOrganization = this.organizationDelegate.create(
 				"Org2", "O2", null);
 		Location secondLocation = this.locationDelegate.create(
@@ -118,16 +130,20 @@ public class ParoleBoardItineraryServiceCreateBoardMeetingSiteTests
 						this.parseDateText("01/01/2000"), null), address);
 		Date date = this.parseDateText("01/01/2005");
 		Integer order = 1;
-
+		Facility facility = this.facilityDelegate.create(secondLocation, 
+				"Facility", "F", true, null);
+		Unit unit = this.unitDelegate.create("Unit", "U", true, facility, null);
+		
 		// Action
 		BoardMeetingSite boardMeetingSite = this.paroleBoardItineraryService
-				.createBoardMeetingSite(boardItinerary, secondLocation, date, 
-						order);
+				.createBoardMeetingSite(boardItinerary, secondLocation, unit, 
+						date, order);
 
 		// Assertions
 		PropertyValueAsserter.create()
 			.addExpectedValue("boardItinerary", boardItinerary)
 			.addExpectedValue("location", secondLocation)
+			.addExpectedValue("unit", unit)
 			.addExpectedValue("date", date)
 			.addExpectedValue("order", order)
 			.performAssertions(boardMeetingSite);
@@ -157,7 +173,7 @@ public class ParoleBoardItineraryServiceCreateBoardMeetingSiteTests
 		Date startDate = this.parseDateText("01/01/2017");
 		Date endDate = this.parseDateText("12/31/2017");
 		ParoleBoardItinerary boardItinerary = this.paroleBoardItineraryDelegate
-				.create(paroleBoardLocation, startDate, endDate);
+				.create(paroleBoardLocation, true, startDate, endDate);
 		Organization secondOrganization = this.organizationDelegate.create(
 				"Org2", "O2", null);
 		Location secondLocation = this.locationDelegate.create(
@@ -165,12 +181,15 @@ public class ParoleBoardItineraryServiceCreateBoardMeetingSiteTests
 						this.parseDateText("01/01/2000"), null), address);
 		Date date = this.parseDateText("01/01/2005");
 		Integer order = 1;
+		Facility facility = this.facilityDelegate.create(secondLocation, 
+				"Facility", "F", true, null);
+		Unit unit = this.unitDelegate.create("Unit", "U", true, facility, null);
 		this.boardMeetingSiteDelegate.create(boardItinerary, secondLocation, 
-				date, order);
+				unit, date, order);
 
 		// Action
 		this.paroleBoardItineraryService.createBoardMeetingSite(boardItinerary, 
-				secondLocation, date, order);
+				secondLocation, unit, date, order);
 	}
 
 	// Parses date text

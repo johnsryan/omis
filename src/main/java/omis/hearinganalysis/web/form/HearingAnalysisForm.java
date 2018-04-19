@@ -22,14 +22,13 @@ import java.util.List;
 
 import omis.hearinganalysis.domain.HearingAnalysisCategory;
 import omis.paroleboarditinerary.domain.BoardAttendee;
-import omis.paroleboarditinerary.domain.BoardMeetingSite;
 import omis.paroleboarditinerary.domain.ParoleBoardItinerary;
 
 /**
  * Hearing analysis form.
  *
  * @author Josh Divine
- * @version 0.1.0 (Dec 19, 2017)
+ * @version 0.1.1 (Apr 18, 2018)
  * @since OMIS 3.0
  */
 public class HearingAnalysisForm implements Serializable {
@@ -37,8 +36,6 @@ public class HearingAnalysisForm implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private ParoleBoardItinerary boardItinerary;
-	
-	private BoardMeetingSite boardMeetingSite;
 	
 	private HearingAnalysisCategory category;
 	
@@ -69,24 +66,6 @@ public class HearingAnalysisForm implements Serializable {
 	 */
 	public void setBoardItinerary(final ParoleBoardItinerary boardItinerary) {
 		this.boardItinerary = boardItinerary;
-	}
-
-	/**
-	 * Returns the board meeting site.
-	 * 
-	 * @return board meeting site
-	 */
-	public BoardMeetingSite getBoardMeetingSite() {
-		return boardMeetingSite;
-	}
-
-	/**
-	 * Sets the board meeting site.
-	 * 
-	 * @param boardMeetingSite board meeting site
-	 */
-	public void setBoardMeetingSite(final BoardMeetingSite boardMeetingSite) {
-		this.boardMeetingSite = boardMeetingSite;
 	}
 
 	/**

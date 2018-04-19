@@ -28,4 +28,10 @@
 		from omis.region.domain.County as county
 		order by county.name
 	]]></query>
+	<query name="findCounty"><![CDATA[
+		select county
+		from omis.region.domain.County as county
+		where county.name = :name
+		  and county.state = :state
+	]]></query>
 </hibernate-mapping>

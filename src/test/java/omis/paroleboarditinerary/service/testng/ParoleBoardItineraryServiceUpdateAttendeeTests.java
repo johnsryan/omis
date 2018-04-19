@@ -46,7 +46,7 @@ import omis.util.PropertyValueAsserter;
  * Tests method to update board attendees.
  *
  * @author Josh Divine
- * @version 0.0.1
+ * @version 0.1.1 (Apr 18, 2018)
  * @since OMIS 3.0
  */
 public class ParoleBoardItineraryServiceUpdateAttendeeTests
@@ -144,7 +144,7 @@ public class ParoleBoardItineraryServiceUpdateAttendeeTests
 		Date startDate = this.parseDateText("01/01/2017");
 		Date endDate = this.parseDateText("12/31/2017");
 		ParoleBoardItinerary boardItinerary = this.paroleBoardItineraryDelegate
-				.create(paroleBoardLocation, startDate, endDate);
+				.create(paroleBoardLocation, true, startDate, endDate);
 		Date memberStartDate = this.parseDateText("01/01/2017");
 		Date memberEndDate = null;
 		Person staffMember = this.personDelegate.create("Smith", "John", "Jay", 
@@ -209,7 +209,7 @@ public class ParoleBoardItineraryServiceUpdateAttendeeTests
 		Date startDate = this.parseDateText("01/01/2017");
 		Date endDate = this.parseDateText("12/31/2017");
 		ParoleBoardItinerary boardItinerary = this.paroleBoardItineraryDelegate
-				.create(paroleBoardLocation, startDate, endDate);
+				.create(paroleBoardLocation, true, startDate, endDate);
 		Date memberStartDate = this.parseDateText("01/01/2017");
 		Date memberEndDate = null;
 		Person staffMember = this.personDelegate.create("Smith", "John", "Jay", 
@@ -268,7 +268,7 @@ public class ParoleBoardItineraryServiceUpdateAttendeeTests
 		Date startDate = this.parseDateText("01/01/2017");
 		Date endDate = this.parseDateText("12/31/2017");
 		ParoleBoardItinerary boardItinerary = this.paroleBoardItineraryDelegate
-				.create(paroleBoardLocation, startDate, endDate);
+				.create(paroleBoardLocation, true, startDate, endDate);
 		Date memberStartDate = this.parseDateText("01/01/2017");
 		Date memberEndDate = null;
 		Person staffMember = this.personDelegate.create("Smith", "John", "Jay", 

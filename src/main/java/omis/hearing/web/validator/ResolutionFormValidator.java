@@ -2,11 +2,9 @@ package omis.hearing.web.validator;
 
 import java.util.Date;
 import java.util.EnumSet;
-
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
-
 import omis.hearing.domain.DispositionCategory;
 import omis.hearing.domain.HearingStatusCategory;
 import omis.hearing.domain.ResolutionClassificationCategory;
@@ -18,7 +16,7 @@ import omis.hearing.web.form.StaffAttendanceItem;
  * Resolution Form Validator.
  * 
  *@author Annie Wahl 
- *@version 0.1.1 (Mar 5, 2018)
+ *@version 0.1.2 (Apr 18, 2018)
  *@since OMIS 3.0
  *
  */
@@ -146,16 +144,16 @@ public class ResolutionFormValidator implements Validator {
 						ValidationUtils.rejectIfEmptyOrWhitespace(errors,
 								"violationItems[" + i + "].decision",
 								DECISION_REQUIRED_MSG_KEY);
+						ValidationUtils.rejectIfEmpty(errors,
+								"violationItems[" + i + "].date",
+								DATE_REQUIRED_MSG_KEY);
+						ValidationUtils.rejectIfEmpty(errors,
+								"violationItems[" + i + "].authority",
+								DECIDED_BY_REQUIRED_MSG_KEY);
 					}
 					ValidationUtils.rejectIfEmptyOrWhitespace(errors,
 							"violationItems[" + i + "].reason",
 							REASON_REQUIRED_MSG_KEY);
-					ValidationUtils.rejectIfEmpty(errors,
-							"violationItems[" + i + "].date",
-							DATE_REQUIRED_MSG_KEY);
-					ValidationUtils.rejectIfEmpty(errors,
-							"violationItems[" + i + "].authority",
-							DECIDED_BY_REQUIRED_MSG_KEY);
 					break;
 				default:
 					throw new UnsupportedOperationException(
@@ -193,21 +191,21 @@ public class ResolutionFormValidator implements Validator {
 							SANCTION_REQUIRED_MESSAGE_KEY);
 					}
 				case DISMISSED:
-					//if not formal, validate decision
+					//if not formal, validate decision/date/authority
 					if (!(ResolutionClassificationCategory.FORMAL.equals(
 							form.getResolutionCategory()))) {
 						ValidationUtils.rejectIfEmptyOrWhitespace(errors,
 								"violationItem.decision",
 								DECISION_REQUIRED_MSG_KEY);
+						ValidationUtils.rejectIfEmpty(errors,
+								"violationItem.date", DATE_REQUIRED_MSG_KEY);
+						ValidationUtils.rejectIfEmpty(errors,
+								"violationItem.authority",
+								DECIDED_BY_REQUIRED_MSG_KEY);
 					}
 					//validate date and reason
 					ValidationUtils.rejectIfEmptyOrWhitespace(errors,
 							"violationItem.reason", REASON_REQUIRED_MSG_KEY);
-					ValidationUtils.rejectIfEmpty(errors,
-							"violationItem.date", DATE_REQUIRED_MSG_KEY);
-					ValidationUtils.rejectIfEmpty(errors,
-							"violationItem.authority",
-							DECIDED_BY_REQUIRED_MSG_KEY);
 					break;
 				default:
 					//validate resolutionCategory!

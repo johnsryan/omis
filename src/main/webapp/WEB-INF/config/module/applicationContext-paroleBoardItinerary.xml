@@ -40,8 +40,10 @@
         	<constructor-arg name="boardMeetingSiteDelegate" ref="boardMeetingSiteDelegate"/>
         	<constructor-arg name="locationDelegate" ref="locationDelegate"/>
         	<constructor-arg name="paroleBoardMemberDelegate" ref="paroleBoardMemberDelegate"/>
-        	<constructor-arg name="paroleBoardLocationDelegate" ref="paroleBoardLocationDelegate" />
-        </bean>        
+        	<constructor-arg name="paroleBoardLocationDelegate" ref="paroleBoardLocationDelegate"/>
+        	<constructor-arg name="facilityDelegate" ref="facilityDelegate"/>
+        	<constructor-arg name="unitDelegate" ref="unitDelegate"/>
+        </bean>
         
         <!-- Report services -->
         

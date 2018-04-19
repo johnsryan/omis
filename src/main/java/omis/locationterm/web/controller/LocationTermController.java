@@ -45,7 +45,6 @@ import omis.beans.factory.PropertyEditorFactory;
 import omis.beans.factory.spring.CustomDateEditorFactory;
 import omis.datatype.DateRange;
 import omis.exception.DateRangeOutOfBoundsException;
-import omis.exception.DuplicateEntityFoundException;
 import omis.location.domain.Location;
 import omis.locationterm.domain.LocationReason;
 import omis.locationterm.domain.LocationReasonTerm;
@@ -56,6 +55,7 @@ import omis.locationterm.exception.LocationReasonTermExistsAfterException;
 import omis.locationterm.exception.LocationReasonTermExistsException;
 import omis.locationterm.exception.LocationTermConflictException;
 import omis.locationterm.exception.LocationTermExistsAfterException;
+import omis.locationterm.exception.LocationTermExistsException;
 import omis.locationterm.exception.LocationTermLockedException;
 import omis.locationterm.report.LocationTermReportService;
 import omis.locationterm.report.LocationTermSummary;
@@ -191,9 +191,6 @@ public class LocationTermController {
 	private static final String LOCATION_REASON_TERMS_OUT_OF_BOUNDS_MESSAGE_KEY
 		= "locationReasonTerm.dateRangeOutOfLocationTermDateRangeBounds";
 
-	private static final String DUPLICATE_ENTITY_FOUND_EXCEPTION_MESSAGE_KEY
-		= "locationTerm.exists";
-	
 	private static final String LOCATION_TERM_EXISTS_AFTER_EXCEPTION
 		= "locationTerm.existsAfter";
 	
@@ -209,6 +206,9 @@ public class LocationTermController {
 	private static final String OFFENDER_NOT_UNDER_SUPERVISION_MESSAGE_KEY
 		= "offender.notUnderSupervision";
 
+	private static final String LOCATION_TERM_EXISTS_MESSAGE_KEY
+		= "locationTerm.exists";
+	
 	/* Report names. */
 	
 	private static final String LOCATION_TERM_LISTING_REPORT_NAME 
@@ -617,7 +617,6 @@ public class LocationTermController {
 	 * @param result binding result
 	 * @param session HTTP session
 	 * @return redirect to list location terms
-	 * @throws DuplicateEntityFoundException if the location term exists
 	 * @throws LocationTermConflictException if conflicting location terms exist
 	 * @throws LocationTermExistsAfterException if location terms exist after 
 	 * the start date when an end date is not specified
@@ -628,6 +627,8 @@ public class LocationTermController {
 	 * and exists location reason terms exist after the start date
 	 * @throws OffenderNotUnderSupervisionException offender is not under 
 	 * supervision on the specified start date
+	 * @throws LocationTermExistsException if location term exists
+	 * @throws LocationReasonTermExistsException if reason term exists
 	 */
 	@RequestMapping(value = "/create.html", method = RequestMethod.POST)
 	@PreAuthorize("hasRole('LOCATION_TERM_CREATE') or hasRole('ADMIN')")
@@ -641,13 +642,14 @@ public class LocationTermController {
 			final LocationTermForm locationTermForm,
 			final BindingResult result,
 			final HttpSession session)
-					throws DuplicateEntityFoundException,
-						LocationTermConflictException, 
+					throws LocationTermConflictException, 
 						LocationTermExistsAfterException, 
 						LocationReasonTermConflictException, 
 						DateRangeOutOfBoundsException, 
 						LocationReasonTermExistsAfterException, 
-						OffenderNotUnderSupervisionException {
+						OffenderNotUnderSupervisionException,
+						LocationTermExistsException,
+						LocationReasonTermExistsException {
 		this.locationTermFormValidator.validate(locationTermForm, result);
 		if (result.hasErrors()) {
 			Date effectiveDate;
@@ -786,7 +788,6 @@ public class LocationTermController {
 	 * @param locationTermForm form for location term
 	 * @param result binding result
 	 * @return redirect to list location terms
-	 * @throws DuplicateEntityFoundException if location term exists
 	 * @throws LocationTermConflictException if conflicting location terms exist
 	 * @throws DateRangeOutOfBoundsException if existing location reason terms
 	 * are out of the date range bounds of the location term
@@ -799,6 +800,8 @@ public class LocationTermController {
 	 * @throws LocationTermLockedException if location term is locked
 	 * @throws OffenderNotUnderSupervisionException offender is not under 
 	 * supervision on the specified start date
+	 * @throws LocationTermExistsException if location term exists
+	 * @throws LocationReasonTermExistsException if reason term exists 
 	 */
 	@RequestMapping(value = "/edit.html", method = RequestMethod.POST)
 	@PreAuthorize("hasRole('LOCATION_TERM_EDIT') or hasRole('ADMIN')")
@@ -807,14 +810,15 @@ public class LocationTermController {
 				final LocationTerm locationTerm,
 			final LocationTermForm locationTermForm,
 			final BindingResult result)
-					throws DuplicateEntityFoundException,
-						LocationTermConflictException,
+					throws LocationTermConflictException,
 						DateRangeOutOfBoundsException, 
 						LocationTermExistsAfterException, 
 						LocationReasonTermConflictException, 
 						LocationReasonTermExistsAfterException,
 						LocationTermLockedException, 
-						OffenderNotUnderSupervisionException {
+						OffenderNotUnderSupervisionException,
+						LocationTermExistsException,
+						LocationReasonTermExistsException {
 		this.locationTermFormValidator.validate(locationTermForm, result);
 		if (result.hasErrors()) {
 			List<Location> locations;
@@ -1114,6 +1118,20 @@ public class LocationTermController {
 	}
 	
 	/**
+	 * Handles {@code LocationTermExistsException}.
+	 * 
+	 * @param locationTermExistsException exception thrown
+	 * @return screen to handle {@code LocationTermExistsException}
+	 */
+	@ExceptionHandler(LocationTermExistsException.class)
+	public ModelAndView handleLocationTermExistsException(
+			final LocationTermExistsException locationTermExistsException) {
+		return this.businessExceptionHandlerDelegate.prepareModelAndView(
+				LOCATION_TERM_EXISTS_MESSAGE_KEY,
+				ERROR_BUNDLE_NAME, locationTermExistsException);
+	}
+	
+	/**
 	 * Handles {@code LocationTermConflictException}.
 	 * 
 	 * @param locationTermConflictException exception thrown
@@ -1168,20 +1186,6 @@ public class LocationTermController {
 		return this.businessExceptionHandlerDelegate.prepareModelAndView(
 				LOCATION_REASON_TERM_EXISTS_AFTER_MESSAGE_KEY, ERROR_BUNDLE_NAME, 
 				locationReasonTermExistsAfterException);
-	}
-	
-	/**
-	 * Handles {@code DuplicateEntityFoundException}.
-	 * 
-	 * @param duplicateEntityFoundException exception thrown
-	 * @return screen to handle {@code DuplicateEntityFoundException}
-	 */
-	@ExceptionHandler(DuplicateEntityFoundException.class)
-	public ModelAndView handleDuplicateEntityFoundException(
-			final DuplicateEntityFoundException duplicateEntityFoundException) {
-		return this.businessExceptionHandlerDelegate.prepareModelAndView(
-				DUPLICATE_ENTITY_FOUND_EXCEPTION_MESSAGE_KEY,
-				ERROR_BUNDLE_NAME, duplicateEntityFoundException);
 	}
 	
 	/**

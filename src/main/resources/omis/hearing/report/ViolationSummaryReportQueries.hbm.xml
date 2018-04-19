@@ -105,7 +105,7 @@
 				where
 				infraction.hearing = hearing
 				and
-				infraction.resolution.date is null)
+				infraction.resolution.reason is null)
 		order by hearing.date asc
 	]]></query>
 	<query name="findUnresolvedDisciplinaryViolationSummariesByHearing"><![CDATA[
@@ -125,7 +125,7 @@
 		and
 			infraction.disciplinaryCodeViolation is not null
 		and
-			infraction.resolution.date is null
+			infraction.resolution.reason is null
 		order by
 			infraction.disciplinaryCodeViolation.violationEvent.event.date desc
 	]]></query>
@@ -146,7 +146,7 @@
 		and
 			infraction.conditionViolation is not null
 		and
-			infraction.resolution.date is null
+			infraction.resolution.reason is null
 		order by
 			infraction.conditionViolation.violationEvent.event.date desc
 	]]></query>
@@ -260,6 +260,7 @@
 			infraction.resolution.reason,
 			infraction.resolution.descision,
 			cast(infraction.resolution.disposition as string),
+			infraction.resolution.appealDate,
 			imposedSanction.description,
 			infraction.resolution.category)
 		from
@@ -271,7 +272,7 @@
 		and
 			infraction.conditionViolation.violationEvent.offender = :offender
 		and
-			infraction.resolution.date is not null
+			infraction.resolution.reason is not null
 		order by
 			infraction.conditionViolation.violationEvent.event.date desc
 	]]></query>
@@ -287,6 +288,7 @@
 			infraction.resolution.reason,
 			infraction.resolution.descision,
 			cast(infraction.resolution.disposition as string),
+			infraction.resolution.appealDate,
 			imposedSanction.description,
 			infraction.resolution.category)
 		from
@@ -298,7 +300,7 @@
 		and
 			infraction.disciplinaryCodeViolation.violationEvent.offender = :offender
 		and
-			infraction.resolution.date is not null
+			infraction.resolution.reason is not null
 		order by
 			infraction.disciplinaryCodeViolation.violationEvent.event.date desc
 	]]></query>

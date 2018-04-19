@@ -4,22 +4,22 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <sec:authorize var="editQuestionnaire" access="hasRole('QUESTIONNAIRE_CREATE') or hasRole('ADMIN')"/>
+<c:set var="draft" value="${questionnaireSectionStatus.draft}" />
 <fmt:setBundle basename="omis.msgs.common" var="commonBundle"/>
 <fmt:bundle basename="omis.questionnaire.msgs.questionnaire">
 <form:form commandName="administeredQuestionnaireSectionForm" class="editForm">
 <fieldset>
 	<span class="fieldGroup">
 		<c:forEach var="questionAnswerSummary" items="${questionAnswerSummaries}" varStatus="currentQuestion">
-			<c:set var="questionErrorsItems"><form:errors path="questionAnswerItems[${currentQuestion.index}].answerValueItems" /></c:set>
+			<c:set var="questionErrorsItems"><form:errors path="questionAnswerItems[${currentQuestion.index}].administeredQuestionValueItems" /></c:set>
 			<c:set var="questionErrorsSingle"><form:errors path="questionAnswerItems[${currentQuestion.index}].answerValue" /></c:set>
 			<c:set var="questionErrorsText"><form:errors path="questionAnswerItems[${currentQuestion.index}].answerValueText" /></c:set>
-			
 			<c:choose>
 				<c:when test="${not empty questionErrorsText && not empty questionErrorsItems}">
 					<span class="error">
 						<c:out value="${questionAnswerSummary.key.questionNumber}."/>&nbsp;
 					</span>
-					<form:errors path="questionAnswerItems[${currentQuestion.index}].answerValueItems" cssClass="error" />
+					<form:errors path="questionAnswerItems[${currentQuestion.index}].administeredQuestionValueItems" cssClass="error" />
 					<span class="error"><c:out value="," />&nbsp;</span>
 					<form:errors path="questionAnswerItems[${currentQuestion.index}].answerValueText" cssClass="error" />
 					<br>
@@ -37,7 +37,7 @@
 					<span class="error">
 						<c:out value="${questionAnswerSummary.key.questionNumber}."/>&nbsp;
 					</span>
-					<form:errors path="questionAnswerItems[${currentQuestion.index}].answerValueItems" cssClass="error" />
+					<form:errors path="questionAnswerItems[${currentQuestion.index}].administeredQuestionValueItems" cssClass="error" />
 					<br>
 				</c:when>
 				<c:when test="${not empty questionErrorsSingle}">
@@ -55,30 +55,25 @@
 					<br>
 				</c:when>
 			</c:choose>
-		
-		
 		</c:forEach>
 	</span>
-	
 	<c:forEach var="questionAnswerSummary" items="${questionAnswerSummaries}" varStatus="currentQuestion">
 			<form:errors path="questionAnswerItems[${currentQuestion.index}].answerValue" cssClass="error" />
-			<form:errors path="questionAnswerItems[${currentQuestion.index}].answerValueItems" cssClass="error" />	
+			<form:errors path="questionAnswerItems[${currentQuestion.index}].administeredQuestionValueItems" cssClass="error" />	
 			<span class="fieldGroup">
 				<span title="${questionAnswerSummary.key.questionHelpText}">
 					<label class="fieldLabel">
 						<c:out value="${questionAnswerSummary.key.questionNumber}. ${questionAnswerSummary.key.questionText}"/>
 					</label>
 				</span>
-				
-			
 				<c:choose>
 					<c:when test="${not empty administeredQuestionnaireSectionForm.questionAnswerItems[currentQuestion.index].comments}">
 						<c:set var="hiddenOrBlock" value="block" />
-						<c:set var="imgSrc" value="../resources/common/images/arrowDown.png" />
+						<c:set var="imgClass" value="hideComments" />
 					</c:when>
 					<c:otherwise>
 						<c:set var="hiddenOrBlock" value="none" />
-						<c:set var="imgSrc" value="../resources/common/images/arrowRight.png" />
+						<c:set var="imgClass" value="showComments" />
 					</c:otherwise>
 				</c:choose>
 				<c:choose>
@@ -95,30 +90,26 @@
 						id="addComments[${currentQuestion.index}]" value="${addComments}" />
 					<label for="addComments[${currentQuestion.index}]" 
 						id="addCommentsLbl[${currentQuestion.index}]">
-						<img id="addCommentsImg[${currentQuestion.index}]" src="${imgSrc}" />
+						<span id="addCommentsImg[${currentQuestion.index}]" class="${imgClass}"></span>
 						<fmt:message key="addCommentsLabel" />
 					</label>
 				</span>
 			</span>
-			
-			
-			<form:input type="hidden" path="questionAnswerItems[${currentQuestion.index}].question" value="${questionAnswerSummary.key.questionId}"/>
+			<form:input type="hidden" path="questionAnswerItems[${currentQuestion.index}].allowedQuestion" value="${questionAnswerSummary.key.allowedQuestionId}"/>
 			<form:input type="hidden" path="questionAnswerItems[${currentQuestion.index}].answerCardinality" value="${questionAnswerSummary.key.answerCardinality}" />
-			<form:input type="hidden" path="questionAnswerItems[${currentQuestion.index}].questionConditionality" value="${questionAnswerSummary.key.questionConditionality}" />
-			<form:input type="hidden" path="questionAnswerItems[${currentQuestion.index}].questionCategory" value="${questionAnswerSummary.key.questionCategory}" />
-			
+			<form:input type="hidden" path="questionAnswerItems[${currentQuestion.index}].administeredQuestionValue"/>
 			<c:choose>
 				<c:when test="${questionAnswerSummary.key.questionCategory eq 'TRUE_FALSE'}">
 					<c:forEach var="answerSummary" items="${questionAnswerSummary.value}"> 
 						<span class="fieldGroup">
-								<form:radiobutton class="fieldOption" path="questionAnswerItems[${currentQuestion.index}].answerValue"
-								name="answerValue"  value="${answerSummary.answerValueId}"
-									checked="${answerSummary.answerValueId == 
-										administeredQuestionnaireSectionForm.questionAnswerItems[currentQuestion.index].answerValue.id 
-											? 'checked' : ''}" />
-								<form:label path="questionAnswerItems[${currentQuestion.index}].answerValue">
-									<c:out value="${answerSummary.description}" />
-								</form:label>
+							<form:radiobutton class="fieldOption" path="questionAnswerItems[${currentQuestion.index}].answerValue"
+							name="answerValue"  value="${answerSummary.answerValueId}"
+								checked="${answerSummary.answerValueId == 
+									administeredQuestionnaireSectionForm.questionAnswerItems[currentQuestion.index].answerValue.id 
+										? 'checked' : ''}" />
+							<form:label path="questionAnswerItems[${currentQuestion.index}].answerValue">
+								<c:out value="${answerSummary.description}" />
+							</form:label>
 						</span>
 					</c:forEach>
 				</c:when>
@@ -141,16 +132,16 @@
 						<c:when test="${questionAnswerSummary.key.answerCardinality eq 'MULTIPLE'}">
 							<c:forEach var="answerSummary" items="${questionAnswerSummary.value}" varStatus="answerNumber"> 
 								<c:set var="useChecked" value="" />
-								<c:forEach var="answerValueItem" items="${administeredQuestionnaireSectionForm.questionAnswerItems[currentQuestion.index].answerValueItems}">
+								<c:forEach var="answerValueItem" items="${administeredQuestionnaireSectionForm.questionAnswerItems[currentQuestion.index].administeredQuestionValueItems}">
 									<c:if test="${answerSummary.answerValueId == answerValueItem.answerValue.id}">
 										<c:set var="useChecked" value="checked" />
 									</c:if>
 								</c:forEach>
-							
+								<form:input type="hidden" path="questionAnswerItems[${currentQuestion.index}].administeredQuestionValueItems[${answerNumber.index}].administeredQuestionValue" />
 								<span class="fieldGroup">
-									<form:checkbox class="fieldOption" path="questionAnswerItems[${currentQuestion.index}].answerValueItems[${answerNumber.index}].answerValue"
-									name="answerValues"  value="${answerSummary.answerValueId}" checked="${useChecked}" />
-									<form:label path="questionAnswerItems[${currentQuestion.index}].answerValueItems[${answerNumber.index}].answerValue">
+									<form:checkbox class="fieldOption" path="questionAnswerItems[${currentQuestion.index}].administeredQuestionValueItems[${answerNumber.index}].answerValue"
+									name="answerValues" value="${answerSummary.answerValueId}" checked="${useChecked}" />
+									<form:label path="questionAnswerItems[${currentQuestion.index}].administeredQuestionValueItems[${answerNumber.index}].answerValue">
 										<c:out value="${answerSummary.description}" />
 									</form:label>
 								</span>
@@ -177,16 +168,16 @@
 						<c:when test="${questionAnswerSummary.key.answerCardinality eq 'MULTIPLE'}">
 							<c:forEach var="answerSummary" items="${questionAnswerSummary.value}" varStatus="answerNumber"> 
 								<c:set var="useChecked" value="" />
-								<c:forEach var="answerValueItem" items="${administeredQuestionnaireSectionForm.questionAnswerItems[currentQuestion.index].answerValueItems}">
+								<c:forEach var="answerValueItem" items="${administeredQuestionnaireSectionForm.questionAnswerItems[currentQuestion.index].administeredQuestionValueItems}">
 									<c:if test="${answerSummary.answerValueId == answerValueItem.answerValue.id}">
 										<c:set var="useChecked" value="checked" />
 									</c:if>
 								</c:forEach>
-							
+								<form:input type="hidden" path="questionAnswerItems[${currentQuestion.index}].administeredQuestionValueItems[${answerNumber.index}].administeredQuestionValue" />
 								<span class="fieldGroup">
-									<form:checkbox class="fieldOption" path="questionAnswerItems[${currentQuestion.index}].answerValueItems[${answerNumber.index}].answerValue"
+									<form:checkbox class="fieldOption" path="questionAnswerItems[${currentQuestion.index}].administeredQuestionValueItems[${answerNumber.index}].answerValue"
 									name="answerValue" value="${answerSummary.answerValueId}" checked="${useChecked}" />
-									<form:label path="questionAnswerItems[${currentQuestion.index}].answerValueItems[${answerNumber.index}].answerValue">
+									<form:label path="questionAnswerItems[${currentQuestion.index}].administeredQuestionValueItems[${answerNumber.index}].answerValue">
 										<c:out value="${answerSummary.description}" />
 									</form:label>
 								</span>
@@ -258,13 +249,7 @@
 					</span>
 					<span class="textValueDisplay"></span>
 				</c:when>
-				<c:otherwise>
-					<!-- Error, shouldn't get here. -->
-				</c:otherwise>
 			</c:choose>
-			
-			
-			
 			<span id="commentsInput[${currentQuestion.index}]" style="display: ${hiddenOrBlock};">
 				<br>
 				<span class="fieldGroup">
@@ -277,10 +262,8 @@
 				</span>
 				<span class="textValueDisplay" ></span>
 			</span>
-				
 			<span class="whiteSpace"></span>	
 	</c:forEach>
-	 
 	<span class="fieldGroup">
 		<form:label path="sectionComments">
 			<fmt:message key="sectionCommentsLabel"/>
@@ -290,12 +273,12 @@
 		<form:textarea path="sectionComments" class="textValue" maxLength="2048" />
 	</span>
 	<span class="textValueDisplay"></span>
-	
-
-	<p class="buttons">
+	<c:if test="${editQuestionnaire && draft}">
+		<p class="buttons">
 			<input id="saveAsFinal" type="submit" value="<fmt:message key='saveAsFinalLabel'/>" name="final"/>
 			<input id="saveAsDraft" type="submit" value="<fmt:message key='saveAsDraftLabel' />" name="draft" />
-	</p>
+		</p>
+	</c:if>
 </fieldset>
 </form:form>
 </fmt:bundle>

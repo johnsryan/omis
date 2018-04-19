@@ -32,7 +32,7 @@ import omis.util.PropertyValueAsserter;
  * Tests method to create parole board itineraries.
  *
  * @author Josh Divine
- * @version 0.0.1
+ * @version 0.1.1 (Apr 18, 2018)
  * @since OMIS 3.0
  */
 public class ParoleBoardItineraryServiceCreateTests
@@ -102,15 +102,17 @@ public class ParoleBoardItineraryServiceCreateTests
 				.paroleBoardLocationDelegate.create(location, true);
 		Date startDate = this.parseDateText("01/01/2017");
 		Date endDate = this.parseDateText("12/31/2017");
+		Boolean onsite = true;
 
 		// Action
 		ParoleBoardItinerary paroleBoardItinerary = this
 				.paroleBoardItineraryService.create(paroleBoardLocation,
-						startDate, endDate);
+						onsite, startDate, endDate);
 
 		// Assertions
 		PropertyValueAsserter.create()
 			.addExpectedValue("paroleBoardLocation", paroleBoardLocation)
+			.addExpectedValue("onsite", onsite)
 			.addExpectedValue("dateRange.startDate", startDate)
 			.addExpectedValue("dateRange.endDate", endDate)
 			.performAssertions(paroleBoardItinerary);
@@ -139,11 +141,12 @@ public class ParoleBoardItineraryServiceCreateTests
 				.paroleBoardLocationDelegate.create(location, true);
 		Date startDate = this.parseDateText("01/01/2017");
 		Date endDate = this.parseDateText("12/31/2017");
-		this.paroleBoardItineraryDelegate.create(paroleBoardLocation,
+		Boolean onsite = true;
+		this.paroleBoardItineraryDelegate.create(paroleBoardLocation, onsite,
 				startDate, endDate);
 
 		// Action
-		this.paroleBoardItineraryService.create(paroleBoardLocation,
+		this.paroleBoardItineraryService.create(paroleBoardLocation, onsite,
 				startDate, endDate);
 	}
 

@@ -33,21 +33,6 @@ function applyHearingAnalysisBehavior() {
 
 function boardItineraryOnChange() {
 	$("#boardItinerary").change(function() {
-		$.ajax(config.ServerConfig.getContextPath() + "/hearingAnalysis/findBoardMeetingSitesForItinerary.html",
-				   {
-					   type: "GET",
-					   async: false,
-					   data: { itinerary: this.options[this.selectedIndex].value },
-					   success: function(data) {
-					   		$("#boardMeetingSite").empty().append(data);
-					   },
-					   error: function(jqXHR, textStatus, errorThrown) {
-							alert("Error - status: " + textStatus + "; error: "
-									+ errorThrown);
-					   }
-					   
-				   }
-				);
 		$.ajax(config.ServerConfig.getContextPath() + "/hearingAnalysis/findBoardAttendeesForItinerary.html",
 				   {
 					   type: "GET",

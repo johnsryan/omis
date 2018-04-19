@@ -27,7 +27,6 @@ import omis.audit.domain.CreationSignature;
 import omis.audit.domain.UpdateSignature;
 import omis.datatype.DateRange;
 import omis.exception.DateRangeOutOfBoundsException;
-import omis.exception.DuplicateEntityFoundException;
 import omis.instance.factory.InstanceFactory;
 import omis.location.domain.Location;
 import omis.location.service.delegate.LocationDelegate;
@@ -38,8 +37,10 @@ import omis.locationterm.domain.LocationTerm;
 import omis.locationterm.domain.LocationTermChangeAction;
 import omis.locationterm.exception.LocationReasonTermConflictException;
 import omis.locationterm.exception.LocationReasonTermExistsAfterException;
+import omis.locationterm.exception.LocationReasonTermExistsException;
 import omis.locationterm.exception.LocationTermConflictException;
 import omis.locationterm.exception.LocationTermExistsAfterException;
+import omis.locationterm.exception.LocationTermExistsException;
 import omis.locationterm.exception.LocationTermLockedException;
 import omis.locationterm.service.LocationTermService;
 import omis.locationterm.service.delegate.AllowedLocationChangeDelegate;
@@ -187,11 +188,13 @@ public class LocationTermServiceImpl
 		this.locationTermDao.makeTransient(locationTerm);
 	}
 
-	/** {@inheritDoc}  */
+	/** {@inheritDoc} */
 	@Override
-	public LocationTerm create(final Offender offender, final Location location,
+	public LocationTerm create(
+			final Offender offender,
+			final Location location,
 			final DateRange dateRange)
-					throws DuplicateEntityFoundException,
+					throws LocationTermExistsException,
 						LocationTermConflictException, 
 						LocationTermExistsAfterException, 
 						OffenderNotUnderSupervisionException {
@@ -199,7 +202,7 @@ public class LocationTermServiceImpl
 		if (this.locationTermDao.find(offender, 
 				DateRange.getStartDate(dateRange),
 				DateRange.getEndDate(dateRange)) != null) {
-			throw new DuplicateEntityFoundException("Location term exists");
+			throw new LocationTermExistsException("Location term exists");
 		}
 		
 		// Prevents dates from being equal unless both are null
@@ -290,21 +293,20 @@ public class LocationTermServiceImpl
 		= this.locationReasonTermDelegate.findForOffenderOnDate(offender, 
 				startDate);
 		if (activeLocationReasonTerm != null) {
-			this.locationReasonTermDelegate.update(activeLocationReasonTerm, 
-					new DateRange(DateRange.getStartDate(
-							activeLocationReasonTerm.getDateRange()), 
-							startDate), activeLocationReasonTerm.getReason());
+			try {
+				this.locationReasonTermDelegate.update(activeLocationReasonTerm, 
+						new DateRange(DateRange.getStartDate(
+								activeLocationReasonTerm.getDateRange()), 
+								startDate),
+						activeLocationReasonTerm.getReason());
+			} catch (LocationReasonTermExistsException e) {
+				
+				// It should not be possible for two reason terms for the same
+				// location term to exist with the same start date
+				// This would be bad data and unrecoverable in the application
+				throw new AssertionError("Conflicting reason term exists", e);
+			}
 		}
-		
-		
-//		// Throws exception if conflicting location terms exist
-//		long conflictingCount = this.locationTermDao.count(offender,
-//				DateRange.getStartDate(dateRange),
-//				DateRange.getEndDate(dateRange));
-//		if (conflictingCount > 0) {
-//			throw new LocationTermConflictException(
-//					conflictingCount + " conflicting location term(s) exist");
-//		}
 		
 		// Creates new location term
 		LocationTerm locationTerm = this.locationTermInstanceFactory
@@ -326,9 +328,8 @@ public class LocationTermServiceImpl
 	@Override
 	public LocationTerm update(final LocationTerm locationTerm,
 			final Location location, final DateRange dateRange)
-					throws DuplicateEntityFoundException,
-						LocationTermConflictException,
-						DateRangeOutOfBoundsException, 
+					throws LocationTermExistsException,
+						LocationTermConflictException, 
 						LocationTermExistsAfterException,
 						LocationTermLockedException, 
 						OffenderNotUnderSupervisionException {
@@ -359,7 +360,7 @@ public class LocationTermServiceImpl
 		if (this.locationTermDao.findExcluding(locationTerm.getOffender(),
 				DateRange.getStartDate(dateRange),
 				DateRange.getEndDate(dateRange), locationTerm) != null) {
-			throw new DuplicateEntityFoundException("Location term exists");
+			throw new LocationTermExistsException("Location term exists");
 		}
 		
 		// Throws exception if conflicting location terms exist (exclude
@@ -384,16 +385,7 @@ public class LocationTermServiceImpl
 					conflictingCount + " conflicting location term(s) exist");
 		}
 		
-		// Throws exception if location reason terms exist for location term
-		// outside of new date range
-		long reasonTermsOutOfBoundsCount = this.locationReasonTermDelegate
-				.countForLocationTermOutOfDateBounds(locationTerm,
-						DateRange.getStartDate(dateRange),
-						DateRange.getEndDate(dateRange));
-		if (reasonTermsOutOfBoundsCount > 0) {
-			throw new DateRangeOutOfBoundsException(reasonTermsOutOfBoundsCount
-					+ " location reason term(s) exist outside of date range");
-		}
+		// Throws exception if location terms exist after
 		if (endDate == null) {
 			long existingTermsAfterDateCount = this.locationTermDao
 					.countAfterDateExcluding(locationTerm.getOffender(), 
@@ -420,7 +412,7 @@ public class LocationTermServiceImpl
 	public LocationReasonTerm createReasonTerm(
 			final LocationTerm locationTerm, final DateRange dateRange,
 			final LocationReason reason)
-				throws DuplicateEntityFoundException, 
+				throws LocationReasonTermExistsException, 
 				LocationReasonTermConflictException, 
 				DateRangeOutOfBoundsException,
 				LocationReasonTermExistsAfterException {
@@ -429,7 +421,7 @@ public class LocationTermServiceImpl
 				locationTerm.getOffender(), locationTerm,
 				DateRange.getStartDate(dateRange),
 				DateRange.getEndDate(dateRange)) != null) {
-			throw new DuplicateEntityFoundException(
+			throw new LocationReasonTermExistsException(
 					"Location reason term exists");
 		}
 		
@@ -471,10 +463,12 @@ public class LocationTermServiceImpl
 	@Override
 	public LocationReasonTerm updateReasonTerm(
 			final LocationReasonTerm reasonTerm, final DateRange dateRange,
-			final LocationReason reason) throws DuplicateEntityFoundException, 
-				LocationReasonTermConflictException, 
-				DateRangeOutOfBoundsException, 
-				LocationReasonTermExistsAfterException {
+			final LocationReason reason)
+				throws LocationReasonTermExistsException, 
+					LocationReasonTermConflictException, 
+					DateRangeOutOfBoundsException, 
+					LocationReasonTermExistsAfterException {
+		
 		// Throws an exception if entity already exists
 		if (this.locationReasonTermDelegate.findExcluding(
 				reasonTerm.getOffender(),
@@ -482,7 +476,7 @@ public class LocationTermServiceImpl
 				DateRange.getStartDate(dateRange),
 				DateRange.getEndDate(dateRange),
 				reasonTerm) != null) {
-			throw new DuplicateEntityFoundException(
+			throw new LocationReasonTermExistsException(
 					"Location reason term exists");
 		}
 	

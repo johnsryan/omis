@@ -21,6 +21,8 @@ import java.util.List;
 
 import org.hibernate.SessionFactory;
 
+import omis.boardhearing.domain.BoardHearing;
+import omis.boardhearing.service.delegate.BoardHearingDelegate;
 import omis.hearinganalysis.domain.HearingAnalysis;
 import omis.hearinganalysis.service.delegate.HearingAnalysisDelegate;
 import omis.offender.domain.Offender;
@@ -33,7 +35,7 @@ import omis.paroleeligibility.report.ParoleEligibilitySummary;
  *
  * @author Trevor Isles
  * @author Josh Divine
- * @version 0.1.2 (Feb 20, 2018)
+ * @version 0.1.3 (Apr 17, 2018)
  * @since OMIS 3.0
  */
 public class ParoleEligibilityReportServiceHibernateImpl 
@@ -41,8 +43,11 @@ public class ParoleEligibilityReportServiceHibernateImpl
 	
 	/* Queries. */
 	
-	private static final String FIND_PAROLE_ELIGIBILITIES_BY_OFFENDER_QUERY_NAME
-		= "findParoleEligibilitiesByOffender";
+	private static final String FIND_PAROLE_ELIGIBILITIES_BY_OFFENDER_QUERY_NAME = 
+			"findParoleEligibilitiesByOffender";
+	
+	private static final String FIND_UNRESOLVED_PAROLE_ELIGIBILITIES_QUERY_NAME = 
+			"findUnresolvedParoleEligibilities";
 	
 	/* Parameters.*/ 
 	
@@ -56,6 +61,8 @@ public class ParoleEligibilityReportServiceHibernateImpl
 	
 	private final HearingAnalysisDelegate hearingAnalysisDelegate;
 	
+	private final BoardHearingDelegate boardHearingDelegate;
+	
 	/**
 	 * Constructor.
 	 * 
@@ -63,9 +70,11 @@ public class ParoleEligibilityReportServiceHibernateImpl
 	 */
 	public ParoleEligibilityReportServiceHibernateImpl(
 			final SessionFactory sessionFactory,
-			final HearingAnalysisDelegate hearingAnalysisDelegate) {
+			final HearingAnalysisDelegate hearingAnalysisDelegate,
+			final BoardHearingDelegate boardHearingDelegate) {
 		this.sessionFactory = sessionFactory;
 		this.hearingAnalysisDelegate = hearingAnalysisDelegate;
+		this.boardHearingDelegate = boardHearingDelegate;
 	}
 	
 	/** {@inheritDoc} */
@@ -88,5 +97,24 @@ public class ParoleEligibilityReportServiceHibernateImpl
 			final ParoleEligibility eligibility) {
 		return this.hearingAnalysisDelegate.findByParoleEligibility(
 				eligibility);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public List<ParoleEligibilitySummary> findUnresolvedEligibilitySummaries() {
+		@SuppressWarnings("unchecked")
+		List<ParoleEligibilitySummary> summaries = this.sessionFactory
+				.getCurrentSession()
+				.getNamedQuery(FIND_UNRESOLVED_PAROLE_ELIGIBILITIES_QUERY_NAME)
+				.setReadOnly(true)
+				.list();
+		return summaries;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public BoardHearing findBoardHearingByParoleEligibility(
+			final ParoleEligibility eligibility) {
+		return this.boardHearingDelegate.findByParoleEligibility(eligibility);
 	}
 }

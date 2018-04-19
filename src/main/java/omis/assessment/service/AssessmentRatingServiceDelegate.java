@@ -34,10 +34,12 @@ public interface AssessmentRatingServiceDelegate {
 	/**
 	 * Checks if the rating category is assessable.
 	 * 
+	 * @param administeredQuestionnaire administered questionnaire
 	 * @param ratingCategory rating category
 	 * @return if rating category is assessable
 	 */
-	Boolean isAssessable(RatingCategory ratingCategory);
+	Boolean isAssessable(AdministeredQuestionnaire administeredQuestionnaire, 
+			RatingCategory ratingCategory);
 	
 	/**
 	 * Assesses a score.

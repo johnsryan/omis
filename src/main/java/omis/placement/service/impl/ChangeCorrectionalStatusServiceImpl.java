@@ -12,6 +12,7 @@ import omis.location.service.delegate.LocationDelegate;
 import omis.locationterm.domain.LocationReason;
 import omis.locationterm.domain.LocationReasonTerm;
 import omis.locationterm.domain.LocationTerm;
+import omis.locationterm.exception.LocationReasonTermExistsException;
 import omis.locationterm.exception.LocationTermConflictException;
 import omis.locationterm.service.delegate.LocationReasonTermDelegate;
 import omis.locationterm.service.delegate.LocationTermDelegate;
@@ -500,7 +501,7 @@ public class ChangeCorrectionalStatusServiceImpl
 				this.locationReasonTermDelegate.create(
 					locationTerm, new DateRange(effectiveDate, endDate),
 					reason);
-			} catch (DuplicateEntityFoundException e) {
+			} catch (LocationReasonTermExistsException e) {
 				throw new AssertionError(
 					"It is virtually impossible for a reason to exist for newly"
 					+ " created location term", e);
@@ -616,7 +617,7 @@ public class ChangeCorrectionalStatusServiceImpl
 									DateRange.adjustEndDate(locationReasonTerm
 											.getDateRange(), effectiveDate),
 									locationReasonTerm.getReason());
-					} catch (DuplicateEntityFoundException e) {
+					} catch (LocationReasonTermExistsException e) {
 						throw new AssertionError(
 								"Nearly impossible condition encountered", e);
 					}

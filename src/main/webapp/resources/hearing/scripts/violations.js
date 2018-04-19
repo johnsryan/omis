@@ -13,9 +13,11 @@ window.onload = function() {
 	var items = document.getElementsByClassName("violationItemRow");
 	for(var i = 0; i < items.length; i++){
 		var descriptionText = items[i].getElementsByClassName('violationDescriptionNoOverflow')[0];
-		if(descriptionText.scrollWidth > descriptionText.offsetWidth){
-			showButtons[i].style.display = 'inline-block';
-			hideButtons[i].style.display = 'inline-block';
+		if(descriptionText){
+			if(descriptionText.scrollWidth > descriptionText.offsetWidth){
+				showButtons[i].style.display = 'inline-block';
+				hideButtons[i].style.display = 'inline-block';
+			}
 		}
 	}
 	for(var i = 0; i < showButtons.length; i++){

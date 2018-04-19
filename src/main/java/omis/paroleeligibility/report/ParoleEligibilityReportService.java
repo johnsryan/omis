@@ -19,6 +19,7 @@ package omis.paroleeligibility.report;
 
 import java.util.List;
 
+import omis.boardhearing.domain.BoardHearing;
 import omis.hearinganalysis.domain.HearingAnalysis;
 import omis.offender.domain.Offender;
 import omis.paroleeligibility.domain.ParoleEligibility;
@@ -28,7 +29,7 @@ import omis.paroleeligibility.domain.ParoleEligibility;
  *
  * @author Trevor Isles
  * @author Josh Divine
- * @version 0.1.1 (Feb 20, 2018)
+ * @version 0.1.2 (Apr 17, 2018)
  * @since OMIS 3.0
  */
 public interface ParoleEligibilityReportService {
@@ -51,4 +52,19 @@ public interface ParoleEligibilityReportService {
 	HearingAnalysis findHearingAnalysisByParoleEligibility(
 			ParoleEligibility eligibility);
 
+	/**
+	 * Returns a list of unresolved parole eligibility summaries.
+	 * 
+	 * @return list of unresolved parole eligibility summaries
+	 */
+	List<ParoleEligibilitySummary> findUnresolvedEligibilitySummaries();
+
+	/**
+	 * Returns the board hearing for the specified parole eligibility.
+	 * 
+	 * @param eligibility parole eligibility
+	 * @return board hearing
+	 */
+	BoardHearing findBoardHearingByParoleEligibility(
+			ParoleEligibility eligibility);
 }

@@ -1,9 +1,7 @@
 package omis.questionnaire.dao.impl.hibernate;
 
 import java.util.List;
-
 import org.hibernate.SessionFactory;
-
 import omis.dao.impl.hibernate.GenericHibernateDaoImpl;
 import omis.questionnaire.dao.AdministeredQuestionValueDao;
 import omis.questionnaire.domain.AdministeredQuestionValue;
@@ -13,15 +11,15 @@ import omis.questionnaire.domain.Question;
 import omis.questionnaire.domain.QuestionnaireSection;
 
 /**
- * AdministeredQuestionValueDaoHibernateImpl.java
+ * Administered Question Value Dao Hibernate Implementation.
  * 
- *@author Annie Jacques 
- *@version 0.1.0 (Sep 8, 2016)
+ *@author Annie Wahl 
+ *@version 0.1.1 (Apr 5, 2018)
  *@since OMIS 3.0
  *
  */
 public class AdministeredQuestionValueDaoHibernateImpl 
-extends GenericHibernateDaoImpl<AdministeredQuestionValue>
+	extends GenericHibernateDaoImpl<AdministeredQuestionValue>
 		implements AdministeredQuestionValueDao {
 	
 	/* Query Names */
@@ -34,8 +32,11 @@ extends GenericHibernateDaoImpl<AdministeredQuestionValue>
 			"findAdministeredQuestionValueExcluding"; 
 	
 	private static final String 
-	FIND_ADMINISTERED_QUESTION_VALUE_BY_QUESTION_AND_QUESTIONNAIRE_QUERY_NAME =
+		FIND_BY_QUESTION_AND_QUESTIONNAIRE_QUERY_NAME =
 			"findAdministeredQuestionValueByQuestionAndQuestionnaire";
+	
+	private static final String FIND_WITH_NO_ANSWER_VALUE_QUERY_NAME = 
+			"findAdministeredQuestionValueWithNoAnswerValue";
 	
 	/* Parameter Names */
 	
@@ -43,7 +44,8 @@ extends GenericHibernateDaoImpl<AdministeredQuestionValue>
 	
 	private static final String ANSWER_VALUE_PARAM_NAME = "answerValue";
 	
-	private static final String ANSWER_VALUE_TEXT_PARAM_NAME = "answerValueText";
+	private static final String ANSWER_VALUE_TEXT_PARAM_NAME =
+			"answerValueText";
 	
 	private static final String ADMINISTERED_QUESTIONNAIRE_PARAM_NAME =
 			"administeredQuestionnaire";
@@ -56,11 +58,11 @@ extends GenericHibernateDaoImpl<AdministeredQuestionValue>
 	
 	
 	/**
-	 * @param sessionFactory
-	 * @param entityName
+	 * @param sessionFactory - Session Factory
+	 * @param entityName - String entity name
 	 */
 	protected AdministeredQuestionValueDaoHibernateImpl(
-			SessionFactory sessionFactory, String entityName) {
+			final SessionFactory sessionFactory, final String entityName) {
 		super(sessionFactory, entityName);
 	}
 
@@ -82,7 +84,6 @@ extends GenericHibernateDaoImpl<AdministeredQuestionValue>
 				.setParameter(QUESTIONNAIRE_SECTION_PARAM_NAME, 
 						questionnaireSection)
 				.uniqueResult();
-		
 		
 		return administeredQuestionValue;
 	}
@@ -110,7 +111,6 @@ extends GenericHibernateDaoImpl<AdministeredQuestionValue>
 						excludedAdministeredQuestionValue)
 				.uniqueResult();
 		
-		
 		return administeredQuestionValue;
 	}
 
@@ -123,7 +123,7 @@ extends GenericHibernateDaoImpl<AdministeredQuestionValue>
 				(AdministeredQuestionValue) this.getSessionFactory()
 				.getCurrentSession()
 				.getNamedQuery(
-	FIND_ADMINISTERED_QUESTION_VALUE_BY_QUESTION_AND_QUESTIONNAIRE_QUERY_NAME)
+						FIND_BY_QUESTION_AND_QUESTIONNAIRE_QUERY_NAME)
 				.setParameter(QUESTION_PARAM_NAME, question)
 				.setParameter(ADMINISTERED_QUESTIONNAIRE_PARAM_NAME, 
 						administeredQuestionnaire)
@@ -142,13 +142,33 @@ extends GenericHibernateDaoImpl<AdministeredQuestionValue>
 				this.getSessionFactory()
 				.getCurrentSession()
 				.getNamedQuery(
-	FIND_ADMINISTERED_QUESTION_VALUE_BY_QUESTION_AND_QUESTIONNAIRE_QUERY_NAME)
+						FIND_BY_QUESTION_AND_QUESTIONNAIRE_QUERY_NAME)
 				.setParameter(QUESTION_PARAM_NAME, question)
 				.setParameter(ADMINISTERED_QUESTIONNAIRE_PARAM_NAME, 
 						administeredQuestionnaire)
 				.list();
 		
 		return administeredQuestionValues;
+	}
+
+	/**{@inheritDoc} */
+	@Override
+	public AdministeredQuestionValue findByNoAnswerValue(
+			final Question question,
+			final AdministeredQuestionnaire administeredQuestionnaire,
+			final QuestionnaireSection questionnaireSection) {
+		AdministeredQuestionValue administeredQuestionValue = 
+				(AdministeredQuestionValue) this.getSessionFactory()
+				.getCurrentSession()
+				.getNamedQuery(FIND_WITH_NO_ANSWER_VALUE_QUERY_NAME)
+				.setParameter(QUESTION_PARAM_NAME, question)
+				.setParameter(ADMINISTERED_QUESTIONNAIRE_PARAM_NAME,
+						administeredQuestionnaire)
+				.setParameter(QUESTIONNAIRE_SECTION_PARAM_NAME,
+						questionnaireSection)
+				.uniqueResult();
+		
+		return administeredQuestionValue;
 	}
 
 }

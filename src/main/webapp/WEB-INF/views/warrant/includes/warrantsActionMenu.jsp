@@ -10,7 +10,7 @@
 				<li>
 					<a class="createLink" href="${pageContext.request.contextPath}/warrant/create.html?offender=${offender.id}&warrantReasonCategory=${category}">
 						<span class="visibleLinkLabel">
-							<fmt:message key="create${category}Link" />
+							<fmt:message key="createLink.${category}" />
 						</span>
 					</a>
 				</li>

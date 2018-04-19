@@ -95,7 +95,6 @@ public class ResolutionServiceCreateTests
 		final ConditionViolation conditionViolation = null;
 		final Resolution resolution = new Resolution();
 		resolution.setCategory(resolutionCategory);
-		resolution.setDate(this.parseDateText("05/01/2017"));
 		resolution.setDescision(descision);
 		resolution.setReason(reason);
 		resolution.setDisposition(disposition);
@@ -187,7 +186,6 @@ public class ResolutionServiceCreateTests
 		final ConditionViolation conditionViolation = null;
 		final Resolution resolution = new Resolution();
 		resolution.setCategory(resolutionCategory);
-		resolution.setDate(this.parseDateText("05/01/2017"));
 		resolution.setDescision(descision);
 		resolution.setReason(reason);
 		resolution.setDisposition(disposition);

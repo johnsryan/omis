@@ -113,4 +113,16 @@ public class SentenceConnection
 			SentenceConnectionClassification classification) {
 		this.classification = classification;
 	}
+	
+	/**
+	 * Returns string representation of {@code this} including classification
+	 * and sentence.
+	 * 
+	 * @return string representation of {@code this}
+	 */
+	@Override
+	public String toString() {
+		return String.format("%s - %s",
+				this.getClassification(), this.getSentence());
+	}
 }

@@ -3,6 +3,7 @@ package omis.paroleboarditinerary.web.form;
 import java.io.Serializable;
 import java.util.Date;
 
+import omis.facility.domain.Unit;
 import omis.location.domain.Location;
 import omis.paroleboarditinerary.domain.BoardMeetingSite;
 
@@ -10,7 +11,7 @@ import omis.paroleboarditinerary.domain.BoardMeetingSite;
  * Board meeting site item.
  *
  * @author Josh Divine
- * @version 0.1.0 (Nov 29, 2017)
+ * @version 0.1.1 (Apr 10, 2018)
  * @since OMIS 3.0
  */
 public class BoardMeetingSiteItem implements Serializable {
@@ -22,6 +23,8 @@ public class BoardMeetingSiteItem implements Serializable {
 	private Date date;
 	
 	private Location location;
+	
+	private Unit unit;
 	
 	private Integer order;
 	
@@ -86,6 +89,24 @@ public class BoardMeetingSiteItem implements Serializable {
 		this.location = location;
 	}
 	
+	/**
+	 * Returns the unit.
+	 *
+	 * @return unit
+	 */
+	public Unit getUnit() {
+		return unit;
+	}
+
+	/**
+	 * Sets the unit.
+	 *
+	 * @param unit unit
+	 */
+	public void setUnit(final Unit unit) {
+		this.unit = unit;
+	}
+
 	/**
 	 * Returns the order.
 	 * 

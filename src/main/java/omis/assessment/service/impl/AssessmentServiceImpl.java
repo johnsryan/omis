@@ -51,7 +51,7 @@ import omis.staff.domain.StaffAssignment;
  * Implementation of assessment service.
  * 
  * @author Josh Divine
- * @version 0.1.1 (Mar 12, 2018)
+ * @version 0.1.2 (Apr 9, 2018)
  * @since OMIS 3.0
  */
 public class AssessmentServiceImpl implements AssessmentService {
@@ -147,7 +147,7 @@ public class AssessmentServiceImpl implements AssessmentService {
 						administeredQuestionnaire.getQuestionnaireType());
 		for (AssessmentRatingServiceDelegate item : items) {
 			for (RatingCategory category : ratingCategories) {
-				if (item.isAssessable(category)) {
+				if (item.isAssessable(administeredQuestionnaire, category)) {
 					BigDecimal score = item.assess(administeredQuestionnaire, 
 							category);
 					AssessmentCategoryScore assessmentCategoryScore = this

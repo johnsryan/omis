@@ -13,7 +13,7 @@ import omis.paroleboarditinerary.web.form.ParoleBoardItineraryNoteItemOperation;
  * 
  * @author Josh Divine
  * @author Annie Wahl 
- * @version 0.1.1 (Jan 24, 2018)
+ * @version 0.1.2 (Apr 11, 2018)
  * @since OMIS 3.0
  */
 public class ParoleBoardItineraryFormValidator implements Validator {
@@ -40,16 +40,16 @@ public class ParoleBoardItineraryFormValidator implements Validator {
 			errors.rejectValue("startDate", 
 					"paroleBoardItinerary.dateRange.startDate.empty");
 		}
+		if (form.getEndDate() == null) {
+			errors.rejectValue("endDate", 
+					"paroleBoardItinerary.dateRange.endDate.empty");
+		}
 		if (form.getStartDate() != null && form.getEndDate() != null
 				&& form.getStartDate().getTime()
 					> form.getEndDate().getTime()) {
 			errors.rejectValue("startDate",
 					"paroleBoardItinerary.dateRange"
 					+ ".startDateGreaterThanEndDate");
-		}
-		if (form.getParoleBoardLocation() == null) {
-			errors.rejectValue("paroleBoardLocation", 
-					"paroleBoardItinerary.location.empty");
 		}
 		if (form.getBoardMember1() == null) {
 			errors.rejectValue("boardMember1", 
@@ -114,16 +114,16 @@ public class ParoleBoardItineraryFormValidator implements Validator {
 						errors.rejectValue("boardMeetingSiteItems[" + index
 								+ "].date",  "paroleBoardItinerary"
 										+ ".boardMeetingSite.date.empty");
-					}
-					if (siteItem.getLocation() == null) {
-						errors.rejectValue("boardMeetingSiteItems[" + index
-								+ "].location", "paroleBoardItinerary"
-										+ ".boardMeetingSite.location.empty");
-					}
-					if (siteItem.getOrder() == null) {
-						errors.rejectValue("boardMeetingSiteItems[" + index
-								+ "].order", "paroleBoardItinerary"
-										+ ".boardMeetingSite.order.empty");
+					} else {
+						if (form.getStartDate() != null && 
+								form.getEndDate() != null) {
+							if (siteItem.getDate().before(form.getStartDate()) || 
+									siteItem.getDate().after(form.getEndDate())) {
+								errors.rejectValue("boardMeetingSiteItems[" + 
+									index + "].date",  "paroleBoardItinerary"
+										+ ".boardMeetingSite.date.outOfRange");
+							}
+						}
 					}
 				}
 			}

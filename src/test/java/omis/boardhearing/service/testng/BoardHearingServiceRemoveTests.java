@@ -72,10 +72,10 @@ import omis.testng.AbstractHibernateTransactionalTestNGSpringContextTests;
 /**
  * Board Hearing Service Remove tests.
  * 
- *@author Annie Wahl 
- *@version 0.1.0 (Jan 12, 2018)
- *@since OMIS 3.0
- *
+ * @author Annie Wahl 
+ * @author Josh Divine
+ * @version 0.1.3 (Apr 18, 2018)
+ * @since OMIS 3.0
  */
 public class BoardHearingServiceRemoveTests
 		extends AbstractHibernateTransactionalTestNGSpringContextTests {
@@ -187,12 +187,12 @@ public class BoardHearingServiceRemoveTests
 				this.paroleBoardLocationDelegate.create(location, true);
 		final ParoleBoardItinerary itinerary =
 				this.paroleBoardItineraryDelegate.create(paroleBoardLocation,
-						this.parseDateText("01/01/2015"), null);
+						true, this.parseDateText("01/01/2015"), 
+						this.parseDateText("01/01/2015"));
 		final Boolean videoConference = true;
-		final BoardHearing boardHearing = this.boardHearingDelegate
-				.create(itinerary, location, hearingDate,
-						paroleEligibility, null, cancellation,
-						videoConference);
+		final BoardHearing boardHearing = this.boardHearingDelegate.create(
+				itinerary, hearingDate, paroleEligibility, null, cancellation,
+				videoConference);
 			
 		
 		this.boardHearingService.removeBoardHearing(boardHearing);
@@ -281,10 +281,10 @@ public class BoardHearingServiceRemoveTests
 				this.paroleBoardLocationDelegate.create(location, true);
 		final ParoleBoardItinerary itinerary =
 				this.paroleBoardItineraryDelegate.create(paroleBoardLocation,
-						this.parseDateText("01/01/2015"), null);
-		return this.boardHearingDelegate
-				.create(itinerary, null, null, paroleEligibility, null, null,
-						false);
+						true, this.parseDateText("01/01/2015"), 
+						this.parseDateText("01/01/2015"));
+		return this.boardHearingDelegate.create(itinerary, null, 
+				paroleEligibility, null, null, false);
 	}
 	
 	private Date parseDateText(final String text) {

@@ -34,7 +34,7 @@ import omis.util.PropertyValueAsserter;
  * Tests method to update parole board itinerary notes.
  *
  * @author Josh Divine
- * @version 0.0.1
+ * @version 0.1.1 (Apr 18, 2018)
  * @since OMIS 3.0
  */
 public class ParoleBoardItineraryServiceUpdateBoardItineraryNoteTests
@@ -110,7 +110,7 @@ public class ParoleBoardItineraryServiceUpdateBoardItineraryNoteTests
 		Date startDate = this.parseDateText("01/01/2017");
 		Date endDate = this.parseDateText("12/31/2017");
 		ParoleBoardItinerary boardItinerary = this.paroleBoardItineraryDelegate
-				.create(paroleBoardLocation, startDate, endDate);
+				.create(paroleBoardLocation, true, startDate, endDate);
 		String description = "Description";
 		Date date = this.parseDateText("01/05/2017");
 		ParoleBoardItineraryNote itineraryNote = this
@@ -154,7 +154,7 @@ public class ParoleBoardItineraryServiceUpdateBoardItineraryNoteTests
 		Date startDate = this.parseDateText("01/01/2017");
 		Date endDate = this.parseDateText("12/31/2017");
 		ParoleBoardItinerary boardItinerary = this.paroleBoardItineraryDelegate
-				.create(paroleBoardLocation, startDate, endDate);
+				.create(paroleBoardLocation, true, startDate, endDate);
 		String description = "Description";
 		Date date = this.parseDateText("01/05/2017");
 		ParoleBoardItineraryNote itineraryNote = this
@@ -198,7 +198,7 @@ public class ParoleBoardItineraryServiceUpdateBoardItineraryNoteTests
 		Date startDate = this.parseDateText("01/01/2017");
 		Date endDate = this.parseDateText("12/31/2017");
 		ParoleBoardItinerary boardItinerary = this.paroleBoardItineraryDelegate
-				.create(paroleBoardLocation, startDate, endDate);
+				.create(paroleBoardLocation, true, startDate, endDate);
 		String description = "Description";
 		Date date = this.parseDateText("01/05/2017");
 		this.paroleBoardItineraryNoteDelegate.create(boardItinerary, 

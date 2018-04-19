@@ -24,38 +24,18 @@
 			<fmt:message key="unresolvedViolationsListHeader"/>
 		</h1>
 		<jsp:include page="includes/unresolvedViolationsListTable.jsp"/>
-		<c:if test="${empty unresolvedViolationSummaries}">
-			<fmt:message key="noViolationsMessage" />
-		</c:if>
 	</div>
 	<div class="violations">
 		<h1>
 			<fmt:message key="scheduledViolationsListHeader"/>
 		</h1>
 		<jsp:include page="includes/scheduledViolationsListTable.jsp"/>
-		<c:if test="${empty scheduledHearingViolationSummaries}">
-			<table id="scheduledViolationSummariesTable${status.index}" class="listTable">
-				<thead>
-					<tr>
-						<th><fmt:message key="eventCategoryLabel"/></th>
-						<th><fmt:message key="eventDateLabel"/></th>
-						<th><fmt:message key="eventDetailsLabel"/></th>
-						<th><fmt:message key="violationDetailsLabel"/></th>
-					</tr>
-				</thead>
-				<tbody />
-			</table>
-			<fmt:message key="noViolationsMessage" />
-		</c:if>
 	</div>
 	<div class="violations">
 		<h1>
 			<fmt:message key="resolvedViolationsListHeader"/>
 		</h1>
 		<jsp:include page="includes/resolvedViolationsListTable.jsp"/>
-		<c:if test="${empty resolvedViolationSummaries}">
-			<fmt:message key="noViolationsMessage" />
-		</c:if>
 	</div>
 </body>
 </fmt:bundle>

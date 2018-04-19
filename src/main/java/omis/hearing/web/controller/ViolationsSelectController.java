@@ -18,7 +18,6 @@
 package omis.hearing.web.controller;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -59,7 +58,7 @@ import omis.violationevent.domain.ViolationEventCategory;
  * Resolution Controller.
  * 
  *@author Annie Wahl
- *@version 0.1.1 (Feb 28, 2018)
+ *@version 0.1.2 (Apr 17, 2018)
  *@since OMIS 3.0
  *
  */
@@ -364,7 +363,6 @@ public class ViolationsSelectController {
 							Resolution resolution = new Resolution();
 							resolution.setCategory(
 									ResolutionClassificationCategory.DISMISSED);
-							resolution.setDate(new Date());
 							
 							this.resolutionService.createInfraction(
 								hearing, null,
@@ -403,7 +401,6 @@ public class ViolationsSelectController {
 							Resolution resolution = new Resolution();
 							resolution.setCategory(
 									ResolutionClassificationCategory.DISMISSED);
-							resolution.setDate(new Date());
 							
 							this.resolutionService.createInfraction(
 								hearing,

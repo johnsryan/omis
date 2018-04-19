@@ -75,7 +75,7 @@ import omis.web.controller.delegate.BusinessExceptionHandlerDelegate;
  * Resolution Controller.
  * 
  *@author Annie Wahl
- *@version 0.1.2 (Feb 28, 2018)
+ *@version 0.1.3 (Apr 17, 2018)
  *@since OMIS 3.0
  *
  */
@@ -314,9 +314,7 @@ public class ResolutionController {
 					throws DuplicateEntityFoundException {
 		this.resolutionFormValidator.validate(form, bindingResult);
 		if (bindingResult.hasErrors()) {
-			//Repopulating Summary Items
-			for (int i = 0; i < form.getViolationItems().size();
-					i++) {
+			for (int i = 0; i < form.getViolationItems().size(); i++) {
 				if (ViolationEventCategory.DISCIPLINARY
 						.equals(violationCategory)) {
 					form.getViolationItems().get(i).setSummary(
@@ -369,20 +367,21 @@ public class ResolutionController {
 			for (ViolationItem item : form.getViolationItems()) {
 				Resolution resolution = new Resolution();
 				String sanctionDescription = null;
+				InfractionPlea plea = null;
 				if (form.getGroupEdit()) {
 					switch (resolutionCategory) {
 						case FORMAL:
+							resolution.setDate(hearing.getDate());
+							resolution.setAuthority(hearing.getOfficer()
+									.getStaffMember());
 							resolution.setDisposition(form
 								.getViolationItems().get(0).getDisposition());
 						case INFORMAL:
 							sanctionDescription = form
 							.getViolationItems().get(0).getSanction();
 						case DISMISSED:
+							plea = form.getViolationItems().get(0).getPlea();
 							resolution.setCategory(resolutionCategory);
-							resolution.setDate(form
-									.getViolationItems().get(0).getDate());
-							resolution.setAuthority(form
-									.getViolationItems().get(0).getAuthority());
 							resolution.setReason(form
 									.getViolationItems().get(0).getReason());
 							if (form.getViolationItems().get(0)
@@ -403,20 +402,22 @@ public class ResolutionController {
 				} else {
 					switch (resolutionCategory) {
 						case FORMAL:
+							resolution.setDate(hearing.getDate());
+							resolution.setAuthority(hearing.getOfficer()
+									.getStaffMember());
 							resolution.setDisposition(item.getDisposition());
 						case INFORMAL:
 							sanctionDescription = item.getSanction();
 						case DISMISSED:
+							plea = item.getPlea();
 							resolution.setCategory(resolutionCategory);
-							resolution.setDate(item.getDate());
-							resolution.setAuthority(item.getAuthority());
 							resolution.setReason(item.getReason());
-							if (item.getAppealDate() != null) {
-								resolution.setAppealDate(item.getAppealDate());
-							}
+							resolution.setAppealDate(item.getAppealDate());
 							if (!ResolutionClassificationCategory.FORMAL.equals(
 									resolutionCategory)) {
 								resolution.setDescision(item.getDecision());
+								resolution.setAuthority(item.getAuthority());
+								resolution.setDate(item.getDate());
 							}
 							break;
 						default :
@@ -429,7 +430,6 @@ public class ResolutionController {
 						item.getConditionViolation();
 				DisciplinaryCodeViolation disciplinaryCodeViolation =
 						item.getDisciplinaryCodeViolation();
-				InfractionPlea plea = item.getPlea();
 				if (infraction == null) {
 					infraction = this.resolutionService.createInfraction(
 							hearing, conditionViolation,
@@ -562,23 +562,23 @@ public class ResolutionController {
 							infraction.getHearing());
 					resolution.setDisposition(form.getViolationItem()
 							.getDisposition());
+					resolution.setDate(infraction.getHearing().getDate());
+					resolution.setAuthority(infraction.getHearing().getOfficer()
+							.getStaffMember());
 				case INFORMAL:
 					sanctionDescription = form.getViolationItem().getSanction();
 				case DISMISSED:
 					resolution.setCategory(resolutionCategory);
-					resolution.setDate(form.getViolationItem().getDate());
-					resolution.setAuthority(
-							form.getViolationItem().getAuthority());
 					resolution.setReason(form.getViolationItem().getReason());
-					if (form.getViolationItem()
-							.getAppealDate() != null) {
-						resolution.setAppealDate(form.getViolationItem()
-								.getAppealDate());
-					}
+					resolution.setAppealDate(form.getViolationItem()
+							.getAppealDate());
 					if (!ResolutionClassificationCategory.FORMAL.equals(
 							resolutionCategory)) {
 						resolution.setDescision(form.getViolationItem()
 								.getDecision());
+						resolution.setAuthority(form.getViolationItem()
+								.getAuthority());
+						resolution.setDate(form.getViolationItem().getDate());
 					}
 					
 					this.resolutionService.updateInfraction(infraction,
@@ -588,8 +588,7 @@ public class ResolutionController {
 					
 					ImposedSanction imposedSanction =
 							this.resolutionService
-							.findImposedSanctionByInfraction(
-									infraction);
+							.findImposedSanctionByInfraction(infraction);
 					if (imposedSanction != null) {
 						if (StringUtility.hasContent(sanctionDescription)) {
 							this.resolutionService.updateImposedSanction(
@@ -842,13 +841,13 @@ public class ResolutionController {
 			item.setInfraction(infraction);
 			
 			if (infraction.getResolution() != null) {
-				item.setDate(infraction.getResolution().getDate());
 				item.setDecision(infraction.getResolution().getDescision());
 				item.setDisposition(infraction.getResolution()
 						.getDisposition());
 				item.setReason(infraction.getResolution().getReason());
-				item.setAuthority(infraction.getResolution().getAuthority());
 				item.setAppealDate(infraction.getResolution().getAppealDate());
+				item.setAuthority(infraction.getResolution().getAuthority());
+				item.setDate(infraction.getResolution().getDate());
 			}
 			item.setPlea(infraction.getPlea());
 			ImposedSanction imposedSanction = this.resolutionService
@@ -993,12 +992,12 @@ public class ResolutionController {
 					.findImposedSanctionByInfraction(
 							infraction).getDescription());
 		}
-		violation.setPlea(infraction.getPlea());
+		violation.setAuthority(infraction.getResolution().getAuthority());
 		violation.setDate(infraction.getResolution().getDate());
+		violation.setPlea(infraction.getPlea());
 		violation.setDecision(infraction.getResolution().getDescision());
 		violation.setDisposition(infraction.getResolution().getDisposition());
 		violation.setReason(infraction.getResolution().getReason());
-		violation.setAuthority(infraction.getResolution().getAuthority());
 		violation.setAppealDate(infraction.getResolution().getAppealDate());
 		violation.setInfraction(infraction);
 		

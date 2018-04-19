@@ -5,11 +5,12 @@
 		<tr>
 			<th class="operations" />
 			<th><fmt:message key="eventCategoryLabel"/></th>
-			<th><fmt:message key="eventDateLabel"/></th>
+			<th class="date"><fmt:message key="eventDateLabel"/></th>
 			<th><fmt:message key="violationDetailsLabel"/></th>
-			<th><fmt:message key="resolutionLabel"/></th>
+			<th><fmt:message key="reasonForDecisionLabel"/></th>
 			<th><fmt:message key="dispositionLabel"/></th>
 			<th><fmt:message key="resolutionLabel"/></th>
+			<th class="date"><fmt:message key="appealDateLabel"/></th>
 			<th><fmt:message key="sanctionLabel"/></th>
 		</tr>
 	</thead>

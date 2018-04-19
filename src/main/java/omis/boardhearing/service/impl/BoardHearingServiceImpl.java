@@ -19,6 +19,7 @@ package omis.boardhearing.service.impl;
 
 import java.util.Date;
 import java.util.List;
+
 import omis.boardhearing.domain.BoardHearing;
 import omis.boardhearing.domain.BoardHearingCategory;
 import omis.boardhearing.domain.BoardHearingNote;
@@ -32,7 +33,6 @@ import omis.boardhearing.service.delegate.BoardHearingParticipantDelegate;
 import omis.exception.DuplicateEntityFoundException;
 import omis.hearinganalysis.domain.HearingAnalysis;
 import omis.hearinganalysis.service.delegate.HearingAnalysisDelegate;
-import omis.location.domain.Location;
 import omis.paroleboarditinerary.domain.BoardAttendee;
 import omis.paroleboarditinerary.domain.BoardMeetingSite;
 import omis.paroleboarditinerary.domain.ParoleBoardItinerary;
@@ -46,10 +46,10 @@ import omis.paroleeligibility.domain.ParoleEligibility;
 /**
  * Board Hearing Service Implementation.
  * 
- *@author Annie Wahl 
- *@version 0.1.0 (Dec 29, 2017)
- *@since OMIS 3.0
- *
+ * @author Annie Wahl 
+ * @author Josh Divine
+ * @version 0.1.2 (Apr 18, 2018)
+ * @since OMIS 3.0
  */
 public class BoardHearingServiceImpl implements BoardHearingService {
 	
@@ -104,29 +104,27 @@ public class BoardHearingServiceImpl implements BoardHearingService {
 	/**{@inheritDoc} */
 	@Override
 	public BoardHearing createBoardHearing(final ParoleBoardItinerary itinerary,
-			final Location location, final Date hearingDate,
-			final ParoleEligibility paroleEligibility,
-			final BoardHearingCategory category,
-			final CancellationCategory cancellation,
-			final Boolean videoConference)
-					throws DuplicateEntityFoundException {
-		return this.boardHearingDelegate.create(itinerary, location,
-				hearingDate, paroleEligibility, category, cancellation,
-				videoConference);
-	}
-	
-	/**{@inheritDoc} */
-	@Override
-	public BoardHearing updateBoardHearing(final BoardHearing boardHearing,
-			final ParoleBoardItinerary itinerary, final Location location,
 			final Date hearingDate, final ParoleEligibility paroleEligibility,
 			final BoardHearingCategory category,
 			final CancellationCategory cancellation,
 			final Boolean videoConference)
 					throws DuplicateEntityFoundException {
+		return this.boardHearingDelegate.create(itinerary, hearingDate, 
+				paroleEligibility, category, cancellation, videoConference);
+	}
+	
+	/**{@inheritDoc} */
+	@Override
+	public BoardHearing updateBoardHearing(final BoardHearing boardHearing,
+			final ParoleBoardItinerary itinerary, final Date hearingDate, 
+			final ParoleEligibility paroleEligibility,
+			final BoardHearingCategory category, 
+			final CancellationCategory cancellation,
+			final Boolean videoConference)
+					throws DuplicateEntityFoundException {
 		return this.boardHearingDelegate.update(boardHearing, itinerary,
-				location, hearingDate, paroleEligibility, category,
-				cancellation, videoConference);
+				hearingDate, paroleEligibility, category, cancellation, 
+				videoConference);
 	}
 	
 	/**{@inheritDoc} */
@@ -228,9 +226,9 @@ public class BoardHearingServiceImpl implements BoardHearingService {
 	
 	/**{@inheritDoc} */
 	@Override
-	public List<ParoleBoardItinerary> findItinerariesByEffectiveDate(
-			final Date effectiveDate) {
-		return this.paroleItineraryDelegate.findAfterDate(effectiveDate);
+	public List<ParoleBoardItinerary> 
+			findItinerariesByEffectiveDate(final Date effectiveDate) {
+		return this.paroleItineraryDelegate.findByEffectiveDate(effectiveDate);
 	}
 	
 	/**{@inheritDoc} */

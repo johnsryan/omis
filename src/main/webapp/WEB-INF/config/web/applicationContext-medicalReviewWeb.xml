@@ -27,4 +27,19 @@
 			<aop:advisor advice-ref="transactionAdvice" pointcut-ref="medicalReviewControllerOperation"/>	
 		</aop:config>
 		
+			<!-- Profile item -->
+	<bean id="medicalReviewProfileItem"
+		class="omis.medicalreview.web.profile.MedicalReviewProfileItem">
+		<constructor-arg name="requiredAuthorizations">
+			<set>
+				<value>MEDICAL_REVIEW_LIST</value>
+				<value>ADMIN</value>
+			</set>
+		</constructor-arg>
+		<constructor-arg name="includePage" value="/WEB-INF/views/medicalReview/profile/includes/profileItem.jsp"/>
+		<constructor-arg name="name" value="medicalReview"/>
+		<constructor-arg name="profileItemRegistry" ref="caseManagementProfileItemRegistry"/>
+		<constructor-arg name="enabled" value="${medicalReviewProfileItemEnabled}"/>
+	</bean>
+		
 </beans>

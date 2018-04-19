@@ -67,3 +67,11 @@ span.details span.detail{
 .removeSet{
 	background-color: hsla(355, 100%, 50%, 0.3);
 }
+
+.showComments:after {
+	content: url('../../common/images/arrowRight.png');
+}
+
+.hideComments:after {
+	content: url('../../common/images/arrowDown.png');
+}

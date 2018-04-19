@@ -19,6 +19,7 @@ package omis.assessment.domain.impl;
 
 import java.math.BigDecimal;
 
+import omis.assessment.domain.RatingCategorySignificance;
 import omis.assessment.domain.RatingCategory;
 
 /**
@@ -39,6 +40,8 @@ public class RatingCategoryImpl implements RatingCategory {
 	private BigDecimal ratingFactor;
 	
 	private Boolean valid;
+	
+	private RatingCategorySignificance significance;
 	
 	/**
 	 * Instantiates an implementation of rating category.
@@ -95,6 +98,19 @@ public class RatingCategoryImpl implements RatingCategory {
 		return valid;
 	}
 
+
+	/** {@inheritDoc} */
+	@Override
+	public void setSignificance(final RatingCategorySignificance significance) {
+		this.significance = significance;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public RatingCategorySignificance getSignificance() {
+		return this.significance;
+	}
+	
 	/** {@inheritDoc} */
 	@Override
 	public boolean equals(Object obj) {

@@ -25,6 +25,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.testng.annotations.Test;
 
+import omis.address.domain.Address;
+import omis.address.domain.ZipCode;
+import omis.address.service.delegate.AddressDelegate;
+import omis.address.service.delegate.ZipCodeDelegate;
+import omis.country.domain.Country;
+import omis.country.service.delegate.CountryDelegate;
+import omis.datatype.DateRange;
 import omis.exception.DuplicateEntityFoundException;
 import omis.hearinganalysis.domain.HearingAnalysis;
 import omis.hearinganalysis.domain.HearingAnalysisCategory;
@@ -36,12 +43,22 @@ import omis.hearinganalysis.service.delegate.HearingAnalysisCategoryDelegate;
 import omis.hearinganalysis.service.delegate.HearingAnalysisDelegate;
 import omis.hearinganalysis.service.delegate.HearingAnalysisTaskAssociationDelegate;
 import omis.hearinganalysis.service.delegate.ParoleHearingAnalysisTaskSourceDelegate;
+import omis.location.domain.Location;
+import omis.location.service.delegate.LocationDelegate;
 import omis.offender.domain.Offender;
 import omis.offender.service.delegate.OffenderDelegate;
+import omis.organization.domain.Organization;
+import omis.organization.service.delegate.OrganizationDelegate;
+import omis.paroleboarditinerary.domain.ParoleBoardItinerary;
+import omis.paroleboarditinerary.service.delegate.ParoleBoardItineraryDelegate;
+import omis.paroleboardlocation.domain.ParoleBoardLocation;
+import omis.paroleboardlocation.service.delegate.ParoleBoardLocationDelegate;
 import omis.paroleeligibility.domain.ParoleEligibility;
 import omis.paroleeligibility.service.delegate.ParoleEligibilityDelegate;
 import omis.person.domain.Person;
 import omis.person.service.delegate.PersonDelegate;
+import omis.region.domain.City;
+import omis.region.service.delegate.CityDelegate;
 import omis.task.domain.Task;
 import omis.task.domain.TaskTemplate;
 import omis.task.domain.TaskTemplateGroup;
@@ -57,7 +74,7 @@ import omis.util.PropertyValueAsserter;
  * Tests method to create hearing analysis task associations.
  *
  * @author Josh Divine
- * @version 0.0.1
+ * @version 0.1.2 (Apr 18, 2018)
  * @since OMIS 3.0
  */
 public class HearingAnalysisTaskServiceCreateHearingAnalysisTaskAssociationTests
@@ -111,6 +128,38 @@ public class HearingAnalysisTaskServiceCreateHearingAnalysisTaskAssociationTests
 	private HearingAnalysisTaskAssociationDelegate 
 			hearingAnalysisTaskAssociationDelegate;
 	
+	@Autowired
+	@Qualifier("organizationDelegate")
+	private OrganizationDelegate organizationDelegate;
+	
+	@Autowired
+	@Qualifier("countryDelegate")
+	private CountryDelegate countryDelegate;
+	
+	@Autowired
+	@Qualifier("cityDelegate")
+	private CityDelegate cityDelegate;
+	
+	@Autowired
+	@Qualifier("zipCodeDelegate")
+	private ZipCodeDelegate zipCodeDelegate;
+	
+	@Autowired
+	@Qualifier("addressDelegate")
+	private AddressDelegate addressDelegate;
+	
+	@Autowired
+	@Qualifier("locationDelegate")
+	private LocationDelegate locationDelegate;
+	
+	@Autowired
+	@Qualifier("paroleBoardItineraryDelegate")
+	private ParoleBoardItineraryDelegate paroleBoardItineraryDelegate;
+
+	@Autowired
+	@Qualifier("paroleBoardLocationDelegate")
+	private ParoleBoardLocationDelegate paroleBoardLocationDelegate;
+	
 	/* Services. */
 
 	@Autowired
@@ -140,8 +189,24 @@ public class HearingAnalysisTaskServiceCreateHearingAnalysisTaskAssociationTests
 				offender, this.parseDateText("01/01/2018"), null, null, null);
 		HearingAnalysisCategory category = this.hearingAnalysisCategoryDelegate
 				.create("Category", true);
+		Organization organization = this.organizationDelegate.create("Org", "O",
+				null);
+		Country country = this.countryDelegate.create("Country", "C", true);
+		City city = this.cityDelegate.create("City", true, null, country);
+		ZipCode zipCode = this.zipCodeDelegate.create(city, "12345", null, 
+				true);
+		Address address = this.addressDelegate.findOrCreate("123 Some St.", 
+				null, null, null, zipCode);
+		Location location = this.locationDelegate.create(organization, 
+				new DateRange(this.parseDateText("01/01/2000"), null), address);
+		ParoleBoardLocation paroleBoardLocation = this
+				.paroleBoardLocationDelegate.create(location, true);
+		Date startDate = this.parseDateText("01/01/2017");
+		Date endDate = this.parseDateText("12/31/2017");
+		ParoleBoardItinerary boardItinerary = this.paroleBoardItineraryDelegate
+				.create(paroleBoardLocation, true, startDate, endDate);
 		HearingAnalysis hearingAnalysis = this.hearingAnalysisDelegate.create(
-				eligibility, null, category, null);
+				eligibility, boardItinerary, category, null);
 		TaskTemplateGroup group = this.taskTemplateGroupDelegate.create("Name");
 		TaskTemplate taskTemplate = this.taskTemplateDelegate.create(group, 
 				"Name", "controllerName", "methodName");
@@ -184,8 +249,24 @@ public class HearingAnalysisTaskServiceCreateHearingAnalysisTaskAssociationTests
 				offender, this.parseDateText("01/01/2018"), null, null, null);
 		HearingAnalysisCategory category = this.hearingAnalysisCategoryDelegate
 				.create("Category", true);
+		Organization organization = this.organizationDelegate.create("Org", "O",
+				null);
+		Country country = this.countryDelegate.create("Country", "C", true);
+		City city = this.cityDelegate.create("City", true, null, country);
+		ZipCode zipCode = this.zipCodeDelegate.create(city, "12345", null, 
+				true);
+		Address address = this.addressDelegate.findOrCreate("123 Some St.", 
+				null, null, null, zipCode);
+		Location location = this.locationDelegate.create(organization, 
+				new DateRange(this.parseDateText("01/01/2000"), null), address);
+		ParoleBoardLocation paroleBoardLocation = this
+				.paroleBoardLocationDelegate.create(location, true);
+		Date startDate = this.parseDateText("01/01/2017");
+		Date endDate = this.parseDateText("12/31/2017");
+		ParoleBoardItinerary boardItinerary = this.paroleBoardItineraryDelegate
+				.create(paroleBoardLocation, true, startDate, endDate);
 		HearingAnalysis hearingAnalysis = this.hearingAnalysisDelegate.create(
-				eligibility, null, category, null);
+				eligibility, boardItinerary, category, null);
 		TaskTemplateGroup group = this.taskTemplateGroupDelegate.create("Name");
 		TaskTemplate taskTemplate = this.taskTemplateDelegate.create(group, 
 				"Name", "controllerName", "methodName");

@@ -90,6 +90,28 @@
 				</a>
 			</div>
 		</div>
-	</c:if>	
+	</c:if>
+	<if test="${offenderProfileItemsProperties.medicalReviewProfileItemEnabled}">
+		<div class="foregroundUltraLight navItemContainer hoverable">
+			<div class="navItem">
+				<a href="${pageContext.request.contextPath}/medicalReview/list.html?offender=${offenderSummary.id}">
+					<span>
+						<fmt:message key="medicalReviewLabel"/>
+					</span>
+				</a>
+			</div>
+		</div>
+	</if>
+	<if test="${offenderProfileItemsProperties.mentalHealthReviewProfileItemEnabled}">
+		<div class="foregroundUltraLight navItemContainer hoverable">
+			<div class="navItem">
+				<a href="${pageContext.request.contextPath}/mentalHealthReview/list.html?offender=${offenderSummary.id}">
+					<span>
+						<fmt:message key="mentalHealthReviewLabel"/>
+					</span>
+				</a>
+			</div>
+		</div>
+	</if>	
 </div>
 </fmt:bundle>

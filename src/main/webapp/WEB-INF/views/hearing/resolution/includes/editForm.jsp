@@ -136,27 +136,6 @@
 				</span>
 			</c:when>
 		</c:choose>
-		<span class="fieldGroup">
-			<form:label path="violationItems[${i}].date" class="fieldLabel">
-				<fmt:message key="dateLabel"/>
-			</form:label>
-			<form:input path="violationItems[${i}].date" class="date"/>
-			<form:errors path="violationItems[${i}].date" cssClass="error"/>
-		</span>
-		<span class="fieldGroup">
-			<form:label path="violationItems[${i}].authority" class="fieldLabel">
-				<fmt:message key="authorityLabel"/>
-			</form:label>
-			<input id="authorityInput${i}"/>
-				<form:hidden id="violationItems[${i}].authority" path="violationItems[${i}].authority"/>
-				<a id="clearAuthority${i}" class="clearLink"></a>
-			<span id="authorityDisplay${i}">
-				<c:if test="${not empty violationItem.authority}" >
-					<c:out value="${violationItem.authority.name.lastName}, ${violationItem.authority.name.firstName}"/>
-				</c:if>
-			</span>
-			<form:errors path="violationItems[${i}].authority" cssClass="error"/>
-		</span>
 		<c:choose>
 			<c:when test="${resolutionCategory eq 'INFORMAL'
 							or resolutionCategory eq 'DISMISSED'}">
@@ -166,6 +145,27 @@
 					</form:label>
 					<form:textarea path="violationItems[${i}].decision"/>
 					<form:errors path="violationItems[${i}].decision" cssClass="error"/>
+				</span>
+				<span class="fieldGroup">
+					<form:label path="violationItems[${i}].date" class="fieldLabel">
+						<fmt:message key="dateLabel"/>
+					</form:label>
+					<form:input path="violationItems[${i}].date" class="date"/>
+					<form:errors path="violationItems[${i}].date" cssClass="error"/>
+				</span>
+				<span class="fieldGroup">
+					<form:label path="violationItems[${i}].authority" class="fieldLabel">
+						<fmt:message key="authorityLabel"/>
+					</form:label>
+					<input id="authorityInput${i}"/>
+						<form:hidden id="violationItems[${i}].authority" path="violationItems[${i}].authority"/>
+						<a id="clearAuthority${i}" class="clearLink"></a>
+					<span id="authorityDisplay${i}">
+						<c:if test="${not empty violationItem.authority}" >
+							<c:out value="${violationItem.authority.name.lastName}, ${violationItem.authority.name.firstName}"/>
+						</c:if>
+					</span>
+					<form:errors path="violationItems[${i}].authority" cssClass="error"/>
 				</span>
 			</c:when>
 		</c:choose>
@@ -198,33 +198,36 @@
 					</c:when>
 				</c:choose>
 				<span class="fieldGroup">
-					<c:if test="${resolutionCategory eq 'FORMAL'}">
-						<fmt:message key='sanctionOnGuiltyLabel' var="placeholder"/>
-					</c:if>
-					<form:label path="violationItem.sanction" class="fieldLabel">
-						<fmt:message key="sanctionLabel"/>
-					</form:label>
-					<c:choose>
-						<c:when test="${(not (violationItem.disposition eq 'GUILTY')) and resolutionCategory eq 'FORMAL'}">
-							<form:textarea path="violationItems[${i}].sanction" readOnly="true" placeholder="${placeholder}"/>
-						</c:when>
-						<c:otherwise>
-							<form:textarea path="violationItems[${i}].sanction" placeholder="${placeholder}" />
-						</c:otherwise>
-					</c:choose>
-					<form:errors path="violationItems[${i}].sanction" cssClass="error"/>
-				</span>
+						<c:choose>
+							<c:when test="${(not (violationItem.disposition eq 'GUILTY')) and resolutionCategory eq 'FORMAL'}">
+								<span id="sanction${i}" class="hidden">
+									<form:label path="violationItem.sanction" class="fieldLabel">
+										<fmt:message key="sanctionLabel"/>
+									</form:label>
+									<form:textarea path="violationItems[${i}].sanction" />
+									<form:errors path="violationItems[${i}].sanction" cssClass="error"/>
+								</span>
+							</c:when>
+							<c:otherwise>
+								<span id="sanction${i}">
+									<form:label path="violationItem.sanction" class="fieldLabel">
+										<fmt:message key="sanctionLabel"/>
+									</form:label>
+									<form:textarea path="violationItems[${i}].sanction"/>
+									<form:errors path="violationItems[${i}].sanction" cssClass="error"/>
+								</span>
+							</c:otherwise>
+						</c:choose>
+					</span>
 			</c:when>
 		</c:choose>
-		<c:if test="${not empty violationItem.infraction.resolution.date}">
-			<span class="fieldGroup">
-				<form:label path="violationItems[${i}].appealDate" class="fieldLabel">
-					<fmt:message key="appealDateLabel"/>
-				</form:label>
-				<form:input path="violationItems[${i}].appealDate" class="date"/>
-				<form:errors path="violationItems[${i}].appealDate" cssClass="error"/>
-			</span>
-		</c:if>
+		<span class="fieldGroup">
+			<form:label path="violationItems[${i}].appealDate" class="fieldLabel">
+				<fmt:message key="appealDateLabel"/>
+			</form:label>
+			<form:input path="violationItems[${i}].appealDate" class="date"/>
+			<form:errors path="violationItems[${i}].appealDate" cssClass="error"/>
+		</span>
 		</div>
 	</c:forEach>
 	</fieldset>

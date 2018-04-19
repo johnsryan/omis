@@ -23,6 +23,7 @@ import java.util.List;
 import omis.assessment.dao.AnswerRatingDao;
 import omis.assessment.domain.AnswerRating;
 import omis.assessment.domain.RatingCategory;
+import omis.assessment.domain.RatingScaleGroup;
 import omis.exception.DuplicateEntityFoundException;
 import omis.instance.factory.InstanceFactory;
 import omis.questionnaire.domain.AdministeredQuestionnaire;
@@ -32,7 +33,7 @@ import omis.questionnaire.domain.AnswerValue;
  * Answer rating delegate.
  * 
  * @author Josh Divine
- * @version 0.1.0 (Feb 26, 2018)
+ * @version 0.1.1 (Apr 9, 2018)
  * @since OMIS 3.0
  */
 public class AnswerRatingDelegate {
@@ -135,5 +136,39 @@ public class AnswerRatingDelegate {
 		answerRating.setAnswerValue(answerValue);
 		answerRating.setRatingCategory(ratingCategory);
 		answerRating.setValue(value);
+	}
+
+	/**
+	 * Returns a list of answer ratings for the specified scaled group and 
+	 * administered questionnaire.
+	 * 
+	 * @param ratingScaleGroup rating scale group
+	 * @param administeredQuestionnaire administered questionnaire
+	 * @return list of answer ratings
+	 */
+	public List<AnswerRating> 
+			findByRatingScaleGroupAndAdministeredQuestionnaire(
+					final RatingScaleGroup ratingScaleGroup,
+					final AdministeredQuestionnaire administeredQuestionnaire) {
+		return this.answerRatingDao
+				.findByRatingScaleGroupAndAdministeredQuestionnaire(
+						ratingScaleGroup, administeredQuestionnaire);
+	}
+
+	/**
+	 * Returns a list of answer ratings for the specified rating category and 
+	 * administered questionnaire excluding already scaled groups.
+	 * 
+	 * @param ratingCategory rating category
+	 * @param administeredQuestionnaire administered questionnaire
+	 * @return list of answer ratings
+	 */
+	public List<AnswerRating> 
+			findByRatingCategoryAndAdministeredQuestionnaireExcludingScaledGroups(
+					final RatingCategory ratingCategory, 
+					final AdministeredQuestionnaire administeredQuestionnaire) {
+		return this.answerRatingDao
+				.findByRatingCategoryAndAdministeredQuestionnaireExcludingScaledGroups(
+						ratingCategory, administeredQuestionnaire);
 	}
 }

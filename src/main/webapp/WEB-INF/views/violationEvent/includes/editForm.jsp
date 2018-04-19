@@ -40,6 +40,10 @@
 					<label for="jurisdictionFilter.assessmentSanctionRevocationCenter" class="checkboxLabel">
 						<fmt:message key="assessmentCenterLabel"/>
 					</label>
+					<form:radiobutton path="jurisdictionFilter" id="communitySupervisionOffice" value="COMMUNITY_SUPERVISION_OFFICE"/>
+					<label for="jurisdictionFilter.communitySupervisionOffice" class="checkboxLabel">
+						<fmt:message key="communitySupervisionOfficeLabel"/>
+					</label>
 				</c:when>
 				<c:when test="${category eq 'SUPERVISION'}">
 					<form:radiobutton path="jurisdictionFilter" id="communitySupervisionOffice" value="COMMUNITY_SUPERVISION_OFFICE" checked="checked"/>

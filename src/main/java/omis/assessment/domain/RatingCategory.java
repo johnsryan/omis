@@ -85,4 +85,18 @@ public interface RatingCategory extends Serializable {
 	 * @return whether the rating category is valid
 	 */
 	Boolean getValid();
+	
+	/**
+	 * Sets the rating category significance.
+	 * 
+	 * @param significance rating category significance
+	 */
+	void setSignificance(RatingCategorySignificance significance);
+	
+	/**
+	 * Returns the rating category significance.
+	 * 
+	 * @return rating category significance
+	 */
+	RatingCategorySignificance getSignificance();
 }

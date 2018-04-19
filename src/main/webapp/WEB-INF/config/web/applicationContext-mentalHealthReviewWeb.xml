@@ -56,4 +56,19 @@
       <aop:advisor advice-ref="transactionAdvice" pointcut-ref="manageMentalHealthReviewControllerOperation"/>
   </aop:config>
   
+  <!-- Profile item -->
+	<bean id="mentalHealthReviewProfileItem"
+		class="omis.mentalhealthreview.web.profile.MentalHealthReviewProfileItem">
+		<constructor-arg name="requiredAuthorizations">
+			<set>
+				<value>MENTAL_HEALTH_REVIEW_LIST</value>
+				<value>ADMIN</value>
+			</set>
+		</constructor-arg>
+		<constructor-arg name="includePage" value="/WEB-INF/views/mentalHealthReview/profile/includes/profileItem.jsp"/>
+		<constructor-arg name="name" value="mentalHealthReview"/>
+		<constructor-arg name="profileItemRegistry" ref="caseManagementProfileItemRegistry"/>
+		<constructor-arg name="enabled" value="${mentalHealthReviewProfileItemEnabled}"/>
+	</bean>
+  
 </beans>

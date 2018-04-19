@@ -64,7 +64,7 @@ import omis.util.PropertyValueAsserter;
  * 
  * @author Trevor Isles
  * @author Josh Divine
- * @version 0.1.0 (Mar 12, 2018)
+ * @version 0.1.3 (Apr 18, 2018)
  * @since OMIS 3.0
  */
 @Test
@@ -161,12 +161,13 @@ public class BoardHearingAssociableDocumentUpdateTests
 				this.paroleBoardLocationDelegate.create(location, true);
 		ParoleBoardItinerary itinerary =
 				this.paroleBoardItineraryDelegate.create(paroleBoardLocation,
-						this.parseDateText("01/01/2015"), null);
+						true, this.parseDateText("01/01/2015"), 
+						this.parseDateText("01/01/2015"));
 		ParoleEligibility paroleEligibility = this.paroleEligibilityDelegate
 				.create(offender, this.parseDateText("01/01/2018"), null, null,
 						null);
 		BoardHearing boardHearing = this.boardHearingDelegate.create(itinerary, 
-				null, null, paroleEligibility, null, null, false);
+				null, paroleEligibility, null, null, false);
 		Document document = this.documentDelegate.create(
 				this.parseDateText("01/01/2018"), "filename", "fileextension", 
 				"title");
@@ -217,12 +218,13 @@ public class BoardHearingAssociableDocumentUpdateTests
 				this.paroleBoardLocationDelegate.create(location, true);
 		ParoleBoardItinerary itinerary =
 				this.paroleBoardItineraryDelegate.create(paroleBoardLocation,
-						this.parseDateText("01/01/2015"), null);
+						true, this.parseDateText("01/01/2015"), 
+						this.parseDateText("01/01/2015"));
 		ParoleEligibility paroleEligibility = this.paroleEligibilityDelegate
 				.create(offender, this.parseDateText("01/01/2018"), null, null,
 						null);
 		BoardHearing boardHearing = this.boardHearingDelegate.create(itinerary, 
-				null, null, paroleEligibility, null, null, false);
+				null, paroleEligibility, null, null, false);
 		Document document = this.documentDelegate.create(
 				this.parseDateText("01/01/2018"), "filename", "fileextension", 
 				"title");

@@ -69,5 +69,17 @@
 		and
 			administeredQuestionValue.administeredQuestionnaire = :administeredQuestionnaire
 	]]></query>
-	
+	<query name="findAdministeredQuestionValueWithNoAnswerValue"><![CDATA[
+		select administeredQuestionValue
+		from
+			omis.questionnaire.domain.AdministeredQuestionValue administeredQuestionValue
+		where
+			administeredQuestionValue.question = :question
+		and
+			administeredQuestionValue.administeredQuestionnaire = :administeredQuestionnaire
+		and
+			administeredQuestionValue.questionnaireSection = :questionnaireSection
+		and
+			administeredQuestionValue.answerValue is null
+	]]></query>
 </hibernate-mapping>

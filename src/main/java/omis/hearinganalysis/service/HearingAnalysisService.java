@@ -33,7 +33,7 @@ import omis.paroleeligibility.domain.ParoleEligibility;
  * Service for hearing analysis.
  * 
  * @author Josh Divine
- * @version 0.1.0 (Dec 18, 2017)
+ * @version 0.1.2 (Apr 18, 2018)
  * @since OMIS 3.0
  */
 public interface HearingAnalysisService {
@@ -42,14 +42,14 @@ public interface HearingAnalysisService {
 	 * Creates a new hearing analysis.
 	 * 
 	 * @param eligibility parole eligibility
-	 * @param meetingSite board meeting site
+	 * @param paroleBoardItinerary parole board itinerary
 	 * @param analyst board attendee
 	 * @param category hearing analysis category
 	 * @return hearing analysis
 	 * @throws DuplicateEntityFoundException if duplicate entity exists
 	 */
 	HearingAnalysis createHearingAnalysis(ParoleEligibility eligibility, 
-			BoardMeetingSite meetingSite, BoardAttendee analyst, 
+			ParoleBoardItinerary paroleBoardItinerary, BoardAttendee analyst, 
 			HearingAnalysisCategory category) 
 					throws DuplicateEntityFoundException;
 	
@@ -57,14 +57,14 @@ public interface HearingAnalysisService {
 	 * Updates an existing hearing analysis.
 	 * 
 	 * @param hearingAnalysis hearing analysis
-	 * @param meetingSite board meeting site
+	 * @param paroleBoardItinerary parole board itinerary
 	 * @param analyst board attendee
 	 * @param category hearing analysis category
 	 * @return hearing analysis
 	 * @throws DuplicateEntityFoundException if duplicate entity exists
 	 */
 	HearingAnalysis updateHearingAnalysis(HearingAnalysis hearingAnalysis, 
-			BoardMeetingSite meetingSite, BoardAttendee analyst, 
+			ParoleBoardItinerary paroleBoardItinerary, BoardAttendee analyst, 
 			HearingAnalysisCategory category) 
 					throws DuplicateEntityFoundException;
 	
@@ -124,8 +124,9 @@ public interface HearingAnalysisService {
 	 * @param effectiveDate effective date
 	 * @return list of parole board itineraries
 	 */
-	List<ParoleBoardItinerary> findItinerariesAfterDate(Date effectiveDate);
-
+	List<ParoleBoardItinerary> findItinerariesByEffectiveDate(
+			Date effectiveDate);
+	
 	/**
 	 * Returns a list of board meeting sites for the specified parole board 
 	 * itinerary.

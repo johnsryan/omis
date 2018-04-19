@@ -80,6 +80,7 @@ import omis.sentence.exception.ConnectedSentenceExistsException;
 import omis.sentence.exception.SentenceExistsException;
 import omis.sentence.report.SentenceReportService;
 import omis.sentence.report.SentenceSummary;
+import omis.sentence.web.form.SentenceFields;
 import omis.sentence.web.form.SentenceOperation;
 import omis.term.domain.component.Term;
 import omis.web.controller.delegate.BusinessExceptionHandlerDelegate;
@@ -90,7 +91,7 @@ import omis.web.controller.delegate.BusinessExceptionHandlerDelegate;
  * @author Stephen Abson
  * @author Joel Norris
  * @author Josh Divine
- * @version 0.0.3 (Sept 15, 2017)
+ * @version 0.0.4 (Apr 14, 2018)
  * @since OMIS 3.0
  */
 @Controller
@@ -1209,6 +1210,10 @@ public class ManageOffenseTermController {
 		OffenseItem offenseItem = new OffenseItem();
 		offenseItem.setExpanded(true);
 		offenseItem.setOperation(OffenseItemOperation.CREATE);
+		SentenceFields sentenceFields = new SentenceFields();
+		sentenceFields.setLengthClassification(
+				SentenceLengthClassification.NOT_LIFE);
+		offenseItem.setSentenceFields(sentenceFields);
 		ModelAndView mav = new ModelAndView(OFFENSE_ITEM_VIEW_NAME);
 		mav.addObject(OFFENSE_ITEM_MODEL_KEY, offenseItem);
 		mav.addObject(OFFENSE_ITEM_INDEX_MODEL_KEY, itemIndex);
@@ -1628,7 +1633,23 @@ public class ManageOffenseTermController {
 					if (referencedOrderedIndex > -1) {
 						orderedItems.add(referencedOrderedIndex, offenseItem);
 					} else {
-						orderedItems.add(offenseItem);
+						boolean added = false;
+						for (OffenseItem orderedItem : orderedItems) {
+							if (OffenseItemConnectionClassification.CONSECUTIVE
+									.equals(orderedItem.getConnection()
+											.getClassification())) {
+								if(orderedItem.getConnection().getIndex()
+										.intValue() == totalCount) {
+									orderedItems.add(orderedItems.indexOf(
+											orderedItem), offenseItem);
+									added = true;
+									break;
+								}
+							}
+						}
+						if (!added) {
+							orderedItems.add(offenseItem);
+						}
 					}
 				} else {
 					throw new IllegalArgumentException(

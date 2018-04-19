@@ -3,11 +3,9 @@ package omis.hearing.service.testng;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.testng.annotations.Test;
-
 import omis.disciplinaryCode.domain.DisciplinaryCode;
 import omis.disciplinaryCode.service.DisciplinaryCodeService;
 import omis.exception.DuplicateEntityFoundException;
@@ -22,7 +20,6 @@ import omis.hearing.service.ResolutionService;
 import omis.hearing.service.delegate.InfractionPleaDelegate;
 import omis.offender.domain.Offender;
 import omis.offender.service.delegate.OffenderDelegate;
-import omis.person.domain.Person;
 import omis.person.service.delegate.PersonDelegate;
 import omis.supervision.domain.SupervisoryOrganization;
 import omis.supervision.service.delegate.SupervisoryOrganizationDelegate;
@@ -75,12 +72,9 @@ public class ResolutionServiceUpdateTests
 	public void testInfractionUpdate() throws DuplicateEntityFoundException {
 		final Resolution resolution2 = new Resolution();
 		resolution2.setCategory(ResolutionClassificationCategory.DISMISSED);
-		resolution2.setDate(this.parseDateText("06/06/2017"));
 		resolution2.setDescision("Resolution Decision2");
 		resolution2.setReason("Resolution Reason2");
 		resolution2.setDisposition(DispositionCategory.NO_FINDING);
-		resolution2.setAuthority(this.personDelegate.create("Big", "Little",
-				"Medium", null));
 		final InfractionPlea plea2 = this.infractionPleaDelegate
 				.create("Guilty", true);
 		Infraction infraction = this.resolutionService.createInfraction(
@@ -106,15 +100,11 @@ public class ResolutionServiceUpdateTests
 		final ResolutionClassificationCategory resolutionCategory =
 				ResolutionClassificationCategory.FORMAL;
 		final DispositionCategory disposition = DispositionCategory.NOT_GUILTY;
-		final Person person = this.personDelegate.create("Buttehead2", "Joel2", 
-				"Trevor2", null);
 		final Resolution resolution = new Resolution();
 		resolution.setCategory(resolutionCategory);
-		resolution.setDate(this.parseDateText("05/01/2017"));
 		resolution.setDescision(descision);
 		resolution.setReason(reason);
 		resolution.setDisposition(disposition);
-		resolution.setAuthority(person);
 		final InfractionPlea plea = this.infractionPleaDelegate
 				.create("Not Guilty", true);
 		
@@ -194,8 +184,6 @@ public class ResolutionServiceUpdateTests
 		final DisciplinaryCodeViolation disciplinaryCodeViolation =
 				this.violationEventService.createDisciplinaryCodeViolation(
 						disciplinaryCode, violationEvent);
-		final Person person = this.personDelegate.create("Buttehead", "Joel", 
-				"Trevor", null);
 		final String descision = "Resolution Decision";
 		final String reason = "Resolution Reason";
 		final ResolutionClassificationCategory resolutionCategory =
@@ -206,11 +194,9 @@ public class ResolutionServiceUpdateTests
 		final ConditionViolation conditionViolation = null;
 		final Resolution resolution = new Resolution();
 		resolution.setCategory(resolutionCategory);
-		resolution.setDate(this.parseDateText("05/01/2017"));
 		resolution.setDescision(descision);
 		resolution.setReason(reason);
 		resolution.setDisposition(disposition);
-		resolution.setAuthority(person);
 		final InfractionPlea plea = this.infractionPleaDelegate
 				.create("Not Guilty", true);
 		return this.resolutionService.createInfraction(

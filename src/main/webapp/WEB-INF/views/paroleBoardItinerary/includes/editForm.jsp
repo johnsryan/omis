@@ -1,6 +1,23 @@
 <%--
+ - OMIS - Offender Management Information System
+ - Copyright (C) 2011 - 2017 State of Montana
+ -
+ - This program is free software: you can redistribute it and/or modify
+ - it under the terms of the GNU General Public License as published by
+ - the Free Software Foundation, either version 3 of the License, or
+ - (at your option) any later version.
+ -
+ - This program is distributed in the hope that it will be useful,
+ - but WITHOUT ANY WARRANTY; without even the implied warranty of
+ - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ - GNU General Public License for more details.
+ -
+ - You should have received a copy of the GNU General Public License
+ - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ --%>
+<%--
  - Author: Josh Divine
- - Version: 0.1.0 (Nov 30, 2017)
+ - Version: 0.1.1 (Apr 18, 2018)
  - Since: OMIS 3.0
  --%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
@@ -28,10 +45,24 @@
 	
 	<span class="fieldGroup">
 		<form:label path="paroleBoardLocation" class="fieldLabel">
-			<fmt:message key="locationLabel"/></form:label>
+			<fmt:message key="inmateMeetingLocationLabel"/></form:label>
 		<form:select path="paroleBoardLocation">
 			<form:option value=""><fmt:message key="nullLabel" bundle="${commonBundle}"/></form:option>
 			<form:options items="${paroleBoardLocations}" itemLabel="location.organization.name" itemValue="id"/>
+		</form:select>
+		<form:errors path="paroleBoardLocation" cssClass="error"/>
+	</span>
+	
+	<span class="fieldGroup">
+		<form:label path="onsite" class="fieldLabel">
+			<fmt:message key="boardAttendanceLabel"/></form:label>
+		<form:select path="onsite">
+			<form:option value=""><fmt:message key="nullLabel" bundle="${commonBundle}"/></form:option>
+			<c:forEach items="${onsiteCategories}" var="onsite">
+				<option value="${onsite}" ${onsite == paroleBoardItineraryForm.onsite ? 'selected="selected"' : ''}>
+					<fmt:message key="onsiteCategoryLabel.${onsite}"/>
+				</option>
+			</c:forEach>
 		</form:select>
 		<form:errors path="paroleBoardLocation" cssClass="error"/>
 	</span>
@@ -78,6 +109,7 @@
 </fieldset>
 <fieldset id="boardMeetingSitesHolder">
 	<legend><fmt:message key="boardMeetingSitesTitle"/></legend>
+	<c:set var="boardMeetingSiteUnits" value="${boardMeetingSiteUnits}" scope="request"/>
 	<jsp:include page="boardMeetingSitesTable.jsp"/>
 	<form:errors path="boardMeetingSiteItems" cssClass="error"/>
 </fieldset>

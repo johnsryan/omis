@@ -75,6 +75,15 @@ public interface PlacementTermService {
 	 * <p>If not null, the start and end date of the date range are prevented
 	 * from being equal by a {@code IllegalArgumentException} being thrown.
 	 * 
+	 * <p>New placement term uses existing correctional status term and/or
+	 * supervisory organization term if the correction status and/or supervisory
+	 * organization, respectively, and date ranges match. If the correctional
+	 * status and/or supervisory organization does not match, existing
+	 * correctional status terms and/or supervisory organization terms are ended
+	 * and new ones began. If the correctional status and/or supervisory
+	 * organization matches, the date ranges of the respective terms are
+	 * lengthened for use by the placement term.
+	 * 
 	 * @param offender offender
 	 * @param supervisoryOrganization of supervisory organization
 	 * @param correctionalStatus of correctional status
@@ -171,6 +180,20 @@ public interface PlacementTermService {
 	
 	/**
 	 * Removes a placement term.
+	 * 
+	 * <p>Removes correctional status and supervisory organization terms if
+	 * date ranges match that of {@code placementTerm}.
+	 * 
+	 * <p>If the correctional status and/or supervisory organization term
+	 * run longer than the placement term, the correctional status and/or
+	 * supervisory organization term will be adjusted to exclude the period
+	 * of the removed placement term. In cases where the correctional status
+	 * term and/or supervisory organization term finish later than the placement
+	 * term, the start date of either or both of the latter two will be adjusted
+	 * to that of the placement term. In cases where the correctional status
+	 * term and/or supervisory organization term start earlier than the
+	 * placement term, the end date of either or both of the latter two will be
+	 * adjusted to the start date of the placement term.
 	 * 
 	 * @param placementTerm placement term to remove
 	 */

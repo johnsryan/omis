@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 
 import omis.datatype.DateRange;
-import omis.exception.DuplicateEntityFoundException;
 import omis.location.domain.Location;
 import omis.locationterm.domain.LocationReason;
 import omis.locationterm.domain.LocationReasonTerm;
@@ -13,7 +12,9 @@ import omis.locationterm.domain.LocationTerm;
 import omis.locationterm.domain.LocationTermChangeAction;
 import omis.locationterm.exception.EndedLocationTermException;
 import omis.locationterm.exception.LocationReasonTermConflictException;
+import omis.locationterm.exception.LocationReasonTermExistsException;
 import omis.locationterm.exception.LocationTermConflictException;
+import omis.locationterm.exception.LocationTermExistsException;
 import omis.locationterm.service.delegate.AllowedLocationChangeDelegate;
 import omis.locationterm.service.delegate.AllowedLocationChangeReasonRuleDelegate;
 import omis.locationterm.service.delegate.LocationReasonDelegate;
@@ -76,10 +77,11 @@ public class ChangeLocationServiceImpl
 	public LocationTerm change(final Offender offender,
 			final Date effectiveDate, final Date endDate,
 			final Location location, final LocationReason reason)
-					throws DuplicateEntityFoundException,
-						LocationTermConflictException,
+					throws LocationTermConflictException,
 						EndedLocationTermException,
-						LocationReasonTermConflictException {
+						LocationReasonTermConflictException,
+						LocationTermExistsException,
+						LocationReasonTermExistsException {
 		
 		// Checks for conflicts - throws exception if found
 		LocationTerm locationTermOnStartDate = this.locationTermDelegate
@@ -149,11 +151,18 @@ public class ChangeLocationServiceImpl
 			Date existingReasonTermEndDate = DateRange.getEndDate(
 					existingReasonTerm.getDateRange());
 			if (existingReasonTermEndDate == null) {
-				existingReasonTerm = this.locationReasonTermDelegate
-						.changeDateRange(existingReasonTerm,
-								DateRange.getStartDate(
-										existingReasonTerm.getDateRange()),
-								effectiveDate);	
+				try {
+					existingReasonTerm = this.locationReasonTermDelegate
+							.changeDateRange(existingReasonTerm,
+									DateRange.getStartDate(
+											existingReasonTerm.getDateRange()),
+									effectiveDate);
+				} catch (LocationReasonTermExistsException e) {
+
+					// If two reason terms exist for the same location term
+					// with the same start date, this is bad data - SA
+					throw new AssertionError("Reason term exists", e);
+				}	
 			} else if (existingReasonTermEndDate.compareTo(effectiveDate) > 0) {
 				throw new LocationReasonTermConflictException(
 						"Conflicting reason terms exist");
@@ -166,11 +175,18 @@ public class ChangeLocationServiceImpl
 				= this.locationReasonTermDelegate.findForLocationTermOnDate(
 						locationTerm, effectiveDate);
 			if (reasonTermOnStartDate != null) {
-				reasonTermOnStartDate = this.locationReasonTermDelegate
-						.changeDateRange(reasonTermOnStartDate,
-								DateRange.getStartDate(
+				try {
+					reasonTermOnStartDate = this.locationReasonTermDelegate
+							.changeDateRange(reasonTermOnStartDate,
+									DateRange.getStartDate(
 										reasonTermOnStartDate.getDateRange()),
-								effectiveDate);
+									effectiveDate);
+				} catch (LocationReasonTermExistsException e) {
+
+					// If two reason terms exist for the same location term
+					// with the same start date, this is bad data - SA
+					throw new AssertionError("Reason term exists", e);
+				}
 			}
 			this.locationReasonTermDelegate.create(locationTerm,
 					new DateRange(effectiveDate, endDate), reason);

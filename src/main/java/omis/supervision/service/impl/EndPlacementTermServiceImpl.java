@@ -24,6 +24,7 @@ import omis.datatype.DateRange;
 import omis.exception.DuplicateEntityFoundException;
 import omis.locationterm.domain.LocationReasonTerm;
 import omis.locationterm.domain.LocationTerm;
+import omis.locationterm.exception.LocationReasonTermExistsException;
 import omis.locationterm.service.delegate.LocationReasonTermDelegate;
 import omis.locationterm.service.delegate.LocationTermDelegate;
 import omis.offender.domain.Offender;
@@ -42,6 +43,7 @@ import omis.supervision.service.delegate.SupervisoryOrganizationTermDelegate;
  * Implementation of service for ending placement terms.
  * 
  * @author Josh Divine
+ * @author Stephen Abson
  * @version 0.1.1 (Dec 14, 2017)
  * @since OMIS 3.0
  */
@@ -125,9 +127,16 @@ public class EndPlacementTermServiceImpl implements EndPlacementTermService {
 			= this.locationReasonTermDelegate.findForOffenderOnDate(
 					placementTerm.getOffender(), endDate);
 		if (locationReasonTerm != null) {
-			this.locationReasonTermDelegate.changeDateRange(locationReasonTerm, 
-					DateRange.getStartDate(locationReasonTerm.getDateRange()),
-					endDate);
+			try {
+				this.locationReasonTermDelegate.changeDateRange(locationReasonTerm, 
+						DateRange.getStartDate(locationReasonTerm.getDateRange()),
+						endDate);
+			} catch (LocationReasonTermExistsException e) {
+				
+				// An existing reason term with the same start date would be
+				// bad data - don't recover - SA
+				throw new AssertionError("Reason term exists", e);
+			}
 		}
 		LocationTerm locationTerm 
 			= this.locationTermDelegate.findByOffenderOnDate(

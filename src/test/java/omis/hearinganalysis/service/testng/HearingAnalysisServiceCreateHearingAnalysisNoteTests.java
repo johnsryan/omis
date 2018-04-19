@@ -20,9 +20,11 @@ package omis.hearinganalysis.service.testng;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.testng.annotations.Test;
+
 import omis.address.domain.Address;
 import omis.address.domain.ZipCode;
 import omis.address.service.delegate.AddressDelegate;
@@ -47,10 +49,8 @@ import omis.organization.domain.Organization;
 import omis.organization.service.delegate.OrganizationDelegate;
 import omis.paroleboarditinerary.domain.AttendeeRoleCategory;
 import omis.paroleboarditinerary.domain.BoardAttendee;
-import omis.paroleboarditinerary.domain.BoardMeetingSite;
 import omis.paroleboarditinerary.domain.ParoleBoardItinerary;
 import omis.paroleboarditinerary.service.delegate.BoardAttendeeDelegate;
-import omis.paroleboarditinerary.service.delegate.BoardMeetingSiteDelegate;
 import omis.paroleboarditinerary.service.delegate.ParoleBoardItineraryDelegate;
 import omis.paroleboardlocation.domain.ParoleBoardLocation;
 import omis.paroleboardlocation.service.delegate.ParoleBoardLocationDelegate;
@@ -81,7 +81,7 @@ import omis.util.PropertyValueAsserter;
  * Tests method to create hearing analysis notes.
  *
  * @author Josh Divine
- * @version 0.0.1
+ * @version 0.1.3 (Apr 18, 2018)
  * @since OMIS 3.0
  */
 @Test
@@ -133,10 +133,6 @@ public class HearingAnalysisServiceCreateHearingAnalysisNoteTests
 	@Autowired
 	@Qualifier("paroleBoardItineraryDelegate")
 	private ParoleBoardItineraryDelegate paroleBoardItineraryDelegate;
-	
-	@Autowired
-	@Qualifier("boardMeetingSiteDelegate")
-	private BoardMeetingSiteDelegate boardMeetingSiteDelegate;
 	
 	@Autowired
 	@Qualifier("staffAssignmentDelegate")
@@ -230,16 +226,7 @@ public class HearingAnalysisServiceCreateHearingAnalysisNoteTests
 		Date startDate = this.parseDateText("01/01/2017");
 		Date endDate = this.parseDateText("12/31/2017");
 		ParoleBoardItinerary boardItinerary = this.paroleBoardItineraryDelegate
-				.create(paroleBoardLocation, startDate, endDate);
-		Organization secondOrganization = this.organizationDelegate.create(
-				"Org2", "O2", null);
-		Location secondLocation = this.locationDelegate.create(
-				secondOrganization, new DateRange(
-						this.parseDateText("01/01/2000"), null), address);
-		Date siteDate = this.parseDateText("01/01/2005");
-		Integer order = 1;
-		BoardMeetingSite meetingSite = this.boardMeetingSiteDelegate.create(
-				boardItinerary, secondLocation, siteDate, order);
+				.create(paroleBoardLocation, true, startDate, endDate);
 		Date memberStartDate = this.parseDateText("01/01/2017");
 		Date memberEndDate = null;
 		Person staffMember = this.personDelegate.create("Smith", "John", "Jay", 
@@ -261,7 +248,7 @@ public class HearingAnalysisServiceCreateHearingAnalysisNoteTests
 		HearingAnalysisCategory category = this.hearingAnalysisCategoryDelegate
 				.create("Category", true);
 		HearingAnalysis hearingAnalysis = this.hearingAnalysisDelegate.create(
-				eligibility, meetingSite, category, analyst);
+				eligibility, boardItinerary, category, analyst);
 		Date date = this.parseDateText("01/01/2017");
 		String description = "Description";
 
@@ -321,16 +308,7 @@ public class HearingAnalysisServiceCreateHearingAnalysisNoteTests
 		Date startDate = this.parseDateText("01/01/2017");
 		Date endDate = this.parseDateText("12/31/2017");
 		ParoleBoardItinerary boardItinerary = this.paroleBoardItineraryDelegate
-				.create(paroleBoardLocation, startDate, endDate);
-		Organization secondOrganization = this.organizationDelegate.create(
-				"Org2", "O2", null);
-		Location secondLocation = this.locationDelegate.create(
-				secondOrganization, new DateRange(
-						this.parseDateText("01/01/2000"), null), address);
-		Date siteDate = this.parseDateText("01/01/2005");
-		Integer order = 1;
-		BoardMeetingSite meetingSite = this.boardMeetingSiteDelegate.create(
-				boardItinerary, secondLocation, siteDate, order);
+				.create(paroleBoardLocation, true, startDate, endDate);
 		Date memberStartDate = this.parseDateText("01/01/2017");
 		Date memberEndDate = null;
 		Person staffMember = this.personDelegate.create("Smith", "John", "Jay", 
@@ -352,7 +330,7 @@ public class HearingAnalysisServiceCreateHearingAnalysisNoteTests
 		HearingAnalysisCategory category = this.hearingAnalysisCategoryDelegate
 				.create("Category", true);
 		HearingAnalysis hearingAnalysis = this.hearingAnalysisDelegate.create(
-				eligibility, meetingSite, category, analyst);
+				eligibility, boardItinerary, category, analyst);
 		Date date = this.parseDateText("01/01/2017");
 		String description = "Description";
 		this.hearingAnalysisNoteDelegate.create(hearingAnalysis, description, 

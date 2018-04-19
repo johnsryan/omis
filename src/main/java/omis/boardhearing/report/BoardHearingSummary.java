@@ -23,10 +23,10 @@ import java.util.Date;
 /**
  * Board Hearing Summary.
  * 
- *@author Annie Wahl 
- *@version 0.1.0 (Dec 29, 2017)
- *@since OMIS 3.0
- *
+ * @author Annie Wahl 
+ * @author Josh Divine
+ * @version 0.1.1 (Apr 18, 2018)
+ * @since OMIS 3.0
  */
 public class BoardHearingSummary implements Serializable {
 	
@@ -39,8 +39,6 @@ public class BoardHearingSummary implements Serializable {
 	private final String hearingStatusName;
 	
 	private final String appearanceCategoryName;
-	
-	private final String hearingLocationName;
 	
 	private final String hearingAnalystLastName;
 	
@@ -55,7 +53,6 @@ public class BoardHearingSummary implements Serializable {
 	 * @param hearingDate - Date
 	 * @param hearingStatusName - String
 	 * @param appearanceCategoryName - String
-	 * @param hearingLocationName - String
 	 * @param hearingAnalystLastName - String
 	 * @param hearingAnalystMiddleName - String
 	 * @param hearingAnalystFirstName - String
@@ -64,7 +61,6 @@ public class BoardHearingSummary implements Serializable {
 	public BoardHearingSummary(final Long boardHearingId,
 			final Date hearingDate, final String hearingStatusName,
 			final String appearanceCategoryName,
-			final String hearingLocationName,
 			final String hearingAnalystLastName,
 			final String hearingAnalystMiddleName,
 			final String hearingAnalystFirstName,
@@ -73,7 +69,6 @@ public class BoardHearingSummary implements Serializable {
 		this.hearingDate = hearingDate;
 		this.hearingStatusName = hearingStatusName;
 		this.appearanceCategoryName = appearanceCategoryName;
-		this.hearingLocationName = hearingLocationName;
 		this.hearingAnalystLastName = hearingAnalystLastName;
 		this.hearingAnalystMiddleName = hearingAnalystMiddleName;
 		this.hearingAnalystFirstName = hearingAnalystFirstName;
@@ -110,14 +105,6 @@ public class BoardHearingSummary implements Serializable {
 	 */
 	public String getAppearanceCategoryName() {
 		return this.appearanceCategoryName;
-	}
-
-	/**
-	 * Returns the hearingLocationName.
-	 * @return hearingLocationName - String
-	 */
-	public String getHearingLocationName() {
-		return this.hearingLocationName;
 	}
 
 	/**

@@ -22,6 +22,7 @@ import java.util.List;
 
 import omis.assessment.dao.RatingCategoryDao;
 import omis.assessment.domain.RatingCategory;
+import omis.assessment.domain.RatingCategorySignificance;
 import omis.exception.DuplicateEntityFoundException;
 import omis.instance.factory.InstanceFactory;
 import omis.questionnaire.domain.QuestionnaireType;
@@ -66,7 +67,8 @@ public class RatingCategoryDelegate {
 	 * @throws DuplicateEntityFoundException if duplicate entity exists
 	 */
 	public RatingCategory create(final String description, 
-			final BigDecimal ratingFactor, final Boolean valid) 
+			final BigDecimal ratingFactor, 
+			final RatingCategorySignificance significance, final Boolean valid) 
 					throws DuplicateEntityFoundException {
 		if (this.ratingCategoryDao.find(description, valid) != null) {
 			throw new DuplicateEntityFoundException(
@@ -75,7 +77,7 @@ public class RatingCategoryDelegate {
 		RatingCategory ratingCategory = this.ratingCategoryInstanceFactory
 				.createInstance();
 		populateRatingCategory(ratingCategory, description, ratingFactor, 
-				valid);
+				significance, valid);
 		return this.ratingCategoryDao.makePersistent(ratingCategory);
 	}
 	
@@ -90,14 +92,15 @@ public class RatingCategoryDelegate {
 	 */
 	public RatingCategory update(final RatingCategory ratingCategory, 
 			final String description, final BigDecimal ratingFactor, 
-			final Boolean valid) throws DuplicateEntityFoundException {
+			final RatingCategorySignificance significance, final Boolean valid) 
+					throws DuplicateEntityFoundException {
 		if (this.ratingCategoryDao.findExcluding(description, valid, 
 				ratingCategory) != null) {
 			throw new DuplicateEntityFoundException(
 					"Rating category already exists.");
 		}
 		populateRatingCategory(ratingCategory, description, ratingFactor, 
-				valid);
+				significance, valid);
 		return this.ratingCategoryDao.makePersistent(ratingCategory);
 	}
 
@@ -124,9 +127,11 @@ public class RatingCategoryDelegate {
 	// Populates a rating category
 	private void populateRatingCategory(final RatingCategory ratingCategory, 
 			final String description, final BigDecimal ratingFactor, 
+			final RatingCategorySignificance significance, 
 			final Boolean valid) {
 		ratingCategory.setDescription(description);
 		ratingCategory.setRatingFactor(ratingFactor);
+		ratingCategory.setSignificance(significance);
 		ratingCategory.setValid(valid);
 	}
 }

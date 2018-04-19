@@ -21,31 +21,26 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import omis.boardhearing.domain.BoardHearingCategory;
 import omis.boardhearing.domain.BoardHearingParticipant;
 import omis.boardhearing.domain.CancellationCategory;
-import omis.location.domain.Location;
 import omis.paroleboarditinerary.domain.ParoleBoardItinerary;
 import omis.paroleboardmember.domain.ParoleBoardMember;
-import omis.paroleeligibility.domain.ParoleEligibility;
 
 /**
  * Board Hearing Form.
  * 
- *@author Annie Wahl 
- *@version 0.1.0 (Jan 2, 2018)
- *@since OMIS 3.0
- *
+ * @author Annie Wahl 
+ * @author Josh Divine
+ * @version 0.1.2 (Apr 18, 2018)
+ * @since OMIS 3.0
  */
 public class BoardHearingForm implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private ParoleEligibility eligibility;
-	
 	private ParoleBoardItinerary paroleBoardItinerary;
-	
-	private Location hearingLocation;
 	
 	private Date hearingDate;
 	
@@ -81,23 +76,6 @@ public class BoardHearingForm implements Serializable {
 	}
 	
 	/**
-	 * Returns the parole Eligibility.
-	 * @return eligibility - Parole Eligibility
-	 */
-	public ParoleEligibility getEligibility() {
-		return this.eligibility;
-	}
-	
-	/**
-	 * Sets the parole Eligibility.
-	 * @param eligibility - Parole Eligibility
-	 */
-	public void setEligibility(
-			final ParoleEligibility eligibility) {
-		this.eligibility = eligibility;
-	}
-	
-	/**
 	 * Returns the paroleBoardItinerary.
 	 * @return paroleBoardItinerary - ParoleBoardItinerary
 	 */
@@ -112,22 +90,6 @@ public class BoardHearingForm implements Serializable {
 	public void setParoleBoardItinerary(
 			final ParoleBoardItinerary paroleBoardItinerary) {
 		this.paroleBoardItinerary = paroleBoardItinerary;
-	}
-
-	/**
-	 * Returns the hearingLocation.
-	 * @return hearingLocation - Location
-	 */
-	public Location getHearingLocation() {
-		return this.hearingLocation;
-	}
-
-	/**
-	 * Sets the hearingLocation.
-	 * @param hearingLocation - Location
-	 */
-	public void setHearingLocation(final Location hearingLocation) {
-		this.hearingLocation = hearingLocation;
 	}
 
 	/**

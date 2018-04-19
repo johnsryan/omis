@@ -152,7 +152,7 @@ public class WarrantServiceUpdateTests
 				"Dent", "Harvey", null, null);
 		final String addressee = "Addressed For Success";
 		final WarrantReasonCategory warrantReason = WarrantReasonCategory
-				.WARRANT;
+				.WARRANT_PAROLEE;
 		final Boolean bondable = false;
 		final BigDecimal bondRecommendation = new BigDecimal("0");
 		

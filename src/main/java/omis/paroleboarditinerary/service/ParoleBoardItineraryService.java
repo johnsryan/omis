@@ -2,7 +2,9 @@ package omis.paroleboarditinerary.service;
 
 import java.util.Date;
 import java.util.List;
+
 import omis.exception.DuplicateEntityFoundException;
+import omis.facility.domain.Unit;
 import omis.location.domain.Location;
 import omis.paroleboarditinerary.domain.AttendeeRoleCategory;
 import omis.paroleboarditinerary.domain.BoardAttendee;
@@ -17,7 +19,7 @@ import omis.paroleboardmember.domain.ParoleBoardMember;
  * 
  * @author Josh Divine
  * @author Annie Wahl 
- * @version 0.1.1 (Jan 23, 2018)
+ * @version 0.1.3 (Apr 18, 2018)
  * @since OMIS 3.0
  */
 public interface ParoleBoardItineraryService {
@@ -26,13 +28,14 @@ public interface ParoleBoardItineraryService {
 	 * Creates a new parole board itinerary.
 	 * 
 	 * @param paroleBoardLocation parole Board Location
+	 * @param onsite on-site
 	 * @param startDate start date
 	 * @param endDate end date
 	 * @return parole board itinerary
 	 * @throws DuplicateEntityFoundException if duplicate entity exists
 	 */
 	ParoleBoardItinerary create(ParoleBoardLocation paroleBoardLocation,
-			Date startDate, Date endDate) 
+			Boolean onsite, Date startDate, Date endDate) 
 					throws DuplicateEntityFoundException;
 	
 	/**
@@ -40,13 +43,14 @@ public interface ParoleBoardItineraryService {
 	 * 
 	 * @param paroleBoardItinerary parole board itinerary
 	 * @param paroleBoardLocation parole Board Location
+	 * @param onsite on-site
 	 * @param startDate start date
 	 * @param endDate end date
 	 * @return parole board itinerary
 	 * @throws DuplicateEntityFoundException if duplicate entity exists
 	 */
 	ParoleBoardItinerary update(ParoleBoardItinerary paroleBoardItinerary, 
-			ParoleBoardLocation paroleBoardLocation,
+			ParoleBoardLocation paroleBoardLocation, Boolean onsite,
 			Date startDate, Date endDate) 
 					throws DuplicateEntityFoundException;
 	
@@ -139,13 +143,14 @@ public interface ParoleBoardItineraryService {
 	 * 
 	 * @param boardItinerary parole board itinerary
 	 * @param location location
+	 * @param unit unit
 	 * @param date date
 	 * @param order order
 	 * @return board meeting site
 	 * @throws DuplicateEntityFoundException if duplicate entity exists
 	 */
 	BoardMeetingSite createBoardMeetingSite(ParoleBoardItinerary boardItinerary,
-			Location location, Date date, Integer order) 
+			Location location, Unit unit, Date date, Integer order) 
 					throws DuplicateEntityFoundException;
 	
 	/**
@@ -153,13 +158,14 @@ public interface ParoleBoardItineraryService {
 	 * 
 	 * @param boardMeetingSite board meeting site
 	 * @param location location
+	 * @param unit unit
 	 * @param date date
 	 * @param order order
 	 * @return board meeting site
 	 * @throws DuplicateEntityFoundException if duplicate entity exists
 	 */
 	BoardMeetingSite updateBoardMeetingSite(BoardMeetingSite boardMeetingSite, 
-			Location location, Date date, Integer order) 
+			Location location, Unit unit, Date date, Integer order) 
 					throws DuplicateEntityFoundException;
 	
 	/**
@@ -255,4 +261,12 @@ public interface ParoleBoardItineraryService {
 	 * @return List of all Parole Board Locations.
 	 */
 	List<ParoleBoardLocation> findParoleBoardLocations();
+	
+	/**
+	 * Returns a list of units for the specified location.
+	 * 
+	 * @param location location
+	 * @return list of units
+	 */
+	List<Unit> findUnitsByLocation(Location location);
 }

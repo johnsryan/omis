@@ -43,6 +43,8 @@ public class ViolationSummary implements Serializable {
 	
 	private final String dispositionCategory;
 	
+	private final Date appealDate;
+	
 	private final String sanctionDescription;
 	
 	private final ResolutionClassificationCategory resolutionCategory;
@@ -75,6 +77,7 @@ public class ViolationSummary implements Serializable {
 			final Date violationEventDate,
 			final String decisionReason,
 			final String decision, final String dispositionCategory,
+			final Date appealDate,
 			final String sanctionDescription,
 			final ResolutionClassificationCategory resolutionCategory) {
 		this.conditionViolationId = conditionViolationId;
@@ -89,6 +92,7 @@ public class ViolationSummary implements Serializable {
 		this.decisionReason = decisionReason;
 		this.decision = decision;
 		this.dispositionCategory = dispositionCategory;
+		this.appealDate = appealDate;
 		this.sanctionDescription = sanctionDescription;
 		this.resolutionCategory = resolutionCategory;
 		this.infractionId = null;
@@ -117,6 +121,7 @@ public class ViolationSummary implements Serializable {
 			final String violationEventDetails,
 			final Date violationEventDate, final String decisionReason,
 			final String decision, final String dispositionCategory,
+			final Date appealDate,
 			final String sanctionDescription,
 			final ResolutionClassificationCategory resolutionCategory) {
 		this.infractionId = infractionId;
@@ -132,6 +137,7 @@ public class ViolationSummary implements Serializable {
 		this.decisionReason = decisionReason;
 		this.decision = decision;
 		this.dispositionCategory = dispositionCategory;
+		this.appealDate = appealDate;
 		this.sanctionDescription = sanctionDescription;
 		this.resolutionCategory = resolutionCategory;
 	}
@@ -159,6 +165,7 @@ public class ViolationSummary implements Serializable {
 			final String violationEventDetails, final Date violationEventDate,
 			final String decisionReason,
 			final String decision, final String dispositionCategory,
+			final Date appealDate,
 			final String sanctionDescription,
 			final ResolutionClassificationCategory resolutionCategory) {
 		this.infractionId = infractionId;
@@ -174,6 +181,7 @@ public class ViolationSummary implements Serializable {
 		this.decisionReason = decisionReason;
 		this.decision = decision;
 		this.dispositionCategory = dispositionCategory;
+		this.appealDate = appealDate;
 		this.sanctionDescription = sanctionDescription;
 		this.resolutionCategory = resolutionCategory;
 	}
@@ -207,6 +215,7 @@ public class ViolationSummary implements Serializable {
 		this.decisionReason = null;
 		this.decision = null;
 		this.dispositionCategory = null;
+		this.appealDate = null;
 		this.sanctionDescription = null;
 		this.resolutionCategory = null;
 	}
@@ -239,6 +248,7 @@ public class ViolationSummary implements Serializable {
 		this.decisionReason = null;
 		this.decision = null;
 		this.dispositionCategory = null;
+		this.appealDate = null;
 		this.sanctionDescription = null;
 		this.resolutionCategory = null;
 	}
@@ -276,6 +286,7 @@ public class ViolationSummary implements Serializable {
 		this.decisionReason = null;
 		this.decision = null;
 		this.dispositionCategory = null;
+		this.appealDate = null;
 		this.sanctionDescription = null;
 		this.resolutionCategory = null;
 	}
@@ -311,6 +322,7 @@ public class ViolationSummary implements Serializable {
 		this.decisionReason = null;
 		this.decision = null;
 		this.dispositionCategory = null;
+		this.appealDate = null;
 		this.sanctionDescription = null;
 		this.resolutionCategory = null;
 	}
@@ -433,5 +445,13 @@ public class ViolationSummary implements Serializable {
 	 */
 	public String getConditionTitle() {
 		return this.conditionTitle;
+	}
+
+	/**
+	 * Returns the appealDate.
+	 * @return appealDate - Date
+	 */
+	public Date getAppealDate() {
+		return this.appealDate;
 	}
 }

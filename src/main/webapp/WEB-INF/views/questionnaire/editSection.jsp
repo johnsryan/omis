@@ -6,7 +6,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <fmt:bundle basename="omis.questionnaire.msgs.questionnaire">
 <head>
-	<title><c:out value="${questionnaireSectionTitle}"/></title>
+	<title><c:out value="${questionnaireSectionStatus.questionnaireSection.title}"/></title>
 	<jsp:include page="/WEB-INF/views/common/includes/headerOffenderFormResources.jsp"/>
 	<jsp:include page="/WEB-INF/views/common/includes/toolsResources.jsp"/>
 	<jsp:include page="/WEB-INF/views/common/includes/searchResources.jsp"/>
@@ -18,7 +18,7 @@
 	<jsp:include page="/WEB-INF/views/offender/includes/offenderHeader.jsp"/>
 	<h1>
 		<a class="actionMenuItem" id="actionMenuLink" href="${pageContext.request.contextPath}/questionnaire/administeredQuestionnaireSectionActionMenu.html?offender=${offender.id}&administeredQuestionnaire=${administeredQuestionnaire.id}"></a>
-		<c:out value="${questionnaireSectionTitle}"/>
+		<c:out value="${questionnaireSectionStatus.questionnaireSection.title}"/>
 	</h1>
 	<jsp:include page="includes/editSectionForm.jsp"/>
 </body>

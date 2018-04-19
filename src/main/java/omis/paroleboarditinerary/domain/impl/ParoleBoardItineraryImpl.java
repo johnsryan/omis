@@ -11,7 +11,7 @@ import omis.paroleboardlocation.domain.ParoleBoardLocation;
  * 
  * @author Josh Divine
  * @author Annie Wahl
- * @version 0.1.1 (Jan 23, 2018)
+ * @version 0.1.3 (Apr 18, 2018)
  * @since OMIS 3.0
  */
 public class ParoleBoardItineraryImpl implements ParoleBoardItinerary {
@@ -27,6 +27,8 @@ public class ParoleBoardItineraryImpl implements ParoleBoardItinerary {
 	private DateRange dateRange;
 	
 	private ParoleBoardLocation paroleBoardLocation;
+	
+	private Boolean onsite;
 	
 	/** 
 	 * Instantiates an implementation of parole board itinerary. 
@@ -99,6 +101,18 @@ public class ParoleBoardItineraryImpl implements ParoleBoardItinerary {
 
 	/** {@inheritDoc} */
 	@Override
+	public Boolean getOnsite() {
+		return onsite;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void setOnsite(final Boolean onsite) {
+		this.onsite = onsite;
+	}
+	
+	/** {@inheritDoc} */
+	@Override
 	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
@@ -108,9 +122,10 @@ public class ParoleBoardItineraryImpl implements ParoleBoardItinerary {
 		}
 		ParoleBoardItinerary that = (ParoleBoardItinerary) obj;
 		if (this.getParoleBoardLocation() == null) {
-			throw new IllegalStateException("Parole Board Location required");
-		}
-		if (!this.getParoleBoardLocation().equals(
+			if (that.getParoleBoardLocation() != null) {
+				return false;
+			}
+		} else if (!this.getParoleBoardLocation().equals(
 				that.getParoleBoardLocation())) {
 			return false;
 		}
@@ -122,14 +137,11 @@ public class ParoleBoardItineraryImpl implements ParoleBoardItinerary {
 			return false;
 		}
 		if (DateRange.getEndDate(this.getDateRange()) == null) { 
-			if (DateRange.getEndDate(that.getDateRange()) != null) {
-				return false;
-			}
-		} else {
-			if (!DateRange.getEndDate(this.getDateRange()).equals(
-					DateRange.getEndDate(that.getDateRange()))) {
-				return false;
-			}
+			throw new IllegalStateException("End date required");
+		} 
+		if (!DateRange.getEndDate(this.getDateRange()).equals(
+				DateRange.getEndDate(that.getDateRange()))) {
+			return false;
 		}
 		return true;
 	}
@@ -137,20 +149,20 @@ public class ParoleBoardItineraryImpl implements ParoleBoardItinerary {
 	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
-		if (this.getParoleBoardLocation() == null) {
-			throw new IllegalStateException("Parole Board Location required");
-		}
 		if (DateRange.getStartDate(this.dateRange) == null) {
 			throw new IllegalStateException("Start date required");
 		}
+		if (DateRange.getEndDate(this.getDateRange()) == null) { 
+			throw new IllegalStateException("End date required");
+		} 
 		int hashCode = 14;
-		hashCode = 29 * hashCode + this.getParoleBoardLocation().hashCode();
+		if (this.getParoleBoardLocation() != null) {
+			hashCode = 29 * hashCode + this.getParoleBoardLocation().hashCode();
+		}
 		hashCode = 29 * hashCode + DateRange.getStartDate(this.dateRange)
 				.hashCode();
-		if (DateRange.getEndDate(this.dateRange) != null) {
-			hashCode = 29 * hashCode + DateRange.getEndDate(this.dateRange)
-					.hashCode();
-		}
+		hashCode = 29 * hashCode + DateRange.getEndDate(this.dateRange)
+				.hashCode();
 		return hashCode;
 	}
 }

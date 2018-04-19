@@ -117,4 +117,14 @@ public class SentenceCategoryImpl implements SentenceCategory {
 		hashCode = 26 * hashCode + this.getName().hashCode();
 		return hashCode;
 	}
+	
+	/**
+	 * Returns string representation of {@code this} including name.
+	 * 
+	 * @return string representation of {@code this} including name
+	 */
+	@Override
+	public String toString() {
+		return String.format("#%d - %s", this.getId(), this.getName());
+	}
 }

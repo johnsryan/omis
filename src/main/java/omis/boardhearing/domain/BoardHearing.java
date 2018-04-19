@@ -18,19 +18,19 @@
 package omis.boardhearing.domain;
 
 import java.util.Date;
+
 import omis.audit.domain.Creatable;
 import omis.audit.domain.Updatable;
-import omis.location.domain.Location;
 import omis.paroleboarditinerary.domain.ParoleBoardItinerary;
 import omis.paroleeligibility.domain.ParoleEligibility;
 
 /**
  * Parole Board Hearing.
  * 
- *@author Annie Wahl 
- *@version 0.1.0 (Dec 28, 2017)
- *@since OMIS 3.0
- *
+ * @author Annie Wahl 
+ * @author Josh Divine
+ * @version 0.1.2 (Apr 18, 2018)
+ * @since OMIS 3.0
  */
 public interface BoardHearing extends Creatable, Updatable {
 	
@@ -45,18 +45,6 @@ public interface BoardHearing extends Creatable, Updatable {
 	 * @param id - Long
 	 */
 	void setId(Long id);
-	
-	/**
-	 * Returns the Location for the Board Hearing.
-	 * @return location - Location
-	 */
-	Location getLocation();
-	
-	/**
-	 * Sets the Location for the Board Hearing.
-	 * @param location - Location
-	 */
-	void setLocation(Location location);
 	
 	/**
 	 * Returns the Itinerary for the Board Hearing.

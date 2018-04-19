@@ -169,8 +169,6 @@ public class ResolutionServiceRemoveTests
 		final DisciplinaryCodeViolation disciplinaryCodeViolation =
 				this.violationEventService.createDisciplinaryCodeViolation(
 						disciplinaryCode, violationEvent);
-		final Person authority = this.personDelegate.create(
-				"Butthead", "Joel", "Trevor", null);
 		final String descision = "Resolution Decision";
 		final String reason = "Resolution Reason";
 		final ResolutionClassificationCategory resolutionCategory =
@@ -181,11 +179,9 @@ public class ResolutionServiceRemoveTests
 		final ConditionViolation conditionViolation = null;
 		final Resolution resolution = new Resolution();
 		resolution.setCategory(resolutionCategory);
-		resolution.setDate(this.parseDateText("05/01/2017"));
 		resolution.setDescision(descision);
 		resolution.setReason(reason);
 		resolution.setDisposition(disposition);
-		resolution.setAuthority(authority);
 		return this.resolutionService.createInfraction(
 				hearing, conditionViolation, disciplinaryCodeViolation,
 				resolution, null);

@@ -78,20 +78,4 @@
 		      class="omis.offenderrelationship.report.impl.hibernate.OffenderRelationshipSummaryReportServiceHibernateImpl">
 		  <constructor-arg name="sessionFactory" ref="sessionFactory"/>
 		</bean>
-		
-	<!-- Factories for property editors -->	
-	  <bean id="offenderRelationshipAddressOperationPropertyEditorFactory" class="omis.beans.factory.impl.EnumPropertyEditorFactoryImpl">
-	    <constructor-arg name="enumName" value="omis.offenderrelationship.web.controller.OffenderRelationshipAddressOperation"/>
-	    <constructor-arg name="enumPropertyName" value="name"/>
-	  </bean>
-	  
-	  <bean id="telephoneNumberItemOperationPropertyEditorFactory" class="omis.beans.factory.impl.EnumPropertyEditorFactoryImpl">
-	    <constructor-arg name="enumName" value="omis.contact.web.form.TelephoneNumberItemOperation"/>
-	    <constructor-arg name="enumPropertyName" value="name"/>
-	  </bean>
-	  
-	  <bean id="onlineAccountContactItemOperationPropertyEditorFactory" class="omis.beans.factory.impl.EnumPropertyEditorFactoryImpl">
-	    <constructor-arg name="enumName" value="omis.contact.web.form.OnlineAccountContactItemOperation"/>
-	    <constructor-arg name="enumPropertyName" value="name"/>
-	  </bean>
 </beans>        

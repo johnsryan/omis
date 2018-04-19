@@ -71,6 +71,7 @@
   	  class="omis.paroleeligibility.report.impl.hibernate.ParoleEligibilityReportServiceHibernateImpl">
   	  <constructor-arg name="sessionFactory" ref="sessionFactory"/>
   	  <constructor-arg name="hearingAnalysisDelegate" ref="hearingAnalysisDelegate"/>
+  	  <constructor-arg name="boardHearingDelegate" ref="boardHearingDelegate"/>
   </bean>
   
   <bean id="paroleEligibilityProfileItemReportService"

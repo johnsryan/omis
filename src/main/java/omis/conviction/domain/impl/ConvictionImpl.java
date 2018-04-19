@@ -137,7 +137,7 @@ public class ConvictionImpl
 
 	/** {@inheritDoc} */
 	@Override
-	public void setFlags(ConvictionFlags flags) {
+	public void setFlags(final ConvictionFlags flags) {
 		this.flags = flags;
 	}
 	
@@ -145,6 +145,18 @@ public class ConvictionImpl
 	@Override
 	public ConvictionFlags getFlags() {
 		return this.flags;
+	}
+	
+	/** {@inheritDoc} */
+	@Override
+	public void setSeverity(final OffenseSeverity severity) {
+		this.severity = severity;
+	}
+	
+	/** {@inheritDoc} */
+	@Override
+	public OffenseSeverity getSeverity() {
+		return this.severity;
 	}
 	
 	/** {@inheritDoc} */
@@ -196,16 +208,22 @@ public class ConvictionImpl
 		hashCode = 29 * hashCode + this.getCounts().hashCode();
 		return hashCode;
 	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void setSeverity(OffenseSeverity severity) {
-		this.severity = severity;
-	}
 	
-	/** {@inheritDoc} */
+	/**
+	 * Returns string representation of {@code this} including offense name
+	 * and counts.
+	 * 
+	 * @return string representation of {@code this}
+	 */
 	@Override
-	public OffenseSeverity getSeverity() {
-		return this.severity;
+	public String toString() {
+		final String offenseName;
+		if (this.getOffense() != null) {
+			offenseName = this.getOffense().getName();
+		} else {
+			offenseName = null;
+		}
+		return String.format("#%d - %s %d", this.getId(), offenseName,
+				this.getCounts());
 	}
 }

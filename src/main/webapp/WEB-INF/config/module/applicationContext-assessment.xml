@@ -70,6 +70,14 @@
         	<constructor-arg name="assessmentRatingServiceDelegateRegistry" ref="assessmentRatingServiceDelegateRegistry"/>
         </bean>
         
+        <bean id="scaledCategorySumRatingServiceDelegate"
+        	class="omis.assessment.service.impl.ScaledCategorySumRatingServiceDelegateImpl">
+        	<constructor-arg name="ratingScaleGroupDelegate" ref="ratingScaleGroupDelegate"/>
+        	<constructor-arg name="answerRatingDelegate" ref="answerRatingDelegate"/>
+        	<constructor-arg name="groupSumRatingDelegate" ref="groupSumRatingDelegate"/>
+        	<constructor-arg name="assessmentRatingServiceDelegateRegistry" ref="assessmentRatingServiceDelegateRegistry"/>
+        </bean>
+        
         <!-- Report Services -->
         
         <bean id="assessmentSummaryReportService"
@@ -167,6 +175,24 @@
         	<constructor-arg name="ratingNoteInstanceFactory" ref="ratingNoteInstanceFactory"/>
         </bean>
         
+        <bean id="groupSumRatingDelegate"
+        	class="omis.assessment.service.delegate.GroupSumRatingDelegate">
+        	<constructor-arg name="groupSumRatingDao" ref="groupSumRatingDao"/>
+        	<constructor-arg name="groupSumRatingInstanceFactory" ref="groupSumRatingInstanceFactory"/>
+        </bean>
+        
+        <bean id="ratingScaleGroupDelegate"
+        	class="omis.assessment.service.delegate.RatingScaleGroupDelegate">
+        	<constructor-arg name="ratingScaleGroupDao" ref="ratingScaleGroupDao"/>
+        	<constructor-arg name="ratingScaleGroupInstanceFactory" ref="ratingScaleGroupInstanceFactory"/>
+        </bean>
+        
+        <bean id="ratingScaleGroupAnswerDelegate"
+        	class="omis.assessment.service.delegate.RatingScaleGroupAnswerDelegate">
+        	<constructor-arg name="ratingScaleGroupAnswerDao" ref="ratingScaleGroupAnswerDao"/>
+        	<constructor-arg name="ratingScaleGroupAnswerInstanceFactory" ref="ratingScaleGroupAnswerInstanceFactory"/>
+        </bean>
+        
         <!-- Data access objects -->
         
         <bean id="answerRatingDao"
@@ -242,6 +268,24 @@
   		<bean id="ratingNoteDao"
         	class="omis.assessment.dao.impl.hibernate.RatingNoteDaoHibernateImpl">
     		<constructor-arg name="entityName" value="omis.assessment.domain.RatingNote"/>
+    		<constructor-arg name="sessionFactory" ref="sessionFactory"/>
+  		</bean>
+  		
+  		<bean id="groupSumRatingDao"
+        	class="omis.assessment.dao.impl.hibernate.GroupSumRatingDaoHibernateImpl">
+    		<constructor-arg name="entityName" value="omis.assessment.domain.GroupSumRating"/>
+    		<constructor-arg name="sessionFactory" ref="sessionFactory"/>
+  		</bean>
+  		
+  		<bean id="ratingScaleGroupDao"
+        	class="omis.assessment.dao.impl.hibernate.RatingScaleGroupDaoHibernateImpl">
+    		<constructor-arg name="entityName" value="omis.assessment.domain.RatingScaleGroup"/>
+    		<constructor-arg name="sessionFactory" ref="sessionFactory"/>
+  		</bean>
+  		
+  		<bean id="ratingScaleGroupAnswerDao"
+        	class="omis.assessment.dao.impl.hibernate.RatingScaleGroupAnswerDaoHibernateImpl">
+    		<constructor-arg name="entityName" value="omis.assessment.domain.RatingScaleGroupAnswer"/>
     		<constructor-arg name="sessionFactory" ref="sessionFactory"/>
   		</bean>
   		
@@ -321,6 +365,24 @@
 			class="omis.instance.factory.hibernate.impl.InstanceFactoryHibernateImpl">
 			<constructor-arg name="instanceFactoryDelegate" ref="instanceFactoryDelegate"/>
 			<constructor-arg name="entityName" value="omis.assessment.domain.RatingNote"/>
+		</bean>
+		
+		<bean id="groupSumRatingInstanceFactory"
+			class="omis.instance.factory.hibernate.impl.InstanceFactoryHibernateImpl">
+			<constructor-arg name="instanceFactoryDelegate" ref="instanceFactoryDelegate"/>
+			<constructor-arg name="entityName" value="omis.assessment.domain.GroupSumRating"/>
+		</bean>
+		
+		<bean id="ratingScaleGroupInstanceFactory"
+			class="omis.instance.factory.hibernate.impl.InstanceFactoryHibernateImpl">
+			<constructor-arg name="instanceFactoryDelegate" ref="instanceFactoryDelegate"/>
+			<constructor-arg name="entityName" value="omis.assessment.domain.RatingScaleGroup"/>
+		</bean>
+		
+		<bean id="ratingScaleGroupAnswerInstanceFactory"
+			class="omis.instance.factory.hibernate.impl.InstanceFactoryHibernateImpl">
+			<constructor-arg name="instanceFactoryDelegate" ref="instanceFactoryDelegate"/>
+			<constructor-arg name="entityName" value="omis.assessment.domain.RatingScaleGroupAnswer"/>
 		</bean>
 		
   		<!--Property editor factories -->
@@ -416,6 +478,27 @@
  			<constructor-arg name="entityName" value="omis.assessment.domain.RatingNote"/>
  			<constructor-arg name="configuration" ref="hibernateConfiguration"/>
   			<constructor-arg name="dao" ref="ratingNoteDao"/>
+		</bean>
+		
+		<bean id="groupSumRatingPropertyEditorFactory"
+       		class="omis.beans.factory.impl.hibernate.PropertyEditorFactoryHibernateImpl">
+ 			<constructor-arg name="entityName" value="omis.assessment.domain.GroupSumRating"/>
+ 			<constructor-arg name="configuration" ref="hibernateConfiguration"/>
+  			<constructor-arg name="dao" ref="groupSumRatingDao"/>
+		</bean>
+		
+		<bean id="ratingScaleGroupPropertyEditorFactory"
+       		class="omis.beans.factory.impl.hibernate.PropertyEditorFactoryHibernateImpl">
+ 			<constructor-arg name="entityName" value="omis.assessment.domain.RatingScaleGroup"/>
+ 			<constructor-arg name="configuration" ref="hibernateConfiguration"/>
+  			<constructor-arg name="dao" ref="ratingScaleGroupDao"/>
+		</bean>
+		
+		<bean id="ratingScaleGroupAnswerPropertyEditorFactory"
+       		class="omis.beans.factory.impl.hibernate.PropertyEditorFactoryHibernateImpl">
+ 			<constructor-arg name="entityName" value="omis.assessment.domain.RatingScaleGroupAnswer"/>
+ 			<constructor-arg name="configuration" ref="hibernateConfiguration"/>
+  			<constructor-arg name="dao" ref="ratingScaleGroupAnswerDao"/>
 		</bean>
 		
 		<!-- Document Beans -->

@@ -35,6 +35,9 @@
 		<fmt:message key="${summary.resolutionCategory}ResolutionLabel"/>
 	</td>
 	<td>
+		<fmt:formatDate value="${summary.appealDate}" pattern="MM/dd/yyyy" />
+	</td>
+	<td>
 		<c:out value="${summary.sanctionDescription}"/>
 	</td>
 </tr>

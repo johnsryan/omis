@@ -30,22 +30,31 @@ import omis.exception.DuplicateEntityFoundException;
 import omis.offender.domain.Offender;
 import omis.offender.service.delegate.OffenderDelegate;
 import omis.supervision.domain.CorrectionalStatus;
+import omis.supervision.domain.CorrectionalStatusTerm;
 import omis.supervision.domain.PlacementTerm;
 import omis.supervision.domain.PlacementTermChangeReason;
 import omis.supervision.domain.SupervisoryOrganization;
+import omis.supervision.domain.SupervisoryOrganizationTerm;
 import omis.supervision.exception.CorrectionalStatusTermConflictException;
 import omis.supervision.exception.PlacementTermConflictException;
 import omis.supervision.exception.PlacementTermExistsException;
 import omis.supervision.exception.SupervisoryOrganizationTermConflictException;
 import omis.supervision.service.PlacementTermService;
 import omis.supervision.service.delegate.CorrectionalStatusDelegate;
+import omis.supervision.service.delegate.CorrectionalStatusTermDelegate;
 import omis.supervision.service.delegate.PlacementTermChangeReasonDelegate;
 import omis.supervision.service.delegate.SupervisoryOrganizationDelegate;
+import omis.supervision.service.delegate.SupervisoryOrganizationTermDelegate;
 import omis.testng.AbstractHibernateTransactionalTestNGSpringContextTests;
 import omis.util.PropertyValueAsserter;
 
 /**
  * Tests method to create placement terms.
+ *
+ * <p>Verifies documented side effects of invoking method to create placement
+ * terms.
+ * 
+ * <p>See {@link PlacementTermService#create}.
  *
  * @author Stephen Abson
  * @version 0.0.1
@@ -79,6 +88,15 @@ public class PlacementTermServiceCreateTests
 	@Qualifier("placementTermChangeReasonDelegate")
 	private PlacementTermChangeReasonDelegate placementTermChangeReasonDelegate;
 	
+	@Autowired
+	@Qualifier("correctionalStatusTermDelegate")
+	private CorrectionalStatusTermDelegate correctionalStatusTermDelegate;
+	
+	@Autowired
+	@Qualifier("supervisoryOrganizationTermDelegate")
+	private SupervisoryOrganizationTermDelegate
+	supervisoryOrganizationTermDelegate;
+	
 	/* Service to test. */
 	
 	@Autowired
@@ -105,7 +123,7 @@ public class PlacementTermServiceCreateTests
 				SupervisoryOrganizationTermConflictException,
 				PlacementTermConflictException {
 		
-		// Arrangements
+		// Arrangements - creates Blofeld, parole status and office and reasons
 		Offender offender = this.offenderDelegate.createWithoutIdentity(
 				"Blofeld", "Ernst", null, null);
 		SupervisoryOrganization supervisoryOrganization 
@@ -124,12 +142,12 @@ public class PlacementTermServiceCreateTests
 			= this.placementTermChangeReasonDelegate
 				.create("End of Supervision", (short) 2, true, false);
 		
-		// Action
+		// Action - places Blofeld in on parole at a parole office
 		PlacementTerm placementTerm = this.placementTermService
 				.create(offender, supervisoryOrganization, correctionalStatus,
 						dateRange, startChangeReason, endChangeReason);
 		
-		// Assertions
+		// Assertions - verifies that Blofeld is placement
 		PropertyValueAsserter.create()
 			.addExpectedValue("offender", offender)
 			.addExpectedValue("dateRange", dateRange)
@@ -141,6 +159,318 @@ public class PlacementTermServiceCreateTests
 						+ ".supervisoryOrganization",
 					supervisoryOrganization)
 			.performAssertions(placementTerm);
+	}
+	
+	/**
+	 * Tests that when a correctional status term with a matching correctional
+	 * status and date range exists, it is used for the placement term.
+	 * 
+	 * @throws DuplicateEntityFoundException if duplicate entities exist 
+	 * @throws PlacementTermConflictException if placement term conflicts
+	 * @throws SupervisoryOrganizationTermConflictException if conflicting
+	 * supervisory organization exists
+	 * @throws CorrectionalStatusTermConflictException if conflicting
+	 * correctional status exists 
+	 * @throws PlacementTermExistsException if placement term exists 
+	 */
+	public void testMatchingCorrectionalStatusTermIsUsed()
+			throws DuplicateEntityFoundException,
+				PlacementTermExistsException,
+				CorrectionalStatusTermConflictException,
+				SupervisoryOrganizationTermConflictException,
+				PlacementTermConflictException {
+		
+		// Arrangements - puts Blofeld on parole status but don't place him
+		// Creates parole office
+		Offender blofeld = this.offenderDelegate
+				.createWithoutIdentity("Blofeld", "Ernst", "Stavro", null);
+		DateRange dateRange = new DateRange(
+				this.parseDateText("05/21/2012"),
+				this.parseDateText("05/21/2017"));
+		CorrectionalStatus parole = this.correctionalStatusDelegate
+				.create("Parole", "PAR", false, (short) 1, true);
+		CorrectionalStatusTerm paroleTerm
+			= this.correctionalStatusTermDelegate
+				.create(blofeld, dateRange, parole);
+		SupervisoryOrganization paroleOffice
+			= this.supervisoryOrganizationDelegate
+				.create("Parole Office", "POFF", null);
+		
+		// Action - place Blofeld on parole at the parole office
+		PlacementTerm placementTerm = this.placementTermService
+				.create(blofeld, paroleOffice, parole, dateRange, null, null);
+		
+		// Asserts that matching correctional status term was used
+		assert placementTerm.getCorrectionalStatusTerm().equals(paroleTerm)
+			: "Matching correctional status term not used";
+	}
+	
+	/**
+	 * Tests that when a supervisory organization term with a matching
+	 * supervisory organization and date range exists, its used for the
+	 * placement term.
+	 * 
+	 * @throws DuplicateEntityFoundException if duplicate entities exist 
+	 * @throws PlacementTermConflictException if placement term conflicts
+	 * @throws SupervisoryOrganizationTermConflictException if conflicting
+	 * supervisory organization exists
+	 * @throws CorrectionalStatusTermConflictException if conflicting
+	 * correctional status exists 
+	 * @throws PlacementTermExistsException if placement term exists 
+	 */
+	public void testMatchingSupervisoryOrganizationTermIsUsed()
+			throws DuplicateEntityFoundException,
+				PlacementTermExistsException,
+				CorrectionalStatusTermConflictException,
+				SupervisoryOrganizationTermConflictException,
+				PlacementTermConflictException {
+		
+		// Arrangements - places Blofeld at parole office but does not put him
+		// on parole status
+		Offender blofeld = this.offenderDelegate
+				.createWithoutIdentity("Blofeld", "Ernst", "Stavro", null);
+		DateRange dateRange = new DateRange(
+				this.parseDateText("12/31/2008"),
+				this.parseDateText("12/31/2018"));
+		SupervisoryOrganization paroleOffice
+			= this.supervisoryOrganizationDelegate
+				.create("Parole Office", "POFF", null);
+		SupervisoryOrganizationTerm paroleOfficeTerm
+			= this.supervisoryOrganizationTermDelegate
+				.create(blofeld, dateRange, paroleOffice);
+		CorrectionalStatus parole = this.correctionalStatusDelegate
+				.create("Parole", "PAR", false, (short) 1, true);
+		
+		// Action - places offender on parole at parole office
+		PlacementTerm placementTerm = this.placementTermService
+				.create(blofeld, paroleOffice, parole, dateRange, null, null);
+		
+		// Asserts that matching supervisory organization term was used
+		assert placementTerm.getSupervisoryOrganizationTerm()
+			.equals(paroleOfficeTerm)
+			: "Matching supervisory organization term not used";
+	}
+	
+	/**
+	 * Tests that an existing correctional status term with a matching
+	 * correctional status occuring earlier but finishing during a placement
+	 * term is lengthened and used for placement.
+	 * 
+	 * <p>Start date must remain the same.
+	 * 
+	 * @throws DuplicateEntityFoundException if duplicate entities exist 
+	 * @throws PlacementTermConflictException if placement term conflicts
+	 * @throws SupervisoryOrganizationTermConflictException if conflicting
+	 * supervisory organization exists
+	 * @throws CorrectionalStatusTermConflictException if conflicting
+	 * correctional status exists 
+	 * @throws PlacementTermExistsException if placement term exists 
+	 */
+	public void testEarlierMatchingCorrectionalStatusTermIsLengthened()
+				throws DuplicateEntityFoundException,
+					PlacementTermExistsException,
+					CorrectionalStatusTermConflictException,
+					SupervisoryOrganizationTermConflictException,
+					PlacementTermConflictException {
+		
+		// Arrangements - places Blofled on parole correctional status but
+		// not at parole office
+		Offender blofeld = this.offenderDelegate
+				.createWithoutIdentity("Blofeld", "Ernst", "Stavro", null);
+		DateRange statusRange = new DateRange(
+				this.parseDateText("12/21/2001"),
+				this.parseDateText("12/21/2011"));
+		CorrectionalStatus parole = this.correctionalStatusDelegate
+				.create("Parole", "PAR", true, (short) 1, true);
+		CorrectionalStatusTerm paroleTerm = this.correctionalStatusTermDelegate
+				.create(blofeld, statusRange, parole);
+		SupervisoryOrganization paroleOffice
+			= this.supervisoryOrganizationDelegate
+				.create("Parole Office", "POFF", null);
+		
+		// Action - places Blofeld at parole office
+		DateRange dateRange = new DateRange(
+				this.parseDateText("12/31/2005"),
+				this.parseDateText("12/31/2015"));
+		this.placementTermService.create(
+				blofeld, paroleOffice, parole, dateRange, null, null);
+		
+		// Asserts that start date is unaffected but end date is lengthened
+		// of correctional status term
+		PropertyValueAsserter.create()
+			.addExpectedValue("dateRange.startDate",
+					DateRange.getStartDate(statusRange))
+			.addExpectedValue("dateRange.endDate",
+					DateRange.getEndDate(dateRange))
+			.performAssertions(paroleTerm);
+	}
+	
+	/**
+	 * Tests that an existing supervisory organization term with a matching
+	 * supervisory organization occuring earlier but finishing during a
+	 * placement term is lengthened and used for placement.
+	 * 
+	 * <p>Start date must remain the same.
+	 * 
+	 * @throws DuplicateEntityFoundException if duplicate entities exist 
+	 * @throws PlacementTermConflictException if placement term conflicts
+	 * @throws SupervisoryOrganizationTermConflictException if conflicting
+	 * supervisory organization exists
+	 * @throws CorrectionalStatusTermConflictException if conflicting
+	 * correctional status exists 
+	 * @throws PlacementTermExistsException if placement term exists
+	 */
+	public void testEarlierMatchingSupervisoryOrganizationTermIsLengthened()
+			throws DuplicateEntityFoundException,
+				PlacementTermExistsException,
+				CorrectionalStatusTermConflictException,
+				SupervisoryOrganizationTermConflictException,
+				PlacementTermConflictException {
+		
+		// Arrangements - places Blofeld at a parole office but not on parole
+		Offender blofeld = this.offenderDelegate
+				.createWithoutIdentity("Blofeld", "Ernst", "Stavro", null);
+		DateRange paroleOfficeRange = new DateRange(
+				this.parseDateText("12/21/2001"),
+				this.parseDateText("12/21/2011"));
+		SupervisoryOrganization paroleOffice
+			= this.supervisoryOrganizationDelegate.create(
+					"Parole Office", "POFF", null);
+		SupervisoryOrganizationTerm paroleOfficeTerm
+			= this.supervisoryOrganizationTermDelegate.create(
+					blofeld, paroleOfficeRange, paroleOffice);
+		CorrectionalStatus parole = this.correctionalStatusDelegate
+				.create("Parole", "PAR", true, (short) 1, true);
+		
+		// Action - places offender on parole
+		DateRange dateRange = new DateRange(
+				this.parseDateText("12/31/2005"),
+				this.parseDateText("12/31/2015"));
+		this.placementTermService.create(
+				blofeld, paroleOffice, parole, dateRange, null, null);
+		
+		// Asserts that start date is unaffected but end date is lengthened
+		// of supervisory organization term
+		PropertyValueAsserter.create()
+			.addExpectedValue("dateRange.startDate",
+					DateRange.getStartDate(paroleOfficeRange))
+			.addExpectedValue("dateRange.endDate",
+					DateRange.getEndDate(dateRange))
+			.performAssertions(paroleOfficeTerm);
+	}
+	
+	/**
+	 * Tests that earlier an earlier correctional status term ending
+	 * during the placement term but with a mismatching correctional status
+	 * is ended and a new correctional status term began for use by the
+	 * placement term.
+	 *  
+	 * @throws DuplicateEntityFoundException if entities exist 
+	 * @throws PlacementTermConflictException if placement term conflicts
+	 * @throws SupervisoryOrganizationTermConflictException if conflicting
+	 * supervisory organization exists
+	 * @throws CorrectionalStatusTermConflictException if conflicting
+	 * correctional status exists 
+	 * @throws PlacementTermExistsException if placement term exists
+	 */
+	public void testEarlierMismatchingCorrectionalStatusTermIsEnded()
+			throws DuplicateEntityFoundException,
+				PlacementTermExistsException,
+				CorrectionalStatusTermConflictException,
+				SupervisoryOrganizationTermConflictException,
+				PlacementTermConflictException {
+		
+		// Arrangements - secures Blofeld
+		Offender offender = this.offenderDelegate
+				.createWithoutIdentity("Blofeld", "Ernst", "Stavro", null);
+		DateRange secureRange = new DateRange(
+				this.parseDateText("06/30/2005"),
+				this.parseDateText("06/30/2015"));
+		CorrectionalStatus secure = this.correctionalStatusDelegate
+				.create("Secure", "SEC", true, (short) 1, true);
+		CorrectionalStatusTerm secureTerm = this.correctionalStatusTermDelegate
+				.create(offender, secureRange, secure);
+		
+		// Action - places Blofeld on parole during secure term
+		DateRange dateRange = new DateRange(
+				this.parseDateText("06/30/2010"),
+				this.parseDateText("06/30/2020"));
+		CorrectionalStatus parole = this.correctionalStatusDelegate
+				.create("Parole", "PAR", true, (short) 1, true);
+		SupervisoryOrganization paroleOffice
+			= this.supervisoryOrganizationDelegate
+				.create("Parole Office", "PAOFF", null);
+		PlacementTerm placementTerm = this.placementTermService.create(
+				offender, paroleOffice, parole, dateRange, null, null);
+		
+		// Asserts that a different correctional status term to secure is
+		// used
+		assert !placementTerm.getCorrectionalStatusTerm().equals(secureTerm)
+			: "Term with mismatching correctional status term is used";
+
+		// Asserts that original secure term was ended on start date of
+		// placement term
+		assert DateRange.getEndDate(secureTerm.getDateRange())
+				.equals(DateRange.getStartDate(dateRange))
+			: "Incorrect end date of original, mismatching status term";
+	}
+	
+	/**
+	 * Tests that an earlier supervisory organization term ending
+	 * during placement term but with a mismatching supervisory organization
+	 * is ended and a new supervisory organization term began for use by the
+	 * placement term
+	 * 
+	 * @throws DuplicateEntityFoundException if entities exist 
+	 * @throws PlacementTermConflictException if placement term conflicts
+	 * @throws SupervisoryOrganizationTermConflictException if conflicting
+	 * supervisory organization exists
+	 * @throws CorrectionalStatusTermConflictException if conflicting
+	 * correctional status exists 
+	 * @throws PlacementTermExistsException if placement term exists
+	 */
+	public void testEarlierMismatchingSupervisoryOrganizationTermIsEnded()
+			throws DuplicateEntityFoundException,
+				PlacementTermExistsException,
+				CorrectionalStatusTermConflictException,
+				SupervisoryOrganizationTermConflictException,
+				PlacementTermConflictException {
+		
+		// Arrangements - supervises Blofeld by prison
+		Offender offender = this.offenderDelegate
+				.createWithoutIdentity("Blofeld", "Ernst", "Stavro", null);
+		DateRange prisonRange = new DateRange(
+				this.parseDateText("05/31/2000"),
+				this.parseDateText("05/29/2010"));
+		SupervisoryOrganization prison = this.supervisoryOrganizationDelegate
+				.create("Prison", "PRSN", null);
+		SupervisoryOrganizationTerm prisonTerm
+			= this.supervisoryOrganizationTermDelegate.create(
+					offender, prisonRange, prison);
+		
+		// Action - paroles Blofeld during secure term
+		DateRange dateRange = new DateRange(
+				this.parseDateText("03/21/2005"),
+				this.parseDateText("12/30/2015"));
+		CorrectionalStatus parole = this.correctionalStatusDelegate
+				.create("Parole", "PAR", true, (short) 1, true);
+		SupervisoryOrganization paroleOffice
+			= this.supervisoryOrganizationDelegate.create(
+					"Parole Office", "POF", null);
+		PlacementTerm placementTerm = this.placementTermService
+				.create(offender, paroleOffice, parole, dateRange, null, null);
+		
+		// Asserts that a different supervisory organization was ended on start
+		// date of placement term
+		assert !placementTerm.getSupervisoryOrganizationTerm()
+				.equals(prisonTerm)
+			: "Term with mismatching supervisory organization term is used";
+				
+		// Asserts that original prison term was ended on start date of
+		// placement term
+		assert DateRange.getEndDate(prisonTerm.getDateRange()).equals(
+				DateRange.getStartDate(dateRange))
+			: "Incorrect end date of original, mismatching organization term";
 	}
 	
 	/* Helper methods. */

@@ -32,6 +32,13 @@
 		<property name="description" column="`DESCRIPTION`" type="java.lang.String" not-null="true"/>
 		<property name="ratingFactor" column="`RATING_FACTOR`" type="big_decimal" not-null="true"/>
 		<property name="valid" column="`VALID`" type="yes_no" not-null="true"/>
+		<property name="significance" column="`SIGNIFICANCE`" not-null="true">
+			<type name="org.hibernate.type.EnumType">
+				<param name="enumClass">omis.assessment.domain.RatingCategorySignificance</param>
+				<param name="useNamed">true</param>
+				<param name="type">12</param>
+			</type>
+		</property>
 	</class>
 	<query name="findRatingCategory"><![CDATA[
 		select ratingCategory

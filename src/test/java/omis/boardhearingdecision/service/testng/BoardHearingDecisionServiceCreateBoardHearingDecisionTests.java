@@ -64,7 +64,7 @@ import omis.util.PropertyValueAsserter;
  * Tests method to create board hearing decisions.
  *
  * @author Josh Divine
- * @version 0.0.1
+ * @version 0.1.3 (Apr 18, 2018)
  * @since OMIS 3.0
  */
 @Test
@@ -164,10 +164,10 @@ public class BoardHearingDecisionServiceCreateBoardHearingDecisionTests
 				this.paroleBoardLocationDelegate.create(location, true);
 		ParoleBoardItinerary itinerary =
 				this.paroleBoardItineraryDelegate.create(paroleBoardLocation,
-						this.parseDateText("01/01/2015"), null);
-		BoardHearing hearing = this.boardHearingDelegate
-				.create(itinerary, null, null, paroleEligibility, null, null,
-						false);
+						true, this.parseDateText("01/01/2015"), 
+						this.parseDateText("01/01/2015"));
+		BoardHearing hearing = this.boardHearingDelegate.create(itinerary, null, 
+				paroleEligibility, null, null, false);
 		BoardHearingDecisionCategory category = this
 				.boardHearingDecisionCategoryDelegate.create("Category", 
 						DecisionCategory.GRANT, true);
@@ -216,10 +216,10 @@ public class BoardHearingDecisionServiceCreateBoardHearingDecisionTests
 				this.paroleBoardLocationDelegate.create(location, true);
 		ParoleBoardItinerary itinerary =
 				this.paroleBoardItineraryDelegate.create(paroleBoardLocation,
-						this.parseDateText("01/01/2015"), null);
-		BoardHearing hearing = this.boardHearingDelegate
-				.create(itinerary, null, null, paroleEligibility, null, null,
-						false);
+						true, this.parseDateText("01/01/2015"), 
+						this.parseDateText("01/01/2015"));
+		BoardHearing hearing = this.boardHearingDelegate.create(itinerary, null, 
+				paroleEligibility, null, null, false);
 		BoardHearingDecisionCategory category = this
 				.boardHearingDecisionCategoryDelegate.create("Category", 
 						DecisionCategory.GRANT, true);
@@ -238,5 +238,4 @@ public class BoardHearingDecisionServiceCreateBoardHearingDecisionTests
 			throw new RuntimeException("Parse error", e);
 		}
 	}
-	
 }

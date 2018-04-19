@@ -30,7 +30,7 @@
 			</generator>
 		</id>
 		<many-to-one name="eligibility" entity-name="omis.paroleeligibility.domain.ParoleEligibility" not-null="true" column="`ELIGIBILITY_ID`"/>
-		<many-to-one name="boardMeetingSite" entity-name="omis.paroleboarditinerary.domain.BoardMeetingSite" not-null="false" column="`BOARD_MEETING_ID`"/>
+		<many-to-one name="paroleBoardItinerary" entity-name="omis.paroleboarditinerary.domain.ParoleBoardItinerary" not-null="true" column="`PAROLE_BOARD_ITINERARY_ID`"/>
 		<many-to-one name="category" entity-name="omis.hearinganalysis.domain.HearingAnalysisCategory" not-null="true" column="`HEARING_ANALYSIS_CATEGORY_ID`"/>
 		<many-to-one name="analyst" entity-name="omis.paroleboarditinerary.domain.BoardAttendee" not-null="false" column="`BOARD_ATTENDEE_ID`"/>
 		<component name="creationSignature">
@@ -50,7 +50,7 @@
 		where
 			hearingAnalysis.eligibility = :eligibility
 		and
-			hearingAnalysis.boardMeetingSite = :meetingSite
+			hearingAnalysis.paroleBoardItinerary = :paroleBoardItinerary
 		and
 			hearingAnalysis.analyst = :analyst
 		and
@@ -62,7 +62,7 @@
 		where
 			hearingAnalysis.eligibility = :eligibility
 		and
-			hearingAnalysis.boardMeetingSite = :meetingSite
+			hearingAnalysis.paroleBoardItinerary = :paroleBoardItinerary
 		and
 			hearingAnalysis.analyst = :analyst
 		and

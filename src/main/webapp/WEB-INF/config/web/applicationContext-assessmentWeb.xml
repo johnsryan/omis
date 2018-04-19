@@ -18,6 +18,12 @@
 		</bean>
 		
 		<aop:config>
+			<aop:pointcut id="assessmentQuestionnaireControllerOperation"
+				expression="execution(* omis.assessment.web.controller.AssessmentQuestionnaireController.*(..))"/>
+			<aop:advisor advice-ref="transactionAdvice" pointcut-ref="assessmentQuestionnaireControllerOperation"/>	
+		</aop:config>
+		
+		<aop:config>
 			<aop:pointcut id="assessmentDocumentControllerOperation"
 				expression="execution(* omis.assessment.web.controller.AssessmentDocumentController.*(..))"/>
 			<aop:advisor advice-ref="transactionAdvice" pointcut-ref="assessmentDocumentControllerOperation"/>	

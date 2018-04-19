@@ -38,6 +38,7 @@ function startDateOnChange() {
 			);
 	});
 }
+
 /**
  * Assigns on click functionality for the parole board itinerary note items 
  * action menu.
@@ -148,5 +149,26 @@ function boardMeetingSiteRowOnClick(boardMeetingSiteIndex) {
 			$("#boardMeetingSiteRow" + boardMeetingSiteIndex).remove();
 		}
 		return false;
+	});
+	locationOnChange(boardMeetingSiteIndex);
+}
+
+function locationOnChange(boardMeetingSiteIndex) {
+	$("#boardMeetingSiteItems" + boardMeetingSiteIndex + "Location").change(function() {
+		$.ajax(config.ServerConfig.getContextPath() + "/paroleBoardItinerary/findUnitsByLocation.html",
+		   {
+			   type: "GET",
+			   async: false,
+			   data: { location: this.value },
+			   success: function(data) {
+			   		$("#boardMeetingSiteItems" + boardMeetingSiteIndex + "Unit").empty().append(data);
+			   },
+			   error: function(jqXHR, textStatus, errorThrown) {
+					alert("Error - status: " + textStatus + "; error: "
+							+ errorThrown);
+			   }
+			   
+		   }
+		);
 	});
 }

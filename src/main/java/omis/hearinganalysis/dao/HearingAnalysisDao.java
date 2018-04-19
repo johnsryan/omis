@@ -21,46 +21,47 @@ import omis.dao.GenericDao;
 import omis.hearinganalysis.domain.HearingAnalysis;
 import omis.hearinganalysis.domain.HearingAnalysisCategory;
 import omis.paroleboarditinerary.domain.BoardAttendee;
-import omis.paroleboarditinerary.domain.BoardMeetingSite;
+import omis.paroleboarditinerary.domain.ParoleBoardItinerary;
 import omis.paroleeligibility.domain.ParoleEligibility;
 
 /**
  * Data access object for hearing analysis.
  * 
  * @author Josh Divine
- * @version 0.1.0 (Dec 18, 2017)
+ * @version 0.1.1 (Apr 18, 2018)
  * @since OMIS 3.0
  */
 public interface HearingAnalysisDao extends GenericDao<HearingAnalysis> {
 
 	/**
-	 * Returns the hearing analysis matching the specified parole eligibility, 
-	 * board meeting site, and analyst.
+	 * Returns the hearing analysis matching the specified parole eligibility 
+	 * and analyst.
 	 * 
 	 * @param eligibility parole eligibility
-	 * @param boardMeetingSite board meeting site
+	 * @param paroleBoardItinerary parole board itinerary
 	 * @param category hearing analysis category
 	 * @param analyst board attendee
 	 * @return hearing analysis
 	 */
 	HearingAnalysis find(ParoleEligibility eligibility, 
-			BoardMeetingSite boardMeetingSite, HearingAnalysisCategory category,
-			BoardAttendee analyst);
+			ParoleBoardItinerary paroleBoardItinerary,
+			HearingAnalysisCategory category, BoardAttendee analyst);
 	
 	/**
 	 * Returns the hearing analysis matching the specified parole eligibility, 
-	 * board meeting site, and analyst excluding the specified hearing analysis.
+	 * and analyst excluding the specified hearing analysis.
 	 * 
 	 * @param eligibility parole eligibility
-	 * @param boardMeetingSite board meeting site
+	 * @param paroleBoardItinerary parole board itinerary
 	 * @param category hearing analysis category
 	 * @param analyst board attendee
 	 * @param excludedHearingAnalysis excluded hearing analysis
 	 * @return hearing analysis
 	 */
 	HearingAnalysis findExcluding(ParoleEligibility eligibility, 
-			BoardMeetingSite boardMeetingSite, HearingAnalysisCategory category,
-			BoardAttendee analyst, HearingAnalysis excludedHearingAnalysis);
+			ParoleBoardItinerary paroleBoardItinerary,
+			HearingAnalysisCategory category, BoardAttendee analyst, 
+			HearingAnalysis excludedHearingAnalysis);
 
 	/**
 	 * Returns the hearing analysis for the specified parole eligibility.

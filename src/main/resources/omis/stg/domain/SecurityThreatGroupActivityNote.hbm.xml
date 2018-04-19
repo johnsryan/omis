@@ -45,6 +45,8 @@
  		from 
  			omis.stg.domain.SecurityThreatGroupActivityNote activityNote 
  		where 
+ 			activityNote.activity = :activity
+ 		and
  			activityNote.date = :date 
  		and 
  			activityNote.value = :value 

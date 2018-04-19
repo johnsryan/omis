@@ -70,7 +70,7 @@ public class ManageAssessmentController {
 	/* Redirects. */
 	
 	private static final String REDIRECT_URL = 
-			"redirect:/assessment/home/home.html?administeredQuestionnaire=%d";
+			"redirect:/assessment/home.html?administeredQuestionnaire=%d";
 	
 	/* Model keys. */
 	

@@ -4,11 +4,9 @@ package omis.hearing.service.testng;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.testng.annotations.Test;
-
 import omis.address.domain.Address;
 import omis.address.domain.ZipCode;
 import omis.address.service.delegate.AddressDelegate;
@@ -58,7 +56,7 @@ import omis.violationevent.domain.ViolationEventCategory;
 import omis.violationevent.service.ViolationEventService;
 
 /**
- * Hearins Service Update Tests.
+ * Hearing Service Update Tests.
  * 
  *@author Annie Wahl 
  *@version 0.1.1 (Mar 8, 2018)
@@ -309,12 +307,9 @@ public class HearingServiceUpdateTests
 		final Hearing hearing = this.createHearing();
 		final Resolution resolution2 = new Resolution();
 		resolution2.setCategory(ResolutionClassificationCategory.DISMISSED);
-		resolution2.setDate(this.parseDateText("06/06/2017"));
 		resolution2.setDescision("Resolution Decision2");
 		resolution2.setReason("Resolution Reason2");
 		resolution2.setDisposition(DispositionCategory.NO_FINDING);
-		resolution2.setAuthority(this.personDelegate.create("Butthead", "Joel", 
-				"Trevor", null));
 		final InfractionPlea plea2 = this.infractionPleaDelegate
 				.create("Guilty", true);
 		this.infraction = this.hearingService.createInfraction(
@@ -336,8 +331,6 @@ public class HearingServiceUpdateTests
 				this.violationEventService.createDisciplinaryCodeViolation(
 						disciplinaryCode, violationEvent);
 		
-		final Person authority = this.personDelegate.create("Dent", "Harvey",
-				"Twoface", null);
 		final String descision = "Resolution Decision";
 		final String reason = "Resolution Reason";
 		final ResolutionClassificationCategory resolutionCategory =
@@ -346,11 +339,9 @@ public class HearingServiceUpdateTests
 		
 		final Resolution resolution = new Resolution();
 		resolution.setCategory(resolutionCategory);
-		resolution.setDate(this.parseDateText("05/01/2017"));
 		resolution.setDescision(descision);
 		resolution.setReason(reason);
 		resolution.setDisposition(disposition);
-		resolution.setAuthority(authority);
 		final InfractionPlea plea = this.infractionPleaDelegate
 				.create("Not Guilty", true);
 		Infraction infraction = this.hearingService.updateInfraction(
@@ -382,11 +373,6 @@ public class HearingServiceUpdateTests
 		: String.format("Wrong disposition for infraction: "
 				+ "%s found; %s expected",
 				infraction.getResolution().getDisposition(), disposition);
-		assert authority.equals(infraction.getResolution().getAuthority())
-		: String.format("Wrong authority found: %s found; %s expected.",
-				infraction.getResolution().getAuthority()
-				.getName().getFirstName(),
-				authority.getName().getFirstName());
 		assert plea.equals(infraction.getPlea())
 		: String.format("Wrong plea for infraction: %s found; %s expected",
 				infraction.getPlea().getName(), plea.getName());

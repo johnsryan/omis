@@ -27,17 +27,15 @@ import omis.boardhearing.web.form.BoardHearingNoteItem;
 /**
  * Board Hearing Form Validator.
  * 
- *@author Annie Wahl 
- *@version 0.1.0 (Jan 2, 2018)
- *@since OMIS 3.0
- *
+ * @author Annie Wahl 
+ * @author Josh Divine
+ * @version 0.1.1 (Apr 18, 2018)
+ * @since OMIS 3.0
  */
 public class BoardHearingFormValidator implements Validator {
 	
 	private static final String ITINERARY_REQUIRED_MSG_KEY =
 			"boardHearing.itinerary.empty";
-	
-	private static final String LOCATION_REQUIRED_MSG_KEY = "location.required";
 	
 	private static final String DATE_REQUIRED_MSG_KEY = "date.required";
 	
@@ -60,8 +58,6 @@ public class BoardHearingFormValidator implements Validator {
 	/**{@inheritDoc} */
 	@Override
 	public void validate(final Object target, final Errors errors) {
-		ValidationUtils.rejectIfEmpty(errors, "hearingLocation", 
-				LOCATION_REQUIRED_MSG_KEY);
 		ValidationUtils.rejectIfEmpty(errors, "paroleBoardItinerary", 
 				ITINERARY_REQUIRED_MSG_KEY);
 		ValidationUtils.rejectIfEmpty(errors, "hearingDate",

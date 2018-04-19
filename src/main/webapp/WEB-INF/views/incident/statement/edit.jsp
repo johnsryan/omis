@@ -5,10 +5,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<fmt:bundle basename="omis.incident.msgs.incident">
 		<head>
+			<jsp:include page="/WEB-INF/views/common/includes/headerMetas.jsp"/>
+			<jsp:include page="/WEB-INF/views/common/includes/headerGeneralResources.jsp"/>
+			<jsp:include page="/WEB-INF/views/common/includes/headerToolbarResources.jsp"/>
 			<jsp:include page="/WEB-INF/views/common/includes/toolsResources.jsp"/>
+			<jsp:include page="/WEB-INF/views/common/includes/formResources.jsp"/>
+			<jsp:include page="/WEB-INF/views/common/includes/interactiveImageResources.jsp"/>
 			<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/common/style/jquery/ui/jquery.ptTimeSelect.css"/>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/resources/3rdparty/JQuery/ui/jquery.ptTimeSelect.js"> </script>
-			<jsp:include page="/WEB-INF/views/common/includes/headerOffenderFormResources.jsp"/>
 			<jsp:include page="/WEB-INF/views/common/includes/searchResources.jsp"/>
 			<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/incident/statement/style/incidentStatement.css?VERSION=1"/>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/resources/incident/statement/scripts/includes/jquery.omis.incidentStatement.js?VERSION=1"> </script>

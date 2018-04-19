@@ -266,9 +266,13 @@ window.onload = function() {
 			var noteItemTableRow = document.getElementById("familyAssociationNoteItems[" + noteItemIndex + "].row");
 			var noteItemTableRowOperation = document.getElementById("familyAssociationNoteItems[" + noteItemIndex + "].operation");
 			if(noteItemTableRowOperation.value=="UPDATE"){
-				noteItemTableRow.hidden = true;
+				ui.addClass(noteItemTableRow, "removeRow");
 				noteItemTableRowOperation.value="REMOVE"
-			} else {
+			} else if(noteItemTableRowOperation.value=="REMOVE") {
+				ui.removeClass(noteItemTableRow, "removeRow");
+				noteItemTableRowOperation.value="UPDATE"
+			} 
+			else {
 				noteItemTableRow.parentNode.removeChild(noteItemTableRow);
 			}
 			return false;

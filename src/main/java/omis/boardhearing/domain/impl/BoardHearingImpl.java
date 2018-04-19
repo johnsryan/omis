@@ -18,22 +18,22 @@
 package omis.boardhearing.domain.impl;
 
 import java.util.Date;
+
 import omis.audit.domain.CreationSignature;
 import omis.audit.domain.UpdateSignature;
 import omis.boardhearing.domain.BoardHearing;
 import omis.boardhearing.domain.BoardHearingCategory;
 import omis.boardhearing.domain.CancellationCategory;
-import omis.location.domain.Location;
 import omis.paroleboarditinerary.domain.ParoleBoardItinerary;
 import omis.paroleeligibility.domain.ParoleEligibility;
 
 /**
  * Board Hearing Implementation.
  * 
- *@author Annie Wahl 
- *@version 0.1.0 (Dec 28, 2017)
- *@since OMIS 3.0
- *
+ * @author Annie Wahl 
+ * @author Josh Divine
+ * @version 0.1.2 (Apr 18, 2018)
+ * @since OMIS 3.0
  */
 public class BoardHearingImpl implements BoardHearing {
 	
@@ -42,9 +42,7 @@ public class BoardHearingImpl implements BoardHearing {
 	private Long id;
 	
 	private ParoleBoardItinerary itinerary;
-	
-	private Location location;
-	
+
 	private Date hearingDate;
 	
 	private ParoleEligibility paroleEligibility;
@@ -120,18 +118,6 @@ public class BoardHearingImpl implements BoardHearing {
 		this.category = category;
 	}
 	
-	/**{@inheritDoc} */
-	@Override
-	public Location getLocation() {
-		return this.location;
-	}
-
-	/**{@inheritDoc} */
-	@Override
-	public void setLocation(final Location location) {
-		this.location = location;
-	}
-
 	/**{@inheritDoc} */
 	@Override
 	public Date getHearingDate() {

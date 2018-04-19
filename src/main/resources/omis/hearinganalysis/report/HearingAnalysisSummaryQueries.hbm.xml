@@ -32,17 +32,12 @@
 	 	SELECT new omis.hearinganalysis.report.HearingAnalysisSummary(
 	 			eligibility.hearingEligibilityDate,
 	 			eligibility.reviewDate,
-	 			organization.name,
-	 			boardMeetingSite.date,
 	 			analystName.lastName,
 	 			analystName.middleName,
 	 			analystName.firstName,
 	 			title.name)
 		FROM omis.hearinganalysis.domain.HearingAnalysis hearingAnalysis
 		INNER JOIN hearingAnalysis.eligibility eligibility
-		LEFT JOIN hearingAnalysis.boardMeetingSite boardMeetingSite
-		LEFT JOIN boardMeetingSite.location location
-		LEFT JOIN location.organization organization
 		LEFT JOIN hearingAnalysis.analyst analyst
 		LEFT JOIN analyst.boardMember boardMember
 		LEFT JOIN boardMember.staffAssignment staffAssignment

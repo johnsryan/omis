@@ -49,7 +49,7 @@ import omis.report.web.controller.delegate.ReportControllerDelegate;
  *
  * @author Trevor Isles
  * @author Josh Divine
- * @version 0.1.1 (Feb 20, 2018)
+ * @version 0.1.2 (Apr 17, 2018)
  * @since OMIS 3.0
  */
 @Controller
@@ -61,10 +61,16 @@ public class ReportParoleEligibilityController {
 	
 	private static final String LIST_VIEW_NAME = "paroleEligibility/list";
 	
+	private static final String LIST_UNRESOLVED_VIEW_NAME = 
+			"paroleEligibility/listUnresolved";
+	
 	/* Action menu view names. */
 	
-	private static final String ELIGIBILITIES_ACTION_MENU_VIEW_NAME
-		= "paroleEligibility/includes/eligibilitiesActionMenu";
+	private static final String ELIGIBILITIES_ACTION_MENU_VIEW_NAME = 
+			"paroleEligibility/includes/eligibilitiesActionMenu";
+	
+	private static final String UNRESOLVED_ELIGIBILITIES_ACTION_MENU_VIEW_NAME =
+			"paroleEligibility/includes/unresolvedEligibilitiesActionMenu";
 	
 	/* Model keys. */
 	
@@ -76,6 +82,8 @@ public class ReportParoleEligibilityController {
 	private static final String ELIGIBILITY_MODEL_KEY = "eligibility";
 	
 	private static final String HEARING_ANALYSIS_MODEL_KEY = "hearingAnalysis";
+	
+	private static final String BOARD_HEARING_MODEL_KEY = "boardHearing";
 	
 	/* Services. */
 	
@@ -95,12 +103,18 @@ public class ReportParoleEligibilityController {
 	
 	/* Report names. */
 	
-	private static final String PAROLE_ELIGIBILITY_LISTING_REPORT_NAME
-		= "/BOPP/ParoleEligibility/"; // TODO: Add actual path name
+	private static final String PAROLE_ELIGIBILITY_LISTING_REPORT_NAME = 
+			"/BOPP/ParoleEligibility/Parole_Eligibility_Listing"; 
+	
+	private static final String PAROLE_ELIGIBILITY_DETAIL_REPORT_NAME = 
+			"/BOPP/ParoleEligibility/Parole_Eligibility_Details"; 
 	
 	/* Report parameter names. */
 	
 	private static final String DOC_ID_REPORT_PARAM_NAME = "DOC_ID";
+	
+	private static final String PAROLE_ELIGIBILITY_DETAIL_REPORT_PARAM_NAME = 
+			"ELIGIBILITY_ID";	
 	
 	/* Report runners. */
 	
@@ -150,7 +164,24 @@ public class ReportParoleEligibilityController {
 	}
 	
 	/**
-	 * Returns the report for the specified parole eligibility.
+	 * Displays a list of unresolved parole eligibilities.
+	 * 
+	 * @return screen to display list of unresolved parole eligibilities
+	 */
+	@RequestMapping(value = "/listUnresolved.html", method = RequestMethod.GET)
+	@PreAuthorize("hasRole('PAROLE_ELIGIBILITY_LIST') or hasRole('ADMIN')")
+	public ModelAndView listUnresolved() {
+		ModelAndView mav = new ModelAndView(LIST_UNRESOLVED_VIEW_NAME);
+		List<ParoleEligibilitySummary> paroleEligibilitySummaries = this
+				.paroleEligibilityReportService
+				.findUnresolvedEligibilitySummaries();
+		mav.addObject(PAROLE_ELIGIBILITY_SUMMARIES_MODEL_KEY, 
+				paroleEligibilitySummaries);
+		return mav;
+	}
+	
+	/**
+	 * Returns the report for the specified offenders parole eligibility.
 	 * @param offender offender
 	 * @param reportFormat report format
 	 * @return response entity with report
@@ -168,6 +199,30 @@ public class ReportParoleEligibilityController {
 				Long.toString(offender.getOffenderNumber()));
 		byte[] doc = this.reportRunner.runReport(
 				PAROLE_ELIGIBILITY_LISTING_REPORT_NAME, reportParamMap, 
+				reportFormat);
+		return this.reportControllerDelegate.constructReportResponseEntity(doc, 
+				reportFormat);
+	}
+	
+	/**
+	 * Returns the report for the specified parole eligibility.
+	 * @param eligibility eligibility
+	 * @param reportFormat report format
+	 * @return response entity with report
+	 */
+	@RequestMapping(value = "/paroleEligibilityDetailsReport.html",
+			method = RequestMethod.GET)
+	@PreAuthorize("hasRole('PAROLE_ELIGIBILITY_LIST') or hasRole('ADMIN')")
+	public ResponseEntity<byte []> reportParoleEligibilityDetails(
+			@RequestParam(value = "eligibility", required = true) 
+			final ParoleEligibility eligibility, 
+			@RequestParam(value = "reportFormat", required = true) 
+			final ReportFormat reportFormat) {
+		Map<String, String> reportParamMap = new HashMap<String, String>();
+		reportParamMap.put(PAROLE_ELIGIBILITY_DETAIL_REPORT_PARAM_NAME,
+				Long.toString(eligibility.getId()));
+		byte[] doc = this.reportRunner.runReport(
+				PAROLE_ELIGIBILITY_DETAIL_REPORT_NAME, reportParamMap, 
 				reportFormat);
 		return this.reportControllerDelegate.constructReportResponseEntity(doc, 
 				reportFormat);
@@ -201,6 +256,29 @@ public class ReportParoleEligibilityController {
 		return mav;
 	}
 	
+	/**
+	 * Returns eligibilities action menu.
+	 *
+	 * @param eligibility parole eligibility
+	 * @return eligibilities action menu
+	 */
+	@RequestMapping(value = "/unresolvedEligibilitiesActionMenu.html", 
+			method = RequestMethod.GET)
+	public ModelAndView showUnresolvedEligibilitiesActionMenu(
+			@RequestParam(value = "eligibility", required = true)
+				final ParoleEligibility eligibility) {
+		ModelAndView mav = new ModelAndView(
+				UNRESOLVED_ELIGIBILITIES_ACTION_MENU_VIEW_NAME);
+		mav.addObject(ELIGIBILITY_MODEL_KEY, eligibility);
+		mav.addObject(HEARING_ANALYSIS_MODEL_KEY, this
+				.paroleEligibilityReportService
+				.findHearingAnalysisByParoleEligibility(eligibility));
+		mav.addObject(BOARD_HEARING_MODEL_KEY, this
+				.paroleEligibilityReportService
+				.findBoardHearingByParoleEligibility(eligibility));
+		return mav;
+	}
+	
 	/* Init binder. */
 	
 	@InitBinder
@@ -212,5 +290,4 @@ public class ReportParoleEligibilityController {
 				this.paroleEligibilityPropertyEditorFactory
 					.createPropertyEditor());
 	}
-
 }

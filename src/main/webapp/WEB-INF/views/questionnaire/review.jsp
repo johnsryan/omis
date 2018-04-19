@@ -9,6 +9,7 @@
 	<title><fmt:message key="reviewQuestionnaireTitle" /></title>
 	<jsp:include page="/WEB-INF/views/common/includes/headerOffenderFormResources.jsp"/>
 	<jsp:include page="/WEB-INF/views/common/includes/toolsResources.jsp"/>
+	<jsp:include page="/WEB-INF/views/common/includes/listCSS.jsp"/>
 	<jsp:include page="/WEB-INF/views/common/includes/searchResources.jsp"/>
 	<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/questionnaire/style/questionnaire.css"/>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/questionnaire/scripts/administeredQuestionnaireReview.js?VERSION=1"></script>
@@ -17,13 +18,16 @@
 	<jsp:include page="/WEB-INF/views/offender/includes/offenderHeader.jsp"/>
 	<h1>
 		<a class="actionMenuItem" id="actionMenuLink" href="${pageContext.request.contextPath}/questionnaire/administeredQuestionnaireReviewActionMenu.html?offender=${offender.id}&administeredQuestionnaire=${administeredQuestionnaireSummary.questionnaireId}"></a>
-		<c:out value="${administeredQuestionnaireSummary.questionnaireTitle} - " />
 		<c:choose>
 			<c:when test="${administeredQuestionnaireSummary.draft}">
-				<fmt:message key="draftLabel" />
+				<fmt:message key="draftSectionTitleLabel">
+					<fmt:param value="${administeredQuestionnaireSummary.questionnaireTitle}"/>
+				</fmt:message>
 			</c:when>
 			<c:otherwise>
-				<fmt:message key="completedLabel" />
+				<fmt:message key="completedSectionTitleLabel">
+					<fmt:param value="${administeredQuestionnaireSummary.questionnaireTitle}"/>
+				</fmt:message>
 			</c:otherwise>
 		</c:choose>
 	</h1>

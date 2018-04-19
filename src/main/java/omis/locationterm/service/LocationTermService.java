@@ -22,7 +22,6 @@ import java.util.List;
 
 import omis.datatype.DateRange;
 import omis.exception.DateRangeOutOfBoundsException;
-import omis.exception.DuplicateEntityFoundException;
 import omis.location.domain.Location;
 import omis.locationterm.domain.LocationReason;
 import omis.locationterm.domain.LocationReasonTerm;
@@ -30,8 +29,10 @@ import omis.locationterm.domain.LocationTerm;
 import omis.locationterm.domain.LocationTermChangeAction;
 import omis.locationterm.exception.LocationReasonTermConflictException;
 import omis.locationterm.exception.LocationReasonTermExistsAfterException;
+import omis.locationterm.exception.LocationReasonTermExistsException;
 import omis.locationterm.exception.LocationTermConflictException;
 import omis.locationterm.exception.LocationTermExistsAfterException;
+import omis.locationterm.exception.LocationTermExistsException;
 import omis.locationterm.exception.LocationTermLockedException;
 import omis.offender.domain.Offender;
 import omis.organization.domain.Organization;
@@ -84,16 +85,18 @@ public interface LocationTermService {
 	 * <p>If not null, the start and end date of the date range are prevented
 	 * from being equal by a {@code IllegalArgumentException} being thrown.
 	 * 
+	 * <p>Updates reason term active on start date to be ended on start date.
+	 * 
 	 * @param offender offender
 	 * @param location location
 	 * @param dateRange date range
 	 * @return location term
-	 * @throws DuplicateEntityFoundException if location term exists
+	 * @throws LocationTermExistsException if location term exists
 	 * @throws LocationTermConflictException if conflicting location terms exist
 	 */
 	LocationTerm create(Offender offender, Location location,
 			DateRange dateRange)
-					throws DuplicateEntityFoundException,
+					throws LocationTermExistsException,
 						LocationTermConflictException,
 						LocationTermExistsAfterException,
 						OffenderNotUnderSupervisionException;
@@ -108,19 +111,16 @@ public interface LocationTermService {
 	 * @param location location
 	 * @param dateRange date range
 	 * @return location term
-	 * @throws DuplicateEntityFoundException if location term exists
+	 * @throws LocationTermExistsException if location term exists
 	 * @throws LocationTermConflictException if conflicting location terms exist
-	 * @throws DateRangeOutOfBoundsException if existing location reason terms
-	 * are out of the date range bounds of the location term
 	 * @throws LocationTermExistsAfterException if existing location terms exist 
 	 * after the start date when the end date is null
 	 * @throws LocationTermLockedException if location term is locked
 	 */
 	LocationTerm update(LocationTerm locationTerm, Location location,
 			DateRange dateRange)
-					throws DuplicateEntityFoundException,
+					throws LocationTermExistsException,
 						LocationTermConflictException,
-						DateRangeOutOfBoundsException,
 						LocationTermExistsAfterException,
 						LocationTermLockedException,
 						OffenderNotUnderSupervisionException;
@@ -141,7 +141,7 @@ public interface LocationTermService {
 	 * @param dateRange date range
 	 * @param reason reason 
 	 * @return location reason term
-	 * @throws DuplicateEntityFoundException if reason term exists
+	 * @throws LocationReasonTermExistsException if reason term exists
 	 * @throws DateRangeOutOfBoundsException if date range exists out side of 
 	 * location term date range
 	 * @throws LocationReasonTermConflictException if overlapping location 
@@ -151,7 +151,7 @@ public interface LocationTermService {
 	 */
 	LocationReasonTerm createReasonTerm(LocationTerm locationTerm,
 			DateRange dateRange, LocationReason reason)
-					throws DuplicateEntityFoundException,
+					throws LocationReasonTermExistsException,
 						LocationReasonTermConflictException,
 						LocationReasonTermExistsAfterException,
 						DateRangeOutOfBoundsException;
@@ -163,7 +163,7 @@ public interface LocationTermService {
 	 * @param dateRange date range
 	 * @param reason reason
 	 * @return updated reason term
-	 * @throws DuplicateEntityFoundException if reason term exists
+	 * @throws LocationReasonTermExistsException if reason term exists
 	 * @throws DateRangeOutOfBoundsException if date range exists out side of 
 	 * location term date range
 	 * @throws LocationReasonTermConflictException if overlapping location 
@@ -173,7 +173,7 @@ public interface LocationTermService {
 	 */
 	LocationReasonTerm updateReasonTerm(LocationReasonTerm reasonTerm,
 			DateRange dateRange, LocationReason reason)
-				throws DuplicateEntityFoundException,
+				throws LocationReasonTermExistsException,
 					LocationReasonTermExistsAfterException,
 					LocationReasonTermConflictException,
 					DateRangeOutOfBoundsException;

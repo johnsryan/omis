@@ -2,7 +2,10 @@ package omis.paroleboarditinerary.web.controller;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,10 +19,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+
 import omis.beans.factory.PropertyEditorFactory;
 import omis.beans.factory.spring.CustomDateEditorFactory;
 import omis.datatype.DateRange;
 import omis.exception.DuplicateEntityFoundException;
+import omis.facility.domain.Unit;
 import omis.location.domain.Location;
 import omis.paroleboarditinerary.domain.AttendeeRoleCategory;
 import omis.paroleboarditinerary.domain.BoardAttendee;
@@ -30,6 +35,7 @@ import omis.paroleboarditinerary.service.ParoleBoardItineraryService;
 import omis.paroleboarditinerary.web.form.BoardMeetingSiteItem;
 import omis.paroleboarditinerary.web.form.BoardMeetingSiteItemOperation;
 import omis.paroleboarditinerary.web.form.BoardMeetingSiteLocation;
+import omis.paroleboarditinerary.web.form.OnsiteCategory;
 import omis.paroleboarditinerary.web.form.ParoleBoardItineraryForm;
 import omis.paroleboarditinerary.web.form.ParoleBoardItineraryNoteItem;
 import omis.paroleboarditinerary.web.form.ParoleBoardItineraryNoteItemOperation;
@@ -44,7 +50,7 @@ import omis.web.controller.delegate.BusinessExceptionHandlerDelegate;
  *
  * @author Josh Divine
  * @author Annie Wahl 
- * @version 0.1.1 (Jan 23, 2018)
+ * @version 0.1.2 (Apr 10, 2018)
  * @since OMIS 3.0
  */
 @Controller
@@ -66,6 +72,9 @@ public class ManageParoleBoardItineraryController {
 	
 	private static final String BOARD_MEMBER_OPTIONS_VIEW_NAME = 
 			"paroleBoardItinerary/includes/boardMemberOptions";
+	
+	private static final String UNIT_OPTIONS_VIEW_NAME = 
+			"paroleBoardItinerary/includes/unitOptions";
 	
 	/* Action menus. */
 
@@ -108,6 +117,13 @@ public class ManageParoleBoardItineraryController {
 			"paroleBoardLocations";
 	
 	private static final String SORT_ORDER_MODEL_KEY = "sortOrder";
+	
+	private static final String BOARD_MEETING_SITE_UNITS_MODEL_KEY = 
+			"boardMeetingSiteUnits";
+	
+	private static final String UNITS_MODEL_KEY = "units";
+	
+	private static final String ONSITE_CATEGORIES = "onsiteCategories";
 	
 	/* Message keys. */
 
@@ -155,6 +171,10 @@ public class ManageParoleBoardItineraryController {
 	@Autowired
 	@Qualifier("paroleBoardLocationPropertyEditorFactory")
 	private PropertyEditorFactory paroleBoardLocationPropertyEditorFactory;
+	
+	@Autowired
+	@Qualifier("unitPropertyEditorFactory")
+	private PropertyEditorFactory unitPropertyEditorFactory;
 	
 	/* Validators. */
 
@@ -211,6 +231,11 @@ public class ManageParoleBoardItineraryController {
 				paroleBoardItinerary.getDateRange()));
 		paroleBoardItineraryForm.setParoleBoardLocation(
 				paroleBoardItinerary.getParoleBoardLocation());
+		if (paroleBoardItinerary.getOnsite()) {
+			paroleBoardItineraryForm.setOnsite(OnsiteCategory.ONSITE);
+		} else {
+			paroleBoardItineraryForm.setOnsite(OnsiteCategory.REMOTE);
+		}
 		List<BoardAttendee> attendees = this.paroleBoardItineraryService
 				.findBoardAttendeesByBoardItinerary(paroleBoardItinerary);
 		for (BoardAttendee attendee : attendees) {
@@ -240,6 +265,7 @@ public class ManageParoleBoardItineraryController {
 			meetingSiteItem.setBoardMeetingSite(meetingSite);
 			meetingSiteItem.setDate(meetingSite.getDate());
 			meetingSiteItem.setLocation(meetingSite.getLocation());
+			meetingSiteItem.setUnit(meetingSite.getUnit());
 			meetingSiteItem.setOrder(meetingSite.getOrder());
 			meetingSiteItem.setOperation(BoardMeetingSiteItemOperation.EDIT);
 			meetingSiteItems.add(meetingSiteItem);
@@ -288,10 +314,12 @@ public class ManageParoleBoardItineraryController {
 					bindingResult);
 			return mav;
 		}
+		Boolean onsite = OnsiteCategory.ONSITE.equals(
+				paroleBoardItineraryForm.getOnsite());
 		ParoleBoardItinerary boardItinerary = this.paroleBoardItineraryService
 				.create(paroleBoardItineraryForm.getParoleBoardLocation(), 
-				paroleBoardItineraryForm.getStartDate(),
-				paroleBoardItineraryForm.getEndDate());
+						onsite, paroleBoardItineraryForm.getStartDate(),
+						paroleBoardItineraryForm.getEndDate());
 
 		this.paroleBoardItineraryService.createAttendee(boardItinerary, 
 				paroleBoardItineraryForm.getBoardMember1(), 1L, 
@@ -339,10 +367,11 @@ public class ManageParoleBoardItineraryController {
 					bindingResult);
 			return mav;
 		}
-		
+		Boolean onsite = OnsiteCategory.ONSITE.equals(
+				paroleBoardItineraryForm.getOnsite());
 		ParoleBoardItinerary boardItinerary = this.paroleBoardItineraryService
 				.update(paroleBoardItinerary,
-				paroleBoardItineraryForm.getParoleBoardLocation(),
+				paroleBoardItineraryForm.getParoleBoardLocation(), onsite,
 				paroleBoardItineraryForm.getStartDate(), 
 				paroleBoardItineraryForm.getEndDate());
 		
@@ -489,6 +518,23 @@ public class ManageParoleBoardItineraryController {
 		return mav;
 	}
 	
+	/**
+	 * Displays unit options for the specified location.
+	 * 
+	 * @param location location
+	 * @return unit options
+	 */
+	@RequestMapping(value = "/findUnitsByLocation.html", 
+			method = RequestMethod.GET)
+	public ModelAndView findBoardMembersOnDate(
+			@RequestParam(value = "location", required = true) 
+					final Location location) {
+		ModelAndView mav = new ModelAndView(UNIT_OPTIONS_VIEW_NAME);
+		mav.addObject(UNITS_MODEL_KEY, 
+				this.paroleBoardItineraryService.findUnitsByLocation(location));
+		return mav;
+	}
+	
 	/* Action menus. */
 	
 	/**
@@ -572,10 +618,26 @@ public class ManageParoleBoardItineraryController {
 				.findBoardMembersByDate(
 						paroleBoardItineraryForm.getStartDate()));
 		int boardMeetingSiteIndex = 0;
+		Map<BoardMeetingSiteItem, List<Unit>> boardMeetingSiteUnits = 
+				new HashMap<>();
 		if (paroleBoardItineraryForm.getBoardMeetingSiteItems() != null) {
 			boardMeetingSiteIndex = paroleBoardItineraryForm
 					.getBoardMeetingSiteItems().size();
+			for (BoardMeetingSiteItem boardMeetingSiteItem : 
+				paroleBoardItineraryForm.getBoardMeetingSiteItems()) {
+				if (boardMeetingSiteItem.getLocation() != null) {
+					boardMeetingSiteUnits.put(boardMeetingSiteItem, this
+							.paroleBoardItineraryService
+							.findUnitsByLocation(boardMeetingSiteItem
+									.getLocation()));
+				} else {
+					boardMeetingSiteUnits.put(boardMeetingSiteItem, 
+							new ArrayList<>());
+				}
+			}
 		}
+		mav.addObject(BOARD_MEETING_SITE_UNITS_MODEL_KEY, 
+				boardMeetingSiteUnits);
 		mav.addObject(BOARD_MEETING_SITE_INDEX_MODEL_KEY,
 				boardMeetingSiteIndex);
 		int boardItineraryNoteIndex = 0;
@@ -585,6 +647,7 @@ public class ManageParoleBoardItineraryController {
 		}
 		mav.addObject(BOARD_ITINERARY_NOTE_INDEX_MODEL_KEY, 
 				boardItineraryNoteIndex);
+		mav.addObject(ONSITE_CATEGORIES, OnsiteCategory.values());
 		return mav;
 	}
 	
@@ -609,13 +672,14 @@ public class ManageParoleBoardItineraryController {
 						siteItem.getOperation())) {
 					this.paroleBoardItineraryService.createBoardMeetingSite(
 							boardItinerary, siteItem.getLocation(), 
-							siteItem.getDate(), siteItem.getOrder());
+							siteItem.getUnit(), siteItem.getDate(), 
+							siteItem.getOrder());
 				} else if (BoardMeetingSiteItemOperation.EDIT.equals(
 						siteItem.getOperation())) {
 					this.paroleBoardItineraryService.updateBoardMeetingSite(
 							siteItem.getBoardMeetingSite(), 
-							siteItem.getLocation(), siteItem.getDate(), 
-							siteItem.getOrder());
+							siteItem.getLocation(), siteItem.getUnit(), 
+							siteItem.getDate(), siteItem.getOrder());
 				} else if (BoardMeetingSiteItemOperation.REMOVE.equals(
 						siteItem.getOperation())) {
 					this.paroleBoardItineraryService.removeBoardMeetingSite(
@@ -680,5 +744,7 @@ public class ManageParoleBoardItineraryController {
 				.createPropertyEditor());
 		binder.registerCustomEditor(Location.class,
 				this.locationPropertyEditorFactory.createPropertyEditor());
+		binder.registerCustomEditor(Unit.class,
+				this.unitPropertyEditorFactory.createPropertyEditor());
 	}
 }

@@ -26,14 +26,14 @@ import omis.hearinganalysis.domain.HearingAnalysis;
 import omis.hearinganalysis.domain.HearingAnalysisCategory;
 import omis.instance.factory.InstanceFactory;
 import omis.paroleboarditinerary.domain.BoardAttendee;
-import omis.paroleboarditinerary.domain.BoardMeetingSite;
+import omis.paroleboarditinerary.domain.ParoleBoardItinerary;
 import omis.paroleeligibility.domain.ParoleEligibility;
 
 /**
  * Hearing analysis delegate.
  *
  * @author Josh Divine
- * @version 0.1.0 (Dec 18, 2017)
+ * @version 0.1.1 (Apr 18, 2018)
  * @since OMIS 3.0
  */
 public class HearingAnalysisDelegate {
@@ -71,28 +71,28 @@ public class HearingAnalysisDelegate {
 	 * Creates a new hearing analysis.
 	 * 
 	 * @param eligibility parole eligibility
-	 * @param meetingSite board meeting site
+	 * @param paroleBoardItinerary parole board itinerary
+	 * @param category hearing analysis category
 	 * @param analyst board attendee
 	 * @return hearing analysis
 	 * @throws DuplicateEntityFoundException if duplicate entity exists
 	 */
 	public HearingAnalysis create(final ParoleEligibility eligibility, 
-			final BoardMeetingSite meetingSite, 
+			final ParoleBoardItinerary paroleBoardItinerary,
 			final HearingAnalysisCategory category, final BoardAttendee analyst) 
 					throws DuplicateEntityFoundException {
-		if (this.hearingAnalysisDao.find(eligibility, meetingSite, category,
-				analyst) != null) {
+		if (this.hearingAnalysisDao.find(eligibility, paroleBoardItinerary, 
+				category, analyst) != null) {
 			throw new DuplicateEntityFoundException(
 					"Hearing analyis already exists");
 		}
 		HearingAnalysis hearingAnalysis = this.hearingAnalysisInstanceFactory
 				.createInstance();
-		hearingAnalysis.setEligibility(eligibility);
 		hearingAnalysis.setCreationSignature(new CreationSignature(
 				this.auditComponentRetriever.retrieveUserAccount(), 
 				this.auditComponentRetriever.retrieveDate()));
-		populateHearingAnalysis(hearingAnalysis, meetingSite, category,
-				analyst);
+		populateHearingAnalysis(hearingAnalysis, eligibility, category, analyst,
+				paroleBoardItinerary);
 		return this.hearingAnalysisDao.makePersistent(hearingAnalysis);
 	}
 
@@ -100,23 +100,26 @@ public class HearingAnalysisDelegate {
 	 * Updates an existing hearing analysis.
 	 * 
 	 * @param hearingAnalysis hearing analysis
-	 * @param meetingSite board meeting site
+	 * @param eligibility parole eligibility
+	 * @param paroleBoardItinerary parole board itinerary
+	 * @param category hearing analysis category
 	 * @param analyst board attendee
 	 * @return hearing analysis
 	 * @throws DuplicateEntityFoundException if duplicate entity exists
 	 */
 	public HearingAnalysis update(final HearingAnalysis hearingAnalysis, 
-			final BoardMeetingSite meetingSite, 
+			final ParoleEligibility eligibility,
+			final ParoleBoardItinerary paroleBoardItinerary,
 			final HearingAnalysisCategory category, final BoardAttendee analyst) 
 					throws DuplicateEntityFoundException {
-		if (this.hearingAnalysisDao.findExcluding(
-				hearingAnalysis.getEligibility(), meetingSite, category, 
-				analyst, hearingAnalysis) != null) {
+		if (this.hearingAnalysisDao.findExcluding(eligibility, 
+				paroleBoardItinerary, category, analyst, hearingAnalysis) != 
+				null) {
 			throw new DuplicateEntityFoundException(
 					"Hearing analyis already exists");
 		}
-		populateHearingAnalysis(hearingAnalysis, meetingSite, category,
-				analyst);
+		populateHearingAnalysis(hearingAnalysis, eligibility, category, analyst,
+				paroleBoardItinerary);
 		return this.hearingAnalysisDao.makePersistent(hearingAnalysis);
 	}
 
@@ -142,11 +145,13 @@ public class HearingAnalysisDelegate {
 
 	// Populates a hearing analysis
 	private void populateHearingAnalysis(final HearingAnalysis hearingAnalysis, 
-			final BoardMeetingSite meetingSite, 
-			final HearingAnalysisCategory category, final BoardAttendee analyst) {
-		hearingAnalysis.setBoardMeetingSite(meetingSite);
+			final ParoleEligibility eligibility, 
+			final HearingAnalysisCategory category, final BoardAttendee analyst, 
+			final ParoleBoardItinerary paroleBoardItinerary) {
+		hearingAnalysis.setEligibility(eligibility);
 		hearingAnalysis.setAnalyst(analyst);
 		hearingAnalysis.setCategory(category);
+		hearingAnalysis.setParoleBoardItinerary(paroleBoardItinerary);
 		hearingAnalysis.setUpdateSignature(new UpdateSignature(
 				this.auditComponentRetriever.retrieveUserAccount(), 
 				this.auditComponentRetriever.retrieveDate()));

@@ -1,18 +1,21 @@
 package omis.warrant.domain;
 
-
 /**
- * WarrantReasonCategory.java
+ * Warrant reason category.
  * 
- *@author Annie Jacques 
- *@version 0.1.0 (May 8, 2017)
- *@since OMIS 3.0
- *
+ * @author Annie Jacques 
+ * @author: Joel Norris
+ * @version 0.1.1 (April 4, 2018)
+ * @since OMIS 3.0
  */
 public enum WarrantReasonCategory {
 	
-	WARRANT,
+	/** Warrant to Arrest Parolee. */
+	WARRANT_PAROLEE,
+	/** Warrant to Arrest Conditional Release. */
+	WARRANT_CONDITIONAL_RELEASE,
 	
+	/** Authorization to Pick Up and Hold Probationer. */
 	AUTHORIZATION_TO_PICKUP_AND_HOLD;
 	
 	/**
@@ -29,10 +32,8 @@ public enum WarrantReasonCategory {
 	 * 
 	 * @return name
 	 */
-	
 	@Override
 	public String toString() {
 		return this.name();
-	}
-	
+	}	
 }

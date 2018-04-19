@@ -20,9 +20,11 @@ package omis.boardhearing.service.testng;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.testng.annotations.Test;
+
 import omis.address.domain.Address;
 import omis.address.domain.ZipCode;
 import omis.address.service.delegate.AddressDelegate;
@@ -74,10 +76,10 @@ import omis.util.PropertyValueAsserter;
 /**
  * Board Hearing Service Update Tests.
  * 
- *@author Annie Wahl 
- *@version 0.1.0 (Jan 12, 2018)
- *@since OMIS 3.0
- *
+ * @author Annie Wahl 
+ * @author Josh Divine
+ * @version 0.1.3 (Apr 18, 2018)
+ * @since OMIS 3.0
  */
 public class BoardHearingServiceUpdateTests
 		extends AbstractHibernateTransactionalTestNGSpringContextTests {
@@ -154,7 +156,7 @@ public class BoardHearingServiceUpdateTests
 	@Autowired
 	@Qualifier("boardHearingParticipantDelegate")
 	private BoardHearingParticipantDelegate boardHearingParticipantDelegate;
-	
+
 	/**
 	 * Tests Board Hearing update.
 	 * @throws DuplicateEntityFoundException - When a duplicate entity it found
@@ -187,7 +189,8 @@ public class BoardHearingServiceUpdateTests
 				this.paroleBoardLocationDelegate.create(locationOld, true);
 		final ParoleBoardItinerary itineraryOld =
 				this.paroleBoardItineraryDelegate.create(paroleBoardLocationOld,
-						this.parseDateText("01/01/2015"), null);
+						true, this.parseDateText("01/01/2015"), 
+						this.parseDateText("01/01/2015"));
 		final BoardHearingCategory categoryOld =
 				this.boardHearingCategoryDelegate
 				.create("Hearing Category Ooooold", true);
@@ -203,21 +206,20 @@ public class BoardHearingServiceUpdateTests
 				this.paroleBoardLocationDelegate.create(location, true);
 		final ParoleBoardItinerary itinerary =
 				this.paroleBoardItineraryDelegate.create(paroleBoardLocation,
-						this.parseDateText("01/01/2015"), null);
+						true, this.parseDateText("01/01/2015"), 
+						this.parseDateText("01/01/2015"));
 		final Boolean videoConference = true;
-		
 		BoardHearing boardHearing = this.boardHearingDelegate.create(
-				itineraryOld, locationOld, this.parseDateText("02/05/2015"),
+				itineraryOld, this.parseDateText("02/05/2015"), 
 				paroleEligibility, categoryOld, null, videoConferenceOld);
 		
 		boardHearing = this.boardHearingService
-				.updateBoardHearing(boardHearing, itinerary, location,
-						hearingDate, paroleEligibility, category,
-						cancellation, videoConference);
+				.updateBoardHearing(boardHearing, itinerary, hearingDate, 
+						paroleEligibility, category, cancellation, 
+						videoConference);
 		
 		PropertyValueAsserter.create()
 			.addExpectedValue("itinerary", itinerary)
-			.addExpectedValue("location", location)
 			.addExpectedValue("hearingDate", hearingDate)
 			.addExpectedValue("paroleEligibility", paroleEligibility)
 			.addExpectedValue("category", category)
@@ -323,10 +325,10 @@ public class BoardHearingServiceUpdateTests
 				this.paroleBoardLocationDelegate.create(location, true);
 		final ParoleBoardItinerary itinerary =
 				this.paroleBoardItineraryDelegate.create(paroleBoardLocation,
-						this.parseDateText("01/01/2015"), null);
-		return this.boardHearingDelegate
-				.create(itinerary, null, null, paroleEligibility, null, null,
-						false);
+						true, this.parseDateText("01/01/2015"), 
+						this.parseDateText("01/01/2015"));
+		return this.boardHearingDelegate.create(itinerary, null, 
+				paroleEligibility, null, null, false);
 	}
 	
 	private Date parseDateText(final String text) {

@@ -18,7 +18,7 @@
 
 <%--
  - Author: Josh Divine
- - Version: 0.1.1 (Feb 20, 2018)
+ - Version: 0.1.2 (Apr 18, 2018)
  - Since: OMIS 3.0
  --%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
@@ -80,18 +80,22 @@
 				</c:choose>
 			</c:forEach>
 		</form:select>
+		
+		( <a href="${pageContext.request.contextPath}/paroleBoardItinerary/create.html">
+		<span class="visibleLinkLabel"><fmt:message key="createParoleBoardItinerariesLink"/></span></a> 
+		
+		<c:choose>
+			<c:when test="${not empty hearingAnalysisForm.boardItinerary}">
+				<a href="${pageContext.request.contextPath}/paroleBoardItinerary/edit.html" id="editBoardItineraryLink">
+				<span class="visibleLinkLabel">/ <fmt:message key="editParoleBoardItinerariesLink"/></span></a>
+			</c:when>
+			<c:otherwise>
+				<a class="hidden" href="${pageContext.request.contextPath}/paroleBoardItinerary/edit.html" id="editBoardItineraryLink">
+				<span class="visibleLinkLabel">/ <fmt:message key="editParoleBoardItinerariesLink"/></span></a>
+			</c:otherwise>
+		</c:choose> )
 		<form:errors path="boardItinerary" cssClass="error"/>
-	</span>
-	
-	<span class="fieldGroup">
-		<form:label path="boardMeetingSite" class="fieldLabel">
-			<fmt:message key="boardMeetingSiteLabel"/></form:label>
-		<c:set var="meetingSite" value="${hearingAnalysisForm.boardMeetingSite}" scope="request"/>
-		<form:select path="boardMeetingSite">
-			<jsp:include page="/WEB-INF/views/hearingAnalysis/includes/boardMeetingSiteOptions.jsp"/>
-		</form:select>
-		<form:errors path="boardMeetingSite" cssClass="error"/>
-	</span>
+	</span>		
 	
 	<span class="fieldGroup">
 		<form:label path="analyst" class="fieldLabel">

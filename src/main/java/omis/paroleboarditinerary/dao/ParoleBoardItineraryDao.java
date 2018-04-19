@@ -19,6 +19,7 @@ package omis.paroleboarditinerary.dao;
 
 import java.util.Date;
 import java.util.List;
+
 import omis.dao.GenericDao;
 import omis.paroleboarditinerary.domain.ParoleBoardItinerary;
 import omis.paroleboardlocation.domain.ParoleBoardLocation;
@@ -28,7 +29,7 @@ import omis.paroleboardlocation.domain.ParoleBoardLocation;
  * 
  * @author Josh Divine
  * @author Annie Wahl
- * @version 0.1.0 (Jan 23, 2018)
+ * @version 0.1.2 (Apr 12, 2018)
  * @since OMIS 3.0
  */
 public interface ParoleBoardItineraryDao 
@@ -67,5 +68,5 @@ public interface ParoleBoardItineraryDao
 	 * @param effectiveDate effective date
 	 * @return list of parole board itineraries
 	 */
-	List<ParoleBoardItinerary> findAfterDate(Date effectiveDate);
+	List<ParoleBoardItinerary> findByEffectiveDate(Date effectiveDate);
 }

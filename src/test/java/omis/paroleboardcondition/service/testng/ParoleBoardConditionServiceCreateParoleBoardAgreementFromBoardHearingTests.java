@@ -65,12 +65,13 @@ import omis.util.PropertyValueAsserter;
  * Tests method to create parole board agreements from a board hearing.
  *
  * @author Josh Divine
- * @version 0.0.1
+ * @version 0.1.3 (Apr 18, 2018)
  * @since OMIS 3.0
  */
 @Test
-public class ParoleBoardConditionServiceCreateParoleBoardAgreementFromBoardHearingTests
-	extends AbstractHibernateTransactionalTestNGSpringContextTests {
+public class 
+	ParoleBoardConditionServiceCreateParoleBoardAgreementFromBoardHearingTests
+		extends AbstractHibernateTransactionalTestNGSpringContextTests {
 
 	/* Delegates. */
 	
@@ -170,10 +171,10 @@ public class ParoleBoardConditionServiceCreateParoleBoardAgreementFromBoardHeari
 				this.paroleBoardLocationDelegate.create(location, true);
 		ParoleBoardItinerary itinerary =
 				this.paroleBoardItineraryDelegate.create(paroleBoardLocation,
-						this.parseDateText("01/01/2015"), null);
-		BoardHearing boardHearing = this.boardHearingDelegate
-				.create(itinerary, null, null, paroleEligibility, null, null,
-						false);
+						true, this.parseDateText("01/01/2015"), 
+						this.parseDateText("01/01/2015"));
+		BoardHearing boardHearing = this.boardHearingDelegate.create(itinerary, 
+				null, paroleEligibility, null, null, false);
 
 		// Action
 		ParoleBoardAgreement paroleBoardAgreement = this
@@ -227,10 +228,10 @@ public class ParoleBoardConditionServiceCreateParoleBoardAgreementFromBoardHeari
 				this.paroleBoardLocationDelegate.create(location, true);
 		ParoleBoardItinerary itinerary =
 				this.paroleBoardItineraryDelegate.create(paroleBoardLocation,
-						this.parseDateText("01/01/2015"), null);
-		BoardHearing boardHearing = this.boardHearingDelegate
-				.create(itinerary, null, null, paroleEligibility, null, null,
-						false);
+						true, this.parseDateText("01/01/2015"), 
+						this.parseDateText("01/01/2015"));
+		BoardHearing boardHearing = this.boardHearingDelegate.create(itinerary, 
+				null, paroleEligibility, null, null, false);
 		this.paroleBoardAgreementDelegate.create(agreement, boardHearing, null, 
 				category);
 

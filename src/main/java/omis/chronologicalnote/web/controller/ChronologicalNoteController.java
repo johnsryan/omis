@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -34,7 +35,9 @@ import omis.chronologicalnote.web.validator.ChronologicalNoteFormValidator;
 import omis.offender.beans.factory.OffenderPropertyEditorFactory;
 import omis.offender.domain.Offender;
 import omis.offender.web.controller.delegate.OffenderSummaryModelDelegate;
+import omis.relationship.exception.ReflexiveRelationshipException;
 import omis.util.DateManipulator;
+import omis.web.controller.delegate.BusinessExceptionHandlerDelegate;
 
 /**
  * Chronological note controller.
@@ -42,6 +45,7 @@ import omis.util.DateManipulator;
  * @author Joel Norris
  * @author Stephen Abson
  * @author Sheronda Vaughn
+ * @author Yidong Li
  * @version 0.1.0 (February 6, 2018)
  * @since OMIS 3.0
  */
@@ -79,6 +83,8 @@ public class ChronologicalNoteController {
 	private static final String GROUPS_MODEL_KEY = "groups";
 	private static final String GROUP_CATEGORY_MAP_MODEL_KEY 
 		= "groupCategoryMap";
+	private static final String CHRONO_NOTE_EXISTS_EXCEPTION_MESSAGE_KEY
+		= "chronologicalNote.Conflicts";
 	
 	/* Services. */
 	
@@ -116,6 +122,14 @@ public class ChronologicalNoteController {
 	@Autowired
 	@Qualifier("offenderSummaryModelDelegate")
 	private OffenderSummaryModelDelegate offenderSummaryModelDelegate;
+	
+	@Autowired
+	@Qualifier("businessExceptionHandlerDelegate")
+	private BusinessExceptionHandlerDelegate businessExceptionHandlerDelegate;
+	
+	/* Message bundle */
+	private static final String CHRONOLOGICAL_NOTE_ERROR_BUNDLE_NAME
+	= "omis.chronologicalnote.msgs.form";
 		
 	/* Constructor. */
 	
@@ -449,6 +463,21 @@ public class ChronologicalNoteController {
 			}
 		}
 		return itemMap;
+	}
+	
+	/**
+	 * Handles {@code ChronologicalNoteExistsException}.
+	 * 
+	 * @param ChronologicalNoteExistsException thrown when chronological note
+	 * already exists
+	 * @return screen to handle {@code ChronologicalNoteExistsException}
+	 */
+	@ExceptionHandler(ReflexiveRelationshipException.class)
+	public ModelAndView handleChronologicalNoteExistsException(
+			final ChronologicalNoteExistsException exception) {
+		return this.businessExceptionHandlerDelegate.prepareModelAndView(
+			CHRONO_NOTE_EXISTS_EXCEPTION_MESSAGE_KEY,
+			CHRONOLOGICAL_NOTE_ERROR_BUNDLE_NAME, exception);
 	}
 	
 	/**

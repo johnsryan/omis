@@ -20,9 +20,11 @@ package omis.hearinganalysis.service.testng;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.testng.annotations.Test;
+
 import omis.address.domain.Address;
 import omis.address.domain.ZipCode;
 import omis.address.service.delegate.AddressDelegate;
@@ -45,10 +47,8 @@ import omis.organization.domain.Organization;
 import omis.organization.service.delegate.OrganizationDelegate;
 import omis.paroleboarditinerary.domain.AttendeeRoleCategory;
 import omis.paroleboarditinerary.domain.BoardAttendee;
-import omis.paroleboarditinerary.domain.BoardMeetingSite;
 import omis.paroleboarditinerary.domain.ParoleBoardItinerary;
 import omis.paroleboarditinerary.service.delegate.BoardAttendeeDelegate;
-import omis.paroleboarditinerary.service.delegate.BoardMeetingSiteDelegate;
 import omis.paroleboarditinerary.service.delegate.ParoleBoardItineraryDelegate;
 import omis.paroleboardlocation.domain.ParoleBoardLocation;
 import omis.paroleboardlocation.service.delegate.ParoleBoardLocationDelegate;
@@ -79,7 +79,7 @@ import omis.util.PropertyValueAsserter;
  * Tests method to update hearing analyses.
  *
  * @author Josh Divine
- * @version 0.0.1
+ * @version 0.1.3 (Apr 18, 2018)
  * @since OMIS 3.0
  */
 @Test
@@ -131,11 +131,7 @@ public class HearingAnalysisServiceUpdateHearingAnalysisTests
 	@Autowired
 	@Qualifier("paroleBoardItineraryDelegate")
 	private ParoleBoardItineraryDelegate paroleBoardItineraryDelegate;
-	
-	@Autowired
-	@Qualifier("boardMeetingSiteDelegate")
-	private BoardMeetingSiteDelegate boardMeetingSiteDelegate;
-	
+
 	@Autowired
 	@Qualifier("staffAssignmentDelegate")
 	private StaffAssignmentDelegate staffAssignmentDelegate;
@@ -181,14 +177,14 @@ public class HearingAnalysisServiceUpdateHearingAnalysisTests
 	/* Test methods. */
 
 	/**
-	 * Tests the update of the board meeting site for a hearing analysis.
+	 * Tests the update of the category for a hearing analysis.
 	 * 
 	 * @throws DuplicateEntityFoundException if duplicate entity exists
 	 * @throws DateConflictException if parole board member date range not 
 	 * within staff assignment date range
 	 */
 	@Test
-	public void testUpdateHearingAnalysisBoardMeetingSite() 
+	public void testUpdateHearingAnalysisParoleBoardItinerary() 
 			throws DuplicateEntityFoundException, DateConflictException {
 		// Arrangements
 		Offender offender = this.offenderDelegate.createWithoutIdentity("Smith",
@@ -224,16 +220,7 @@ public class HearingAnalysisServiceUpdateHearingAnalysisTests
 		Date startDate = this.parseDateText("01/01/2017");
 		Date endDate = this.parseDateText("12/31/2017");
 		ParoleBoardItinerary boardItinerary = this.paroleBoardItineraryDelegate
-				.create(paroleBoardLocation, startDate, endDate);
-		Organization secondOrganization = this.organizationDelegate.create(
-				"Org2", "O2", null);
-		Location secondLocation = this.locationDelegate.create(
-				secondOrganization, new DateRange(
-						this.parseDateText("01/01/2000"), null), address);
-		Date date = this.parseDateText("01/01/2005");
-		Integer order = 1;
-		BoardMeetingSite meetingSite = this.boardMeetingSiteDelegate.create(
-				boardItinerary, secondLocation, date, order);
+				.create(paroleBoardLocation, true, startDate, endDate);
 		Date memberStartDate = this.parseDateText("01/01/2017");
 		Date memberEndDate = null;
 		Person staffMember = this.personDelegate.create("Smith", "John", "Jay", 
@@ -255,29 +242,25 @@ public class HearingAnalysisServiceUpdateHearingAnalysisTests
 		HearingAnalysisCategory category = this.hearingAnalysisCategoryDelegate
 				.create("Category", true);
 		HearingAnalysis hearingAnalysis = this.hearingAnalysisDelegate.create(
-				eligibility, meetingSite, category, analyst);
-		Organization newOrganization = this.organizationDelegate.create(
-				"Org3", "O3", null);
-		Location newLocation = this.locationDelegate.create(newOrganization, 
-				new DateRange(this.parseDateText("01/01/2000"), null), address);
-		Date newDate = this.parseDateText("01/01/2005");
-		Integer newOrder = 2;
-		BoardMeetingSite newMeetingSite = this.boardMeetingSiteDelegate.create(
-				boardItinerary, newLocation, newDate, newOrder);
+				eligibility, boardItinerary, category, analyst);
+		ParoleBoardItinerary newBoardItinerary = this
+				.paroleBoardItineraryDelegate.create(paroleBoardLocation, 
+						true, this.parseDateText("06/01/2017"), 
+						this.parseDateText("06/01/2017"));
 		
 		// Action
 		hearingAnalysis = this.hearingAnalysisService.updateHearingAnalysis(
-				hearingAnalysis, newMeetingSite, analyst, category);
+				hearingAnalysis, newBoardItinerary, analyst, category);
 
 		// Assertions
 		PropertyValueAsserter.create()
 			.addExpectedValue("eligibility", eligibility)
-			.addExpectedValue("boardMeetingSite", newMeetingSite)
+			.addExpectedValue("paroleBoardItinerary", newBoardItinerary)
 			.addExpectedValue("analyst", analyst)
 			.addExpectedValue("category", category)
 			.performAssertions(hearingAnalysis);
 	}
-
+	
 	/**
 	 * Tests the update of the category for a hearing analysis.
 	 * 
@@ -322,16 +305,7 @@ public class HearingAnalysisServiceUpdateHearingAnalysisTests
 		Date startDate = this.parseDateText("01/01/2017");
 		Date endDate = this.parseDateText("12/31/2017");
 		ParoleBoardItinerary boardItinerary = this.paroleBoardItineraryDelegate
-				.create(paroleBoardLocation, startDate, endDate);
-		Organization secondOrganization = this.organizationDelegate.create(
-				"Org2", "O2", null);
-		Location secondLocation = this.locationDelegate.create(
-				secondOrganization, new DateRange(
-						this.parseDateText("01/01/2000"), null), address);
-		Date date = this.parseDateText("01/01/2005");
-		Integer order = 1;
-		BoardMeetingSite meetingSite = this.boardMeetingSiteDelegate.create(
-				boardItinerary, secondLocation, date, order);
+				.create(paroleBoardLocation, true, startDate, endDate);
 		Date memberStartDate = this.parseDateText("01/01/2017");
 		Date memberEndDate = null;
 		Person staffMember = this.personDelegate.create("Smith", "John", "Jay", 
@@ -353,18 +327,18 @@ public class HearingAnalysisServiceUpdateHearingAnalysisTests
 		HearingAnalysisCategory category = this.hearingAnalysisCategoryDelegate
 				.create("Category", true);
 		HearingAnalysis hearingAnalysis = this.hearingAnalysisDelegate.create(
-				eligibility, meetingSite, category, analyst);
+				eligibility, boardItinerary, category, analyst);
 		HearingAnalysisCategory newCategory = 
 				this.hearingAnalysisCategoryDelegate.create("Category 2", true);
 		
 		// Action
 		hearingAnalysis = this.hearingAnalysisService.updateHearingAnalysis(
-				hearingAnalysis, meetingSite, analyst, newCategory);
+				hearingAnalysis, boardItinerary, analyst, newCategory);
 
 		// Assertions
 		PropertyValueAsserter.create()
 			.addExpectedValue("eligibility", eligibility)
-			.addExpectedValue("boardMeetingSite", meetingSite)
+			.addExpectedValue("paroleBoardItinerary", boardItinerary)
 			.addExpectedValue("analyst", analyst)
 			.addExpectedValue("category", newCategory)
 			.performAssertions(hearingAnalysis);
@@ -414,16 +388,7 @@ public class HearingAnalysisServiceUpdateHearingAnalysisTests
 		Date startDate = this.parseDateText("01/01/2017");
 		Date endDate = this.parseDateText("12/31/2017");
 		ParoleBoardItinerary boardItinerary = this.paroleBoardItineraryDelegate
-				.create(paroleBoardLocation, startDate, endDate);
-		Organization secondOrganization = this.organizationDelegate.create(
-				"Org2", "O2", null);
-		Location secondLocation = this.locationDelegate.create(
-				secondOrganization, new DateRange(
-						this.parseDateText("01/01/2000"), null), address);
-		Date date = this.parseDateText("01/01/2005");
-		Integer order = 1;
-		BoardMeetingSite meetingSite = this.boardMeetingSiteDelegate.create(
-				boardItinerary, secondLocation, date, order);
+				.create(paroleBoardLocation, true, startDate, endDate);
 		Date memberStartDate = this.parseDateText("01/01/2017");
 		Date memberEndDate = null;
 		Person staffMember = this.personDelegate.create("Smith", "John", "Jay", 
@@ -445,7 +410,7 @@ public class HearingAnalysisServiceUpdateHearingAnalysisTests
 		HearingAnalysisCategory category = this.hearingAnalysisCategoryDelegate
 				.create("Category", true);
 		HearingAnalysis hearingAnalysis = this.hearingAnalysisDelegate.create(
-				eligibility, meetingSite, category, analyst);
+				eligibility, boardItinerary, category, analyst);
 		Date newMemberStartDate = this.parseDateText("01/01/2017");
 		Date newMemberEndDate = null;
 		Person newStaffMember = this.personDelegate.create("Smith", "Ted", 
@@ -467,12 +432,12 @@ public class HearingAnalysisServiceUpdateHearingAnalysisTests
 		
 		// Action
 		hearingAnalysis = this.hearingAnalysisService.updateHearingAnalysis(
-				hearingAnalysis, meetingSite, newAnalyst, category);
+				hearingAnalysis, boardItinerary, newAnalyst, category);
 
 		// Assertions
 		PropertyValueAsserter.create()
 			.addExpectedValue("eligibility", eligibility)
-			.addExpectedValue("boardMeetingSite", meetingSite)
+			.addExpectedValue("paroleBoardItinerary", boardItinerary)
 			.addExpectedValue("analyst", newAnalyst)
 			.addExpectedValue("category", category)
 			.performAssertions(hearingAnalysis);
@@ -522,16 +487,7 @@ public class HearingAnalysisServiceUpdateHearingAnalysisTests
 		Date startDate = this.parseDateText("01/01/2017");
 		Date endDate = this.parseDateText("12/31/2017");
 		ParoleBoardItinerary boardItinerary = this.paroleBoardItineraryDelegate
-				.create(paroleBoardLocation, startDate, endDate);
-		Organization secondOrganization = this.organizationDelegate.create(
-				"Org2", "O2", null);
-		Location secondLocation = this.locationDelegate.create(
-				secondOrganization, new DateRange(
-						this.parseDateText("01/01/2000"), null), address);
-		Date date = this.parseDateText("01/01/2005");
-		Integer order = 1;
-		BoardMeetingSite meetingSite = this.boardMeetingSiteDelegate.create(
-				boardItinerary, secondLocation, date, order);
+				.create(paroleBoardLocation, true, startDate, endDate);
 		Date memberStartDate = this.parseDateText("01/01/2017");
 		Date memberEndDate = null;
 		Person staffMember = this.personDelegate.create("Smith", "John", "Jay", 
@@ -552,21 +508,15 @@ public class HearingAnalysisServiceUpdateHearingAnalysisTests
 				boardItinerary, boardMember, number, role);
 		HearingAnalysisCategory category = this.hearingAnalysisCategoryDelegate
 				.create("Category", true);
-		this.hearingAnalysisDelegate.create(eligibility, meetingSite, category, 
-				analyst);
-		Organization newOrganization = this.organizationDelegate.create(
-				"Org3", "O3", null);
-		Location newLocation = this.locationDelegate.create(newOrganization, 
-				new DateRange(this.parseDateText("01/01/2000"), null), address);
-		Date newDate = this.parseDateText("01/01/2005");
-		Integer newOrder = 2;
-		BoardMeetingSite newMeetingSite = this.boardMeetingSiteDelegate.create(
-				boardItinerary, newLocation, newDate, newOrder);
+		this.hearingAnalysisDelegate.create(eligibility, boardItinerary,
+				category, analyst);
+		HearingAnalysisCategory newCategory = this
+				.hearingAnalysisCategoryDelegate.create("Category 2", true);
 		HearingAnalysis hearingAnalysis = this.hearingAnalysisDelegate.create(
-				eligibility, newMeetingSite, category, analyst);
+				eligibility, boardItinerary, newCategory, analyst);
 		// Action
 		hearingAnalysis = this.hearingAnalysisService.updateHearingAnalysis(
-				hearingAnalysis, meetingSite, analyst, category);
+				hearingAnalysis, boardItinerary, analyst, category);
 	}
 	
 	// Parses date text

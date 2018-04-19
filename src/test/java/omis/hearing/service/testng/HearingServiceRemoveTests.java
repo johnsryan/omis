@@ -240,12 +240,9 @@ public class HearingServiceRemoveTests
 		final Hearing hearing = this.createHearing();
 		final Resolution resolution = new Resolution();
 		resolution.setCategory(resolutionCategory);
-		resolution.setDate(this.parseDateText("05/01/2017"));
 		resolution.setDescision(descision);
 		resolution.setReason(reason);
 		resolution.setDisposition(disposition);
-		resolution.setAuthority(this.personDelegate.create(
-				"Buttehead", "Joel", "Trevor", null));
 		final Infraction infraction = this.hearingService.createInfraction(
 				hearing, null, null, resolution, null);
 		

@@ -20,9 +20,11 @@ package omis.boardhearing.service.testng;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.testng.annotations.Test;
+
 import omis.address.domain.Address;
 import omis.address.domain.ZipCode;
 import omis.address.service.delegate.AddressDelegate;
@@ -72,10 +74,10 @@ import omis.util.PropertyValueAsserter;
 /**
  * Board Hearing Create Tests.
  * 
- *@author Annie Wahl 
- *@version 0.1.0 (Jan 12, 2018)
- *@since OMIS 3.0
- *
+ * @author Annie Wahl 
+ * @author Josh Divine
+ * @version 0.1.3 (Apr 18, 2018)
+ * @since OMIS 3.0
  */
 public class BoardHearingServiceCreateTests
 		extends AbstractHibernateTransactionalTestNGSpringContextTests {
@@ -180,18 +182,16 @@ public class BoardHearingServiceCreateTests
 				this.paroleBoardLocationDelegate.create(location, true);
 		final ParoleBoardItinerary itinerary =
 				this.paroleBoardItineraryDelegate.create(paroleBoardLocation,
-						this.parseDateText("01/01/2015"), null);
+						true, this.parseDateText("01/01/2015"), 
+						this.parseDateText("01/01/2015"));
 		final Boolean videoConference = true;
 		
-		
 		final BoardHearing boardHearing = this.boardHearingService
-				.createBoardHearing(itinerary, location, hearingDate,
-						paroleEligibility, category, cancellation,
-						videoConference);
+				.createBoardHearing(itinerary, hearingDate, paroleEligibility, 
+						category, cancellation, videoConference);
 		
 		PropertyValueAsserter.create()
 			.addExpectedValue("itinerary", itinerary)
-			.addExpectedValue("location", location)
 			.addExpectedValue("hearingDate", hearingDate)
 			.addExpectedValue("paroleEligibility", paroleEligibility)
 			.addExpectedValue("category", category)
@@ -283,10 +283,10 @@ public class BoardHearingServiceCreateTests
 				this.paroleBoardLocationDelegate.create(location, true);
 		final ParoleBoardItinerary itinerary =
 				this.paroleBoardItineraryDelegate.create(paroleBoardLocation,
-						this.parseDateText("01/01/2015"), null);
-		return this.boardHearingDelegate
-				.create(itinerary, null, null, paroleEligibility, null, null,
-						false);
+						true, this.parseDateText("01/01/2015"), 
+						this.parseDateText("01/01/2015"));
+		return this.boardHearingDelegate.create(itinerary, null, 
+				paroleEligibility, null, null, false);
 	}
 	
 	private Date parseDateText(final String text) {

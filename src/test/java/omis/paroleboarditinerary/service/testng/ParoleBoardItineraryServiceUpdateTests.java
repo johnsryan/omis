@@ -32,7 +32,7 @@ import omis.util.PropertyValueAsserter;
  * Tests method to update parole board itineraries.
  *
  * @author Josh Divine
- * @version 0.0.1
+ * @version 0.1.1 (Apr 18, 2018)
  * @since OMIS 3.0
  */
 public class ParoleBoardItineraryServiceUpdateTests
@@ -102,8 +102,9 @@ public class ParoleBoardItineraryServiceUpdateTests
 				.paroleBoardLocationDelegate.create(location, true);
 		Date startDate = this.parseDateText("01/01/2017");
 		Date endDate = this.parseDateText("12/31/2017");
+		Boolean onsite = true;
 		ParoleBoardItinerary boardItinerary = this.paroleBoardItineraryDelegate
-				.create(paroleBoardLocation, startDate, endDate);
+				.create(paroleBoardLocation, onsite, startDate, endDate);
 		Organization newOrganization = this.organizationDelegate.create("Org2", 
 				"O2", null);
 		Location newLocation = this.locationDelegate.create(newOrganization, 
@@ -113,11 +114,52 @@ public class ParoleBoardItineraryServiceUpdateTests
 		
 		// Action
 		boardItinerary = this.paroleBoardItineraryService.update(boardItinerary,
-				newParoleBoardLocation, startDate, endDate);
+				newParoleBoardLocation, onsite, startDate, endDate);
 
 		// Assertions
 		PropertyValueAsserter.create()
 			.addExpectedValue("paroleBoardLocation", newParoleBoardLocation)
+			.addExpectedValue("onsite", onsite)
+			.addExpectedValue("dateRange.startDate", startDate)
+			.addExpectedValue("dateRange.endDate", endDate)
+			.performAssertions(boardItinerary);
+	}
+	
+	/**
+	 * Test the update of the on-site for a parole board itinerary.
+	 * 
+	 * @throws DuplicateEntityFoundException if duplicate entity exists
+	 */
+	@Test
+	public void testUpdateOnsite() throws DuplicateEntityFoundException {
+		// Arrangements
+		Organization organization = this.organizationDelegate.create("Org", "O",
+				null);
+		Country country = this.countryDelegate.create("Country", "C", true);
+		City city = this.cityDelegate.create("City", true, null, country);
+		ZipCode zipCode = this.zipCodeDelegate.create(city, "12345", null, 
+				true);
+		Address address = this.addressDelegate.findOrCreate("123 Some St.", 
+				null, null, null, zipCode);
+		Location location = this.locationDelegate.create(organization, 
+				new DateRange(this.parseDateText("01/01/2000"), null), address);
+		ParoleBoardLocation paroleBoardLocation = this
+				.paroleBoardLocationDelegate.create(location, true);
+		Date startDate = this.parseDateText("01/01/2017");
+		Date endDate = this.parseDateText("12/31/2017");
+		Boolean onsite = true;
+		ParoleBoardItinerary boardItinerary = this.paroleBoardItineraryDelegate
+				.create(paroleBoardLocation, onsite, startDate, endDate);
+		Boolean newOnsite = true;
+		
+		// Action
+		boardItinerary = this.paroleBoardItineraryService.update(boardItinerary,
+				paroleBoardLocation, newOnsite, startDate, endDate);
+
+		// Assertions
+		PropertyValueAsserter.create()
+			.addExpectedValue("paroleBoardLocation", paroleBoardLocation)
+			.addExpectedValue("onsite", newOnsite)
 			.addExpectedValue("dateRange.startDate", startDate)
 			.addExpectedValue("dateRange.endDate", endDate)
 			.performAssertions(boardItinerary);
@@ -145,17 +187,19 @@ public class ParoleBoardItineraryServiceUpdateTests
 				.paroleBoardLocationDelegate.create(location, true);
 		Date startDate = this.parseDateText("01/01/2017");
 		Date endDate = this.parseDateText("12/31/2017");
+		Boolean onsite = true;
 		ParoleBoardItinerary boardItinerary = this.paroleBoardItineraryDelegate
-				.create(paroleBoardLocation, startDate, endDate);
+				.create(paroleBoardLocation, onsite, startDate, endDate);
 		Date newStartDate = this.parseDateText("01/05/2017");
 		
 		// Action
 		boardItinerary = this.paroleBoardItineraryService.update(boardItinerary,
-				paroleBoardLocation, newStartDate, endDate);
+				paroleBoardLocation, onsite, newStartDate, endDate);
 
 		// Assertions
 		PropertyValueAsserter.create()
 			.addExpectedValue("paroleBoardLocation", paroleBoardLocation)
+			.addExpectedValue("onsite", onsite)
 			.addExpectedValue("dateRange.startDate", newStartDate)
 			.addExpectedValue("dateRange.endDate", endDate)
 			.performAssertions(boardItinerary);
@@ -183,17 +227,19 @@ public class ParoleBoardItineraryServiceUpdateTests
 				.paroleBoardLocationDelegate.create(location, true);
 		Date startDate = this.parseDateText("01/01/2017");
 		Date endDate = this.parseDateText("12/31/2017");
+		Boolean onsite = true;
 		ParoleBoardItinerary boardItinerary = this.paroleBoardItineraryDelegate
-				.create(paroleBoardLocation, startDate, endDate);
+				.create(paroleBoardLocation, onsite, startDate, endDate);
 		Date newEndDate = this.parseDateText("12/25/2017");
 		
 		// Action
 		boardItinerary = this.paroleBoardItineraryService.update(boardItinerary,
-				paroleBoardLocation, startDate, newEndDate);
+				paroleBoardLocation, onsite, startDate, newEndDate);
 
 		// Assertions
 		PropertyValueAsserter.create()
 			.addExpectedValue("paroleBoardLocation", paroleBoardLocation)
+			.addExpectedValue("onsite", onsite)
 			.addExpectedValue("dateRange.startDate", startDate)
 			.addExpectedValue("dateRange.endDate", newEndDate)
 			.performAssertions(boardItinerary);
@@ -222,15 +268,16 @@ public class ParoleBoardItineraryServiceUpdateTests
 				.paroleBoardLocationDelegate.create(location, true);
 		Date startDate = this.parseDateText("01/01/2017");
 		Date endDate = this.parseDateText("12/31/2017");
-		this.paroleBoardItineraryDelegate.create(paroleBoardLocation,
+		Boolean onsite = true;
+		this.paroleBoardItineraryDelegate.create(paroleBoardLocation, onsite, 
 				startDate, endDate);
 		Date secondStartDate = this.parseDateText("02/02/2017");
 		ParoleBoardItinerary boardItinerary = this.paroleBoardItineraryDelegate
-				.create(paroleBoardLocation, secondStartDate, endDate);
+				.create(paroleBoardLocation, onsite, secondStartDate, endDate);
 
 		// Action
 		boardItinerary = this.paroleBoardItineraryService.update(boardItinerary,
-				paroleBoardLocation, startDate, endDate);
+				paroleBoardLocation, onsite, startDate, endDate);
 	}
 
 	// Parses date text

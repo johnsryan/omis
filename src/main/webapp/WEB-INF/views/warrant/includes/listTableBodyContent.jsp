@@ -6,7 +6,7 @@
 <tr>
 	<td><a class="actionMenuItem rowActionMenuItem" href="${pageContext.request.contextPath}/warrant/warrantsRowActionMenu.html?warrant=${summary.warrantId}&warrantRelease=${summary.warrantReleaseId}&warrantCancellation=${summary.warrantCancellationId}&warrantArrest=${summary.warrantArrestId}"></a></td>
 	<td>
-		<fmt:message key="${summary.warrantReasonCategory}CategoryLabel"/>
+		<fmt:message key="categoryLabel.${summary.warrantReasonCategory}"/>
 	</td>
 	<td>
 		<fmt:formatDate value="${summary.warrantDate}" pattern="MM/dd/yyyy" />

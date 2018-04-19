@@ -34,6 +34,8 @@
   
   <import resource="applicationContext-boardHearingDecisionWeb.xml"/>
   
+  <import resource="applicationContext-boppWeb.xml"/>
+  
   <import resource="applicationContext-cautionWeb.xml"/>
   
   <import resource="applicationContext-caseloadWeb.xml"/>

@@ -28,4 +28,20 @@ window.onload = function() {
 	applyFormUpdateChecker(document.getElementById("hearingAnalysisForm"));
 	applyHearingAnalysisBehavior();
 	applyActionMenu(document.getElementById("hearingAnalysisNotesActionMenuLink"), hearingAnalysisNoteActionMenuOnClick);
+	document.getElementById("boardItinerary").onchange = function(e){
+		if (e.target.value != "") {
+			document.getElementById("editBoardItineraryLink").classList.remove("hidden");
+			
+			var link = document.getElementById("editBoardItineraryLink").href;
+			if (link.split("?").length > 1 ) {
+				link = link.split("?")[0];
+			}
+			link = link + "?paroleBoardItinerary=" + e.target.value;
+			document.getElementById("editBoardItineraryLink").href = link;
+		} else {
+			document.getElementById("editBoardItineraryLink").classList.add("hidden");
+		}
+		
+		
+	}
 };

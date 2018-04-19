@@ -205,4 +205,18 @@ public class OffenseItem
 	public SentenceFields getSentenceFields() {
 		return this.sentenceFields;
 	}
+	
+	/**
+	 * Returns string representation of {@code this} including operation,
+	 * connection, conviction, sentence operation and sentence.
+	 * 
+	 * @return string representation of {@code this}
+	 */
+	@Override
+	public String toString() {
+		return String.format(
+				"%s - %s [conviction - %s] %s [sentence - %s]",
+				this.getOperation(), this.getConnection(), this.getConviction(),
+				this.getSentenceOperation(), this.getSentence());
+	}
 }

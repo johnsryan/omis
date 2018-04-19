@@ -62,4 +62,31 @@
 		and
 			administeredQuestionValue.administeredQuestionnaire = :administeredQuestionnaire
 	]]></query>
+	<query name="findAnswerRatingsByRatingScaleGroupAndAdministeredQuestionnaire"><![CDATA[
+		select answerRating
+		from omis.assessment.domain.RatingScaleGroupAnswer ratingScaleGroupAnswer
+		inner join ratingScaleGroupAnswer.answerRating answerRating,
+			omis.questionnaire.domain.AdministeredQuestionValue administeredQuestionValue
+		where
+			answerRating.answerValue = administeredQuestionValue.answerValue
+		and
+			ratingScaleGroupAnswer.scaleGroup = :ratingScaleGroup
+		and
+			administeredQuestionValue.administeredQuestionnaire = :administeredQuestionnaire
+	]]></query>
+	<query name="findAnswerRatingsByRatingCategoryAndAdministeredQuestionnaireExcludingScaledGroups"><![CDATA[
+		select answerRating
+		from omis.assessment.domain.AnswerRating answerRating,
+			omis.questionnaire.domain.AdministeredQuestionValue administeredQuestionValue
+		where
+			answerRating.answerValue = administeredQuestionValue.answerValue
+		and
+			answerRating.ratingCategory = :ratingCategory
+		and
+			administeredQuestionValue.administeredQuestionnaire = :administeredQuestionnaire
+		and
+			answerRating not in 
+				(select distinct ratingScaleGroupAnswer.answerRating 
+				 from omis.assessment.domain.RatingScaleGroupAnswer ratingScaleGroupAnswer)
+	]]></query>
 </hibernate-mapping>

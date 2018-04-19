@@ -311,21 +311,6 @@ public class UpdateOffenderRelationController {
 	private PropertyEditorFactory addressPropertyEditorFactory;
 	
 	@Autowired
-	@Qualifier("offenderRelationshipAddressOperationPropertyEditorFactory")
-	private PropertyEditorFactory 
-		offenderRelationshipAddressOperationPropertyEditorFactory;
-	
-	@Autowired
-	@Qualifier("telephoneNumberItemOperationPropertyEditorFactory")
-	private PropertyEditorFactory 
-		telephoneNumberItemOperationPropertyEditorFactory;
-
-	@Autowired
-	@Qualifier("onlineAccountContactItemOperationPropertyEditorFactory")
-	private PropertyEditorFactory 
-		onlineAccountContactItemOperationPropertyEditorFactory;
-	
-	@Autowired
 	@Qualifier("telephoneNumberPropertyEditorFactory")
 	private PropertyEditorFactory telephoneNumberPropertyEditorFactory;
 	
@@ -2664,15 +2649,6 @@ public class UpdateOffenderRelationController {
 			this.customDateEditorFactory.createCustomDateOnlyEditor(true));
 		binder.registerCustomEditor(Address.class,
 			this.addressPropertyEditorFactory.createPropertyEditor());
-		binder.registerCustomEditor(OffenderRelationshipAddressOperation.class,
-			this.offenderRelationshipAddressOperationPropertyEditorFactory
-			.createPropertyEditor());
-		binder.registerCustomEditor(OnlineAccountContactItemOperation.class,
-			this.onlineAccountContactItemOperationPropertyEditorFactory
-			.createPropertyEditor());
-		binder.registerCustomEditor(TelephoneNumberItemOperation.class,
-			this.telephoneNumberItemOperationPropertyEditorFactory
-			.createPropertyEditor());
 		binder.registerCustomEditor(TelephoneNumber.class,
 			this.telephoneNumberPropertyEditorFactory.createPropertyEditor());
 		binder.registerCustomEditor(OnlineAccount.class,

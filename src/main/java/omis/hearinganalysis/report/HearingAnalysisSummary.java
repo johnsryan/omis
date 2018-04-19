@@ -24,7 +24,7 @@ import java.util.Date;
  * Hearing analysis summary.
  *
  * @author Josh Divine
- * @version 0.1.0 (Jan 8, 2018)
+ * @version 0.1.1 (Apr 18, 2018)
  * @since OMIS 3.0
  */
 public class HearingAnalysisSummary implements Serializable {
@@ -35,10 +35,6 @@ public class HearingAnalysisSummary implements Serializable {
 	
 	private final Date reviewDate;
 	
-	private final String boardMeetingLocationName;
-	
-	private final Date  boardMeetingDate;
-	
 	private final String analystLastName;
 	
 	private final String analystMiddleName;
@@ -48,14 +44,11 @@ public class HearingAnalysisSummary implements Serializable {
 	private final String analystTitleName;
 	
 	public HearingAnalysisSummary(final Date hearingEligibleDate,
-			final Date reviewDate, final String boardMeetingLocationName,
-			final Date  boardMeetingDate, final String analystLastName,
+			final Date reviewDate, final String analystLastName,
 			final String analystMiddleName, final String analystFirstName,
 			final String analystTitleName) {
 		this.hearingEligibleDate = hearingEligibleDate;
 		this.reviewDate = reviewDate;
-		this.boardMeetingLocationName = boardMeetingLocationName;
-		this.boardMeetingDate = boardMeetingDate;
 		this.analystLastName = analystLastName;
 		this.analystMiddleName = analystMiddleName;
 		this.analystFirstName = analystFirstName;
@@ -78,24 +71,6 @@ public class HearingAnalysisSummary implements Serializable {
 	 */
 	public Date getReviewDate() {
 		return reviewDate;
-	}
-
-	/**
-	 * Returns the board meeting location name.
-	 * 
-	 * @return board meeting location name
-	 */
-	public String getBoardMeetingLocationName() {
-		return boardMeetingLocationName;
-	}
-
-	/**
-	 * Returns the board meeting date.
-	 * 
-	 * @return board meeting date
-	 */
-	public Date getBoardMeetingDate() {
-		return boardMeetingDate;
 	}
 
 	/**

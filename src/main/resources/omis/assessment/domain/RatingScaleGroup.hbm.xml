@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ - OMIS - Offender Management Information System
+ - Copyright (C) 2011 - 2017 State of Montana
+ -
+ - This program is free software: you can redistribute it and/or modify
+ - it under the terms of the GNU General Public License as published by
+ - the Free Software Foundation, either version 3 of the License, or
+ - (at your option) any later version.
+ -
+ - This program is distributed in the hope that it will be useful,
+ - but WITHOUT ANY WARRANTY; without even the implied warranty of
+ - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ - GNU General Public License for more details.
+ -
+ - You should have received a copy of the GNU General Public License
+ - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="omis.assessment.domain">
+	<class	entity-name="omis.assessment.domain.RatingScaleGroup"
+			proxy="omis.assessment.domain.RatingScaleGroup"
+			name="omis.assessment.domain.impl.RatingScaleGroupImpl"
+			table="`RATING_SCALE_GROUP`">
+		<id name="id" type="java.lang.Long" column="`ID`">
+			<generator class="sequence">
+				<param name="sequence">`RATING_SCALE_GROUP_SEQ`</param>
+			</generator>
+		</id>
+		<property name="scaleName" column="`NAME`" type="java.lang.String" not-null="true"/>
+	</class>
+	<query name="findRatingScaleGroup"><![CDATA[
+		select ratingScaleGroup
+		from omis.assessment.domain.RatingScaleGroup ratingScaleGroup
+		where
+			ratingScaleGroup.scaleName = :name
+	]]></query>
+	<query name="findRatingScaleGroupExcluding"><![CDATA[
+		select ratingScaleGroup
+		from omis.assessment.domain.RatingScaleGroup ratingScaleGroup
+		where
+			ratingScaleGroup.scaleName = :name
+		and
+			ratingScaleGroup <> :excludedRatingScaleGroup
+	]]></query>
+	<query name="findRatingScaleGroupsByAdministeredQuestionnaireAndRatingCategory"><![CDATA[
+		select distinct ratingScaleGroup
+		from omis.assessment.domain.RatingScaleGroupAnswer ratingScaleGroupAnswer
+		inner join ratingScaleGroupAnswer.scaleGroup ratingScaleGroup
+		inner join ratingScaleGroupAnswer.answerRating answerRating,
+			omis.questionnaire.domain.AdministeredQuestionValue administeredQuestionValue
+		where
+			answerRating.answerValue = administeredQuestionValue.answerValue
+		and
+			answerRating.ratingCategory = :ratingCategory
+		and
+			administeredQuestionValue.administeredQuestionnaire = :administeredQuestionnaire
+	]]></query>
+</hibernate-mapping>

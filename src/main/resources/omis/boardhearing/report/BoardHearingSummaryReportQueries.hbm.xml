@@ -9,7 +9,6 @@ select new omis.boardhearing.report.BoardHearingSummary(
 		boardHearing.hearingDate,
 		'Status',
 		category.name,
-		organization.name,
 		analystName.lastName,
 		analystName.middleName,
 		analystName.firstName,
@@ -30,10 +29,6 @@ select new omis.boardhearing.report.BoardHearingSummary(
 	right outer join
 		hearingAnalysis.eligibility pE,
 		omis.boardhearing.domain.BoardHearing boardHearing
-	inner join
-		boardHearing.location location
-	inner join
-		location.organization organization
 	left outer join
 		boardHearing.category category
 	inner join
@@ -51,7 +46,6 @@ select new omis.boardhearing.report.BoardHearingSummary(
 		boardHearing.hearingDate,
 		'Status',
 		category.name,
-		organization.name,
 		analystName.lastName,
 		analystName.middleName,
 		analystName.firstName,
@@ -72,10 +66,6 @@ select new omis.boardhearing.report.BoardHearingSummary(
 	right outer join
 		hearingAnalysis.eligibility pE,
 		omis.boardhearing.domain.BoardHearing boardHearing
-	inner join
-		boardHearing.location location
-	inner join
-		location.organization organization
 	left outer join
 		boardHearing.category category
 	inner join

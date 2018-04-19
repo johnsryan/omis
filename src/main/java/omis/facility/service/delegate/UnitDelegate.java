@@ -14,7 +14,7 @@ import omis.instance.factory.InstanceFactory;
  * 
  * @author Joel Norris
  * @author Josh Divine
- * @version 0.1.1 (Aug 3, 2017)
+ * @version 0.1.2 (Apr 10, 2018)
  * @since OMIS 3.0
  */
 public class UnitDelegate {
@@ -119,5 +119,15 @@ public class UnitDelegate {
 	 */
 	public List<Unit> findUnits(final Facility facility, final Complex complex) {
 		return this.unitDao.findUnits(facility, complex);
+	}
+	
+	/**
+	 * Returns the unit with the specified facility.
+	 * 
+	 * @param facility facility
+	 * @return list of units
+	 */
+	public List<Unit> findByFacility(final Facility facility) {
+		return this.unitDao.findByFacility(facility);
 	}
 }

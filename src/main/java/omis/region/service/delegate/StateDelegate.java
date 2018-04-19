@@ -1,12 +1,29 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.region.service.delegate;
 
 import java.util.List;
 
 import omis.country.domain.Country;
-import omis.exception.DuplicateEntityFoundException;
 import omis.instance.factory.InstanceFactory;
 import omis.region.dao.StateDao;
 import omis.region.domain.State;
+import omis.region.exception.StateExistsException;
 
 /**
  * Delegate for States.
@@ -95,21 +112,21 @@ public class StateDelegate {
 	}
 	
 	/**
-	 * Creates country.
+	 * Creates state.
 	 * 
 	 * @param name name
 	 * @param abbreviation abbreviation
 	 * @param country country
 	 * @param home home
 	 * @param valid whether valid
-	 * @return created country
-	 * @throws DuplicateEntityFoundException if country exists
+	 * @return created state
+	 * @throws StateExistsException if state exists
 	 */
 	public State create(final String name, final String abbreviation,
 			final Country country, final Boolean home, final Boolean valid)
-				throws DuplicateEntityFoundException {
+				throws StateExistsException {
 		if (this.stateDao.find(name, country) != null) {
-			throw new DuplicateEntityFoundException("Country exists");
+			throw new StateExistsException("Country exists");
 		}
 		return this.createImpl(name, abbreviation, country, home, valid);
 	}

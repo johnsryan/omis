@@ -56,3 +56,8 @@
 	margin-bottom: 2px;
 	text-align: left;
 }
+
+a.assessmentActionMenu {
+	float: left;
+	margin-left: calc(5% + 6px);
+}

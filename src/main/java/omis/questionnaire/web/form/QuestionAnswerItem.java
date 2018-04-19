@@ -1,60 +1,82 @@
 package omis.questionnaire.web.form;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
-
+import omis.questionnaire.domain.AdministeredQuestionValue;
+import omis.questionnaire.domain.AllowedQuestion;
 import omis.questionnaire.domain.AnswerCardinality;
 import omis.questionnaire.domain.AnswerValue;
-import omis.questionnaire.domain.Question;
-import omis.questionnaire.domain.QuestionCategory;
-import omis.questionnaire.domain.QuestionConditionality;
 
 /**
- * QuestionAnswerItems.java
+ * Question Answer Items.
  * 
- *@author Annie Jacques 
- *@version 0.1.0 (Sep 20, 2016)
+ *@author Annie Wahl 
+ *@version 0.1.1 (Mar 28, 2018)
  *@since OMIS 3.0
  *
  */
-public class QuestionAnswerItem {
+public class QuestionAnswerItem implements Serializable {
 	
-	private Question question;
+	private static final long serialVersionUID = 1L;
+
+	private AllowedQuestion allowedQuestion;
+	
+	private AdministeredQuestionValue administeredQuestionValue;
 	
 	private AnswerValue answerValue;
 	
-	private List<AnswerValueItem> answerValueItems;
+	private List<AdministeredQuestionValueItem> administeredQuestionValueItems =
+			new ArrayList<AdministeredQuestionValueItem>();
 	
 	private String answerValueText;
 	
 	private String comments;
 	
-	private QuestionCategory questionCategory;
-	
 	private AnswerCardinality answerCardinality;
-	
-	private QuestionConditionality questionConditionality;
 	
 	private Boolean addComments;
 	
 	/**
-	 * Default constructor for QuestionAnswerItem
+	 * Default constructor for QuestionAnswerItem.
 	 */
-	public QuestionAnswerItem(){
+	public QuestionAnswerItem() {
 		
 	}
 	
 	/**
-	 * @return the question
+	 * Returns the allowedQuestion.
+	 * @return allowedQuestion - AllowedQuestion
 	 */
-	public Question getQuestion() {
-		return this.question;
+	public AllowedQuestion getAllowedQuestion() {
+		return this.allowedQuestion;
+	}
+	
+	/**
+	 * Sets the allowedQuestion.
+	 * @param allowedQuestion - AllowedQuestion
+	 */
+	public void setAllowedQuestion(final AllowedQuestion allowedQuestion) {
+		this.allowedQuestion = allowedQuestion;
+	}
+
+
+
+	/**
+	 * Returns the administeredQuestionValue.
+	 * @return administeredQuestionValue - AdministeredQuestionValue
+	 */
+	public AdministeredQuestionValue getAdministeredQuestionValue() {
+		return this.administeredQuestionValue;
 	}
 
 	/**
-	 * @param question the question to set
+	 * Sets the administeredQuestionValue.
+	 * @param administeredQuestionValue - AdministeredQuestionValue
 	 */
-	public void setQuestion(Question question) {
-		this.question = question;
+	public void setAdministeredQuestionValue(
+			final AdministeredQuestionValue administeredQuestionValue) {
+		this.administeredQuestionValue = administeredQuestionValue;
 	}
 
 	/**
@@ -67,22 +89,29 @@ public class QuestionAnswerItem {
 	/**
 	 * @param answerValue the answerValue to set
 	 */
-	public void setAnswerValue(AnswerValue answerValue) {
+	public void setAnswerValue(final AnswerValue answerValue) {
 		this.answerValue = answerValue;
 	}
 	
 	/**
-	 * @return the answerValueItems
+	 * Returns the administeredQuestionValueItems.
+	 * @return administeredQuestionValueItems - List of Administered
+	 * Question Value Items
 	 */
-	public List<AnswerValueItem> getAnswerValueItems() {
-		return this.answerValueItems;
+	public List<AdministeredQuestionValueItem>
+				getAdministeredQuestionValueItems() {
+		return this.administeredQuestionValueItems;
 	}
 
 	/**
-	 * @param answerValueItens the answerValueItems to set
+	 * Sets the administeredQuestionValueItems.
+	 * @param administeredQuestionValueItems - List of Administered
+	 * Question Value Items
 	 */
-	public void setAnswerValueItems(List<AnswerValueItem> answerValueItems) {
-		this.answerValueItems = answerValueItems;
+	public void setAdministeredQuestionValueItems(
+			final List<AdministeredQuestionValueItem>
+					administeredQuestionValueItems) {
+		this.administeredQuestionValueItems = administeredQuestionValueItems;
 	}
 
 	/**
@@ -95,7 +124,7 @@ public class QuestionAnswerItem {
 	/**
 	 * @param answerValueText the answerValueText to set
 	 */
-	public void setAnswerValueText(String answerValueText) {
+	public void setAnswerValueText(final String answerValueText) {
 		this.answerValueText = answerValueText;
 	}
 
@@ -109,22 +138,8 @@ public class QuestionAnswerItem {
 	/**
 	 * @param comments the comments to set
 	 */
-	public void setComments(String comments) {
+	public void setComments(final String comments) {
 		this.comments = comments;
-	}
-
-	/**
-	 * @return the questionCategory
-	 */
-	public QuestionCategory getQuestionCategory() {
-		return this.questionCategory;
-	}
-
-	/**
-	 * @param questionCategory the questionCategory to set
-	 */
-	public void setQuestionCategory(QuestionCategory questionCategory) {
-		this.questionCategory = questionCategory;
 	}
 
 	/**
@@ -137,22 +152,9 @@ public class QuestionAnswerItem {
 	/**
 	 * @param answerCardinality the answerCardinality to set
 	 */
-	public void setAnswerCardinality(AnswerCardinality answerCardinality) {
+	public void setAnswerCardinality(
+			final AnswerCardinality answerCardinality) {
 		this.answerCardinality = answerCardinality;
-	}
-
-	/**
-	 * @return the questionConditionality
-	 */
-	public QuestionConditionality getQuestionConditionality() {
-		return this.questionConditionality;
-	}
-
-	/**
-	 * @param questionConditionality the questionConditionality to set
-	 */
-	public void setQuestionConditionality(QuestionConditionality questionConditionality) {
-		this.questionConditionality = questionConditionality;
 	}
 
 	/**
@@ -165,7 +167,7 @@ public class QuestionAnswerItem {
 	/**
 	 * @param addComments the addComments to set
 	 */
-	public void setAddComments(Boolean addComments) {
+	public void setAddComments(final Boolean addComments) {
 		this.addComments = addComments;
 	}
 	

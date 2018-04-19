@@ -11,7 +11,6 @@
 <fmt:setBundle basename="omis.msgs.common" var="commonBundle"/>
 <fmt:bundle basename="omis.questionnaire.msgs.questionnaire">
 <form:form commandName="questionAnswerEditForm" class="editForm">
-	
 	<c:set var="questionAnswerEditItems" value="${questionAnswerEditForm.questionAnswerEditItems}" scope="request"/>
 	<div id = "questionAnswerEditItemsBody">
 		<c:forEach var="questionAnswerEditItem" items="${questionAnswerEditItems}" varStatus="status">
@@ -29,7 +28,6 @@
 			</a>
 		</label>
 	</span>
-		
 	<c:if test="${not empty questionnaireSection}">
 		<c:set var="updatable" value="${questionnaireSection}" scope="request"/>
 		<jsp:include page="/WEB-INF/views/audit/includes/updateSignature.jsp"/>

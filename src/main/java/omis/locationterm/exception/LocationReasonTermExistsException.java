@@ -17,7 +17,7 @@
  */
 package omis.locationterm.exception;
 
-import omis.exception.BusinessException;
+import omis.exception.DuplicateEntityFoundException;
 
 /**
  * Thrown when a location reason term exists.
@@ -27,7 +27,7 @@ import omis.exception.BusinessException;
  * @since OMIS 3.0
  */
 public class LocationReasonTermExistsException
-		extends BusinessException {
+		extends DuplicateEntityFoundException {
 	
 	private static final long serialVersionUID = 1L;
 	

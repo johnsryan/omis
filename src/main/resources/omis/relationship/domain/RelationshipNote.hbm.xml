@@ -66,8 +66,8 @@
       and category in 
       (
       	select desCategory
-      	from omis.family.domain.FamilyAssociationNoteCategoryDesignator des
-      	inner join des.relationshipNoteCategory desCategory
+      	from omis.relationship.domain.RelationshipNoteCategoryDesignator des
+      	inner join des.category desCategory
       )
 		order by note.date
 	]]></query>

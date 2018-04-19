@@ -1,9 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
+ - OMIS - Offender Management Information System
+ - Copyright (C) 2011 - 2017 State of Montana
+ -
+ - This program is free software: you can redistribute it and/or modify
+ - it under the terms of the GNU General Public License as published by
+ - the Free Software Foundation, either version 3 of the License, or
+ - (at your option) any later version.
+ -
+ - This program is distributed in the hope that it will be useful,
+ - but WITHOUT ANY WARRANTY; without even the implied warranty of
+ - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ - GNU General Public License for more details.
+ -
+ - You should have received a copy of the GNU General Public License
+ - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+ 
+<!--
  - Queries for reporting parole eligibilities.
  -
  - Author: Trevor Isles
- - Version: 0.1.0 (Dec 6, 2017)
+ - Author: Josh Divine
+ - Version: 0.1.1 (Apr 17, 2018)
  - Since: OMIS 3.0
  -->
  <!DOCTYPE hibernate-mapping PUBLIC
@@ -26,6 +45,41 @@
 	 	  left join eligibility.status as status
 	  	  left join status.reason as reason
 		where eligibility.offender = :offender
+		order by eligibility.hearingEligibilityDate desc
+	]]></query>
+	<query name="findUnresolvedParoleEligibilities"><![CDATA[
+		select new omis.paroleeligibility.report.ParoleEligibilitySummary(
+				eligibility.id,
+				(select hearingAnalysis.id
+				 from omis.hearinganalysis.domain.HearingAnalysis hearingAnalysis
+				 where hearingAnalysis.eligibility = eligibility),
+				eligibility.hearingEligibilityDate,
+				appearanceCategory.name,
+				status.category,
+				status.date,
+				eligibility.reviewDate,
+				reason.name,
+				name.lastName,
+				name.firstName,
+				name.middleName,
+				offender.offenderNumber,
+				boardHearing.hearingDate
+			)
+		from omis.paroleeligibility.domain.ParoleEligibility as eligibility
+		  left join eligibility.appearanceCategory as appearanceCategory
+	 	  inner join eligibility.status as status
+	  	  left join status.reason as reason
+	  	  inner join eligibility.offender offender
+	  	  inner join offender.name name,
+	  	  omis.boardhearing.domain.BoardHearing boardHearing
+		where 
+			eligibility = boardHearing.paroleEligibility
+		and
+			boardHearing not in (select boardHearingDecision.hearing
+								 from omis.boardhearingdecision.domain.BoardHearingDecision boardHearingDecision
+								 where boardHearingDecision.hearing = boardHearing)
+		and
+			status.category not in ('WAIVED', 'INELIGIBLE')
 		order by eligibility.hearingEligibilityDate desc
 	]]></query>
 </hibernate-mapping>

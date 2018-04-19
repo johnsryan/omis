@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-
 import omis.beans.factory.PropertyEditorFactory;
 import omis.exception.DuplicateEntityFoundException;
 import omis.offender.beans.factory.OffenderPropertyEditorFactory;
@@ -37,12 +35,12 @@ import omis.questionnaire.domain.AnswerValue;
 import omis.questionnaire.domain.Question;
 import omis.questionnaire.domain.QuestionnaireSection;
 import omis.questionnaire.domain.QuestionnaireType;
-import omis.questionnaire.report.AdministeredQuestionnaireSummary;
-import omis.questionnaire.report.QuestionSummary;
 import omis.questionnaire.report.AdministeredQuestionnaireReportService;
 import omis.questionnaire.report.AdministeredQuestionnaireSectionSummary;
+import omis.questionnaire.report.AdministeredQuestionnaireSummary;
+import omis.questionnaire.report.QuestionSummary;
 import omis.questionnaire.service.AdministeredQuestionnaireService;
-import omis.questionnaire.web.form.AnswerValueItem;
+import omis.questionnaire.web.form.AdministeredQuestionValueItem;
 import omis.questionnaire.web.form.QuestionAnswerItem;
 import omis.questionnaire.web.form.QuestionnaireForm;
 import omis.questionnaire.web.form.QuestionnaireReviewForm;
@@ -53,10 +51,10 @@ import omis.user.domain.UserAccount;
 import omis.web.controller.delegate.BusinessExceptionHandlerDelegate;
 
 /**
- * AdministeredQuestionnaireController.java
+ * Administered Questionnaire Controller.
  * 
- *@author Annie Jacques 
- *@version 0.1.0 (Oct 18, 2016)
+ *@author Annie Wahl 
+ *@version 0.1.1 (Apr 6, 2018)
  *@since OMIS 3.0
  *
  */
@@ -73,8 +71,9 @@ public class AdministeredQuestionnaireController {
 	
 	private static final String REVIEW_VIEW_NAME = "/questionnaire/review";
 	
-	private static final String ADMINISTERED_QUESTIONNAIRE_ACTION_MENU_VIEW_NAME 
-		= "questionnaire/includes/administeredQuestionnaireActionMenu";
+	private static final String
+		ADMINISTERED_QUESTIONNAIRE_ACTION_MENU_VIEW_NAME =
+		"questionnaire/includes/administeredQuestionnaireActionMenu";
 	
 	private static final String 
 		ADMINISTERED_QUESTIONNAIRE_REVIEW_ACTION_MENU_VIEW_NAME =
@@ -84,8 +83,8 @@ public class AdministeredQuestionnaireController {
 			"redirect:/questionnaire/administeredQuestionnaireList.html?"
 			+ "offender=%d&questionnaireType=%d";
 	
-	private static final String USER_ACCOUNTS_VIEW_NAME
-	= "user/json/userAccounts";
+	private static final String USER_ACCOUNTS_VIEW_NAME =
+			"user/json/userAccounts";
 	
 	/* Model Keys */
 	
@@ -113,8 +112,7 @@ public class AdministeredQuestionnaireController {
 	
 	/* Message Keys */
 	
-	private static final String ENTITY_EXISTS_MESSAGE_KEY
-	= "entity.exists";
+	private static final String ENTITY_EXISTS_MESSAGE_KEY = "entity.exists";
 	
 	/* Bundle */
 	
@@ -146,7 +144,8 @@ public class AdministeredQuestionnaireController {
 	
 	@Autowired
 	@Qualifier("administeredQuestionnairePropertyEditorFactory")
-	private PropertyEditorFactory administeredQuestionnairePropertyEditorFactory;
+	private PropertyEditorFactory
+			administeredQuestionnairePropertyEditorFactory;
 	
 	@Autowired
 	@Qualifier("questionnaireTypePropertyEditorFactory")
@@ -181,7 +180,7 @@ public class AdministeredQuestionnaireController {
 	private QuestionnaireReviewFormValidator reviewFormValidator;
 	
 	/**
-	 * Default constructor for QuestionnaireController
+	 * Default constructor for QuestionnaireController.
 	 *  
 	 */
 	public AdministeredQuestionnaireController() {
@@ -190,7 +189,7 @@ public class AdministeredQuestionnaireController {
 	/* Model and Views */
 	
 	/**
-	 * Returns a view for creating an administeredQuestionnaire
+	 * Returns a view for creating an administeredQuestionnaire.
 	 * @param offender - offender
 	 * @param questionnaireType - questionnaire type
 	 * @return ModelAndView - View for creating an administeredQuestionnaire
@@ -199,8 +198,8 @@ public class AdministeredQuestionnaireController {
 			method = RequestMethod.GET)
 	@PreAuthorize("hasRole('QUESTIONNAIRE_CREATE') or hasRole('ADMIN')")
 	public ModelAndView create(@RequestParam(
-			value = "offender", required=true) final Offender offender,
-			@RequestParam(value = "questionnaireType", required=true) 
+			value = "offender", required = true) final Offender offender,
+			@RequestParam(value = "questionnaireType", required = true)
 			final QuestionnaireType questionnaireType) {
 		return this.prepareCreateMav(offender, questionnaireType, 
 				new QuestionnaireForm());
@@ -209,7 +208,7 @@ public class AdministeredQuestionnaireController {
 	
 	/**
 	 * Attempts to save the administered questionnaire and return to the
-	 * questionnaire list screen
+	 * questionnaire list screen.
 	 * @param offender - offender
 	 * @param questionnaireType - questionnaire type
 	 * @param form - questionnaire form
@@ -224,16 +223,15 @@ public class AdministeredQuestionnaireController {
 			method = RequestMethod.POST)
 	@PreAuthorize("hasRole('QUESTIONNAIRE_CREATE') or hasRole('ADMIN')")
 	public ModelAndView save(@RequestParam(
-			value = "offender", required=true) final Offender offender,
-			@RequestParam(value = "questionnaireType", required=true) 
+			value = "offender", required = true) final Offender offender,
+			@RequestParam(value = "questionnaireType", required = true)
 			final QuestionnaireType questionnaireType, 
 			final QuestionnaireForm form, final BindingResult bindingResult) 
-					throws DuplicateEntityFoundException, ParseException{
+					throws DuplicateEntityFoundException, ParseException {
 		this.formValidator.validate(form, bindingResult);
-		if(bindingResult.hasErrors()){
+		if (bindingResult.hasErrors()) {
 			return this.prepareCreateMav(offender, questionnaireType, form);
-		}
-		else{
+		} else {
 			//because just doing "new Date()" would give more than just 
 				//"MM/dd/yyyy", and just simpleDateFormat returns a string. 
 					//So...this was my solution.
@@ -247,10 +245,10 @@ public class AdministeredQuestionnaireController {
 						offender, true, form.getComments(), 
 						form.getAssessor().getUser(), date, questionnaireType);
 			
-			for(QuestionnaireSection questionnaireSection : 
-				this.administeredQuestionnaireService
+			for (QuestionnaireSection questionnaireSection
+					: this.administeredQuestionnaireService
 					.findQuestionnaireSectionsByQuestionnaireType(
-							questionnaireType)){
+							questionnaireType)) {
 				this.administeredQuestionnaireService
 					.createAdministeredQuestionnaireSectionStatus(
 							questionnaireSection, administeredQuestionnaire, 
@@ -258,14 +256,14 @@ public class AdministeredQuestionnaireController {
 			}
 			
 			return new ModelAndView(String.format(
-					ADMINISTERED_QUESTIONNAIRE_LIST_REDIRECT, 	offender.getId(), 
-					questionnaireType.getId()));
+					ADMINISTERED_QUESTIONNAIRE_LIST_REDIRECT,
+					offender.getId(), questionnaireType.getId()));
 		}
 	}
 	
 	/**
 	 * Removes the specified administered questionnaire and returns to the
-	 * questionnaire list view
+	 * questionnaire list view.
 	 * @param offender - offender
 	 * @param administeredQuestionnaire - administered questionnaire to remove
 	 * @return ModelAndView - questionnaire list view
@@ -274,37 +272,37 @@ public class AdministeredQuestionnaireController {
 			method = RequestMethod.GET)
 	@PreAuthorize("hasRole('QUESTIONNAIRE_DELETE') or hasRole('ADMIN')")
 	public ModelAndView remove(@RequestParam(
-			value = "offender", required=true) final Offender offender,
-			@RequestParam(value="administeredQuestionnaire", required=true)
-			final AdministeredQuestionnaire administeredQuestionnaire){
+			value = "offender", required = true) final Offender offender,
+			@RequestParam(value = "administeredQuestionnaire", required = true)
+			final AdministeredQuestionnaire administeredQuestionnaire) {
 		QuestionnaireType questionnaireType = 
 				administeredQuestionnaire.getQuestionnaireType();
 		
-		for(AdministeredQuestionnaireSectionStatus sectionStatus : 
-			this.administeredQuestionnaireService
+		for (AdministeredQuestionnaireSectionStatus sectionStatus
+				: this.administeredQuestionnaireService
 		.findAdministeredQuestionnaireSectionStatusByAdministeredQuestionnaire(
-				administeredQuestionnaire)){
+				administeredQuestionnaire)) {
 			AdministeredQuestionnaireSectionNote sectionNote =
 				this.administeredQuestionnaireService
 			.findAdministeredQuestionnaireSectionNoteByQuestionnaireAndSection(
 					administeredQuestionnaire, 
 					sectionStatus.getQuestionnaireSection());
-			if(sectionNote != null){
+			if (sectionNote != null) {
 				this.administeredQuestionnaireService
 				.removeAdministeredQuestionnaireSectionNote(sectionNote);
 			}
 			
-			for(AllowedQuestion allowedQuestion : 
-				this.administeredQuestionnaireService
+			for (AllowedQuestion allowedQuestion
+					: this.administeredQuestionnaireService
 				.findAllowedQuestionsByQuestionSection(
-						sectionStatus.getQuestionnaireSection())){
-				for(AdministeredQuestionValue administeredQuestionValue : 
-					this.administeredQuestionnaireService
+						sectionStatus.getQuestionnaireSection())) {
+				for (AdministeredQuestionValue administeredQuestionValue
+						: this.administeredQuestionnaireService
 					.findAdministeredQuestionValuesByQuestionAndQuestionnaire(
 							allowedQuestion.getQuestion(), 
-							administeredQuestionnaire)){
+							administeredQuestionnaire)) {
 					this.administeredQuestionnaireService
-					.removeAdministeredQuestionValue(
+						.removeAdministeredQuestionValue(
 							administeredQuestionValue);
 				}
 			}
@@ -322,17 +320,18 @@ public class AdministeredQuestionnaireController {
 	
 	
 	/**
-	 * Returns a view of the questionnaire review screen
+	 * Returns a view of the questionnaire review screen.
 	 * @param offender - offender
-	 * @param administeredQuestionnaire - administered questionnaire being reviewed
+	 * @param administeredQuestionnaire - administered questionnaire
+	 * being reviewed
 	 * @return ModelAndView - view of the questionnaire review screen
 	 */
 	@RequestMapping(value = "/review.html", method = RequestMethod.GET)
 	@PreAuthorize("hasRole('QUESTIONNAIRE_CREATE') or hasRole('ADMIN')")
 	public ModelAndView review(@RequestParam(
-			value = "offender", required=true) final Offender offender,
-			@RequestParam(value="administeredQuestionnaire", required=true)
-			final AdministeredQuestionnaire administeredQuestionnaire){
+			value = "offender", required = true) final Offender offender,
+			@RequestParam(value = "administeredQuestionnaire", required = true)
+			final AdministeredQuestionnaire administeredQuestionnaire) {
 		
 		return this.prepareReviewMav(offender, administeredQuestionnaire, 
 				new QuestionnaireReviewForm());
@@ -340,7 +339,7 @@ public class AdministeredQuestionnaireController {
 	
 	/**
 	 * Attempts to finalize the administered questionnaire and return to the
-	 * questionnaire list screen
+	 * questionnaire list screen.
 	 * @param offender - offender
 	 * @param administeredQuestionnaire - administered questionnaire to be 
 	 * finalized
@@ -355,20 +354,19 @@ public class AdministeredQuestionnaireController {
 	@RequestMapping(value = "/review.html", method = RequestMethod.POST)
 	@PreAuthorize("hasRole('QUESTIONNAIRE_CREATE') or hasRole('ADMIN')")
 	public ModelAndView finalize(@RequestParam(
-			value = "offender", required=true) final Offender offender,
-			@RequestParam(value="administeredQuestionnaire", required=true)
+			value = "offender", required = true) final Offender offender,
+			@RequestParam(value = "administeredQuestionnaire", required = true)
 			final AdministeredQuestionnaire administeredQuestionnaire, 
 			final QuestionnaireReviewForm form, 
 			final BindingResult bindingResult) 
-					throws DuplicateEntityFoundException{
+					throws DuplicateEntityFoundException {
 		
 		this.reviewFormValidator.validate(form, bindingResult);
-		if(bindingResult.hasErrors()){
+		if (bindingResult.hasErrors()) {
 			
 			return this.prepareReviewMav(offender, administeredQuestionnaire, 
 					form);
-		}
-		else{
+		} else {
 			this.administeredQuestionnaireService.editAdministeredQuestionnaire(
 					administeredQuestionnaire, 
 					administeredQuestionnaire.getAnswerer(), 
@@ -385,31 +383,31 @@ public class AdministeredQuestionnaireController {
 	
 	
 	/**
-	 * Displays the action menu on the questionnaire create screen
+	 * Displays the action menu on the questionnaire create screen.
 	 * @param offender - offender
 	 * @param questionnaireType - questionnaire type
 	 * @return ModelAndView - view of action menu on the questionnaire
 	 * create screen
 	 */
-	@RequestMapping(value="/administeredQuestionnaireActionMenu.html",
-			method=RequestMethod.GET)
+	@RequestMapping(value = "/administeredQuestionnaireActionMenu.html",
+			method = RequestMethod.GET)
 	public ModelAndView displayQuestionnaireActionMenu(
-			@RequestParam(value="offender", required=true)
+			@RequestParam(value = "offender", required = true)
 			final Offender offender, 
-			@RequestParam(value="questionnaireType", 
-			required=true) final QuestionnaireType questionnaireType){
+			@RequestParam(value = "questionnaireType", 
+			required = true) final QuestionnaireType questionnaireType) {
 		ModelMap map = new ModelMap();
 		
 		map.addAttribute(OFFENDER_MODEL_KEY, offender);
 		map.addAttribute(QUESTIONNAIRE_TYPE_MODEL_KEY, questionnaireType);
 		
-		return new ModelAndView(ADMINISTERED_QUESTIONNAIRE_ACTION_MENU_VIEW_NAME, 
-				map);
+		return new ModelAndView(
+				ADMINISTERED_QUESTIONNAIRE_ACTION_MENU_VIEW_NAME, map);
 	}
 	
 	
 	/**
-	 * Returns a prepared model and view for the questionnaire create screen
+	 * Returns a prepared model and view for the questionnaire create screen.
 	 * @param offender - offender
 	 * @param questionnaireType - questionnaire type
 	 * @param form - questionnaire form
@@ -418,7 +416,7 @@ public class AdministeredQuestionnaireController {
 	 */
 	public ModelAndView prepareCreateMav(final Offender offender, 
 			final QuestionnaireType questionnaireType, 
-			final QuestionnaireForm form){
+			final QuestionnaireForm form) {
 		ModelMap map = new ModelMap();
 		
 		map.addAttribute(CREATE_FORM_MODEL_KEY, form);
@@ -431,7 +429,7 @@ public class AdministeredQuestionnaireController {
 	}
 	
 	/**
-	 * Returns a prepared model and view for the questionnaire review screen
+	 * Returns a prepared model and view for the questionnaire review screen.
 	 * @param offender - offender
 	 * @param administeredQuestionnaire - administered questionnaire to be
 	 * reviewed
@@ -441,7 +439,7 @@ public class AdministeredQuestionnaireController {
 	 */
 	public ModelAndView prepareReviewMav(final Offender offender, final
 			AdministeredQuestionnaire administeredQuestionnaire, 
-			final QuestionnaireReviewForm form){
+			final QuestionnaireReviewForm form) {
 		ModelMap map = new ModelMap();
 		
 		List<AdministeredQuestionnaireSectionStatus> sectionStatuses =
@@ -449,27 +447,28 @@ public class AdministeredQuestionnaireController {
 		.findAdministeredQuestionnaireSectionStatusByAdministeredQuestionnaire(
 				administeredQuestionnaire);
 		
-		LinkedHashMap<AdministeredQuestionnaireSectionSummary, List<QuestionSummary>>
-			sectionQuestionSummaries = new LinkedHashMap
-				<AdministeredQuestionnaireSectionSummary, List<QuestionSummary>>();
+		LinkedHashMap<AdministeredQuestionnaireSectionSummary,
+			List<QuestionSummary>> sectionQuestionSummaries = new LinkedHashMap
+				<AdministeredQuestionnaireSectionSummary,
+				List<QuestionSummary>>();
 		List<QuestionSummary> questionSummaries;
 		List<SectionReviewItem> sectionReviewItems = new 
 				ArrayList<SectionReviewItem>();
 		
-		for(AdministeredQuestionnaireSectionStatus sectionStatus 
-				: sectionStatuses){
+		for (AdministeredQuestionnaireSectionStatus sectionStatus 
+				: sectionStatuses) {
 			questionSummaries = 
 					this.administeredQuestionnaireReportService
 					.findQuestionSummariesByQuestionnaireSection(
 							sectionStatus.getQuestionnaireSection());
 			
-			findSectionSummary : for(
-					AdministeredQuestionnaireSectionSummary sectionSummary : 
-						this.administeredQuestionnaireReportService
+			findSectionSummary : for (
+					AdministeredQuestionnaireSectionSummary sectionSummary
+					: this.administeredQuestionnaireReportService
 				.findAdministeredQuestionnaireSectionSummariesByAdministeredQuestionnaire(
-						sectionStatus.getAdministeredQuestionnaire())){
-				if(sectionSummary.getQuestionnaireSectionId().equals(
-						sectionStatus.getQuestionnaireSection().getId())){
+						sectionStatus.getAdministeredQuestionnaire())) {
+				if (sectionSummary.getQuestionnaireSectionId().equals(
+						sectionStatus.getQuestionnaireSection().getId())) {
 					sectionQuestionSummaries.put(sectionSummary,
 							questionSummaries);
 					break findSectionSummary;
@@ -477,8 +476,8 @@ public class AdministeredQuestionnaireController {
 			}
 		}
 		
-		for(AdministeredQuestionnaireSectionStatus sectionStatus : 
-			sectionStatuses){
+		for (AdministeredQuestionnaireSectionStatus sectionStatus
+				: sectionStatuses) {
 			
 			List<AllowedQuestion> allowedQuestions =
 					this.administeredQuestionnaireService
@@ -489,24 +488,22 @@ public class AdministeredQuestionnaireController {
 					ArrayList<QuestionAnswerItem>();
 			AdministeredQuestionValue administeredQuestionValue;
 			List<AdministeredQuestionValue> administeredQuestionValues;
-			List<AnswerValueItem> answerValueItems;
 			QuestionAnswerItem item;
-			AnswerValueItem answerValueItem; 
 			
 			
-			for(AllowedQuestion allowedQuestion : allowedQuestions){
+			for (AllowedQuestion allowedQuestion : allowedQuestions) {
 				item = new QuestionAnswerItem();
 				
 				item.setAnswerCardinality(allowedQuestion
 						.getAnswerCardinality());
 				
-				if(allowedQuestion.getAnswerCardinality()
-						.equals(AnswerCardinality.SINGLE)){
+				if (allowedQuestion.getAnswerCardinality()
+						.equals(AnswerCardinality.SINGLE)) {
 					administeredQuestionValue = 
 							this.administeredQuestionnaireService
 					.findAdministeredQuestionValueByQuestionAndQuestionnaire(
 					allowedQuestion.getQuestion(), administeredQuestionnaire);
-					if(administeredQuestionValue != null){
+					if (administeredQuestionValue != null) {
 						item.setAnswerValue(administeredQuestionValue
 								.getAnswerValue());
 						item.setAnswerValueText(administeredQuestionValue
@@ -514,44 +511,44 @@ public class AdministeredQuestionnaireController {
 						item.setComments(administeredQuestionValue
 								.getComments());
 					}
-				}
-				else if(allowedQuestion.getAnswerCardinality()
-						.equals(AnswerCardinality.MULTIPLE)){
+				} else if (allowedQuestion.getAnswerCardinality()
+						.equals(AnswerCardinality.MULTIPLE)) {
 					administeredQuestionValues
 						= this.administeredQuestionnaireService
 					.findAdministeredQuestionValuesByQuestionAndQuestionnaire(
 							allowedQuestion.getQuestion(), 
 							administeredQuestionnaire);
-					answerValueItems = new ArrayList<AnswerValueItem>();
+					List<AdministeredQuestionValueItem> admnstrdQstnValueItems =
+							new ArrayList<AdministeredQuestionValueItem>();
+					
 					String comments = null;
 					String answerValueText = null;
 					
-					for(AdministeredQuestionValue value 
-							: administeredQuestionValues){
-						answerValueItem = new AnswerValueItem();
-						answerValueItem.setAnswerValue(value.getAnswerValue());
-						answerValueItems.add(answerValueItem);
+					for (AdministeredQuestionValue value 
+							: administeredQuestionValues) {
+						AdministeredQuestionValueItem valueItem =
+								new AdministeredQuestionValueItem();
+						valueItem.setAnswerValue(value.getAnswerValue());
+						valueItem.setAdministeredQuestionValue(value);
+						admnstrdQstnValueItems.add(valueItem);
 						
-						if(comments == null && value.getComments() != null){
+						if (comments == null && value.getComments() != null) {
 							comments = value.getComments();
 						}
-						if(answerValueText == null && 
-								value.getAnswerValueText() != null){
+						if (answerValueText == null
+								&& value.getAnswerValueText() != null) {
 							answerValueText = value.getAnswerValueText();
 						}
+						item.setAdministeredQuestionValue(value);
 					}
-					
-					item.setAnswerValueItems(answerValueItems);
+					item.setAdministeredQuestionValueItems(
+							admnstrdQstnValueItems);
 					item.setComments(comments);
 					item.setAnswerValueText(answerValueText);
 				}
-				
-				item.setQuestion(allowedQuestion.getQuestion());
-				item.setQuestionCategory(allowedQuestion.getQuestion()
-						.getQuestionCategory());
-				item.setQuestionConditionality(allowedQuestion
-						.getQuestionConditionality());
-				
+				item.setAllowedQuestion(allowedQuestion);
+				item.setAnswerCardinality(allowedQuestion
+						.getAnswerCardinality());
 				questionAnswerItems.add(item);
 			}
 			
@@ -564,7 +561,7 @@ public class AdministeredQuestionnaireController {
 			SectionReviewItem sectionReviewItem = new SectionReviewItem();
 			
 			sectionReviewItem.setQuestionAnswerItems(questionAnswerItems);
-			if(sectionNote != null){
+			if (sectionNote != null) {
 				sectionReviewItem.setSectionNotes(sectionNote.getComments());
 			}
 			sectionReviewItem.setSectionStatus(sectionStatus);
@@ -593,18 +590,18 @@ public class AdministeredQuestionnaireController {
 	}
 	
 	/**
-	 * Displays the action menu for the questionnaire review screen
+	 * Displays the action menu for the questionnaire review screen.
 	 * @param offender - offender
 	 * @param administeredQuestionnaire administered questionnaire
 	 * @return ModelAndView - action menu for the questionnaire review screen
 	 */
 	@RequestMapping(value = "/administeredQuestionnaireReviewActionMenu.html", 
-			method=RequestMethod.GET)
+			method = RequestMethod.GET)
 	public ModelAndView displayQuestionnaireReviewActionMenu(
-			@RequestParam(value="offender", 
-			required=true) final Offender offender,
-			@RequestParam(value="administeredQuestionnaire", required=true)
-			final AdministeredQuestionnaire administeredQuestionnaire){
+			@RequestParam(value = "offender", 
+			required = true) final Offender offender,
+			@RequestParam(value = "administeredQuestionnaire", required = true)
+			final AdministeredQuestionnaire administeredQuestionnaire) {
 	
 		ModelMap map = new ModelMap();
 		
@@ -648,19 +645,19 @@ public class AdministeredQuestionnaireController {
 	@ExceptionHandler(DuplicateEntityFoundException.class)
 	public ModelAndView handleDuplicateEntityFoundException(
 			final DuplicateEntityFoundException exception) {
-		return this.businessExceptionHandlerDelegate.prepareModelAndView
-		(ENTITY_EXISTS_MESSAGE_KEY, ERROR_BUNDLE_NAME, exception);
+		return this.businessExceptionHandlerDelegate.prepareModelAndView(
+				ENTITY_EXISTS_MESSAGE_KEY, ERROR_BUNDLE_NAME, exception);
 	}
 	
 	/* InitBinder */
 	
 	/**
-	 * Sets up and registers property editors
+	 * Sets up and registers property editors.
 	 * 
 	 * @param binder - web binder
 	 */
 	@InitBinder
-	protected void initBinder(final WebDataBinder binder){
+	protected void initBinder(final WebDataBinder binder) {
 		binder.registerCustomEditor(
 				Offender.class,
 				this.offenderPropertyEditorFactory
@@ -677,7 +674,8 @@ public class AdministeredQuestionnaireController {
 		binder.registerCustomEditor(Question.class, 
 				this.questionPropertyEditorFactory
 				.createPropertyEditor());
-		binder.registerCustomEditor(AdministeredQuestionnaireSectionStatus.class, 
+		binder.registerCustomEditor(
+				AdministeredQuestionnaireSectionStatus.class,
 				this.administeredQuestionnaireSectionStatusPropertyEditorFactory
 				.createPropertyEditor());
 		binder.registerCustomEditor(UserAccount.class, 

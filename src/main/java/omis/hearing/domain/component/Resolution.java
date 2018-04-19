@@ -1,21 +1,19 @@
 package omis.hearing.domain.component;
-
 import java.io.Serializable;
 import java.util.Date;
-
 import omis.hearing.domain.DispositionCategory;
 import omis.hearing.domain.ResolutionClassificationCategory;
 import omis.person.domain.Person;
 
 /**
- * Resolution.java
+ * Resolution.
  * 
- *@author Annie Jacques 
- *@version 0.1.0 (Aug 17, 2017)
+ *@author Annie Wahl 
+ *@version 0.1.1 (Apr 17, 2018)
  *@since OMIS 3.0
  *
  */
-public class Resolution implements Serializable{
+public class Resolution implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -40,7 +38,7 @@ public class Resolution implements Serializable{
 	}
 
 	/**
-	 * Returns the date
+	 * Returns the date.
 	 * @return date - Date
 	 */
 	public Date getDate() {
@@ -48,15 +46,15 @@ public class Resolution implements Serializable{
 	}
 
 	/**
-	 * Sets the date
+	 * Sets the date.
 	 * @param date - Date
 	 */
-	public void setDate(Date date) {
+	public void setDate(final Date date) {
 		this.date = date;
 	}
 
 	/**
-	 * Returns the descision
+	 * Returns the descision.
 	 * @return descision - String
 	 */
 	public String getDescision() {
@@ -64,15 +62,15 @@ public class Resolution implements Serializable{
 	}
 
 	/**
-	 * Sets the descision
+	 * Sets the descision.
 	 * @param descision - String
 	 */
-	public void setDescision(String descision) {
+	public void setDescision(final String descision) {
 		this.descision = descision;
 	}
 
 	/**
-	 * Returns the reason
+	 * Returns the reason.
 	 * @return reason - String
 	 */
 	public String getReason() {
@@ -80,15 +78,15 @@ public class Resolution implements Serializable{
 	}
 
 	/**
-	 * Sets the reason
+	 * Sets the reason.
 	 * @param reason - String
 	 */
-	public void setReason(String reason) {
+	public void setReason(final String reason) {
 		this.reason = reason;
 	}
 	
 	/**
-	 * Returns the authority
+	 * Returns the authority.
 	 * @return authority - Person
 	 */
 	public Person getAuthority() {
@@ -96,7 +94,7 @@ public class Resolution implements Serializable{
 	}
 
 	/**
-	 * Sets the authority
+	 * Sets the authority.
 	 * @param authority - Person
 	 */
 	public void setAuthority(final Person authority) {
@@ -104,7 +102,7 @@ public class Resolution implements Serializable{
 	}
 	
 	/**
-	 * Returns the appeal date
+	 * Returns the appeal date.
 	 * @return appealDate - Date of appeal
 	 */
 	public Date getAppealDate() {
@@ -112,7 +110,7 @@ public class Resolution implements Serializable{
 	}
 
 	/**
-	 * Sets the appeal date
+	 * Sets the appeal date.
 	 * @param appealDate - Date appeal
 	 */
 	public void setAppealDate(final Date appealDate) {
@@ -120,7 +118,7 @@ public class Resolution implements Serializable{
 	}
 
 	/**
-	 * Returns the disposition
+	 * Returns the disposition.
 	 * @return disposition - DispositionCategory
 	 */
 	public DispositionCategory getDisposition() {
@@ -128,15 +126,15 @@ public class Resolution implements Serializable{
 	}
 
 	/**
-	 * Sets the disposition
+	 * Sets the disposition.
 	 * @param disposition - DispositionCategory
 	 */
-	public void setDisposition(DispositionCategory disposition) {
+	public void setDisposition(final DispositionCategory disposition) {
 		this.disposition = disposition;
 	}
 
 	/**
-	 * Returns the category
+	 * Returns the category.
 	 * @return category - ResolutionClassificationCategory
 	 */
 	public ResolutionClassificationCategory getCategory() {
@@ -144,10 +142,10 @@ public class Resolution implements Serializable{
 	}
 
 	/**
-	 * Sets the category
+	 * Sets the category.
 	 * @param category - ResolutionClassificationCategory
 	 */
-	public void setCategory(ResolutionClassificationCategory category) {
+	public void setCategory(final ResolutionClassificationCategory category) {
 		this.category = category;
 	}
 	
