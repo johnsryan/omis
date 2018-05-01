@@ -19,9 +19,14 @@ package omis.offenderrelationship.report.impl.hibernate;
 
 import java.util.Date;
 import java.util.List;
+
+import org.hibernate.SessionFactory;
+
+import omis.offender.domain.Offender;
 import omis.offenderrelationship.report.OffenderRelationshipReportService;
 import omis.offenderrelationship.report.OffenderRelationshipSummary;
-import org.hibernate.SessionFactory;
+import omis.person.domain.Person;
+import omis.relationship.domain.Relationship;
 
 /**
  * Hibernate implementation of service to report offender relationships
@@ -30,6 +35,7 @@ import org.hibernate.SessionFactory;
  * @author Stephen Abson
  * @author Yidong Li
  * @author Josh Divine
+ * @author Sheronda Vaughn
  * @version 0.0.2 (Feb 14, 2018)
  * @since OMIS 3.0
  */
@@ -52,7 +58,7 @@ public class OffenderRelationshipReportServiceHibernateImpl
 		= "summarizeOffenderRelationshipsBySocialSecurityNumber";
 	
 	private static final String SUMMARIZE_BY_BIRTH_DATE_QUERY_NAME
-		= "summarizeOffenderRelationshipsByBirthDate";
+		= "summarizeOffenderRelationshipsByBirthDate";	
 	
 	private static final String 
 		COUNT_APPROPRIMATE_BY_FIRSTNAME_LASTNAME_QUERY_NAME
@@ -85,6 +91,12 @@ public class OffenderRelationshipReportServiceHibernateImpl
 	private static final String SUMMARIZE_BY_FIRSTNAME_EXACT_QUERY_NAME
 		= "summarizeOffenderRelationshipsByFirstNameExact";
 		
+	private static final String 
+		COUNT_RELATIONSHIPS_BY_OFFENDER_RELATION_QUERY_NAME 
+			= "countRelationshipsByOffenderRelation";
+	
+	private static final String FIND_RELAIONSHIP_BY_OFFENDER_RELATION_QUERY_NAME 
+		= "findRelationshipsByOffenderRelation";
 	
 	/* Parameter names. */
 	
@@ -100,6 +112,10 @@ public class OffenderRelationshipReportServiceHibernateImpl
 		= "socialSecurityNumber";
 	
 	private static final String EFFECTIVE_DATE_PARAM_NAME = "effectiveDate";
+	
+	private static final String OFFENDER_PARAM_NAME = "offender";
+	
+	private static final String RELATION_PARAM_NAME = "relation";
 	
 	/* Resources. */
 	
@@ -337,5 +353,30 @@ public class OffenderRelationshipReportServiceHibernateImpl
 		return countByPerson(lastName, firstName, approximateMatch) 
 			> 
 			this.maximumResults;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public Boolean relationshipExists(
+			final Offender offender, final Person relation) {
+		final Boolean query = (Boolean) this.sessionFactory.getCurrentSession()
+				.getNamedQuery(
+						COUNT_RELATIONSHIPS_BY_OFFENDER_RELATION_QUERY_NAME)
+				.setParameter(OFFENDER_PARAM_NAME, offender)
+				.setParameter(RELATION_PARAM_NAME, relation)
+				.uniqueResult();
+		return query;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public Relationship findRelationship(Offender offender, Person relation) {
+		Relationship relationship = (Relationship) this.sessionFactory
+				.getCurrentSession()
+				.getNamedQuery(FIND_RELAIONSHIP_BY_OFFENDER_RELATION_QUERY_NAME)
+				.setParameter(RELATION_PARAM_NAME, relation)
+				.setParameter(OFFENDER_PARAM_NAME, offender)
+				.uniqueResult();
+		return relationship;
 	}
 }

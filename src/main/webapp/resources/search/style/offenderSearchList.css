@@ -2,7 +2,7 @@
  * Offender search list styling
  *
  * Author: Ryan Johns
- * Version: 0.1.0 (Oct 29, 2014)
+ * Version: 0.1.1 (Apr 19,  2018)
  * Since: OMIS 3.0
  */
  
@@ -50,13 +50,19 @@ ul.ajaxList li p {
 }
 
 #offenderSearchResults {
-	min-height: 50px;
+	min-height: 27px;
 	max-height: 400px;
+	min-width: 160px;
 }
 
 ul.ajaxList li h3, ul.ajaxList li p, ul.ajaxList li img {
 	display: inline;
 	vertical-align: middle;
+}
+
+div.noResults {
+	margin-left: 30px;
+	margin-top: 10px;
 }
 
 #offenderSearchForm, #offenderSearchResults {

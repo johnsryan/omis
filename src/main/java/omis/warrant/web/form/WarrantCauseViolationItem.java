@@ -1,14 +1,14 @@
 package omis.warrant.web.form;
 
-import omis.condition.domain.Condition;
-import omis.courtcase.domain.CourtCase;
+import omis.condition.domain.ConditionClause;
 import omis.warrant.domain.WarrantCauseViolation;
 
 /**
- * WarrantCauseViolationItem.java
+ * Warrant cause violation item.
  * 
- *@author Annie Jacques 
- *@version 0.1.0 (May 9, 2017)
+ *@author Annie Jacques
+ *@author Joel Norris
+ *@version 0.1.1 (April 20, 2018)
  *@since OMIS 3.0
  *
  */
@@ -16,9 +16,7 @@ public class WarrantCauseViolationItem {
 	
 	private WarrantCauseViolation warrantCauseViolation;
 	
-	private CourtCase courtCase;
-	
-	private Condition condition;
+	private ConditionClause conditionClause;
 	
 	private String description;
 	
@@ -46,39 +44,25 @@ public class WarrantCauseViolationItem {
 			final WarrantCauseViolation warrantCauseViolation) {
 		this.warrantCauseViolation = warrantCauseViolation;
 	}
-
-	/**
-	 * Returns the courtCase
-	 * @return courtCase - CourtCase
-	 */
-	public CourtCase getCourtCase() {
-		return courtCase;
-	}
-
-	/**
-	 * Sets the courtCase
-	 * @param courtCase - CourtCase
-	 */
-	public void setCourtCase(final CourtCase courtCase) {
-		this.courtCase = courtCase;
-	}
-
-	/**
-	 * Returns the condition
-	 * @return condition - Condition
-	 */
-	public Condition getCondition() {
-		return condition;
-	}
-
-	/**
-	 * Sets the condition
-	 * @param condition - Condition
-	 */
-	public void setCondition(final Condition condition) {
-		this.condition = condition;
-	}
 	
+	/**
+	 * Returns condition clause.
+	 * 
+	 * @return condition clause
+	 */
+	public ConditionClause getConditionClause() {
+		return this.conditionClause;
+	}
+
+	/**
+	 * Sets condition clause.
+	 * 
+	 * @param conditionClause condition clause
+	 */
+	public void setConditionClause(final ConditionClause conditionClause) {
+		this.conditionClause = conditionClause;
+	}
+
 	/**
 	 * Returns the description
 	 * @return description - String
@@ -110,8 +94,4 @@ public class WarrantCauseViolationItem {
 	public void setItemOperation(final WarrantItemOperation itemOperation) {
 		this.itemOperation = itemOperation;
 	}
-	
-	
-	
-	
 }

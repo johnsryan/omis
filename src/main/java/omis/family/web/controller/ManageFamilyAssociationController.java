@@ -167,6 +167,10 @@ public class ManageFamilyAssociationController {
 		= "family/includes/"
 				+ "familyAssociationNotesActionMenu";
 	
+	private static final String 
+		FAMILY_ASSOCIATION_SEARCH_ROW_ACTION_MENU_VIEW_NAME
+		= "family/includes/familyAssociationSearchRowActionMenu";
+	
 	/* model keys */
 	private static final String NAME_SUFFIXES_MODEL_KEY = "nameSuffixes";
 	private static final String HOME_TYPES_MODEL_KEY = "homeTypes";
@@ -177,6 +181,9 @@ public class ManageFamilyAssociationController {
 		= "familyAssociationForm"; 
 	private static final String FAMILY_ASSOCIATION_MODEL_KEY
 		= "familyAssociation";
+	private static final String FAMILY_ASSOCIATION_EXISTS_MODEL_KEY 
+		= "familyAssociationExists";
+	private static final String IS_OFFENDER_MODEL_KEY = "isOffender";
 	private static final 
 		String FAMILY_ASSOCIATION_TELEPHONE_NUMBER_ITEMS_MODEL_KEY
 		= "familyAssociationTelephoneNumberItems";
@@ -2647,6 +2654,37 @@ public class ManageFamilyAssociationController {
 		return new ModelAndView(
 			FAMILY_ASSOCIATION_NOTE_ITEMS_ACTION_MENU_VIEW_NAME);
 	}	
+	
+	/**
+	 * Returns model and view of family association search row action menu.
+	 *
+	 *
+	 * @param offender offender
+	 * @param familyMember family member
+	 * @return model and view
+	 */
+	@RequestMapping(value="familyAssociationSearchRowActionMenu.html", 
+			method = RequestMethod.GET)
+	public ModelAndView familyAssociationSearchRowActionMenu(
+		@RequestParam(value = "offender", required = true) 
+			final Offender offender,
+		@RequestParam(value = "familyMember", required = true) 
+			final Person familyMember) {
+		ModelMap map = new ModelMap();
+		map.addAttribute(IS_OFFENDER_MODEL_KEY,
+				this.familyAssociationReportService.isOffender(
+						familyMember));
+		map.addAttribute(OFFENDER_MODEL_KEY,  offender);		
+		map.addAttribute(FAMILY_MEMBER_MODEL_KEY, familyMember);
+		map.addAttribute(FAMILY_ASSOCIATION_EXISTS_MODEL_KEY, 
+				this.familyAssociationReportService.familyAssociationExists(
+						offender, familyMember));
+		map.addAttribute(FAMILY_ASSOCIATION_MODEL_KEY, 
+				this.familyAssociationReportService.findFamilyAssociation(
+						offender, familyMember));
+		return new ModelAndView(
+				FAMILY_ASSOCIATION_SEARCH_ROW_ACTION_MENU_VIEW_NAME, map);
+	}
 	
 	/**
 	 * Return if the marriage and divorce dates should be displayed.

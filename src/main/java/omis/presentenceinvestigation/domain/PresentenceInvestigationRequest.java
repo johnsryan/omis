@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 package omis.presentenceinvestigation.domain;
 
 import java.util.Date;
@@ -8,13 +25,15 @@ import omis.audit.domain.Updatable;
 import omis.docket.domain.Docket;
 import omis.user.domain.UserAccount;
 
-/** Presentence Investigation Request.
+/** 
+ * Presentence Investigation Request.
  * 
  * @author Ryan Johns
- * @author Annie Jacques
- * @version 0.1.1 (Jun 23, 2017)
- * @since OMIS 3.0 
- * */
+ * @author Annie Wahl
+ * @author Josh Divine
+ * @version 0.1.2 (Apr 23, 2018)
+ * @since OMIS 3.0
+ */
 public interface PresentenceInvestigationRequest 
 	extends Creatable, Updatable {
 	/** Gets id.
@@ -96,6 +115,21 @@ public interface PresentenceInvestigationRequest
 	 * @param sentenceDate - Date
 	 */
 	public void setSentenceDate(Date sentenceDate);
+	
+	/**
+	 * Returns the actual sentence date for the presentence investigation 
+	 * request.
+	 * 
+	 * @return actual sentence date
+	 */
+	public Date getActualSentenceDate();
+	
+	/**
+	 * Sets the actual sentence date for the presentence investigation request.
+	 * 
+	 * @param actualSentenceDate actual sentence date
+	 */
+	public void setActualSentenceDate(Date actualSentenceDate);
 	
 	 /** Compares {@code this} and {@code obj} for equality.
 	 * <p>

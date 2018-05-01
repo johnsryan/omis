@@ -4,26 +4,28 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-import omis.condition.domain.Condition;
-import omis.courtcase.domain.CourtCase;
-import omis.exception.DuplicateEntityFoundException;
+import omis.condition.domain.ConditionClause;
+import omis.docket.domain.Docket;
 import omis.jail.domain.Jail;
 import omis.offender.domain.Offender;
 import omis.person.domain.Person;
-import omis.supervision.domain.CorrectionalStatusTerm;
 import omis.warrant.domain.Warrant;
 import omis.warrant.domain.WarrantArrest;
 import omis.warrant.domain.WarrantCauseViolation;
 import omis.warrant.domain.WarrantNote;
 import omis.warrant.domain.WarrantReasonCategory;
+import omis.warrant.exception.WarrantArrestExistsException;
+import omis.warrant.exception.WarrantCauseViolationExistsException;
+import omis.warrant.exception.WarrantExistsException;
+import omis.warrant.exception.WarrantNoteExistsException;
 
 /**
- * WarrantService.java
+ * Warrant service.
  * 
  *@author Annie Jacques 
- *@version 0.1.0 (May 9, 2017)
+ *@author Joel Norris
+ *@version 0.1.1 (April 4, 2018)
  *@since OMIS 3.0
- *
  */
 public interface WarrantService {
 	
@@ -36,15 +38,16 @@ public interface WarrantService {
 	 * @param bondable - Boolean
 	 * @param bondRecommendation - BigDecimal
 	 * @param warrantReason - WarrantReasonCategory
+	 * @param holdingJail holding jail
 	 * @return Newly created Warrant
-	 * @throws DuplicateEntityFoundException - When a Warrant already exists
+	 * @throws WarrantExistsException - When a Warrant already exists
 	 * on given date for the specified offender
 	 */
 	public Warrant create(Offender offender, Date date,
 			String addressee, Person issuedBy,
 			Boolean bondable, BigDecimal bondRecommendation,
-			WarrantReasonCategory warrantReason)
-					throws DuplicateEntityFoundException;
+			WarrantReasonCategory warrantReason,
+			Jail holdingJail) throws WarrantExistsException;
 	
 	/**
 	 * Updates a Warrant with the specified properties
@@ -55,15 +58,16 @@ public interface WarrantService {
 	 * @param bondable - Boolean
 	 * @param bondRecommendation - BigDecimal
 	 * @param warrantReason - WarrantReasonCategory
+	 * @param holdingJail holding jail
 	 * @return Updated Warrant
-	 * @throws DuplicateEntityFoundException - When a Warrant already exists
+	 * @throws WarrantExistsException - When a Warrant already exists
 	 * on given date for the specified offender
 	 */
 	public Warrant update(Warrant warrant, Date date,
 			String addressee, Person issuedBy,
 			Boolean bondable, BigDecimal bondRecommendation,
-			WarrantReasonCategory warrantReason)
-					throws DuplicateEntityFoundException;
+			WarrantReasonCategory warrantReason, final Jail holdingJail)
+					throws WarrantExistsException;
 	
 	/**
 	 * Removes a Warrant
@@ -72,33 +76,35 @@ public interface WarrantService {
 	public void remove(Warrant warrant);
 	
 	/**
-	 * Creates a WarrantCauseViolation with the specified properties
-	 * @param warrant - Warrant
-	 * @param cause - CourtCase
-	 * @param condition - Condition
-	 * @param description - String
-	 * @return Newly created WarrantCauseViolation
-	 * @throws DuplicateEntityFoundException - When a WarrantCauseViolation already
-	 * exists with the given Cause for the specified Warrant
+	 * Creates a warrant cause violation for the specified warrant.
+	 * 
+	 * @param warrant warrant
+	 * @param conditionClause condition clause
+	 * @param description description
+	 * @return newly created warrant cause violation
+	 * @throws WarrantCauseViolationExistsException thrown when a duplicate
+	 * warrant cause violation
+	 * is found
 	 */
 	public WarrantCauseViolation createWarrantCauseViolation(Warrant warrant,
-			CourtCase cause, Condition condition, String description)
-				throws DuplicateEntityFoundException;
+			ConditionClause conditionClause, String description)
+				throws WarrantCauseViolationExistsException;
 	
 	/**
-	 * Updates a WarrantCauseViolation with the specified properties
-	 * @param warrantCauseViolation - WarrantCauseViolation to update
-	 * @param cause - CourtCase
-	 * @param condition - Condition
-	 * @param description - String
-	 * @return Updated WarrantCauseViolation
-	 * @throws DuplicateEntityFoundException - When a WarrantCauseViolation already
-	 * exists with the given Cause for the specified WarrantCauseViolation's Warrant
+	 * Updates the specified warrant cause violation.
+	 * 
+	 * @param warrantCauseViolation warrant cause violation
+	 * @param conditionClause condition clause
+	 * @param description description
+	 * @return updated warrant cause violation
+	 * @throws WarrantCauseViolationExistsException thrown when a duplicate
+	 * warrant cause violaiton
+	 * is found, excluding the specified warrant cause violation
 	 */
 	public WarrantCauseViolation updateWarrantCauseViolation(
-			WarrantCauseViolation warrantCauseViolation, CourtCase cause,
-			Condition condition, String description)
-					throws DuplicateEntityFoundException;
+			WarrantCauseViolation warrantCauseViolation,
+			ConditionClause conditionClause, String description)
+					throws WarrantCauseViolationExistsException;
 	
 	/**
 	 * Removes a WarrantCauseViolation
@@ -113,12 +119,12 @@ public interface WarrantService {
 	 * @param note - String
 	 * @param date - Date
 	 * @return Newly created WarrantNote
-	 * @throws DuplicateEntityFoundException - When a WarrantNote already exists
+	 * @throws WarrantNoteExistsException - When a WarrantNote already exists
 	 * with the given Note and Date for the specified Warrant
 	 */
 	public WarrantNote createWarrantNote(
 			Warrant warrant, String note, Date date)
-					throws DuplicateEntityFoundException;
+			throws WarrantNoteExistsException;
 	
 	/**
 	 * Updates a WarrantNote with the specified properties
@@ -126,12 +132,12 @@ public interface WarrantService {
 	 * @param note - String
 	 * @param date - Date
 	 * @return Updated WarrantNote
-	 * @throws DuplicateEntityFoundException - When a WarrantNote already exists
+	 * @throws WarrantNoteExistsException - When a WarrantNote already exists
 	 * with the given Note and Date for the specified Warrant
 	 */
 	public WarrantNote updateWarrantNote(
 			WarrantNote warrantNote, String note, Date date)
-					throws DuplicateEntityFoundException;
+					throws WarrantNoteExistsException;
 	
 	/**
 	 * Removes a WarrantNote
@@ -146,12 +152,12 @@ public interface WarrantService {
 	 * @param jail - Jail
 	 * @param contactByDate - Date
 	 * @return Newly created WarrantArrest
-	 * @throws DuplicateEntityFoundException - When a WarrantArrest already
+	 * @throws WarrantArrestExistsException - When a WarrantArrest already
 	 * exists for the specified Warrant
 	 */
 	public WarrantArrest createArrest(Warrant warrant, Date date,
 			Jail jail, Date contactByDate)
-					throws DuplicateEntityFoundException;
+					throws WarrantArrestExistsException;
 	
 	/**
 	 * Updates specified WarrantArrest with the given properties
@@ -160,12 +166,12 @@ public interface WarrantService {
 	 * @param jail - Jail
 	 * @param contactByDate - Date
 	 * @return Updated WarrantArrest
-	 * @throws DuplicateEntityFoundException - When another WarrantArrest
+	 * @throws WarrantArrestExistsException - When another WarrantArrest
 	 * already exists for this WarrantArrest's Warrant
 	 */
 	public WarrantArrest updateArrest(WarrantArrest warrantArrest,
 			Date date, Jail jail, Date contactByDate)
-					throws DuplicateEntityFoundException;
+					throws WarrantArrestExistsException;
 	
 	/**
 	 * Removes a WarrantArrest
@@ -200,29 +206,24 @@ public interface WarrantService {
 	 * @return List of all Jails
 	 */
 	public List<Jail> findAllJails();
+
+	/**
+	 * Finds unique condition clauses for the specified offender.
+	 * 
+	 * @param offender offender
+	 * @param date effective date
+	 * @return list of condition clauses
+	 */
+	public List<ConditionClause> findUniqueConditionClausesByOffender(Offender offender, Date date);
 	
 	/**
-	 * Returns a CorrectionalStatusTerm for specified Offender on given Date
-	 * @param offender - Offender
-	 * @param date - Date
-	 * @return CorrectionalStatusTerm for specified Offender on given Date
+	 * Finds dockets by the specified condition clause and offender.
+	 * 
+	 * @param clause condition clause
+	 * @param offender offender
+	 * @param effectiveDate effective date
+	 * @return list of dockets
 	 */
-	public CorrectionalStatusTerm findCorrectionalStatusTermForOffenderOnDate(
-			Offender offender, Date date);
-	
-	/**
-	 * Returns a list of CourtCases for specified Offender
-	 * @param offender - Offender
-	 * @return List of CourtCases for specified Offender
-	 */
-	public List<CourtCase> findCourtCasesByDefendant(Offender offender);
-	
-	/**
-	 * Returns a list of Conditions for specified CourtCase
-	 * @param courtCase - CourtCase
-	 * @return List of Conditions for specified CourtCase
-	 */
-	public List<Condition> findConditionsByCourtCase(CourtCase courtCase);
-	
-	
+	public List<Docket> findDocketsByConditionClauseAndOffender(ConditionClause clause, Offender offender,
+			Date effectiveDate);
 }

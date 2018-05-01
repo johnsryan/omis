@@ -5,6 +5,7 @@ import java.util.Date;
 
 import omis.audit.domain.CreationSignature;
 import omis.audit.domain.UpdateSignature;
+import omis.jail.domain.Jail;
 import omis.offender.domain.Offender;
 import omis.person.domain.Person;
 import omis.warrant.domain.Warrant;
@@ -37,6 +38,8 @@ public class WarrantImpl implements Warrant {
 	private BigDecimal bondRecommendation;
 	
 	private WarrantReasonCategory warrantReason;
+	
+	private Jail holdingJail;
 	
 	private CreationSignature creationSignature;
 	
@@ -163,6 +166,18 @@ public class WarrantImpl implements Warrant {
 		this.warrantReason = warrantReason;
 	}
 	
+	/**{@inheritDoc} */
+	@Override
+	public Jail getHoldingJail() {
+		return this.holdingJail;
+	}
+
+	/**{@inheritDoc} */
+	@Override
+	public void setHoldingJail(final Jail holdingJail) {
+		this.holdingJail = holdingJail;
+	}
+
 	/**{@inheritDoc}*/
 	@Override
 	public boolean equals(final Object obj){

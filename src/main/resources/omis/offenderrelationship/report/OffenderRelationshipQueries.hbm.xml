@@ -5,6 +5,7 @@
  - Author: Joel Norris
  - Author: Stephen Abson
  - Author: Yidong Li
+ - Author: Sheronda Vaughn
  -->
 <!DOCTYPE hibernate-mapping PUBLIC
        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
@@ -891,5 +892,27 @@
 			left outer join person.identity as personIdentity
 		WHERE utl_match.JARO_WINKLER_SIMILARITY(upper(personName.lastName), upper(:lastName)) >=75
 		order by personName.lastName, personName.firstName
+	]]></query>
+	<query name="countRelationshipsByOffenderRelation"><![CDATA[
+	select
+		case
+			when count(*) > 0
+			then
+				true
+			else
+				false
+		end
+	from 
+		omis.relationship.domain.Relationship as offenderRelationship
+	where
+		offenderRelationship.secondPerson = :relation
+		and offenderRelationship.firstPerson = :offender	
+	]]></query>	
+	<query name="findRelationshipsByOffenderRelation"><![CDATA[
+	select relationship
+		from omis.relationship.domain.Relationship relationship
+		where
+			relationship.secondPerson = :relation
+			and relationship.firstPerson = :offender
 	]]></query>
 </hibernate-mapping>

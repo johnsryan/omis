@@ -170,4 +170,17 @@ public class ConditionDelegate {
 		return this.conditionDao.findByOffenderAndEffectiveDate(
 				offender, effectiveDate);
 	}
+	
+	/**
+	 * Finds conditions for the specified condition clause, offender, and effective date.
+	 * 
+	 * @param clause condition clause
+	 * @param offender offender
+	 * @param effectiveDate effective date
+	 * @return list of conditions
+	 */
+	public List<Condition> findByConditionClauseAndOffenderOnDate(final ConditionClause clause,
+			final Offender offender, final Date effectiveDate) {
+		return this.conditionDao.findByConditionClauseAndOffenderOnDate(clause, offender, effectiveDate);
+	}
 }

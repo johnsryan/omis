@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ - OMIS - Offender Management Information System
+ - Copyright (C) 2011 - 2017 State of Montana
+ -
+ - This program is free software: you can redistribute it and/or modify
+ - it under the terms of the GNU General Public License as published by
+ - the Free Software Foundation, either version 3 of the License, or
+ - (at your option) any later version.
+ -
+ - This program is distributed in the hope that it will be useful,
+ - but WITHOUT ANY WARRANTY; without even the implied warranty of
+ - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ - GNU General Public License for more details.
+ -
+ - You should have received a copy of the GNU General Public License
+ - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<!--
+ - Presentence investigation delay category hibernate definition.
+ -
+ - Author: Josh Divine
+ - Version: 0.1.0 (Apr 24, 2018)
+ -->
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="omis.presentenceinvestigation.domain">
+	<class entity-name="omis.presentenceinvestigation.domain.PresentenceInvestigationDelayCategory"
+			proxy="omis.presentenceinvestigation.domain.PresentenceInvestigationDelayCategory"
+			name="omis.presentenceinvestigation.domain.impl.PresentenceInvestigationDelayCategoryImpl"
+			table="`PRESNTNC_INVSTIGTN_DLY_CAT`">
+			<id name="id" column="`ID`" type="java.lang.Long">
+				<generator class="sequence">
+					<param name="sequence">`PRESNTNC_INVSTIGTN_DLY_CAT_SEQ`</param>
+				</generator>
+			</id>
+			<property name="name" column="`NAME`" type="java.lang.String" not-null="true" />
+			<property name="valid" column="`VALID`" type="yes_no" not-null="true" />
+	</class>
+	<query name="findPresentenceInvestigationDelayCategory"><![CDATA[
+		select presentenceInvestigationDelayCategory
+		from
+			omis.presentenceinvestigation.domain.PresentenceInvestigationDelayCategory presentenceInvestigationDelayCategory
+		where
+			presentenceInvestigationDelayCategory.name = :name
+	]]></query>
+	<query name="findPresentenceInvestigationDelayCategoryExcluding"><![CDATA[
+		select presentenceInvestigationDelayCategory
+		from
+			omis.presentenceinvestigation.domain.PresentenceInvestigationDelayCategory presentenceInvestigationDelayCategory
+		where
+			presentenceInvestigationDelayCategory.name = :name
+		and
+			presentenceInvestigationDelayCategory != :excludedCategory
+	]]></query>
+	<query name="findPresentenceInvestigationDelayCategories"><![CDATA[
+		select presentenceInvestigationDelayCategory
+		from
+			omis.presentenceinvestigation.domain.PresentenceInvestigationDelayCategory presentenceInvestigationDelayCategory
+		where
+			presentenceInvestigationDelayCategory.valid = true
+	]]></query>
+</hibernate-mapping>

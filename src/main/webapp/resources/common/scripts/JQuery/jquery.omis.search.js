@@ -428,33 +428,37 @@ if (typeof this.AjaxList === 'undefined') {
 }
 		
 this.AjaxList.OFFENDER_SEARCH = function(input, target, x, y, onLoad) {
-	$(input).on("keypress", keyPressOffenderSearch(target, onLoad));
+	$(input).on("keyup", keyPressOffenderSearch(target, onLoad));
 	$(input).on("paste", pasteOffenderSearch(target, onLoad));
 };
 };}
 
 function keyPressOffenderSearch (target, onLoad) {
+	var msg = new common.MessageResolver("omis.search.msgs.search");
 	return function(event) {
-	var input = event.target;
-	if (input.value.length > 3) {
-		if(event.which != 13 && event.keyCode != 13) {
-	clearTimeout($.data(input, 'timer'));	
-	var wait = setTimeout(offenderSearchAjax(input, target, onLoad), 250);
-	  $(this).data('timer', wait);
-		}
-	  if (event.which == 13 || event.keyCode == 13) {
-		  var a = $(target).find("ul.ajaxList li:first div a.offenderProfileLink");
-		  if (a.length > 0) {
-			//a[0].focus();
-			a[0].click();
-			a[0].blur();
+			var input = event.target;
+			if (input.value.length > 3) {
+				if(event.which != 13 && event.keyCode != 13) {
+					clearTimeout($.data(input, 'timer'));	
+					var wait = setTimeout(offenderSearchAjax(input, target, onLoad), 250);
+					$(this).data('timer', wait);
+				}
+				if (event.which == 13) {
+					var a = $(target).find("ul.ajaxList li:first div a.offenderProfileLink");
+					if (a.length > 0) {
+						//a[0].focus();
+						a[0].click();
+						a[0].blur();
+						return false;
+					} else {
+						return false;
+					}
+				}
+			}
 			return false;
-		  } else {
-			  return false;
-		  }
-	  }
+		}
 	}
-	}}
+
 
 function pasteOffenderSearch(target, onLoad) {
 	return function(event) {
@@ -463,16 +467,24 @@ function pasteOffenderSearch(target, onLoad) {
 }
 
 function offenderSearchAjax(input, target, onLoad) {
+	var msg = new common.MessageResolver("omis.search.msgs.search");
 	return function() {
 		$.ajax({
 			url: config.ServerConfig.getContextPath() + "/personSearch/loadOffender.html?searchCriteria="+$(input).val(),
 			cache:false,
 		}).success(function(html){
-			$(target).html(html);
-			loadOffenderProfilePhotosOnDemand(target);
-			if (typeof onLoad === 'function') {
-				onLoad(target);
+			if ($(html).find("li").length <= 0) {
+				$(target).html("<div class=\"noResults\">"+msg.getMessage("noResults")+"</div>");
+			} else {
+			
+				$(target).html(html);
+				loadOffenderProfilePhotosOnDemand(target);
+				if (typeof onLoad === 'function') {
+					onLoad(target);
+				}
 			}
+		}).error(function() {
+			displaySelection(msg.getMessage("noResults"));							
 		});
 	}
 }

@@ -376,7 +376,8 @@ public class FamilyAssociationServiceImpl implements FamilyAssociationService {
 	@Override
 	public List<RelationshipNote> findNotesByRelationship(
 		final Relationship relationship) {
-		return this.relationshipNoteDelegate.findByRelationship(relationship);
+		return this.familyAssociationNoteCategoryDesignatorDelegate
+				.findDesignatedNotesByRelationship(relationship);
 	}
 	
 	/**{@inheritDoc}*/
@@ -510,6 +511,7 @@ public class FamilyAssociationServiceImpl implements FamilyAssociationService {
 	public List<RelationshipNote> findRelationshipNotes(final FamilyAssociation
 		familyAssociation) {
 		return this.familyAssociationNoteCategoryDesignatorDelegate
-			.findRelationshipNotes(familyAssociation);
+			.findDesignatedNotesByRelationship(
+					familyAssociation.getRelationship());
 	}
 }

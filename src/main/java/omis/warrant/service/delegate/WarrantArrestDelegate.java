@@ -1,3 +1,20 @@
+/*
+ *  OMIS - Offender Management Information System
+ *  Copyright (C) 2011 - 2017 State of Montana
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.warrant.service.delegate;
 
 import java.util.Date;
@@ -5,18 +22,19 @@ import java.util.Date;
 import omis.audit.AuditComponentRetriever;
 import omis.audit.domain.CreationSignature;
 import omis.audit.domain.UpdateSignature;
-import omis.exception.DuplicateEntityFoundException;
 import omis.instance.factory.InstanceFactory;
 import omis.jail.domain.Jail;
 import omis.warrant.dao.WarrantArrestDao;
 import omis.warrant.domain.Warrant;
 import omis.warrant.domain.WarrantArrest;
+import omis.warrant.exception.WarrantArrestExistsException;
 
 /**
  * WarrantArrestDelegate.java
  * 
  *@author Annie Jacques 
- *@version 0.1.0 (May 8, 2017)
+ *@author Yidong Li
+ *@version 0.1.0 (April 25, 2018)
  *@since OMIS 3.0
  *
  */
@@ -55,20 +73,20 @@ public class WarrantArrestDelegate {
 	 * @param jail - Jail
 	 * @param contactByDate - Date
 	 * @return Newly created WarrantArrest
-	 * @throws DuplicateEntityFoundException - When a WarrantArrest already
+	 * @throws WarrantArrestExistsException - When a WarrantArrest already
 	 * exists for the specified Warrant
 	 */
 	public WarrantArrest create(final Warrant warrant, final Date date,
 			final Jail jail, final Date contactByDate)
-					throws DuplicateEntityFoundException{
+					throws WarrantArrestExistsException{
 		if(this.warrantArrestDao.find(warrant) != null){
-			throw new DuplicateEntityFoundException(DUPLICATE_ENTITY_FOUND_MSG);
+			throw new WarrantArrestExistsException(DUPLICATE_ENTITY_FOUND_MSG);
 		}
 		
 		WarrantArrest warrantArrest = 
 				this.warrantArrestInstanceFactory.createInstance();
 		
-		warrantArrest.setContactByDate(contactByDate);
+		warrantArrest.setDeterminationDeadline(contactByDate);
 		warrantArrest.setDate(date);
 		warrantArrest.setJail(jail);
 		warrantArrest.setWarrant(warrant);
@@ -91,19 +109,19 @@ public class WarrantArrestDelegate {
 	 * @param jail - Jail
 	 * @param contactByDate - Date
 	 * @return Updated WarrantArrest
-	 * @throws DuplicateEntityFoundException - When another WarrantArrest
+	 * @throws WarrantArrestExistsException - When another WarrantArrest
 	 * already exists for this WarrantArrest's Warrant
 	 */
 	public WarrantArrest update(final WarrantArrest warrantArrest,
 			final Date date, final Jail jail,
 			final Date contactByDate)
-					throws DuplicateEntityFoundException{
+					throws WarrantArrestExistsException{
 		if(this.warrantArrestDao.findExcluding(warrantArrest.getWarrant(),
 				warrantArrest) != null){
-			throw new DuplicateEntityFoundException(DUPLICATE_ENTITY_FOUND_MSG);
+			throw new WarrantArrestExistsException(DUPLICATE_ENTITY_FOUND_MSG);
 		}
 		
-		warrantArrest.setContactByDate(contactByDate);
+		warrantArrest.setDeterminationDeadline(contactByDate);
 		warrantArrest.setDate(date);
 		warrantArrest.setJail(jail);
 		warrantArrest.setUpdateSignature(

@@ -22,6 +22,7 @@ import java.util.List;
 import omis.dao.GenericDao;
 import omis.family.domain.FamilyAssociation;
 import omis.family.domain.FamilyAssociationNoteCategoryDesignator;
+import omis.relationship.domain.Relationship;
 import omis.relationship.domain.RelationshipNote;
 import omis.relationship.domain.RelationshipNoteCategory;
 
@@ -29,6 +30,7 @@ import omis.relationship.domain.RelationshipNoteCategory;
  * Data access object for family association note category designator.
  * 
  * @author Yidong Li
+ * @author Stephen Abson
  * @version 0.1.0 (March 8, 2018)
  * @since OMIS 3.0
  */
@@ -54,10 +56,21 @@ public interface FamilyAssociationNoteCategoryDesignatorDao
 	/**
 	 * Find related relationship notes associated with a specified family
 	 * association.
+	 * @deprecated use findDesignatedNotesByRelationship() instead
 	 * @param familyAssociation family association
 	 * @return all related relationship note associated with a specified family
 	 * association
 	 */
+	@Deprecated
 	List<RelationshipNote> findRelationshipNotes(
 		FamilyAssociation familyAssociation);
+
+	/**
+	 * Returns designated notes by relationship.
+	 * 
+	 * @param relationship relationship
+	 * @return designated notes by relationship
+	 */
+	List<RelationshipNote> findDesignatedNotesByRelationship(
+			Relationship relationship);
 }

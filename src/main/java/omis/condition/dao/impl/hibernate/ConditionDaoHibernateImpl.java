@@ -39,6 +39,9 @@ public class ConditionDaoHibernateImpl
 	private static final String FIND_BY_OFFENDER_AND_EFFECTIVE_DATE_QUERY_NAME =
 			"findConditionsByOffenderAndEffectiveDate";
 	
+	private static final String FIND_BY_CLAUSE_AND_OFFENDER_ON_DATE_QUERY_NAME
+		= "findConditionsByClauseAndOffenderOnDate";
+	
 	/* Parameter names. */
 	
 	private static final String CONDITION_CLAUSE_PARAM_NAME = "conditionClause";
@@ -138,6 +141,21 @@ public class ConditionDaoHibernateImpl
 				.setParameter(AGREEMENT_PARAM_NAME, agreement)
 				.list();
 		
+		return conditions;
+	}
+
+	/**{@inheritDoc} */
+	@Override
+	public List<Condition> findByConditionClauseAndOffenderOnDate(final ConditionClause clause, 
+			final Offender offender, final Date effectiveDate) {
+		@SuppressWarnings("unchecked")
+		List<Condition> conditions = this.getSessionFactory()
+				.getCurrentSession()
+				.getNamedQuery(FIND_BY_CLAUSE_AND_OFFENDER_ON_DATE_QUERY_NAME)
+				.setParameter(OFFENDER_PARAM_NAME, offender)
+				.setParameter(CLAUSE_PARAM_NAME, clause)
+				.setDate(EFFECTIVE_DATE_PARAM_NAME, effectiveDate)
+				.list();
 		return conditions;
 	}
 }

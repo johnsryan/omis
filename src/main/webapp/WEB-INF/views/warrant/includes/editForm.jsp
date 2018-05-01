@@ -37,6 +37,20 @@
 			</span>
 			<form:errors path="issuedBy" cssClass="error"/>
 		</span>
+		<span class="fieldGroup">
+				<form:label path="holdingJail" class="fieldLabel">
+					<fmt:message key="holdingJailLabel"/>
+				</form:label>
+				<form:select path="holdingJail">
+					<jsp:include page="../../includes/nullOption.jsp"/>
+					<c:forEach items="${jails}" var="j">
+						<option value="${j.id}" ${j == warrantForm.holdingJail ? 'selected="selected"' : ''}>
+							<c:out value="${j.name}"/>
+						</option>
+					</c:forEach>
+				</form:select>
+				<form:errors path="holdingJail" cssClass="error"/>
+			</span>
 	</fieldset>
 	<fieldset>
 		<legend><fmt:message key="arrestFieldsetLegendLabel"/></legend>
@@ -80,23 +94,14 @@
 				<form:errors path="arrestJail" cssClass="error"/>
 			</span>
 			<span class="fieldGroup">
-				<form:label path="contactBy" class="fieldLabel">
-					<fmt:message key="contactByLabel"/>
+				<form:label path="determinationDeadline" class="fieldLabel">
+					<fmt:message key="determinationDeadlineLabel"/>
 				</form:label>
-				<form:input path="contactBy" class="date"/>
-				<form:errors path="contactBy" cssClass="error"/>
+				<form:input path="determinationDeadline" class="date"/>
+				<form:errors path="determinationDeadline" cssClass="error"/>
 			</span>
 		</div>
 	</fieldset>
-	<fieldset>
-		<legend><fmt:message key="warrantCauseFieldsetLegendLabel"/></legend>
-		<!-- causeviolations -->
-		<span class="fieldGroup">
-			<c:set var="warrantCauseViolationItems" value="${warrantForm.warrantCauseViolationItems}" scope="request"/>
-			<jsp:include page="warrantCauseViolationTable.jsp"/>
-		</span>
-	</fieldset>
-	
 	<c:choose>
 		<c:when test="${warrantReasonCategory eq 'AUTHORIZATION_TO_PICKUP_AND_HOLD'}">
 			<fieldset>
@@ -123,6 +128,16 @@
 			<form:input type="hidden" path="bondRecommended" />
 		</c:otherwise>
 	</c:choose>
+	<fieldset>
+		<legend><fmt:message key="warrantCauseFieldsetLegendLabel"/></legend>
+		<!-- causeviolations -->
+		<span class="fieldGroup">
+			<c:set var="warrantCauseViolationItems" value="${warrantForm.warrantCauseViolationItems}" scope="request"/>
+			<jsp:include page="warrantCauseViolationTable.jsp"/>
+		</span>
+	</fieldset>
+	
+	
 	
 	
 	

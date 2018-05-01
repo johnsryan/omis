@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 package omis.presentenceinvestigation.domain.impl;
 
 import java.util.Date;
@@ -10,12 +27,16 @@ import omis.presentenceinvestigation.domain.PresentenceInvestigationCategory;
 import omis.presentenceinvestigation.domain.PresentenceInvestigationRequest;
 import omis.user.domain.UserAccount;
 
-/** Implementation of the presentence investigation request.
+/** 
+ * Implementation of the presentence investigation request.
+ * 
  * @author Ryan Johns
  * @author Joel Norris
- * @author Annie Jacques
- * @version 0.1.2 (Jun 23, 2017)
- * since OMIS 3.0 */
+ * @author Annie Wahl
+ * @author Josh Divine
+ * @version 0.1.3 (Apr 23, 2018)
+ * @since OMIS 3.0
+ */
 public class PresentenceInvestigationRequestImpl 
 	implements PresentenceInvestigationRequest {
 	
@@ -33,6 +54,8 @@ public class PresentenceInvestigationRequestImpl
 	private UpdateSignature updateSignature;
 	private CreationSignature creationSignature;
 
+	private Date actualSentenceDate;
+	
 	/** {@inheritDoc} */
 	@Override
 	public void setCreationSignature(
@@ -169,6 +192,18 @@ public class PresentenceInvestigationRequestImpl
 		this.category = category;
 	}
 
+	/** {@inheritDoc} */
+	@Override
+	public Date getActualSentenceDate() {
+		return actualSentenceDate;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void setActualSentenceDate(final Date actualSentenceDate) {
+		this.actualSentenceDate = actualSentenceDate;
+	}
+	
 	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object obj) {

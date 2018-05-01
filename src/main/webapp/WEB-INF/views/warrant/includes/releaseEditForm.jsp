@@ -16,34 +16,6 @@
 			<form:errors path="addressee" cssClass="error"/>
 		</span>
 		<span class="fieldGroup">
-			<form:label path="facility" class="fieldLabel">
-				<fmt:message key="facilityLabel"/>
-			</form:label>
-			<form:select path="facility">
-				<jsp:include page="../../includes/nullOption.jsp"/>
-				<c:forEach items="${facilities}" var="fac">
-					<option value="${fac.id}" ${fac == warrantReleaseForm.facility ? 'selected="selected"' : ''}>
-						<c:out value="${fac.name}"/>
-					</option>
-				</c:forEach>
-			</form:select>
-			<form:errors path="facility" cssClass="error"/>
-		</span>
-		<span class="fieldGroup">
-			<form:label path="county" class="fieldLabel">
-				<fmt:message key="countyLabel"/>
-			</form:label>
-			<form:select path="county">
-				<jsp:include page="../../includes/nullOption.jsp"/>
-				<c:forEach items="${counties}" var="ct">
-					<option value="${ct.id}" ${ct == warrantReleaseForm.county ? 'selected="selected"' : ''}>
-						<c:out value="${ct.name}"/>
-					</option>
-				</c:forEach>
-			</form:select>
-			<form:errors path="county" cssClass="error"/>
-		</span>
-		<span class="fieldGroup">
 			<form:label path="releaseDate" class="fieldLabel">
 				<fmt:message key="releaseDateLabel"/>
 			</form:label>

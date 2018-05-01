@@ -344,5 +344,31 @@
 		order by
 			visitationAssociation.relationship.secondPerson.name.lastName
 	]]></query> -->
-	
+	<query name="countVistationAssociationByOffenderVisitor"><![CDATA[
+		select 
+			case
+				when count(*) > 0
+				then
+					true
+				else
+					false
+				end
+		from 
+			omis.visitation.domain.VisitationAssociation visitationAssociation
+			left outer join visitationAssociation.relationship relationship
+		where
+			relationship.firstPerson = :offender
+			and 
+			relationship.secondPerson = :visitor
+	]]></query>
+	<query name="findVisitationAssociationByOffenderVisitor"><![CDATA[
+		select visitationAssociation
+			from 
+			omis.visitation.domain.VisitationAssociation visitationAssociation
+			left outer join visitationAssociation.relationship relationship
+		where
+			relationship.firstPerson = :offender
+			and 
+			relationship.secondPerson = :visitor
+	]]></query>
 </hibernate-mapping>

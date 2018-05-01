@@ -13,8 +13,6 @@
 				</generator>
 			</id>
 			<many-to-one name="warrant" column="`WARRANT_ID`" entity-name="omis.warrant.domain.Warrant" not-null="true" />
-			<many-to-one name="county" column="`COUNTY_ID`" entity-name="omis.region.domain.County" not-null="true" />
-			<many-to-one name="facility" column="`FACILITY_ID`" entity-name="omis.facility.domain.Facility" not-null="true" />
 			<property name="releaseTimestamp" column="`RELEASE_DATE`" type="java.util.Date" not-null="true" />
 			<property name="addressee" column="`ADDRESSEE`" type="java.lang.String" not-null="true" />
 			<property name="instructions" column="`OFFENDER_INSTRUCTIONS`" type="java.lang.String" not-null="false" />

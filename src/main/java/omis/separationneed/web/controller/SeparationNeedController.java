@@ -1,5 +1,19 @@
-/**
- * 
+/*
+ * OMIS - Offender Management Information System.
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package omis.separationneed.web.controller;
 
@@ -58,8 +72,9 @@ import omis.web.controller.delegate.BusinessExceptionHandlerDelegate;
 /**
  * Controller for separation need.
  * 
- * @author Joel Norris 
- * @version 0.1.0 (Feb, 21 2013)
+ * @author Joel Norris
+ * @author Yidong Li 
+ * @version 0.1.0 (May, 1 2018)
  * @since OMIS 3.0
  */
 @Controller
@@ -131,6 +146,9 @@ public class SeparationNeedController {
 	
 	private static final String SEPARATION_NEED_OR_NOTE_EXISTS_MESSAGE_KEY
 		= "separationNeed.needOrNoteExists";
+	
+	private static final String REFLECTIVE_RELATIONSHIP_MESSAGE_KEY
+	= "separationNeed.personsEqual";
 	
 	/* Bundles */
 	
@@ -284,7 +302,7 @@ public class SeparationNeedController {
 				final Offender offender) {
 		ModelMap map = new ModelMap();
 		SeparationNeedForm form = new SeparationNeedForm();
-		this.prepareSeparationNeedEditForm(form, separationNeed);
+		this.prepareSeparationNeedEditForm(form, separationNeed, offender);
 		map.addAttribute(SEPARATION_NEED_MODEL_KEY, separationNeed);
 		return this.prepareEditMav(map, form, offender);
 	}
@@ -624,6 +642,20 @@ public class SeparationNeedController {
 				exception);
 	}
 	
+	/**
+	 * Handles reflexive relationship exception.
+	 * 
+	 * @param exception reflexive relationship exception
+	 * @return model and view for displaying exception explanation
+	 */
+	@ExceptionHandler(ReflexiveRelationshipException.class)
+	public ModelAndView handleReflexiveRelationshipException(
+			final ReflexiveRelationshipException exception) {
+		return this.businessExceptionHandlerDelegate.prepareModelAndView(
+			REFLECTIVE_RELATIONSHIP_MESSAGE_KEY, ERROR_BUNDLE_NAME, 
+			exception);
+	}
+	
 	/* Helper methods. */
 	
 	/*
@@ -631,7 +663,7 @@ public class SeparationNeedController {
 	 * with the values of the specified separation need.
 	 */
 	private void prepareSeparationNeedEditForm(final SeparationNeedForm form, 
-				 final SeparationNeed separationNeed) {
+		final SeparationNeed separationNeed, final Offender offender) {
 		List<SeparationNeedReasonAssociation> reasonAssociations
 			= this.separationNeedService
 			.findReasonAssociationsBySeparationNeed(separationNeed);
@@ -661,8 +693,13 @@ public class SeparationNeedController {
 			form.setRemovalReason(removal.getReason());
 			form.setRemovalComment(removal.getComment());
 		}
-		form.setTargetOffender(((Offender)
-				separationNeed.getRelationship().getSecondPerson()));
+		if(offender.equals(separationNeed.getRelationship().getSecondPerson())){
+			form.setTargetOffender(((Offender)separationNeed.getRelationship()
+			.getFirstPerson()));
+		} else {
+			form.setTargetOffender(((Offender)separationNeed.getRelationship()
+			.getSecondPerson()));
+		}
 	}
 	
 	/*

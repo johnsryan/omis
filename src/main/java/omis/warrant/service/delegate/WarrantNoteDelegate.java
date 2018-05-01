@@ -1,3 +1,20 @@
+/*
+ *  OMIS - Offender Management Information System
+ *  Copyright (C) 2011 - 2017 State of Montana
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.warrant.service.delegate;
 
 import java.util.Date;
@@ -6,11 +23,11 @@ import java.util.List;
 import omis.audit.AuditComponentRetriever;
 import omis.audit.domain.CreationSignature;
 import omis.audit.domain.UpdateSignature;
-import omis.exception.DuplicateEntityFoundException;
 import omis.instance.factory.InstanceFactory;
 import omis.warrant.dao.WarrantNoteDao;
 import omis.warrant.domain.Warrant;
 import omis.warrant.domain.WarrantNote;
+import omis.warrant.exception.WarrantNoteExistsException;
 
 /**
  * WarrantNoteDelegate.java
@@ -24,7 +41,8 @@ import omis.warrant.domain.WarrantNote;
  * WarrantNoteDelegate.java
  * 
  *@author Annie Jacques 
- *@version 0.1.0 (May 9, 2017)
+ *@author Yidong Li
+ *@version 0.1.0 (April 25, 2018)
  *@since OMIS 3.0
  *
  */
@@ -63,14 +81,14 @@ public class WarrantNoteDelegate {
 	 * @param note - String
 	 * @param date - Date
 	 * @return Newly created WarrantNote
-	 * @throws DuplicateEntityFoundException - When a WarrantNote already exists
+	 * @throws WarrantNoteExistsException - When a WarrantNote already exists
 	 * with the given Note and Date for the specified Warrant
 	 */
 	public WarrantNote create(final Warrant warrant, final String note,
 			final Date date)
-				throws DuplicateEntityFoundException{
+				throws WarrantNoteExistsException{
 		if(this.warrantNoteDao.find(note, date, warrant) != null){
-			throw new DuplicateEntityFoundException(DUPLICATE_ENTITY_FOUND_MSG);
+			throw new WarrantNoteExistsException(DUPLICATE_ENTITY_FOUND_MSG);
 		}
 		
 		WarrantNote warrantNote = 
@@ -78,7 +96,7 @@ public class WarrantNoteDelegate {
 		
 		warrantNote.setWarrant(warrant);
 		warrantNote.setDate(date);
-		warrantNote.setNote(note);
+		warrantNote.setValue(note);
 		warrantNote.setCreationSignature(
 				new CreationSignature(
 						this.auditComponentRetriever.retrieveUserAccount(), 
@@ -97,19 +115,19 @@ public class WarrantNoteDelegate {
 	 * @param note - String
 	 * @param date - Date
 	 * @return Updated WarrantNote
-	 * @throws DuplicateEntityFoundException - When a WarrantNote already exists
+	 * @throws WarrantNoteExistsException - When a WarrantNote already exists
 	 * with the given Note and Date for the specified Warrant
 	 */
 	public WarrantNote update(final WarrantNote warrantNote, final String note,
 			final Date date)
-				throws DuplicateEntityFoundException{
+				throws WarrantNoteExistsException{
 		if(this.warrantNoteDao.findExcluding(
 				note, date, warrantNote.getWarrant(), warrantNote) != null){
-			throw new DuplicateEntityFoundException(DUPLICATE_ENTITY_FOUND_MSG);
+			throw new WarrantNoteExistsException(DUPLICATE_ENTITY_FOUND_MSG);
 		}
 		
 		warrantNote.setDate(date);
-		warrantNote.setNote(note);
+		warrantNote.setValue(note);
 		warrantNote.setUpdateSignature(
 				new UpdateSignature(
 						this.auditComponentRetriever.retrieveUserAccount(),

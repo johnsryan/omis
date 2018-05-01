@@ -58,6 +58,9 @@ import omis.contact.domain.component.PoBox;
 import omis.contact.exception.ContactExistsException;
 import omis.contact.exception.OnlineAccountExistsException;
 import omis.contact.exception.TelephoneNumberExistsException;
+import omis.contact.report.ContactReportService;
+import omis.contact.report.ContactSummary;
+import omis.contact.web.controller.delegate.ContactSummaryModelDelegate;
 import omis.contact.web.controller.delegate.OnlineAccountFieldsControllerDelegate;
 import omis.contact.web.controller.delegate.PoBoxFieldsControllerDelegate;
 import omis.contact.web.controller.delegate.TelephoneNumberFieldsControllerDelegate;
@@ -217,6 +220,9 @@ public class CreateOffenderRelationshipController {
 	OFFENDER_RELATIONSHIP_NOTE_ITEMS_FIELD_NAME_MODEL_KEY
 		= "offenderRelationshipNoteItemsFieldName";
 	
+	private static final String EXISTING_CONTACT_SUMMARY_MODEL_KEY
+	= "existingContactSummary";
+	
 	/* Message keys. */
 	private static final String ADDRESS_EXISTS_EXCEPTION_MESSAGE_KEY
 		= "address.Conflicts";
@@ -338,6 +344,10 @@ public class CreateOffenderRelationshipController {
 	@Autowired
 	@Qualifier("offenderReportService")
 	private OffenderReportService offenderReportService;
+	
+	@Autowired
+	@Qualifier("contactReportService")
+	private ContactReportService contactReportService;
 
 	/* Validators. */
 	@Autowired
@@ -375,6 +385,10 @@ public class CreateOffenderRelationshipController {
 	@Autowired
 	@Qualifier("businessExceptionHandlerDelegate")
 	private BusinessExceptionHandlerDelegate businessExceptionHandlerDelegate;
+	
+	/*@Autowired
+	@Qualifier("contactSummaryModelDelegate")
+	private ContactSummaryModelDelegate contactSummaryModelDelegate;*/
 
 	/* Helpers. */
 	@Autowired
@@ -1884,6 +1898,12 @@ public class CreateOffenderRelationshipController {
 		this.offenderSummaryModelDelegate.add(mav.getModelMap(), offender);
 		
 		ModelMap map = mav.getModelMap();
+		if (relation != null) {
+			ContactSummary existingContactSummary = this.contactReportService
+					.summarizeByPerson(relation);
+				map.addAttribute(EXISTING_CONTACT_SUMMARY_MODEL_KEY,
+						existingContactSummary);
+		}
 		map.addAttribute(TELEPHONE_NUMBER_CATEGORY_MODEL_KEY,
 				TelephoneNumberCategory.values());
 		AddressFields addressFields = form.getAddressFields();

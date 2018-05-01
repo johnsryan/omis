@@ -394,6 +394,20 @@
 			<constructor-arg name="configuration" ref="hibernateConfiguration" />
 		</bean>
 		
+		<bean id="presentenceInvestigationDelayPropertyEditorFactory"
+			class="omis.beans.factory.impl.hibernate.PropertyEditorFactoryHibernateImpl">
+				<constructor-arg name="dao" ref="presentenceInvestigationDelayDao"/>
+				<constructor-arg name="entityName" value="omis.presentenceinvestigation.domain.PresentenceInvestigationDelay"/>
+				<constructor-arg name="configuration" ref="hibernateConfiguration"/>
+		</bean>
+		
+		<bean id="presentenceInvestigationDelayCategoryPropertyEditorFactory"
+			class="omis.beans.factory.impl.hibernate.PropertyEditorFactoryHibernateImpl">
+				<constructor-arg name="dao" ref="presentenceInvestigationDelayCategoryDao"/>
+				<constructor-arg name="entityName" value="omis.presentenceinvestigation.domain.PresentenceInvestigationDelayCategory"/>
+				<constructor-arg name="configuration" ref="hibernateConfiguration"/>
+		</bean>
+		
 		<!-- Pointcut configs -->
 		
 		<aop:config>

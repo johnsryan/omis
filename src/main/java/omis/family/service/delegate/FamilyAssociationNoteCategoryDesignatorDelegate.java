@@ -24,6 +24,7 @@ import omis.family.domain.FamilyAssociation;
 import omis.family.domain.FamilyAssociationNoteCategoryDesignator;
 import omis.family.exception.FamilyAssociationNoteCategoryDesignatorExistsException;
 import omis.instance.factory.InstanceFactory;
+import omis.relationship.domain.Relationship;
 import omis.relationship.domain.RelationshipNote;
 import omis.relationship.domain.RelationshipNoteCategory;
 
@@ -31,6 +32,7 @@ import omis.relationship.domain.RelationshipNoteCategory;
  * Family association note category designator delegate implementation.
  * 
  * @author Yidong Li
+ * @author Stephen Abson
  * @version 0.1.1 (March 8, 2018)
  * @since OMIS 3.0
  */
@@ -122,13 +124,27 @@ public class FamilyAssociationNoteCategoryDesignatorDelegate {
 	/**
 	 * Find related relationship notes associated with a specified family
 	 * association.
+	 * @deprecated use findDesignatedNotesByRelationship()
 	 * @param familyAssociation family association
 	 * @return all related relationship notes associated with a specified family
 	 * association
 	 */
+	@Deprecated
 	public List<RelationshipNote> findRelationshipNotes(
 		final FamilyAssociation familyAssociation) {
 		return this.familyAssociationNoteCategoryDesignatorDao
 			.findRelationshipNotes(familyAssociation);
+	}
+
+	/**
+	 * Returns designated family notes by relationship.
+	 * 
+	 * @param relationship relationship
+	 * @return designated family notes
+	 */
+	public List<RelationshipNote> findDesignatedNotesByRelationship(
+			final Relationship relationship) {
+		return this.familyAssociationNoteCategoryDesignatorDao
+				.findDesignatedNotesByRelationship(relationship);
 	}
 }

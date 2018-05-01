@@ -195,8 +195,8 @@ public class PresentenceInvestigationTaskServiceUpdateTests
 				this.presentenceInvestigationRequestDelegate.create(
 						userAccount, this.parseDateText("01/01/2016"),
 						this.parseDateText("12/31/2017"),
-						docket2, null, this.parseDateText("03/25/2015"), category,
-						this.parseDateText("04/01/2017"));
+						docket2, null, this.parseDateText("03/25/2015"), null, 
+						category, this.parseDateText("04/01/2017"));
 		final TaskTemplateGroup group = this.taskTemplateGroupDelegate.create(
 				"TaskTemplateGroup");
 		final TaskTemplate taskTemplate = this.taskTemplateDelegate.create(
@@ -223,7 +223,7 @@ public class PresentenceInvestigationTaskServiceUpdateTests
 						userAccount, this.parseDateText("02/28/2010"),
 						this.parseDateText("10/15/2015"),
 						docket, this.parseDateText("05/15/2029"),
-						this.parseDateText("05/15/2019"), category,
+						this.parseDateText("05/15/2019"), null, category,
 						this.parseDateText("04/01/2017"));
 		final PresentenceInvestigationTaskSource taskSource =
 				this.presentenceInvestigationTaskSourceDelegate.create(

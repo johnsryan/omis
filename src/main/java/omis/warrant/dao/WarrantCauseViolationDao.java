@@ -19,8 +19,7 @@ package omis.warrant.dao;
 
 import java.util.List;
 
-import omis.condition.domain.Condition;
-import omis.courtcase.domain.CourtCase;
+import omis.condition.domain.ConditionClause;
 import omis.dao.GenericDao;
 import omis.warrant.domain.Warrant;
 import omis.warrant.domain.WarrantCauseViolation;
@@ -38,29 +37,26 @@ public interface WarrantCauseViolationDao
 	extends GenericDao<WarrantCauseViolation> {
 	
 	/**
-	 * Returns a warrant cause violation for the specified warrant, court case, and condition.
+	 * Returns a warrant cause violation for the specified warrant, and condition clause.
 	 * 
 	 * @param warrant warrant
-	 * @param cause court case
-	 * @param condition condition
+	 * @param conditionClause condition clause
 	 * @return warrant cause violation
 	 */
-	public WarrantCauseViolation find(Warrant warrant, CourtCase cause,
-			Condition condition);
+	public WarrantCauseViolation find(Warrant warrant, ConditionClause conditionClause);
 	
 	/**
-	 * Returns a warrant cause violation for the specified warrant, court case, and condition,
+	 * Returns a warrant cause violation for the specified warrant, and condition clause,
 	 * excluding the specified warrant cause violation.
 	 * 
 	 * @param warrant warrant
-	 * @param cause court case
-	 * @param condition condition
+	 * @param conditionClause condition clause
 	 * @param warrantCauseViolationExcluded warrant cause violation excluded
 	 * from search
 	 * @return warrant cause violation
 	 */
 	public WarrantCauseViolation findExcluding(
-			Warrant warrant, CourtCase cause, Condition condition,
+			Warrant warrant, ConditionClause condition,
 			WarrantCauseViolation warrantCauseViolationExcluded);
 	
 	/**

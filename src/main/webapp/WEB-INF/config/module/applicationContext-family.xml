@@ -36,6 +36,7 @@
         
         <bean id="familyAssociationReportService" class="omis.family.report.impl.hibernate.FamilyAssociationReportServiceHibernateImpl">
  			<constructor-arg name="sessionFactory" ref="sessionFactory"/>
+ 			<constructor-arg name="offenderDelegate" ref="offenderDelegate"/>
  		</bean>
  		
  		<bean id="familyProfileItemReportService" class="omis.family.report.impl.hibernate.FamilyProfileItemReportServiceHibernateImpl">

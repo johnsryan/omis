@@ -24,6 +24,11 @@
 			    from omis.victim.domain.VictimNote note
 			    inner join note.association noteAssociation
 			    where noteAssociation = association
+			  ),
+			  (
+			  	select victimOffender
+			  	from omis.offender.domain.Offender victimOffender
+			  	where victimOffender = victim
 			  )
 			)
 		from omis.victim.domain.VictimAssociation as association
@@ -57,6 +62,11 @@
 			    from omis.victim.domain.VictimNote note
 			    inner join note.association noteAssociation
 			    where noteAssociation = association
+			  ),
+			  (
+			  	select victimOffender
+			  	from omis.offender.domain.Offender victimOffender
+			  	where victimOffender = victim
 			  )
 			)
 		from omis.victim.domain.VictimAssociation as association
@@ -73,6 +83,7 @@
 	<query name="summarizeVictimAssociation"><![CDATA[
 		select new omis.victim.report.VictimAssociationSummary(
 			victimName.lastName, victimName.firstName, victimName.middleName,
+			victimName.suffix,
 			(
 			    select mailingAddress
 			    from omis.contact.domain.Contact contact
@@ -97,5 +108,32 @@
 			inner join userAccount.user as user
 			inner join user.name as name
 		where victim = :victim			
+	]]></query>
+	<query name="countVictimAssociationByOffenderVictim"><![CDATA[
+		select 
+			case
+				when count(*) > 0
+				then
+					true
+				else
+					false
+				end
+		from 
+			omis.victim.domain.VictimAssociation victimAssociation
+			left outer join victimAssociation.relationship relationship
+		where
+			relationship.firstPerson = :offender
+			and 
+			relationship.secondPerson = :victim
+	]]></query>
+	<query name="findVictimAssociationByOffenderVictim"><![CDATA[
+		select victimAssociation
+			from 
+			omis.victim.domain.VictimAssociation victimAssociation
+			left outer join victimAssociation.relationship relationship
+		where
+			relationship.firstPerson = :offender
+			and 
+			relationship.secondPerson = :victim
 	]]></query>
 </hibernate-mapping>

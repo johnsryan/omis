@@ -6,23 +6,27 @@ import java.util.Date;
 import java.util.List;
 
 import omis.condition.domain.Agreement;
+import omis.condition.domain.AgreementCategory;
 import omis.condition.domain.Condition;
+import omis.condition.domain.ConditionClause;
 import omis.condition.service.delegate.AgreementDelegate;
 import omis.condition.service.delegate.ConditionDelegate;
-import omis.courtcase.domain.CourtCase;
-import omis.courtcase.service.delegate.CourtCaseDelegate;
-import omis.exception.DuplicateEntityFoundException;
+import omis.courtcasecondition.domain.CourtCaseAgreement;
+import omis.courtcasecondition.service.delegate.CourtCaseAgreementDelegate;
+import omis.docket.domain.Docket;
 import omis.jail.domain.Jail;
 import omis.jail.service.delegate.JailDelegate;
 import omis.offender.domain.Offender;
 import omis.person.domain.Person;
-import omis.supervision.domain.CorrectionalStatusTerm;
-import omis.supervision.service.delegate.CorrectionalStatusTermDelegate;
 import omis.warrant.domain.Warrant;
 import omis.warrant.domain.WarrantArrest;
 import omis.warrant.domain.WarrantCauseViolation;
 import omis.warrant.domain.WarrantNote;
 import omis.warrant.domain.WarrantReasonCategory;
+import omis.warrant.exception.WarrantArrestExistsException;
+import omis.warrant.exception.WarrantCauseViolationExistsException;
+import omis.warrant.exception.WarrantExistsException;
+import omis.warrant.exception.WarrantNoteExistsException;
 import omis.warrant.service.WarrantService;
 import omis.warrant.service.delegate.WarrantArrestDelegate;
 import omis.warrant.service.delegate.WarrantCauseViolationDelegate;
@@ -30,16 +34,17 @@ import omis.warrant.service.delegate.WarrantDelegate;
 import omis.warrant.service.delegate.WarrantNoteDelegate;
 
 /**
- * WarrantServiceImpl.java
+ * Warrant service implementation.
  * 
  *@author Annie Jacques 
- *@version 0.1.0 (May 9, 2017)
+ *@author Joel Norris
+ *@version 0.1.1 (April 4, 2018)
  *@since OMIS 3.0
  *
  */
 public class WarrantServiceImpl implements WarrantService {
 	
-	private final WarrantDelegate warrantDelegate;
+private final WarrantDelegate warrantDelegate;
 	
 	private final WarrantCauseViolationDelegate warrantCauseViolationDelegate;
 	
@@ -49,13 +54,9 @@ public class WarrantServiceImpl implements WarrantService {
 	
 	private final JailDelegate jailDelegate;
 	
-	private final CorrectionalStatusTermDelegate correctionalStatusTermDelegate;
-	
-	private final CourtCaseDelegate courtCaseDelegate;
-	
 	private final ConditionDelegate conditionDelegate;
-	
-	private final AgreementDelegate agreementDelegate;
+		
+	private final CourtCaseAgreementDelegate courtCaseAgreementDelegate;
 	
 	
 	/**
@@ -66,28 +67,25 @@ public class WarrantServiceImpl implements WarrantService {
 	 * @param warrantArrestDelegate
 	 * @param warrantReasonCategoryDelegate
 	 * @param jailDelegate
-	 * @param correctionalStatusTermDelegate
-	 * @param courtCaseDelegate
 	 * @param conditionDelegate
+	 * @param agreementDelegate
+	 * @param courtCaseAgreementDelegate
 	 */
 	public WarrantServiceImpl(final WarrantDelegate warrantDelegate,
 			final WarrantCauseViolationDelegate warrantCauseViolationDelegate,
 			final WarrantNoteDelegate warrantNoteDelegate,
 			final WarrantArrestDelegate warrantArrestDelegate,
 			final JailDelegate jailDelegate,
-			final CorrectionalStatusTermDelegate correctionalStatusTermDelegate,
-			final CourtCaseDelegate courtCaseDelegate,
 			final ConditionDelegate conditionDelegate,
-			final AgreementDelegate agreementDelegate) {
+			final AgreementDelegate agreementDelegate,
+			final CourtCaseAgreementDelegate courtCaseAgreementDelegate) {
 		this.warrantDelegate = warrantDelegate;
 		this.warrantCauseViolationDelegate = warrantCauseViolationDelegate;
 		this.warrantNoteDelegate = warrantNoteDelegate;
 		this.warrantArrestDelegate = warrantArrestDelegate;
 		this.jailDelegate = jailDelegate;
-		this.correctionalStatusTermDelegate = correctionalStatusTermDelegate;
-		this.courtCaseDelegate = courtCaseDelegate;
 		this.conditionDelegate = conditionDelegate;
-		this.agreementDelegate = agreementDelegate;
+		this.courtCaseAgreementDelegate = courtCaseAgreementDelegate;
 	}
 
 	/**{@inheritDoc} */
@@ -95,10 +93,10 @@ public class WarrantServiceImpl implements WarrantService {
 	public Warrant create(final Offender offender, final Date date,
 			final String addressee, final Person issuedBy,
 			final Boolean bondable, final BigDecimal bondRecommendation,
-			final WarrantReasonCategory warrantReason)
-					throws DuplicateEntityFoundException {
+			final WarrantReasonCategory warrantReason, final Jail holdingJail)
+					throws WarrantExistsException {
 		return this.warrantDelegate.create(offender, date, addressee, issuedBy,
-				bondable, bondRecommendation, warrantReason);
+				bondable, bondRecommendation, warrantReason, holdingJail);
 	}
 
 	/**{@inheritDoc} */
@@ -106,10 +104,10 @@ public class WarrantServiceImpl implements WarrantService {
 	public Warrant update(final Warrant warrant, final Date date,
 			final String addressee, final Person issuedBy,
 			final Boolean bondable, final BigDecimal bondRecommendation,
-			final WarrantReasonCategory warrantReason)
-					throws DuplicateEntityFoundException {
+			final WarrantReasonCategory warrantReason, final Jail holdingJail)
+					throws WarrantExistsException {
 		return this.warrantDelegate.update(warrant, date, addressee, issuedBy,
-				bondable, bondRecommendation, warrantReason);
+				bondable, bondRecommendation, warrantReason, holdingJail);
 	}
 
 	/**{@inheritDoc} */
@@ -121,22 +119,22 @@ public class WarrantServiceImpl implements WarrantService {
 	/**{@inheritDoc} */
 	@Override
 	public WarrantCauseViolation createWarrantCauseViolation(
-			final Warrant warrant, final CourtCase cause,
-			final Condition condition, final String description)
-					throws DuplicateEntityFoundException {
+			final Warrant warrant,
+			final ConditionClause conditionClause, final String description)
+					throws WarrantCauseViolationExistsException {
 		return this.warrantCauseViolationDelegate.create(
-				warrant, cause, condition, description);
+				warrant, conditionClause, description);
 	}
 
 	/**{@inheritDoc} */
 	@Override
 	public WarrantCauseViolation updateWarrantCauseViolation(
 			final WarrantCauseViolation warrantCauseViolation,
-			final CourtCase cause, final Condition condition,
+			final ConditionClause conditionClause,
 			final String description)
-					throws DuplicateEntityFoundException {
+					throws WarrantCauseViolationExistsException {
 		return this.warrantCauseViolationDelegate.update(
-				warrantCauseViolation, cause, condition, description);
+				warrantCauseViolation, conditionClause, description);
 	}
 
 	/**{@inheritDoc} */
@@ -152,7 +150,7 @@ public class WarrantServiceImpl implements WarrantService {
 	@Override
 	public WarrantNote createWarrantNote(
 			final Warrant warrant, final String note, final Date date)
-					throws DuplicateEntityFoundException {
+					throws WarrantNoteExistsException {
 		return this.warrantNoteDelegate.create(warrant, note, date);
 	}
 
@@ -160,7 +158,7 @@ public class WarrantServiceImpl implements WarrantService {
 	@Override
 	public WarrantNote updateWarrantNote(
 			final WarrantNote warrantNote, final String note, final Date date)
-					throws DuplicateEntityFoundException {
+					throws WarrantNoteExistsException {
 		return this.warrantNoteDelegate.update(warrantNote, note, date);
 	}
 
@@ -174,7 +172,7 @@ public class WarrantServiceImpl implements WarrantService {
 	@Override
 	public WarrantArrest createArrest(final Warrant warrant, final Date date,
 			final Jail jail, final Date contactByDate)
-					throws DuplicateEntityFoundException {
+					throws WarrantArrestExistsException {
 		return this.warrantArrestDelegate.create(
 				warrant, date, jail, contactByDate);
 	}
@@ -183,7 +181,7 @@ public class WarrantServiceImpl implements WarrantService {
 	@Override
 	public WarrantArrest updateArrest(final WarrantArrest warrantArrest,
 			final Date date, final Jail jail, final Date contactByDate)
-					throws DuplicateEntityFoundException {
+					throws WarrantArrestExistsException {
 		return this.warrantArrestDelegate.update(
 				warrantArrest, date, jail, contactByDate);
 	}
@@ -218,33 +216,52 @@ public class WarrantServiceImpl implements WarrantService {
 		return this.jailDelegate.findAll();
 	}
 
+
 	/**{@inheritDoc} */
 	@Override
-	public CorrectionalStatusTerm findCorrectionalStatusTermForOffenderOnDate(
-			final Offender offender, final Date date) {
-		return this.correctionalStatusTermDelegate.findForOffenderOnDate(
-				offender, date);
+	public List<ConditionClause> findUniqueConditionClausesByOffender(final Offender offender, final Date date) {
+		List<ConditionClause> clauses = new ArrayList<ConditionClause>();
+		List<Condition> conditions = this.conditionDelegate.findByOffenderAndEffectiveDate(offender, date);
+		for (Condition condition : conditions) {
+			if (AgreementCategory.COURT_CASE.equals(condition.getAgreement().getCategory())
+					&& !clauses.contains(condition.getConditionClause())) {
+				clauses.add(condition.getConditionClause());
+			}
+		}
+		return clauses;
 	}
 
 	/**{@inheritDoc} */
 	@Override
-	public List<CourtCase> findCourtCasesByDefendant(final Offender offender) {
-		return this.courtCaseDelegate.findByDefendant(offender);
-	}
-
-	/**{@inheritDoc} */
-	@Override
-	public List<Condition> findConditionsByCourtCase(final CourtCase courtCase) {
-		List<Condition> conditions = new ArrayList<Condition>();
+	public List<Docket> findDocketsByConditionClauseAndOffender(final ConditionClause clause, final Offender offender,
+			final Date effectiveDate) {
 		
-		List<Agreement> agreements = this.agreementDelegate
-				.findByDocket(courtCase.getDocket());
+		//Find all conditions for the condition clause and offender
+		List<Condition> conditions = this.conditionDelegate
+				.findByConditionClauseAndOffenderOnDate(clause, offender, effectiveDate);
 		
-		for(Agreement agreement : agreements){
-			conditions.addAll(this.conditionDelegate
-					.findByAgreement(agreement));
+		//Find all agreements via conditions
+		List<Agreement> agreements = new ArrayList<Agreement>();
+		for(Condition condition : conditions) {
+			if(!agreements.contains(condition.getAgreement())) {
+				agreements.add(condition.getAgreement());
+			}
 		}
 		
-		return conditions;
+		//Find all court case agreements
+		List<CourtCaseAgreement> courtCaseAgreements
+			= this.courtCaseAgreementDelegate.findByOffender(offender);
+		
+		//Dockets
+		List<Docket> dockets = new ArrayList<Docket>();
+		for(CourtCaseAgreement courtCaseAgreement : courtCaseAgreements) {
+			for (Agreement agreement : agreements) {
+				if (courtCaseAgreement.getAgreement() == agreement
+						&& !dockets.contains(courtCaseAgreement.getDocket())) {
+					dockets.add(courtCaseAgreement.getDocket());
+				}
+			}
+		}
+		return dockets;
 	}
 }

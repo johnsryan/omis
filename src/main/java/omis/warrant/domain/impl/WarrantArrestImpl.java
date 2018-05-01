@@ -9,7 +9,7 @@ import omis.warrant.domain.Warrant;
 import omis.warrant.domain.WarrantArrest;
 
 /**
- * WarrantArrestImpl.java
+ * Warrant arrest.
  * 
  *@author Annie Jacques 
  *@version 0.1.0 (May 8, 2017)
@@ -28,7 +28,7 @@ public class WarrantArrestImpl implements WarrantArrest {
 	
 	private Jail jail;
 	
-	private Date contactByDate;
+	private Date determinationDeadline;
 	
 	private CreationSignature creationSignature;
 	
@@ -105,19 +105,19 @@ public class WarrantArrestImpl implements WarrantArrest {
 	public void setJail(final Jail jail) {
 		this.jail = jail;
 	}
-
-	/**{@inheritDoc} */
-	@Override
-	public Date getContactByDate() {
-		return this.contactByDate;
-	}
-
-	/**{@inheritDoc} */
-	@Override
-	public void setContactByDate(final Date contactByDate) {
-		this.contactByDate = contactByDate;
-	}
 	
+	/**{@inheritDoc} */
+	@Override
+	public Date getDeterminationDeadline() {
+		return this.determinationDeadline;
+	}
+
+	/**{@inheritDoc} */
+	@Override
+	public void setDeterminationDeadline(final Date determinationDeadline) {
+		this.determinationDeadline = determinationDeadline;
+	}
+
 	/**{@inheritDoc}*/
 	@Override
 	public boolean equals(final Object obj){

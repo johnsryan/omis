@@ -12,7 +12,7 @@
 	<jsp:include page="/WEB-INF/views/common/includes/searchResources.jsp"/>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/warrant/scripts/warrantCancellation.js?VERSION=1"></script>
 	<title>
-		<fmt:message key="${warrantReasonCategory}CancellationHeader"/>
+		<fmt:message key="cancellationHeader.${warrantReasonCategory}"/>
 		<jsp:include page="/WEB-INF/views/offender/includes/offenderNameSummary.jsp"/>
 	</title>
 </head>
@@ -20,7 +20,7 @@
 	<jsp:include page="/WEB-INF/views/offender/includes/offenderHeader.jsp"/>
 	<h1>
 		<a class="actionMenuItem" id="actionMenuLink" href="${pageContext.request.contextPath}/warrant/warrantCancellationActionMenu.html?offender=${offender.id}"></a>
-		<fmt:message key="${warrantReasonCategory}CancellationHeader"/>
+		<fmt:message key="cancellationHeader.${warrantReasonCategory}"/>
 	</h1>
 	<jsp:include page="includes/cancellationEditForm.jsp"/>
 </body>

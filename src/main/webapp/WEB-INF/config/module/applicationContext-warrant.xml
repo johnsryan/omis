@@ -15,17 +15,14 @@
 			<constructor-arg name="warrantNoteDelegate" ref="warrantNoteDelegate" />
 			<constructor-arg name="warrantArrestDelegate" ref="warrantArrestDelegate" />
 			<constructor-arg name="jailDelegate" ref="jailDelegate" />
-			<constructor-arg name="correctionalStatusTermDelegate" ref="correctionalStatusTermDelegate" />
-			<constructor-arg name="courtCaseDelegate" ref="courtCaseDelegate" />
 			<constructor-arg name="conditionDelegate" ref="conditionDelegate" />
 			<constructor-arg name="agreementDelegate" ref="agreementDelegate" />
+			<constructor-arg name="courtCaseAgreementDelegate" ref="courtCaseAgreementDelegate" />
 		</bean>
 		
 		<bean id="warrantReleaseService" class="omis.warrant.service.impl.WarrantReleaseServiceImpl">
 			<constructor-arg name="warrantReleaseDelegate" ref="warrantReleaseDelegate" />
-			<constructor-arg name="countyDelegate" ref="countyDelegate" />
 			<constructor-arg name="jailDelegate" ref="jailDelegate" />
-			<constructor-arg name="facilityDelegate" ref="facilityDelegate" />
 		</bean>
 		
 		<bean id="warrantCancellationService" class="omis.warrant.service.impl.WarrantCancellationServiceImpl">

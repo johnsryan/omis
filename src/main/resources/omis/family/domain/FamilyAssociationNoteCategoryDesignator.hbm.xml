@@ -28,4 +28,13 @@
 			inner join designator.relationshipNoteCategory category
 		where category = :category 
 	]]></query>
+	<query name="findDesignatedRelationshipNotesByRelationship"><![CDATA[
+		select relationshipNote
+		from omis.relationship.domain.RelationshipNote relationshipNote
+		    inner join relationshipNote.category category,
+		  omis.family.domain.FamilyAssociationNoteCategoryDesignator categoryDesignator
+		where relationshipNote.relationship = :relationship
+		  and category = categoryDesignator.relationshipNoteCategory
+		order by relationshipNote.date, relationshipNote.value
+	]]></query>
 </hibernate-mapping>

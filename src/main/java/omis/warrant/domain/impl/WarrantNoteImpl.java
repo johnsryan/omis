@@ -8,7 +8,7 @@ import omis.warrant.domain.Warrant;
 import omis.warrant.domain.WarrantNote;
 
 /**
- * WarrantNoteImpl.java
+ * Warrant note implementation.
  * 
  *@author Annie Jacques 
  *@version 0.1.0 (May 8, 2017)
@@ -25,7 +25,7 @@ public class WarrantNoteImpl implements WarrantNote {
 	
 	private Date date;
 	
-	private String note;
+	private String value;
 	
 	private CreationSignature creationSignature;
 	
@@ -93,14 +93,14 @@ public class WarrantNoteImpl implements WarrantNote {
 
 	/**{@inheritDoc} */
 	@Override
-	public String getNote() {
-		return this.note;
+	public String getValue() {
+		return this.value;
 	}
 
 	/**{@inheritDoc} */
 	@Override
-	public void setNote(final String note) {
-		this.note = note;
+	public void setValue(final String value) {
+		this.value = value;
 	}
 	
 	/**{@inheritDoc}*/
@@ -121,7 +121,7 @@ public class WarrantNoteImpl implements WarrantNote {
 		if(this.getDate() == null){
 			throw new IllegalStateException("Date required.");
 		}
-		if(this.getNote() == null){
+		if(this.getValue() == null){
 			throw new IllegalStateException("Note required.");
 		}
 		
@@ -131,7 +131,7 @@ public class WarrantNoteImpl implements WarrantNote {
 		if(!this.getDate().equals(that.getDate())){
 			return false;
 		}
-		if(!this.getNote().equals(that.getNote())){
+		if(!this.getValue().equals(that.getValue())){
 			return false;
 		}
 		
@@ -147,14 +147,14 @@ public class WarrantNoteImpl implements WarrantNote {
 		if(this.getDate() == null){
 			throw new IllegalStateException("Date required.");
 		}
-		if(this.getNote() == null){
-			throw new IllegalStateException("Note required.");
+		if(this.getValue() == null){
+			throw new IllegalStateException("Value required.");
 		}
 		
 		int hashCode = 14;
 		hashCode = 29 * hashCode + this.getWarrant().hashCode();
 		hashCode = 29 * hashCode + this.getDate().hashCode();
-		hashCode = 29 * hashCode + this.getNote().hashCode();
+		hashCode = 29 * hashCode + this.getValue().hashCode();
 		
 		return hashCode;
 	}

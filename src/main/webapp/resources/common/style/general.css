@@ -67,6 +67,15 @@ div.menu {
   border-right-style: solid;
 }
 
+body h1 {
+	padding: 5px;
+	margin: 9px 0 12px 25px;
+	border-width: 2px;
+	border-style: solid;
+	clear: left;
+	display: inline-block;
+}
+
 .hidden {
 	display:none;
 }

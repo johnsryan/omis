@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.victim.report;
 
 import java.util.Date;
@@ -24,6 +41,7 @@ import omis.victim.domain.VictimAssociation;
  * such association. 
  *
  * @author Stephen Abson
+ * @author Sheronda Vaughn
  * @version 0.0.1 (Jun 8, 2015)
  * @since OMIS 3.0
  */
@@ -39,6 +57,8 @@ public class VictimAssociationSummary
 	private final String firstName;
 	
 	private final String middleName;
+	
+	private final String suffix;
 	
 	private final Sex sex;
 	
@@ -80,6 +100,10 @@ public class VictimAssociationSummary
 	
 	private final Long noteCount;
 	
+	private final Boolean victimOffender;
+	
+	private final Integer victimOffenderNumber;
+	
 	/**
 	 * Instantiates victim summary.
 	 * 
@@ -92,13 +116,15 @@ public class VictimAssociationSummary
 			final VictimAssociation association,
 			final Address address,
 			final TelephoneNumber telephoneNumber,
-			final Long noteCount) {
+			final Long noteCount,
+			final Offender victimOffender) {
 		Person victim = association.getRelationship().getSecondPerson();
 		this.id = victim.getId();
 		PersonName victimName = victim.getName();
 		this.lastName = victimName.getLastName();
 		this.firstName = victimName.getFirstName();
 		this.middleName = victimName.getMiddleName();
+		this.suffix = victimName.getSuffix();
 		PersonIdentity victimIdentity = victim.getIdentity();
 		if (victimIdentity != null) {
 			this.sex = victimIdentity.getSex();
@@ -136,6 +162,14 @@ public class VictimAssociationSummary
 		this.telephoneNumberSummaryDelegate
 			= new TelephoneNumberSummaryDelegate(telephoneNumber);
 		this.noteCount = noteCount;
+		
+		if (victimOffender != null) {
+			this.victimOffender = true;
+			this.victimOffenderNumber = victimOffender.getOffenderNumber();
+		} else {
+			this.victimOffender = false;
+			this.victimOffenderNumber = null;
+		}
 	}
 	
 	/**
@@ -143,10 +177,11 @@ public class VictimAssociationSummary
 	 */
 	public VictimAssociationSummary(final String lastName, 
 			final String firstName, final String middleName, 
-			final Address address) {
+			final String suffix, final Address address) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.middleName = middleName;
+		this.suffix = suffix;
 		this.addressSummaryDelegate = new AddressSummaryDelegate(address);
 		this.id = null;
 		this.sex = null;
@@ -168,6 +203,8 @@ public class VictimAssociationSummary
 		this.telephoneNumberSummaryDelegate = null;
 		this.noteCount = null;
 		this.address = null;
+		this.victimOffender = null;
+		this.victimOffenderNumber = null;
 	}
 
 	/**
@@ -204,6 +241,15 @@ public class VictimAssociationSummary
 	 */
 	public String getMiddleName() {
 		return this.middleName;
+	}
+
+	/**
+	 * Returns suffix of victim.
+	 *
+	 * @return the suffix
+	 */
+	public String getSuffix() {
+		return this.suffix;
 	}
 
 	/**
@@ -462,5 +508,23 @@ public class VictimAssociationSummary
 	 */
 	public Long getNoteCount() {
 		return this.noteCount;
+	}
+
+	/**
+	 * Returns victim as offender.
+	 *
+	 * @return the victimOffender victim offender
+	 */
+	public Boolean getVictimOffender() {
+		return this.victimOffender;
+	}
+
+	/**
+	 * Return victim as offender number.
+	 *
+	 * @return the victimOffenderNumber victim offender number
+	 */
+	public Integer getVictimOffenderNumber() {
+		return this.victimOffenderNumber;
 	}
 }

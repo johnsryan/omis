@@ -148,6 +148,11 @@ ul.profileItemToolbar, h2.actionMenuHeader {
   background-color: #000;
 }
 
+body h1 {
+	background-color: hsla(${foregroundHue}, ${foregroundSaturation}%, 91%, 1);
+	border-color: hsla(${foregroundHue}, ${foregroundSaturation}%, 91%, 1);
+}
+
 /* Forms and list table headers. */
 table.listTable th, .profileItemHeader, form.editForm table.editTable thead tr th,
 form.editForm table.editTable th, table.formTable thead tr th,
@@ -311,6 +316,15 @@ form.editForm fieldset {
 }
 
 form.editForm fieldset legend {
+	background-color: hsla(${foregroundHue}, ${foregroundSaturation}%, 80%, 1);
+}
+
+form.searchForm fieldset {
+	background-color: hsla(${foregroundHue}, ${foregroundSaturation}%, 91%, 1);
+	border-color: hsla(${foregroundHue}, ${foregroundSaturation}%, 91%, 1);
+}
+
+form.searchForm fieldset legend {
 	background-color: hsla(${foregroundHue}, ${foregroundSaturation}%, 80%, 1);
 }
 
@@ -513,10 +527,15 @@ tr.disabled {
 
 
 /* Action Menus */
-a.actionMenuItem:hover, .homeLink:hover, .reportHomeLink:hover, .applicationHelpLink:hover, .identifyingInformation a:hover, a.profileLink:hover, a.moduleLink:hover {
+/*a.actionMenuItem:hover, .homeLink:hover, .reportHomeLink:hover, .applicationHelpLink:hover, .identifyingInformation a:hover, a.profileLink:hover, a.moduleLink:hover {
 	background-color: #fafafa;
 	transition: background-color .25s;
 	border: 1px solid #aeaeae;
+}*/
+
+a.actionMenuItem:hover, .homeLink:hover, .reportHomeLink:hover, .applicationHelpLink:hover, .identifyingInformation a:hover, a.profileLink:hover, a.moduleLink:hover {
+
+	box-shadow: inset 0 0 1px 1px  hsla(${accentHue}, ${accentSaturation}%, 80%, 1), inset 0 0 15px 15px  hsla(${accentHue}, ${accentSaturation}%, 100%, 1);
 }
 
 a.actionMenuItem.open {
@@ -530,10 +549,6 @@ a.actionMenuItem.open {
 	transition: background 1s;
 	border-style: solid;
 	border-color: #000;
-}
-
-a.actionMenuItem:hover {
-		
 }
 
 .actionListContainer {
@@ -635,11 +650,13 @@ div.panel {
 /* Hoverable Colors. */
 
 .hoverable:hover, .profileItem a:hover, .moduleLink > a:hover {
-	box-shadow: inset 0 0 15px 15px  hsla(0, 100%, 100%, .33);
+	box-shadow: inset 0 0 15px 15px  hsla(0, 100%, 100%, .33), 0 0 3px 3px  hsla(0, 100%, 100%, .33) ;
+	transition: box-shadow 150ms ease-in-out;
 }
 
 .hoverable:hover:after, .profileItem a:hover:after, .moduleLink > a:hover:after {
-	box-shadow: inset 0 0 15px 15px  hsla(0, 100%, 100%, .33);
+	box-shadow: inset 0 0 15px 15px  hsla(0, 100%, 100%, .33), 0 0 2px 5px  hsla(0, 100%, 100%, .33) ;
+	transition: box-shadow 150ms ease-in-out;
 }
 
 .active {
@@ -648,19 +665,18 @@ div.panel {
 }
 
 span.banner {
-	background-color:  hsla(${backgroundHue}, ${backgroundSaturation}%, 85%, 1);
+	background-color:  hsla(${accentHue}, ${accentSaturation}%, 85%, 1);
 }
 
 span.banner:hover {
-	background-color:  hsla(${backgroundHue}, ${backgroundSaturation}%, 95%, 1);
+	background-color:  hsla(${accentHue}, ${accentSaturation}%, 95%, 1);
 }
 
 span.banner:hover::before {
-background:
-  linear-gradient(45deg,  hsla(${backgroundHue}, ${backgroundSaturation}%, 95%, 1) 33.333%, transparent 33.333%, transparent 66.667%,  hsla(${backgroundHue}, ${backgroundSaturation}%, 95%, 1) 66.667%), linear-gradient(135deg,  hsla(${backgroundHue}, ${backgroundSaturation}%, 95%, 1) 33.333%, transparent 33.333%, transparent 66.667%, hsla(${backgroundHue}, ${backgroundSaturation}%, 95%, 1) 66.667%);
+	background: linear-gradient(45deg,  hsla(${accentHue}, ${accentSaturation}%, 95%, 1) 33.333%, transparent 33.333%, transparent 66.667%,  hsla(${accentHue}, ${accentSaturation}%, 95%, 1) 66.667%), linear-gradient(135deg,  hsla(${accentHue}, ${accentSaturation}%, 95%, 1) 33.333%, transparent 33.333%, transparent 66.667%, hsla(${accentHue}, ${accentSaturation}%, 95%, 1) 66.667%);
 }
 
 span.banner:before {
 background:
-  linear-gradient(45deg,  hsla(${backgroundHue}, ${backgroundSaturation}%, 85%, 1) 33.333%, transparent 33.333%, transparent 66.667%,  hsla(${backgroundHue}, ${backgroundSaturation}%, 85%, 1) 66.667%), linear-gradient(135deg,  hsla(${backgroundHue}, ${backgroundSaturation}%, 85%, 1) 33.333%, transparent 33.333%, transparent 66.667%, hsla(${backgroundHue}, ${backgroundSaturation}%, 85%, 1) 66.667%);
+  linear-gradient(45deg,  hsla(${accentHue}, ${accentSaturation}%, 85%, 1) 33.333%, transparent 33.333%, transparent 66.667%,  hsla(${accentHue}, ${accentSaturation}%, 85%, 1) 66.667%), linear-gradient(135deg,  hsla(${accentHue}, ${accentSaturation}%, 85%, 1) 33.333%, transparent 33.333%, transparent 66.667%, hsla(${accentHue}, ${accentSaturation}%, 85%, 1) 66.667%);
 }

@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System.
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.visitation.web.controller;
 
 import java.util.ArrayList;
@@ -88,26 +105,36 @@ public class VisitationAssociationController {
 			"visitation/visitationAssociation/edit";
 	
 	private static final String VISITATION_ASSOCIATIONS_ACTION_MENU_VIEW_NAME
-= "visitation/visitationAssociation/includes/visitationAssociationsActionMenu";
+		= "visitation/visitationAssociation/includes/"
+				+ "visitationAssociationsActionMenu";
 	
 	private static final String VISITATION_ASSOCIATION_ACTION_MENU_VIEW_NAME
-= "visitation/visitationAssociation/includes/visitationAssociationActionMenu";
+		= "visitation/visitationAssociation/includes/"
+				+ "visitationAssociationActionMenu";
 	
 	private static final String VISITS_ACTION_MENU_VIEW_NAME
-	= "visitation/visit/includes/visitsActionMenu";
+		= "visitation/visit/includes/visitsActionMenu";
 	
 	private static final String VISITATION_LIST_VIEW_NAME = "visitation/list";
 	
 	private static final String
-		VISITATION_ASSOCIATION_ROW_ACTION_MENU_VIEW_NAME =
-"visitation/visitationAssociation/includes/visitationAssociationRowActionMenu"; 
+		VISITATION_ASSOCIATION_ROW_ACTION_MENU_VIEW_NAME 
+		= "visitation/visitationAssociation/includes/"
+				+ "visitationAssociationRowActionMenu"; 
 	
 	private static final String ALTERNATE_NAME_SUMMARIES_LIST_VIEW_NAME =
 		"visitation/includes/associatedAlternateNameRow";
 	
+	private static final String 
+		VISITATION_ASSOCIATION_ROW_SEARCH_ACTION_MENU_VIEW_NAME
+		= "visitation/visitationAssociation/includes/"
+				+ "visitationAssociationRowSearchActionMenu";
+	
 	/* Model Keys. */
 	
 	private static final String OFFENDER_MODEL_KEY = "offender";
+	
+	private static final String VISITOR_MODEL_KEY = "visitor";
 	
 	private static final String VISITATION_ASSOCIATION_FORM_MODEL_KEY = 
 			"visitationAssociationForm";
@@ -129,7 +156,7 @@ public class VisitationAssociationController {
 	private static final String VISITOR_LOG_FORM_MODEL_KEY = "visitorLogForm";
 	
 	private static final String VISITOR_CHECK_IN_FORM_MODEL_KEY
-	= "visitorCheckInForm";
+		= "visitorCheckInForm";
 	
 	private static final String ERRORS_PRESENT_MODEL_KEY = "errorsPresent";
 	
@@ -148,6 +175,11 @@ public class VisitationAssociationController {
 	private static final String ALTERNATE_NAMES_SUMMARIES_MODEL_KEY = 
 			"alternateNameSummaries";
 	
+	private static final String VISITATION_ASSOCIATION_EXISTS_MODEL_KEY
+		= "visitationAssociationExists";
+	
+	
+	
 	/* Property names. */
 	
 	private static final String PERSON_FIELDS_PROPERTY_NAME = "personFields";
@@ -161,7 +193,7 @@ public class VisitationAssociationController {
 	@Autowired
 	@Qualifier("visitationAssociationSummaryReportService")
 	private VisitationAssociationSummaryReportService
-	visitationAssociationReportService;
+		visitationAssociationReportService;
 	
 	@Autowired
 	@Qualifier("visitSummaryReportService")
@@ -171,7 +203,8 @@ public class VisitationAssociationController {
 	
 	@Autowired
 	@Qualifier("visitationAssociationFormValidator")
-	VisitationAssociationFormValidator visitationAssociationFormValidator;
+	private VisitationAssociationFormValidator 
+		visitationAssociationFormValidator;
 	
 	/* Property editors. */
 	
@@ -193,7 +226,7 @@ public class VisitationAssociationController {
 	@Autowired
 	@Qualifier("visitationAssociationCategoryPropertyEditorFactory")
 	private PropertyEditorFactory 
-	visitationAssociationCategoryPropertyEditorFactory;
+		visitationAssociationCategoryPropertyEditorFactory;
 	
 	@Autowired
 	@Qualifier("visitPropertyEditorFactory")
@@ -234,22 +267,24 @@ public class VisitationAssociationController {
 		= "/Relationships/Visitation/Visitation_Listing_Visitor_List";
 	
 	private static final String VISITATION_LISTING_LEGACY_REPORT_NAME 
-	= "/Relationships/Visitation/Visitation_Listing_Visitor_List_Legacy";
+		= "/Relationships/Visitation/Visitation_Listing_Visitor_List_Legacy";
 	
 	private static final String VISITATION_LISTING_LEGACY_REDACTED_REPORT_NAME 
-	= "/Relationships/Visitation/Visitation_Listing_Visitor_List_Legacy_Redacted";
+		= "/Relationships/Visitation/"
+			+ "Visitation_Listing_Visitor_List_Legacy_Redacted";
 	
 	private static final String VISITATION_LISTING_REDACTED_REPORT_NAME 
-	= "/Relationships/Visitation/Inmate_Visitor_List";
+		= "/Relationships/Visitation/Inmate_Visitor_List";
 
 	private static final String VISITATION_DETAILS_REPORT_NAME 
 		= "/Relationships/Visitation/Visitation_Details_Approved_Visitor";
 	
 	private static final String VISITATION_DETAILS_REDACTED_REPORT_NAME 
-	= "/Relationships/Visitation/Visitation_Details_Approved_Visitor_Redacted";
+		= "/Relationships/Visitation/"
+				+ "Visitation_Details_Approved_Visitor_Redacted";
 	
 	private static final String VISITOR_LOG_LEGACY_REPORT_NAME 
-	= "/Relationships/Visitation/Visitor_Log_Legacy";
+		= "/Relationships/Visitation/Visitor_Log_Legacy";
 
 	/* Report parameter names. */
 	
@@ -257,21 +292,22 @@ public class VisitationAssociationController {
 		= "DOC_ID";
 	
 	private static final String VISITATION_LISTING_LEGACY_ID_REPORT_PARAM_NAME 
-	= "DOC_ID";
+		= "DOC_ID";
 	
-	private static final String VISITATION_LISTING_LEGACY_REDACTED_ID_REPORT_PARAM_NAME 
-	= "DOC_ID";
+	private static final String 
+		VISITATION_LISTING_LEGACY_REDACTED_ID_REPORT_PARAM_NAME 
+			= "DOC_ID";
 	
 	private static final String VISITOR_LOG_LEGACY_ID_REPORT_PARAM_NAME 
-	= "DOC_ID";
+		= "DOC_ID";
 	
-	private static final String VISITATION_LISTING_REDACTED_ID_REPORT_PARAM_NAME 
+	private static final String VISITATION_LISTING_REDACTED_ID_REPORT_PARAM_NAME
 	    = "DOC_ID";
 
 	private static final String VISITATION_DETAILS_ID_REPORT_PARAM_NAME 
 		= "VISIT_ASSOC_ID";
 
-	private static final String VISITATION_DETAILS_REDACTED_ID_REPORT_PARAM_NAME 
+	private static final String VISITATION_DETAILS_REDACTED_ID_REPORT_PARAM_NAME
 		= "VISIT_ASSOC_ID";	
 	/* Report runners. */
 	
@@ -316,7 +352,10 @@ public class VisitationAssociationController {
 	 * List the visitor summaries for the specified offender.
 	 * 
 	 * @param offender offender
-	 * @param facility facility
+	 * @param date date
+	 * @param startDate start date
+	 * @param endDate end date
+	 * @param model model
 	 * @return model and view for visitation association and visit list screen
 	 */
 	@RequestContentMapping(nameKey = "visitationListScreenName",
@@ -327,7 +366,7 @@ public class VisitationAssociationController {
 	@PreAuthorize("hasRole('VISITATION_ASSOCIATION_LIST') or hasRole('ADMIN')")
 	public ModelAndView list(@RequestParam(value = "offender", 
 			required = false) final Offender offender, 
-			@RequestParam(value = "date", required = false)final Date date,
+			@RequestParam(value = "date", required = false) final Date date,
 			@RequestParam(value = "startDate", required = false)
 				final Date startDate,
 			@RequestParam(value = "endDate", required = false)
@@ -336,7 +375,7 @@ public class VisitationAssociationController {
 		//Set the model object to a Map.
 		Map<String, ?> attributes = model.asMap();
 		//Check for an attribute of binding results for the badge number form
-		if(attributes.containsKey(BindingResult.MODEL_KEY_PREFIX 
+		if (attributes.containsKey(BindingResult.MODEL_KEY_PREFIX 
 				+ VISITOR_CHECK_IN_FORM_MODEL_KEY)) {
 			//Add the errors object, binding results, and current visitation
 			//association to the model map to be used when the listing screen
@@ -381,17 +420,10 @@ public class VisitationAssociationController {
 					this.visitationAssociationReportService
 					.summarizeVisitationAssociations(offender, new Date());
 		}
-		
-		
-		
 		/*List<AlternateNameSummary> AlternateNameSummaries = 
 			this.visitationAssociationReportService.summarizeAlternativeNames(
-				visitationAssociationSummaries.get(0).getSecondPerson(), new Date());*/
-		
-		
-		
-		
-		
+				visitationAssociationSummaries.get(0).getSecondPerson(), 
+				new Date());*/
 		
 		List<VisitSummary> visitSummaries = this.visitSummaryReportService
 					.findVisitSummariesByOffenderOnDate(offender, new Date(),
@@ -441,6 +473,7 @@ public class VisitationAssociationController {
 	 * Create a new visitation association between and offender and person.
 	 * 
 	 * @param offender offender
+	 * @param person person
 	 * @return model and view
 	 */
 	@RequestContentMapping(nameKey = "visitationAssociationCreateScreenName",
@@ -515,7 +548,7 @@ public class VisitationAssociationController {
 	public ModelAndView save(@RequestParam(value = "offender", required = true)
 			final Offender offender,
 			final VisitationAssociationForm form, final BindingResult result) 
-					throws DuplicateEntityFoundException, DateConflictException, 
+					throws DuplicateEntityFoundException, DateConflictException,
 					ReflexiveRelationshipException {
 		this.visitationAssociationFormValidator.validate(
 				form, result);
@@ -566,7 +599,8 @@ public class VisitationAssociationController {
 		this.visitationAssociationService.associate(
 				form.getAssociatedOffender(), visitor,
 				form.getCategory(), approval, form.getStartDate(),
-				form.getEndDate(), flags, form.getNotes(), form.getGuardianship());
+				form.getEndDate(), flags, form.getNotes(), 
+				form.getGuardianship());
 		String url = LIST_REDIRECT_URL + offender.getId();
 		return new ModelAndView(url);
 	}
@@ -576,7 +610,6 @@ public class VisitationAssociationController {
 	 * specified visitation association for the purpose of viewing or editing.
 	 * 
 	 * @param visitationAssociation visitation association
-	 * @param offender offender
 	 * @return model and view
 	 */
 	@RequestContentMapping(nameKey = "visitationAssociationEditScreenName",
@@ -607,7 +640,6 @@ public class VisitationAssociationController {
 	 * the user is returned to the editVisitationAssociation screen.
 	 * 
 	 * @param visitationAssociation visitation association
-	 * @param offender offender
 	 * @param form visitation association form
 	 * @param result binding result
 	 * @return model and view
@@ -646,7 +678,8 @@ public class VisitationAssociationController {
 				form.getSpecialVisit());
 		this.visitationAssociationService.update(visitationAssociation, 
 				form.getCategory(), approval, form.getStartDate(), 
-				form.getEndDate(), flags, form.getNotes(), form.getGuardianship());
+				form.getEndDate(), flags, form.getNotes(), 
+				form.getGuardianship());
 		return new ModelAndView(LIST_REDIRECT_URL + offender.getId());
 	}
 	
@@ -655,7 +688,6 @@ public class VisitationAssociationController {
 	 *
 	 *
 	 * @param visitationAssociation visitation association
-	 * @param offender offender
 	 * @return new model and view
 	 */
 	@RequestMapping(value = "remove.html", method = RequestMethod.GET)
@@ -725,6 +757,11 @@ public class VisitationAssociationController {
 	 * Displays the visitation association row action menu.
 	 * 
 	 * @param association visitation association
+	 * @param currentlyVisiting currently visiting
+	 * @param visit visit
+	 * @param date date
+	 * @param startDate start date
+	 * @param endDate end date
 	 * @return model and view for visitation association row action menu
 	 */
 	@RequestMapping(value = "visitationAssociationRowActionMenu.html",
@@ -752,7 +789,8 @@ public class VisitationAssociationController {
 		if (this.visitationAssociationService.isOffender(
 				association.getRelationship().getSecondPerson())) {
 			isOffender = true;
-			map.addAttribute(OFFENDER_MODEL_KEY, (Offender) association.getRelationship().getSecondPerson());
+			map.addAttribute(OFFENDER_MODEL_KEY, (Offender) association
+					.getRelationship().getSecondPerson());
 		} else {
 			isOffender = false;
 		}
@@ -762,8 +800,35 @@ public class VisitationAssociationController {
 				VISITATION_ASSOCIATION_ROW_ACTION_MENU_VIEW_NAME, map);
 	}
 	
-	
-	
+	/**
+	 * Return model and view of visitation association row search action menu.
+	 *
+	 *
+	 * @param offender offender
+	 * @param visitor visitor
+	 * @return model and view
+	 */
+	@RequestMapping(value = "visitationAssociationRowSearchActionMenu.html",
+			method = RequestMethod.GET)
+	public ModelAndView visitationAssociationRowSearchActionMenu(
+			@RequestParam(value = "offender", required = true)
+				final Offender offender,
+			@RequestParam(value = "visitor", required = true)
+				final Person visitor) {
+		ModelMap map = new ModelMap();
+		map.addAttribute(IS_OFFENDER_MODEL_KEY, 
+				this.visitationAssociationReportService.isOffender(visitor));
+		map.addAttribute(OFFENDER_MODEL_KEY,  offender);	
+		map.addAttribute(VISITOR_MODEL_KEY, visitor);
+		map.addAttribute(VISITATION_ASSOCIATION_EXISTS_MODEL_KEY, 
+				this.visitationAssociationReportService
+				.visitationAssociationExists(offender, visitor));
+		map.addAttribute(VISITATION_ASSOCIATION_MODEL_KEY, 
+				this.visitationAssociationReportService
+				.findVisitationAssociation(offender, visitor));
+		return new ModelAndView(
+				VISITATION_ASSOCIATION_ROW_SEARCH_ACTION_MENU_VIEW_NAME, map);
+	}
 	
 	/**
 	 * Lists alternate names. 
@@ -793,11 +858,7 @@ public class VisitationAssociationController {
 			alternateNameSummaries);
 		return mav;
 	}
-	
-	
-	
-	
-	
+		
 	/**
 	 * Displays state options for the specified country.
 	 * 
@@ -841,6 +902,14 @@ public class VisitationAssociationController {
 				cities, PERSON_FIELDS_PROPERTY_NAME);
 	}
 	
+	/**
+	 * Return model and view to dissociate visitation association.
+	 *
+	 *
+	 * @param visitationAssociation visitation association
+	 * @param effectiveDate effective date
+	 * @return model and view
+	 */
 	@RequestMapping(value = "dissociateVisitationAssociation.html",
 			method = RequestMethod.GET)
 	@PreAuthorize("hasRole('VISITATION_ASSOCIATION_REMOVE') or "
@@ -878,7 +947,7 @@ public class VisitationAssociationController {
 	public ModelAndView handleDuplicateEntityFoundException(
 			final DuplicateEntityFoundException exception) {
 		return this.businessExceptionHandlerDelegate.prepareModelAndView(
-				DUPLICATE_ENTITY_FOUND_EXCEPTION_MESSAGE_KEY, ERROR_BUNDLE_NAME, 
+				DUPLICATE_ENTITY_FOUND_EXCEPTION_MESSAGE_KEY, ERROR_BUNDLE_NAME,
 				exception);
 	}
 	
@@ -886,7 +955,7 @@ public class VisitationAssociationController {
 	public ModelAndView handleReflexiveRelationshipException(
 			final ReflexiveRelationshipException exception) {
 		return this.businessExceptionHandlerDelegate.prepareModelAndView(
-				REFLEXIVE_RELATIONSHIP_EXCEPTION_MESSAGE_KEY, ERROR_BUNDLE_NAME, 
+				REFLEXIVE_RELATIONSHIP_EXCEPTION_MESSAGE_KEY, ERROR_BUNDLE_NAME,
 				exception);
 	}
 	
@@ -927,7 +996,8 @@ public class VisitationAssociationController {
 	 */
 	@RequestMapping(value = "/visitationListingLegacyReport.html",
 			method = RequestMethod.GET)
-	@PreAuthorize("(hasRole('VISITATION_ASSOCIATION_VIEW') and hasRole('OFFENDER_SSN_VIEW')) "
+	@PreAuthorize("(hasRole('VISITATION_ASSOCIATION_VIEW') "
+			+ "and hasRole('OFFENDER_SSN_VIEW')) "
 			+ "or hasRole('ADMIN')")
 	public ResponseEntity<byte []> reportVisitationListingLegacy(@RequestParam(
 			value = "offender", required = true)
@@ -955,13 +1025,14 @@ public class VisitationAssociationController {
 			method = RequestMethod.GET)
 	@PreAuthorize("hasRole('VISITATION_ASSOCIATION_VIEW') "
 			+ "or hasRole('ADMIN')")
-	public ResponseEntity<byte []> reportVisitationListingLegacyRedacted(@RequestParam(
-			value = "offender", required = true)
+	public ResponseEntity<byte []> reportVisitationListingLegacyRedacted(
+			@RequestParam(value = "offender", required = true)
 			final Offender offender,
 			@RequestParam(value = "reportFormat", required = true)
 			final ReportFormat reportFormat) {
 		Map<String, String> reportParamMap = new HashMap<String, String>();
-		reportParamMap.put(VISITATION_LISTING_LEGACY_REDACTED_ID_REPORT_PARAM_NAME,
+		reportParamMap.put(
+				VISITATION_LISTING_LEGACY_REDACTED_ID_REPORT_PARAM_NAME,
 				Long.toString(offender.getOffenderNumber()));
 		byte[] doc = this.reportRunner.runReport(
 				VISITATION_LISTING_LEGACY_REDACTED_REPORT_NAME,
@@ -1006,8 +1077,8 @@ public class VisitationAssociationController {
 	@RequestMapping(value = "inmateVisitorListReport.html",
 			method = RequestMethod.GET)
 	@PreAuthorize("hasRole('VISITATION_ASSOCIATION_VIEW') or hasRole('ADMIN')")
-	public ResponseEntity<byte []> reportVisitationListingRedacted(@RequestParam(
-			value = "offender", required = true)
+	public ResponseEntity<byte []> reportVisitationListingRedacted(@
+			RequestParam(value = "offender", required = true)
 			final Offender offender,
 			@RequestParam(value = "reportFormat", required = true)
 			final ReportFormat reportFormat) {
@@ -1030,7 +1101,8 @@ public class VisitationAssociationController {
 	 */
 	@RequestMapping(value = "/visitationDetailsReport.html",
 			method = RequestMethod.GET)
-	@PreAuthorize("(hasRole('VISITATION_ASSOCIATION_VIEW') and hasRole('OFFENDER_SSN_VIEW')) "
+	@PreAuthorize("(hasRole('VISITATION_ASSOCIATION_VIEW') "
+			+ "and hasRole('OFFENDER_SSN_VIEW')) "
 			+ "or hasRole('ADMIN')")
 	public ResponseEntity<byte []> reportVisitationDetails(@RequestParam(
 			value = "visitationAssociation", required = true)
@@ -1057,8 +1129,8 @@ public class VisitationAssociationController {
 	@RequestMapping(value = "/visitationDetailsRedactedReport.html",
 			method = RequestMethod.GET)
 	@PreAuthorize("hasRole('VISITATION_ASSOCIATION_VIEW') or hasRole('ADMIN')")
-	public ResponseEntity<byte []> reportVisitationDetailsRedacted(@RequestParam(
-			value = "visitationAssociation", required = true)
+	public ResponseEntity<byte []> reportVisitationDetailsRedacted(
+			@RequestParam(value = "visitationAssociation", required = true)
 			final VisitationAssociation visitationAssociation,
 			@RequestParam(value = "reportFormat", required = true)
 			final ReportFormat reportFormat) {
@@ -1092,8 +1164,10 @@ public class VisitationAssociationController {
 			form.setMoney(flags.getMoney());
 			form.setNonContact(flags.getNonContact());
 		}
-		form.setStartDate(DateRange.getStartDate(visitationAssociation.getDateRange()));
-		form.setEndDate(DateRange.getEndDate(visitationAssociation.getDateRange()));
+		form.setStartDate(DateRange.getStartDate(visitationAssociation
+				.getDateRange()));
+		form.setEndDate(DateRange.getEndDate(visitationAssociation
+				.getDateRange()));
 		VisitationApproval approval = visitationAssociation.getApproval();
 		if (approval != null) {
 			form.setApproved(approval.getApproved());
@@ -1151,7 +1225,8 @@ public class VisitationAssociationController {
 				visitSummaries);
 		map.addAttribute(OFFENDER_MODEL_KEY, offender);
 		map.addAttribute(VISITOR_LOG_FORM_MODEL_KEY, form);
-		map.addAttribute(VISITOR_CHECK_IN_FORM_MODEL_KEY, new VisitorCheckInForm());
+		map.addAttribute(VISITOR_CHECK_IN_FORM_MODEL_KEY, 
+				new VisitorCheckInForm());
 		this.offenderSummaryModelDelegate.add(map, offender);
 		return new ModelAndView(VISITATION_LIST_VIEW_NAME, map); 
 	}

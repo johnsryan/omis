@@ -96,7 +96,7 @@ ul.toolbar li a.actionMenuItem, a.actionMenuItem {
 	margin-top: 2px;
 }
 
-#multiMenu:hover, .homeLink:hover, #reportHomeLink:hover, #applicationHelpLink:hover {
+/* #multiMenu:hover, .homeLink:hover, #reportHomeLink:hover, #applicationHelpLink:hover {
 	float:left;
 	padding-left: 2px;
 	padding-right: 2px;
@@ -107,7 +107,7 @@ ul.toolbar li a.actionMenuItem, a.actionMenuItem {
 	margin-bottom: 1px;
 	margin-top: 7px;
 }
-
+ */
 #multiMenu, #multiMenu:hover {
 	margin-left:10px;
 }

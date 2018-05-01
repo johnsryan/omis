@@ -71,7 +71,8 @@
 		};
 		
 		searchFunctionEnter = function(e) {
-			 if(e.which == 13) {
+			alert(e.shiftKey);
+			 if(e.which == 13 && !e.shiftKey) {
 				 searchCriteria = $(element).val();
 			
 				 url = settings.url + '?' + settings.searchParam.paramName + '=' + searchCriteria;

@@ -29,11 +29,6 @@
     	<a id="userAdminIndexLink" class="userAdminLink iconLink newTab" href="${pageContext.request.contextPath}/user/admin/index.html" title="<fmt:message key='userAdminIndexLink'/>"><span><fmt:message key="userAdminIndexLink"/></span></a>
     </li>
     </sec:authorize>
-    <sec:authorize access="hasRole('ADMIN') or hasRole('CHANGE_PASSWORD')">
-    <li>
-    	<a id="changePasswordLink" class="changePasswordLink iconLink newTab" href="${pageContext.request.contextPath}/user/changePassword.html" title="<fmt:message key='changePasswordLink'/>"><span><fmt:message key="changePasswordLink"/></span></a>
-    </li>
-    </sec:authorize>
 	<sec:authorize access="hasRole('OFFENDER_CREATE') or hasRole('ADMIN')">
 		<li>
 			<a id="createOffenderLink" class="newTab createLink" href="${pageContext.request.contextPath}/offender/create.html">

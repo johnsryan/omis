@@ -33,26 +33,30 @@ import omis.user.domain.UserAccount;
  * 
  * @author Annie Wahl
  * @author Josh Divine
- * @version 0.1.1 (Feb 14, 2018)
+ * @version 0.1.2 (Apr 24, 2018)
  * @since OMIS 3.0
  */
 public class 
 	PresentenceInvestigationRequestSummaryReportServiceHibernateImpl 
 	implements PresentenceInvestigationRequestSummaryReportService {
 	
-	private static final String FIND_BY_USER_QUERY_NAME 
-		= "findPresentenceInvestigationRequestSummariesByUser";
+	private static final String FIND_BY_USER_QUERY_NAME = 
+			"findPresentenceInvestigationRequestSummariesByUser";
 	
-	private static final String USER_PARAM_NAME = "assignedUser";
-
 	private static final String FIND_BY_OFFENDER_QUERY_NAME 
 		= "findPresentenceInvestigationRequestSummariesByOffender";
-
-	private static final String OFFENDER_PARAM_NAME = "offender";
 
 	private static final String FIND_BY_REQUEST_QUERY_NAME 
 		= "findPresentenceInvestigationRequestSummary";
 
+	private static final String FIND_UNSUBMITTED_BY_USER_QUERY_NAME = 
+			"findUnsubmittedPresentenceInvestigationRequestSummariesByUser";
+
+	private static final String USER_PARAM_NAME = "assignedUser";
+
+	private static final String OFFENDER_PARAM_NAME = "offender";
+
+	
 	private static final String REQUEST_PARAM_NAME 
 		= "presentenceInvestigationRequest";
 	
@@ -104,5 +108,19 @@ public class
 						presentenceInvestigationRequest)
 				.setReadOnly(true)
 				.uniqueResult());
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public List<PresentenceInvestigationRequestSummary> 
+			findUnsubmittedPresentenceInvestigationRequestSummariesByUser(
+					final UserAccount user) {
+		@SuppressWarnings("unchecked")
+		List<PresentenceInvestigationRequestSummary> summaries = this
+				.sessionFactory.getCurrentSession()
+				.getNamedQuery(FIND_UNSUBMITTED_BY_USER_QUERY_NAME)
+				.setParameter(USER_PARAM_NAME, user)
+				.list();
+		return summaries;
 	}
 }

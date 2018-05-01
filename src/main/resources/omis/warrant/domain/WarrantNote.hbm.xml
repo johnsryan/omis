@@ -13,7 +13,7 @@
 				</generator>
 			</id>
 			<many-to-one name="warrant" column="`WARRANT_ID`" entity-name="omis.warrant.domain.Warrant" not-null="true" />
-			<property name="note" column="`NOTE`" type="java.lang.String" not-null="true" />
+			<property name="value" column="`VALUE`" type="java.lang.String" not-null="true" />
 			<property name="date" column="`DATE`" type="java.util.Date" not-null="true" />
 			<component name="creationSignature">
 				<many-to-one name="userAccount" column="`CREATE_ACCOUNT_ID`" not-null="true"/>
@@ -31,7 +31,7 @@
 		where
 			warrantNote.warrant = :warrant
 		and
-			warrantNote.note = :note
+			warrantNote.value = :note
 		and
 			warrantNote.date = :date
 	]]></query>
@@ -42,7 +42,7 @@
 		where
 			warrantNote.warrant = :warrant
 		and
-			warrantNote.note = :note
+			warrantNote.value = :note
 		and
 			warrantNote.date = :date
 		and

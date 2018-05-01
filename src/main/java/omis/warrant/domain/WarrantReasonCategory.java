@@ -16,7 +16,10 @@ public enum WarrantReasonCategory {
 	WARRANT_CONDITIONAL_RELEASE,
 	
 	/** Authorization to Pick Up and Hold Probationer. */
-	AUTHORIZATION_TO_PICKUP_AND_HOLD;
+	AUTHORIZATION_TO_PICKUP_AND_HOLD,
+	
+	/**Warrant to Arrest  */
+	WARRANT_INTERSTATE_COMPACT;
 	
 	/**
 	 * Returns the instance name.

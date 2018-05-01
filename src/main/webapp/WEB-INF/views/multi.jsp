@@ -33,7 +33,7 @@
 		<link rel="shortcut icon" type="image/x-icon" href="${pageContext.request.contextPath}/resources/common/images/appIcon.ico" />
 		<jsp:include page="common/includes/searchResources.jsp"/>
 		<jsp:include page="common/includes/tabsResources.jsp"/>
-		<script type="text/javascript" src="${pageContext.request.contextPath}/resources/index/scripts/multi.js?VERSION=5"></script>
+		<script type="text/javascript" src="${pageContext.request.contextPath}/resources/index/scripts/multi.js?VERSION=6"></script>
   </head>
   <body class="containerPage">
 		<div id="contentFrameContainer">
@@ -49,7 +49,7 @@
 							<a id="applicationHelpLink" class="applicationHelpLink" target="_blank" href="${helpLinkPropertyHolder.propertyValue}" title="<fmt:message key='helpLink'/>"></a>
 						</c:if>
 						<input id="offenderSearch" autocomplete="off" type="text" title="${searchTitle}"/>
-						<div id="offenderSearchResults" class="backgroundLight"></div>
+						<div id="offenderSearchResults" class="foregroundLight hide"></div>
 					</div>
 					<ul id="offenderTabs_tabLinks" class="tabs">	
 					</ul>

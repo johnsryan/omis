@@ -3,10 +3,10 @@
 <table id="warrantNoteTable" class="editTable">
 	<thead>
 		<tr>
-			<th class="operations"><a class="actionMenuItem" id="warrantCauseViolationItemsActionMenuLink" href="${pageContext.request.contextPath}/warrant/warrantCauseViolationItemsActionMenu.html?warrantCauseViolationItemIndex=${warrantCauseViolationItemIndex}&offender=${offender.id}"></a></th>
-			<th><fmt:message key="courtCaseLabel"/></th>
-			<th><fmt:message key="conditionLabel"/></th>
-			<th><fmt:message key="descriptionLabel"/></th>
+			<th class="operations"><a class="actionMenuItem" id="warrantCauseViolationItemsActionMenuLink" href="${pageContext.request.contextPath}/warrant/warrantCauseViolationItemsActionMenu.html?violationToWitItemIndex=${violationToWitItemIndex}&offender=${offender.id}"></a></th>
+			<th><fmt:message key="conditionClauseTableHeader"/></th>
+			<th><fmt:message key="courtCasesHeader"/></th>
+			<th><fmt:message key="descriptionTableHeader"/></th>
 		</tr>
 	</thead>
 	<tbody id="warrantCauseViolationTableBody">

@@ -15,7 +15,7 @@
 			<many-to-one name="warrant" column="`WARRANT_ID`" entity-name="omis.warrant.domain.Warrant" not-null="true" />
 			<property name="date" column="`DATE`" type="java.util.Date" not-null="true" />
 			<many-to-one name="jail" column="`JAIL_ID`" entity-name="omis.jail.domain.Jail" not-null="true" />
-			<property name="contactByDate" column="`CONTACT_BY_DATE`" type="java.util.Date" not-null="false" />
+			<property name="determinationDeadline" column="`DETERMINATION_DEADLINE`" type="java.util.Date" not-null="false" />
 			<component name="creationSignature">
 				<many-to-one name="userAccount" column="`CREATE_ACCOUNT_ID`" not-null="true"/>
 				<property name="date" column="`CREATE_DATE`" not-null="true"/> 	

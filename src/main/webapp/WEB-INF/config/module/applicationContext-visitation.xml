@@ -71,11 +71,12 @@
         <bean id="visitationAssociationSummaryReportService"
         	class="omis.visitation.report.impl.hibernate.VisitationAssociationSummaryReportServiceHibernateImpl">
         	<property name="sessionFactory" ref="sessionFactory"/>
+        	<constructor-arg name="offenderDelegate" ref="offenderDelegate"/>        	
         </bean>
         
         <bean id="visitSummaryReportService"
         	class="omis.visitation.report.impl.hibernate.VisitSummaryReportServiceHibernateImpl">
-        	<property name="sessionFactory" ref="sessionFactory"/>
+        	<property name="sessionFactory" ref="sessionFactory"/>        	
         </bean>
         
         <bean id="visitationProfileItemReportService"

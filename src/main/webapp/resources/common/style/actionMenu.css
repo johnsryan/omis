@@ -13,7 +13,7 @@ ul li a.actionMenuItem, a.actionMenuItem {
 	margin:5px;
 }
 
-ul li a.actionMenuItem.open, ul li a.actionMenuItem.open:hover, a.actionMenuItem.open, a.actionMenuItem.open:hover {
+ul li a.actionMenuItem.open, a.actionMenuItem.open {
 	z-index: 1001;
 	padding-left: 4px;
 	padding-right: 4px;
@@ -36,26 +36,17 @@ ul li a.actionMenuItem.open, ul li a.actionMenuItem.open:hover, a.actionMenuItem
 	z-index: 1000;
 	text-align:left;
 }
-.actionMenuItem:hover {
-	padding-top: 0px;
-	padding-bottom: 1px;
-	padding-left: 4px;
-	padding-right: 4px;
-	
-}
+
 
 table tr td .actionMenuItem, table tr th .actionMenuItem {
 	padding-top: 3px;
 	padding-bottom:1.5px;
 }
 
-table tr td .actionMenuItem:hover, table tr th .actionMenuItem:hover {
-	padding-top:2px;
-	padding-bottom:0.5px;
-}
 
-table tr td .actionMenuItem.open, table tr td .actionMenuItem.open:hover,
- table tr th .actionMenuItem.open, table tr th .actionMenuItem.open:hover {
+
+table tr td .actionMenuItem.open, 
+ table tr th .actionMenuItem.open {
 	padding-top:2px;
 	padding-bottom:1.5px;
 }

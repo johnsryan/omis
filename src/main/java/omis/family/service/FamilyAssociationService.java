@@ -483,6 +483,7 @@ public interface FamilyAssociationService {
 	 * @param familyAssociation family association
 	 * @return a list of relationship notes
 	 */
+	@Deprecated
 	List<RelationshipNote> findRelationshipNotes(FamilyAssociation
 		familyAssociation);
 }

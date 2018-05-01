@@ -52,16 +52,18 @@ public interface WarrantNote extends Creatable, Updatable {
 	public void setDate(Date date);
 	
 	/**
-	 * Returns the Note for the WarrantNote
-	 * @return note - String
+	 * Returns the value.
+	 * 
+	 * @return value
 	 */
-	public String getNote();
+	public String getValue();
 	
 	/**
-	 * Sets the Note for the WarrantNote
-	 * @param note - String
+	 * Sets the value.
+	 * 
+	 * @param value value
 	 */
-	public void setNote(String note);
+	public void setValue(String value);
 	
 	/** Compares {@code this} and {@code obj} for equality.
 	 * <p>

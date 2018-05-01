@@ -35,6 +35,7 @@ import omis.victim.service.delegate.VictimNoteDelegate;
  *
  * @author Stephen Abson
  * @author Josh Divine
+ * @author Sheronda Vaughn
  * @version 0.0.2 (Feb 14, 2018)
  * @since OMIS 3.0
  */
@@ -54,6 +55,14 @@ public class VictimAssociationReportServiceHibernateImpl
 	
 	private static final String FIND_DOCUMENT_BY_VICTIM_QUERY_NAME 
 		= "findDocumentAssociationSummariesByVictim";
+	
+	private static final String 
+		COUNT_VICTIM_ASSOCIATION_BY_OFFENDER_VICTIM_QUERY_NAME
+		= "countVictimAssociationByOffenderVictim";
+
+	private static final String 
+		FIND_VICTIM_ASSOCIATION_BY_OFFENDER_VICTIM_QUERY_NAME
+		= "findVictimAssociationByOffenderVictim";
 	
 	/* Parameter names */
 	
@@ -78,7 +87,8 @@ public class VictimAssociationReportServiceHibernateImpl
 	 * Instantiates Hibernate implementation of victim report service. 
 	 * 
 	 * @param sessionFactory session factory
-	 * @param delegate for victim notes
+	 * @param victimNoteDelegate delegate for victim notes
+	 * @param offenderDelegate offender delegate
 	 */
 	public VictimAssociationReportServiceHibernateImpl(
 			final SessionFactory sessionFactory,
@@ -108,8 +118,8 @@ public class VictimAssociationReportServiceHibernateImpl
 	@Override
 	public VictimAssociationSummary summarizeVictimAssociation(
 			final VictimAssociation victimAssociation) {
-		VictimAssociationSummary summary =
-				(VictimAssociationSummary) this.sessionFactory
+		VictimAssociationSummary summary 
+			= (VictimAssociationSummary) this.sessionFactory
 				.getCurrentSession().getNamedQuery(
 						SUMMARIZE_QUERY_NAME)
 				.setParameter(VICTIM_ASSOCIATION_PARAM_NAME, victimAssociation)
@@ -136,7 +146,8 @@ public class VictimAssociationReportServiceHibernateImpl
 	public List<VictimDocumentAssociationSummary> 
 		findDocumentAssociationSummariesByVictim(final Person victim) {
 		@SuppressWarnings("unchecked")
-		List<VictimDocumentAssociationSummary> documentSummaries = this.sessionFactory
+		List<VictimDocumentAssociationSummary> documentSummaries 
+			= this.sessionFactory
 				.getCurrentSession()
 				.getNamedQuery(FIND_DOCUMENT_BY_VICTIM_QUERY_NAME)
 				.setParameter(VICTIM_PARAM_NAME, victim)
@@ -156,5 +167,32 @@ public class VictimAssociationReportServiceHibernateImpl
 	@Override
 	public boolean isOffender(final Person person) {
 		return this.offenderDelegate.isOffender(person);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public Boolean victimAssociationExists(
+			final Offender offender, final Person victim) {
+		final Boolean query = (Boolean) this.sessionFactory.getCurrentSession()
+				.getNamedQuery(
+						COUNT_VICTIM_ASSOCIATION_BY_OFFENDER_VICTIM_QUERY_NAME)
+				.setParameter(OFFENDER_PARAM_NAME, offender)
+				.setParameter(VICTIM_PARAM_NAME, victim)
+				.uniqueResult();
+		return query;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public VictimAssociation findVictimAssociation(
+			final Offender offender, final Person victim) {
+		VictimAssociation association = (VictimAssociation) this.sessionFactory
+			.getCurrentSession()
+			.getNamedQuery(
+					FIND_VICTIM_ASSOCIATION_BY_OFFENDER_VICTIM_QUERY_NAME)
+			.setParameter(OFFENDER_PARAM_NAME, offender)
+			.setParameter(VICTIM_PARAM_NAME, victim)
+			.uniqueResult();
+		return association;
 	}
 }

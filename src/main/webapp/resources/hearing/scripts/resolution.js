@@ -15,23 +15,24 @@ window.onload = function() {
 	
 	var dispositionInputs = document.getElementsByClassName("disposition");
 	for(var i = 0; i < dispositionInputs.length; i++){
-		dispositionInputs[i].onchange = function(){
-			if(this.name.includes('[')){
-				var j = this.name.split('[')[1].split(']')[0];
-				if(this.value == "GUILTY"){
-					document.getElementById("sanction"+j).classList.remove("hidden");
+		dispositionInputs[i].onchange = function(event){
+			if(event.target.name.indexOf('[') > -1){
+				var j = event.target.name.split('[')[1].split(']')[0];
+				if(event.target.value == "GUILTY"){
+					document.getElementById("sanction"+j).className = document.getElementById("sanction"+j).className.replace(/\bhidden\b/g, "");
 				}
 				else{
-					document.getElementById("sanction"+j).classList.add("hidden");
+					document.getElementById("sanction"+j).className +=" hidden";
 					document.getElementById("violationItems"+j+".sanction").value = '';
 				}
 			}
 			else{
-				if(this.value == "GUILTY"){
-					document.getElementById("sanction"+j).classList.remove("hidden");
+				var j = 0;
+				if(event.target.value == "GUILTY"){
+					document.getElementById("sanction"+j).className = document.getElementById("sanction"+j).className.replace(/\bhidden\b/g, "");
 				}
 				else{
-					document.getElementById("sanction"+j).classList.add("hidden");
+					document.getElementById("sanction"+j).className += " hidden";;
 					document.getElementById("violationItem.sanction").value = '';
 				}
 			}

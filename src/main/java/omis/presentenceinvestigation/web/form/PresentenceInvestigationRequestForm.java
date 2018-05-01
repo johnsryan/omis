@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.presentenceinvestigation.web.form;
 
 import java.util.ArrayList;
@@ -9,11 +26,15 @@ import omis.person.domain.Person;
 import omis.presentenceinvestigation.domain.PresentenceInvestigationCategory;
 import omis.user.domain.UserAccount;
 
-/** Form for presentence investigation requests.
+/** 
+ * Form for presentence investigation requests.
+ * 
  * @author Ryan Johns
- * @author Annie Jacques
- * @version 0.1.3 (Mar 22, 2017)
- * @since OMIS 3.0 */ 
+ * @author Annie Wahl
+ * @author Josh Divine
+ * @version 0.1.4 (Apr 23, 2018)
+ * @since OMIS 3.0
+ */
 public class PresentenceInvestigationRequestForm {
 	
 	private UserAccount assignedUserAccount;
@@ -21,6 +42,8 @@ public class PresentenceInvestigationRequestForm {
 	private Date requestDate;
 	
 	private Date sentenceDate;
+	
+	private Date actualSentenceDate;
 	
 	private Date expectedCompletionDate;
 	
@@ -47,6 +70,9 @@ public class PresentenceInvestigationRequestForm {
 	private List<PresentenceInvestigationRequestNoteItem>
 		presentenceInvestigationRequestNoteItems =
 			new ArrayList<PresentenceInvestigationRequestNoteItem>();
+	
+	private List<PresentenceInvestigationDelayItem>
+			presentenceInvestigationDelayItems = new ArrayList<>();
 	
 	/**
 	 * 
@@ -92,6 +118,24 @@ public class PresentenceInvestigationRequestForm {
 	 */
 	public Date getSentenceDate() {
 		return sentenceDate;
+	}
+
+	/**
+	 * Returns the actual sentence date.
+	 *
+	 * @return actual sentence date
+	 */
+	public Date getActualSentenceDate() {
+		return actualSentenceDate;
+	}
+
+	/**
+	 * Sets the actual sentence date.
+	 *
+	 * @param actualSentenceDate actual sentence date
+	 */
+	public void setActualSentenceDate(final Date actualSentenceDate) {
+		this.actualSentenceDate = actualSentenceDate;
 	}
 
 	/**
@@ -297,7 +341,25 @@ public class PresentenceInvestigationRequestForm {
 		this.presentenceInvestigationRequestNoteItems =
 				presentenceInvestigationRequestNoteItems;
 	}
-	
-	
 
+	/**
+	 * Returns the presentence investigation delay items.
+	 *
+	 * @return presentence investigation delay items
+	 */
+	public List<PresentenceInvestigationDelayItem> 
+			getPresentenceInvestigationDelayItems() {
+		return presentenceInvestigationDelayItems;
+	}
+
+	/**
+	 * Sets the presentence investigation delay items.
+	 *
+	 * @param presentenceInvestigationDelayItems presentence investigation delay 
+	 * items
+	 */
+	public void setPresentenceInvestigationDelayItems(
+			List<PresentenceInvestigationDelayItem> presentenceInvestigationDelayItems) {
+		this.presentenceInvestigationDelayItems = presentenceInvestigationDelayItems;
+	}
 }

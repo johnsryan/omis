@@ -14,11 +14,11 @@
 	<c:set var="personFieldsPropertyName" value="personFields" scope="request"/>
 	<c:set var="visitationAssociationFields" value="${createRelationshipsForm.visitationAssociationFields}" scope="request"/>
 	<c:set var="visitationAssociationFieldsPropertyName" value="visitationAssociationFields" scope="request"/>
-	<c:if test="${empty relation}">
+	<c:if test="${empty relation}">		
 		<fieldset id="personFields">
 			<legend><fmt:message key="personFieldsLabel"/></legend>
 			<jsp:include page="/WEB-INF/views/person/includes/personFields.jsp"/>
-		</fieldset>
+		</fieldset>		
 		<fieldset id="addressFields">
 			<legend><fmt:message key="addressFieldsLabel"/></legend>	
 			<label class="fieldLabel" for="enterAddress"><fmt:message key="enterAddressLabel"/></label>
@@ -91,6 +91,12 @@
 			<c:set var="baseUrl" value="${pageContext.request.contextPath}/offenderRelationship/create" scope="request"/>
 			<jsp:include page="offenderRelationshipNoteItemsTable.jsp"/>
 		</fieldset>
+	</c:if>
+	<c:if test="${not empty relation}">
+			<fieldset>
+				<c:set value="${existingContactSummary}" var="contactSummary" scope="request"/>
+				<jsp:include page="/WEB-INF/views/contact/includes/contactSummary.jsp"/>
+			</fieldset>
 	</c:if>
 	<sec:authorize access="hasRole('FAMILY_ASSOCIATION_CREATE') or hasRole('ADMIN')">
 		<fieldset id="familyAssociationFields">

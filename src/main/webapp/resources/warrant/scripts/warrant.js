@@ -1,17 +1,17 @@
 window.onload = function() {
 	applyActionMenu(document.getElementById("actionMenuLink"));
-	applyActionMenu(document.getElementById("warrantCauseViolationItemsActionMenuLink"), warrantCauseViolationItemsCreateOnClick);
+	applyActionMenu(document.getElementById("warrantCauseViolationItemsActionMenuLink"), violationToWitItemCreateLinkOnClick);
 	applyActionMenu(document.getElementById("warrantNoteItemsActionMenuLink"), warrantNoteItemsCreateOnClick);
 	applyDatePicker(document.getElementById("date"));
 	applyDatePicker(document.getElementById("arrestDate"));
-	applyDatePicker(document.getElementById("contactBy"));
+	applyDatePicker(document.getElementById("determinationDeadline"));
 	
 	for(var i = 0; i < currentWarrantNoteItemIndex; i++){
 		warrantNoteItemRowOnClick(i);
 	}
-	for(var i = 0; i < currentWarrantCauseViolationItemIndex; i++){
+	for(var i = 0; i < currentViolationToWitItemIndex; i++){
 		warrantCauseViolationItemRowOnClick(i);
-		displayConditionOptions(i);
+		
 	}
 	var arrestedFields = document.getElementById('arrestedFields');
 	if(document.getElementById('arrested').checked){

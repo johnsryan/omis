@@ -2,13 +2,12 @@ package omis.warrant.domain.impl;
 
 import omis.audit.domain.CreationSignature;
 import omis.audit.domain.UpdateSignature;
-import omis.condition.domain.Condition;
-import omis.courtcase.domain.CourtCase;
+import omis.condition.domain.ConditionClause;
 import omis.warrant.domain.Warrant;
 import omis.warrant.domain.WarrantCauseViolation;
 
 /**
- * WarrantCause.java
+ * Warrant cause violation.
  * 
  *@author Annie Jacques 
  *@version 0.1.0 (May 8, 2017)
@@ -19,9 +18,7 @@ public class WarrantCauseViolationImpl implements WarrantCauseViolation {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private CourtCase cause;
-	
-	private Condition condition;
+	private ConditionClause conditionClause;
 	
 	private String description;
 	
@@ -80,29 +77,17 @@ public class WarrantCauseViolationImpl implements WarrantCauseViolation {
 	public void setWarrant(final Warrant warrant) {
 		this.warrant = warrant;
 	}
-
-	/**{@inheritDoc} */
-	@Override
-	public CourtCase getCause() {
-		return this.cause;
-	}
-
-	/**{@inheritDoc} */
-	@Override
-	public void setCause(final CourtCase cause) {
-		this.cause = cause;
-	}
 	
 	/**{@inheritDoc} */
 	@Override
-	public Condition getCondition() {
-		return this.condition;
+	public ConditionClause getConditionClause() {
+		return this.conditionClause;
 	}
 
 	/**{@inheritDoc} */
 	@Override
-	public void setCondition(final Condition condition) {
-		this.condition = condition;
+	public void setConditionClause(final ConditionClause conditionClause) {
+		this.conditionClause = conditionClause;
 	}
 	
 	/**{@inheritDoc} */
@@ -132,21 +117,15 @@ public class WarrantCauseViolationImpl implements WarrantCauseViolation {
 		if(this.getWarrant() == null){
 			throw new IllegalStateException("Warrant required.");
 		}
-		if(this.getCause() == null){
-			throw new IllegalStateException("Cause required.");
-		}
-		if(this.getCondition() == null){
-			throw new IllegalStateException("Condition required.");
+		if(this.getConditionClause() == null){
+			throw new IllegalStateException("ConditionClause required.");
 		}
 		
 		if(!this.getWarrant().equals(that.getWarrant())){
 			return false;
 		}
-		if(!this.getCause().equals(that.getCause())){
-			return false;
-		}
 
-		if(!this.getCondition().equals(that.getCondition())){
+		if(!this.getConditionClause().equals(that.getConditionClause())){
 			return false;
 		}
 		
@@ -159,17 +138,13 @@ public class WarrantCauseViolationImpl implements WarrantCauseViolation {
 		if(this.getWarrant() == null){
 			throw new IllegalStateException("Warrant required.");
 		}
-		if(this.getCause() == null){
-			throw new IllegalStateException("Cause required.");
-		}
-		if(this.getCondition() == null){
-			throw new IllegalStateException("Condition required.");
+		if(this.getConditionClause() == null){
+			throw new IllegalStateException("ConditionClause required.");
 		}
 		
 		int hashCode = 14;
 		hashCode = 29 * hashCode + this.getWarrant().hashCode();
-		hashCode = 29 * hashCode + this.getCause().hashCode();
-		hashCode = 29 * hashCode + this.getCondition().hashCode();
+		hashCode = 29 * hashCode + this.getConditionClause().hashCode();
 		
 		return hashCode;
 	}

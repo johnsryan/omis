@@ -25,6 +25,7 @@
 			</property>
 			<property name="bondable" column="`BONDABLE`" type="yes_no" not-null="true" />
 			<property name="bondRecommendation" column="`BOND_RECOMMENDATION_AMOUNT`" type="java.math.BigDecimal" not-null="false" />
+			<many-to-one name="holdingJail" column="`HOLDING_JAIL_ID`" entity-name="omis.jail.domain.Jail" not-null="false" />
 			<component name="creationSignature">
 				<many-to-one name="userAccount" column="`CREATE_ACCOUNT_ID`" not-null="true"/>
 				<property name="date" column="`CREATE_DATE`" not-null="true"/> 	

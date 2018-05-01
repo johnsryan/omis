@@ -2,6 +2,7 @@
   - Table body content for victim associations.
   -
   - Author: Stephen Abson
+  - Author: Sheronda Vaughn
   --%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
@@ -21,6 +22,12 @@
 			<c:out value="${victimAssociationSummary.firstName}"/>
 			<c:if test="${not empty victimAssociationSummary.middleName}">
 				<c:out value="${fn:substring(victimAssociationSummary.middleName, 0, 1)}"/>
+			</c:if>
+			<c:if test="${not empty victimAssociationSummary.suffix}">
+				<c:out value="${victimAssociationSummary.suffix}"/>
+			</c:if>
+			<c:if test="${victimAssociationSummary.victimOffender}">
+				<c:out value="#${victimAssociationSummary.victimOffenderNumber}"/>
 			</c:if>
 		</td>
 		</c:if>

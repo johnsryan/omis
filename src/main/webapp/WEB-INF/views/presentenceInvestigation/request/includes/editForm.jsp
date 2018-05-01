@@ -1,7 +1,25 @@
 <%--
+ - OMIS - Offender Management Information System
+ - Copyright (C) 2011 - 2017 State of Montana
+ -
+ - This program is free software: you can redistribute it and/or modify
+ - it under the terms of the GNU General Public License as published by
+ - the Free Software Foundation, either version 3 of the License, or
+ - (at your option) any later version.
+ -
+ - This program is distributed in the hope that it will be useful,
+ - but WITHOUT ANY WARRANTY; without even the implied warranty of
+ - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ - GNU General Public License for more details.
+ -
+ - You should have received a copy of the GNU General Public License
+ - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ --%>
+<%--
  - Author: Ryan Johns
- - Author: Annie Jacques
- - Version: 0.1.2 (May 17, 2017)
+ - Author: Annie Wahl
+ - Author: Josh Divine
+ - Version: 0.1.3 (Apr 24, 2018)
  - Since: OMIS 3.0
  --%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
@@ -159,11 +177,11 @@
 			<form:errors path="sentenceDate" cssClass="error"/>
 		</span>
 		<span class="fieldGroup">
-			<form:label path="expectedCompletionDate" class="fieldLabel">
-				<fmt:message key="expectedCompletionDateLabel"/>
+			<form:label path="actualSentenceDate" class="fieldLabel">
+				<fmt:message key="actualSentenceDateLabel"/>
 			</form:label>
-			<form:input path="expectedCompletionDate" class="date"/>
-			<form:errors path="expectedCompletionDate" cssClass="error"/>
+			<form:input path="actualSentenceDate" class="date"/>
+			<form:errors path="actualSentenceDate" cssClass="error"/>
 		</span>
 		<span class="fieldGroup">
 			<form:label path="submissionDate" class="fieldLabel">
@@ -174,9 +192,17 @@
 		</span>
 	</fieldset>
 	
+	<fieldset>
+		<legend><fmt:message key="presentenceInvestigationDelaysTitle"/></legend>
+		<span class="fieldGroup">
+			<c:set var="delayCategories" value="${delayCategories}" scope="request" />
+			<c:set var="presentenceInvestigationDelayItems" value="${presentenceInvestigationRequestForm.presentenceInvestigationDelayItems}" scope="request"/>
+			<jsp:include page="presentenceInvestigationDelayTable.jsp"/>
+		</span>
+	</fieldset>
 	
 	<fieldset>
-		
+		<legend><fmt:message key="presentenceInvestigationRequestNotesTitle"/></legend>
 		<span class="fieldGroup">
 			<c:set var="presentenceInvestigationRequestNoteItems" value="${presentenceInvestigationRequestForm.presentenceInvestigationRequestNoteItems}" scope="request"/>
 			<jsp:include page="presentenceInvestigationRequestNoteTable.jsp"/>

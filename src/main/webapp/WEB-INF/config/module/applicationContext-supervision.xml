@@ -33,6 +33,8 @@
    	<constructor-arg name="locationDao" ref="locationDao"/>
    	<constructor-arg name="locationTermDao" ref="locationTermDao"/>
    	<constructor-arg name="placementTermNoteDelegate" ref="placementTermNoteDelegate"/>
+   	<constructor-arg name="correctionalStatusTermDelegate" ref="correctionalStatusTermDelegate"/>
+   	<constructor-arg name="supervisoryOrganizationTermDelegate" ref="supervisoryOrganizationTermDelegate"/>
    	<constructor-arg name="auditComponentRetriever" ref="auditComponentRetriever"/>
   </bean>     
   

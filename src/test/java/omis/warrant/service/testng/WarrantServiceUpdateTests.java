@@ -1,3 +1,20 @@
+/*
+ *  OMIS - Offender Management Information System
+ *  Copyright (C) 2011 - 2017 State of Montana
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.warrant.service.testng;
 
 import java.math.BigDecimal;
@@ -13,9 +30,6 @@ import omis.address.domain.Address;
 import omis.address.domain.ZipCode;
 import omis.address.service.delegate.AddressDelegate;
 import omis.address.service.delegate.ZipCodeDelegate;
-import omis.condition.domain.Agreement;
-import omis.condition.domain.Condition;
-import omis.condition.domain.ConditionCategory;
 import omis.condition.domain.ConditionClause;
 import omis.condition.domain.ConditionTitle;
 import omis.condition.service.delegate.AgreementDelegate;
@@ -24,14 +38,10 @@ import omis.condition.service.delegate.ConditionDelegate;
 import omis.condition.service.delegate.ConditionTitleDelegate;
 import omis.country.domain.Country;
 import omis.country.service.delegate.CountryDelegate;
-import omis.court.domain.Court;
-import omis.court.domain.CourtCategory;
 import omis.court.service.delegate.CourtDelegate;
-import omis.courtcase.domain.CourtCase;
 import omis.courtcase.exception.CourtCaseExistsException;
 import omis.courtcase.service.delegate.CourtCaseDelegate;
 import omis.datatype.DateRange;
-import omis.docket.domain.Docket;
 import omis.docket.exception.DocketExistsException;
 import omis.docket.service.delegate.DocketDelegate;
 import omis.exception.DuplicateEntityFoundException;
@@ -56,13 +66,18 @@ import omis.warrant.domain.WarrantArrest;
 import omis.warrant.domain.WarrantCauseViolation;
 import omis.warrant.domain.WarrantNote;
 import omis.warrant.domain.WarrantReasonCategory;
+import omis.warrant.exception.WarrantArrestExistsException;
+import omis.warrant.exception.WarrantCauseViolationExistsException;
+import omis.warrant.exception.WarrantExistsException;
+import omis.warrant.exception.WarrantNoteExistsException;
 import omis.warrant.service.WarrantService;
 
 /**
  * Warrant Update Tests.
  * 
  *@author Annie Jacques 
- *@version 0.1.0 (May 12, 2017)
+ *@author Yidong Li
+ *@version 0.1.0 (April 24, 2018)
  *@since OMIS 3.0
  *
  */
@@ -128,9 +143,11 @@ public class WarrantServiceUpdateTests
 	
 	/**
 	 * @throws DuplicateEntityFoundException - When a duplicate entity is found
+	 * @throws WarrantExistsException - thrown when a warrant already exists
 	 */
 	@Test
-	public void testWarrantUpdate() throws DuplicateEntityFoundException {
+	public void testWarrantUpdate() throws DuplicateEntityFoundException,
+		WarrantExistsException {
 		final Offender offender = this.offenderDelegate.createWithoutIdentity(
 				"Joker", "The", null, null);
 		final Date date0 = this.parseDateText("05/12/2017");
@@ -142,10 +159,28 @@ public class WarrantServiceUpdateTests
 		final Boolean bondable0 = true;
 		final BigDecimal bondRecommendation0 = new BigDecimal("500");
 		
+		final Country country = this.countryDelegate.create(
+				"Country", "USA", true);
+		final State state = this.stateDelegate.create(
+				"State", "ST", country, true, true);
+		final City city = this.cityDelegate.create(
+				"Gotham", true, state, country);
+		final ZipCode zipCode = this.zipCodeDelegate.create(
+				city, "12345", null, true);
+		final Organization organization = this.organizationDelegate.create(
+				"Brkham Bsylum", "BB", null);
+		final Address address = this.addressDelegate.findOrCreate(
+				"321", "123", null,
+				null, zipCode);
+		final Location location = this.locationDelegate.create(organization,
+			new DateRange(this.parseDateText("01/01/2010"),
+					this.parseDateText("01/01/2022")), address);
+		final Jail jail = this.jailDelegate.create("Brkham Bsylum",
+				location, JailCategory.COUNTY, true, 1234567890L);
+		
 		Warrant warrant = this.warrantService.create(
 				offender, date0, addressee0, issuedBy0, bondable0,
-				bondRecommendation0, warrantReason0);
-		
+				bondRecommendation0, warrantReason0, jail);
 		
 		final Date date = this.parseDateText("01/11/2011");
 		final Person issuedBy = this.personDelegate.create(
@@ -156,8 +191,24 @@ public class WarrantServiceUpdateTests
 		final Boolean bondable = false;
 		final BigDecimal bondRecommendation = new BigDecimal("0");
 		
+		final City cityUpdate = this.cityDelegate.create(
+				"Ddsa", true, state, country);
+		final ZipCode zipCodeUpdate = this.zipCodeDelegate.create(
+				cityUpdate, "54321", null, true);
+		final Organization organizationUpdate = this.organizationDelegate
+			.create("Crkham Csylum", "CC", null);
+		final Address addressUpdate = this.addressDelegate.findOrCreate(
+				"678", "876", null,
+				null, zipCodeUpdate);
+		final Location locationUpdate = this.locationDelegate.create(
+			organizationUpdate,	new DateRange(this.parseDateText("01/01/2010"),
+					this.parseDateText("01/01/2022")), addressUpdate);
+		final Jail jailUpdate = this.jailDelegate.create("Crkham Csylum",
+				locationUpdate, JailCategory.COUNTY, true, 9876543210L);
+		
 		warrant = this.warrantService.update(warrant, date, addressee,
-				issuedBy, bondable, bondRecommendation, warrantReason);
+				issuedBy, bondable, bondRecommendation, warrantReason,
+				jailUpdate);
 		
 		assert offender.equals(warrant.getOffender())
 		: String.format("Wrong offender for warrant: "
@@ -185,9 +236,12 @@ public class WarrantServiceUpdateTests
 	
 	/**
 	 * @throws DuplicateEntityFoundException - When a duplicate entity is found
+	 * @throws WarrantArrestExistsException - thrown when warrant arrest already
+	 * exists
 	 */
 	@Test
-	public void testWarrantArrestUpdate() throws DuplicateEntityFoundException {
+	public void testWarrantArrestUpdate() throws DuplicateEntityFoundException,
+	WarrantArrestExistsException {
 		final Warrant warrant = this.createWarrant();
 		final Date date = this.parseDateText("05/30/2017");
 		final Date contactBy = this.parseDateText("06/01/2017");
@@ -195,12 +249,12 @@ public class WarrantServiceUpdateTests
 		final Date contactBy0 = this.parseDateText("02/02/2012");
 		final Organization organization = this.organizationDelegate.create(
 				"Arkham Asylum", "AA", null);
-		final Country country = this.countryDelegate.create(
-				"Country", "USA", true);
+		final Country country = this.countryDelegate.findOrCreate("Country",
+			"USA", true);
 		final State state = this.stateDelegate.create(
-				"State", "ST", country, true, true);
+				"StateUpdate", "SU", country, true, true);
 		final City city = this.cityDelegate.create(
-				"City", true, state, country);
+				"CityUpdate", true, state, country);
 		final ZipCode zipCode = this.zipCodeDelegate.create(
 				city, "12345", null, true);
 		final Address address = this.addressDelegate.findOrCreate(
@@ -210,9 +264,9 @@ public class WarrantServiceUpdateTests
 				new DateRange(this.parseDateText("01/01/2001"),
 						this.parseDateText("01/01/2020")), address);
 		final Jail jail = this.jailDelegate.create("Arkham Asylum",
-				location, JailCategory.TRIBAL, true);
+				location, JailCategory.TRIBAL, true, 1234567890L);
 		final Jail jail0 = this.jailDelegate.create("Gotham Holding",
-				location, JailCategory.COUNTY, true);
+				location, JailCategory.COUNTY, true, 2234567890L);
 		
 		WarrantArrest warrantArrest = this.warrantService.createArrest(
 				warrant, date0, jail0, contactBy0);
@@ -230,17 +284,20 @@ public class WarrantServiceUpdateTests
 		assert jail.equals(warrantArrest.getJail())
 		: String.format("Wrong jail for warrantArrest: %s found; %s expected",
 				warrantArrest.getJail().getName(), jail.getName());
-		assert contactBy.equals(warrantArrest.getContactByDate())
+		assert contactBy.equals(warrantArrest.getDeterminationDeadline())
 		: String.format("Wrong contactBy for warrantArrest: %s found; "
 				+ "%s expected",
-				warrantArrest.getContactByDate(), contactBy);
+				warrantArrest.getDeterminationDeadline(), contactBy);
 	}
 	
 	/**
 	 * @throws DuplicateEntityFoundException - When a duplicate entity is found
+	 * @throws WarrantNoteExistsException - thrown when warrant note already
+	 * exists
 	 */
 	@Test
-	public void testWarrantNoteUpdate() throws DuplicateEntityFoundException {
+	public void testWarrantNoteUpdate() throws DuplicateEntityFoundException,
+	WarrantNoteExistsException {
 		final Warrant warrant = this.createWarrant();
 		final String note = "This is a Note!";
 		final Date date = this.parseDateText("05/05/2017");
@@ -257,9 +314,9 @@ public class WarrantServiceUpdateTests
 		assert warrant.equals(warrantNote.getWarrant())
 		: String.format("Wrong warrant for warrantNote: %d found; %d expected",
 				warrantNote.getWarrant().getId(), warrant.getId());
-		assert note.equals(warrantNote.getNote())
+		assert note.equals(warrantNote.getValue())
 		: String.format("Wrong note for warrantNote: %s found; %s expected",
-				warrantNote.getNote(), note);
+				warrantNote.getValue(), note);
 		assert date.equals(warrantNote.getDate())
 		: String.format("Wrong date for warrantNote: %s found; %s expected",
 				warrantNote.getDate(), date);
@@ -269,81 +326,32 @@ public class WarrantServiceUpdateTests
 	 * @throws DuplicateEntityFoundException - When a duplicate entity is found
 	 * @throws DocketExistsException - When a duplicate Docket is found
 	 * @throws CourtCaseExistsException - When a duplicate Court Case is found
+	 * @throws WarrantCauseViolationExistsException - thrown when warrant cause
+	 * violation already exists
 	 */
 	@Test
 	public void testWarrantCauseViolationUpdate()
 			throws DuplicateEntityFoundException, DocketExistsException, 
-			CourtCaseExistsException {
+			CourtCaseExistsException, WarrantCauseViolationExistsException {
 		final Warrant warrant = this.createWarrant();
-		final Person person = this.personDelegate.create(
-				"Grayson", "Richard", "J", null);
-		final Organization organization = this.organizationDelegate.create(
-				"Batcave", "TBC", null);
-		final Country country = this.countryDelegate.create(
-				"Country", "USA", true);
-		final State state = this.stateDelegate.create(
-				"State", "ST", country, true, true);
-		final City city = this.cityDelegate.create(
-				"City", true, state, country);
-		final ZipCode zipCode = this.zipCodeDelegate.create(
-				city, "12345", null, true);
-		final Address address = this.addressDelegate.findOrCreate(
-				"123", "321", null,
-				null, zipCode);
-		final Location location = this.locationDelegate.create(organization,
-				new DateRange(this.parseDateText("01/01/2001"),
-						this.parseDateText("01/01/2020")), address);
-		final Court court = this.courtDelegate.create("Gotham City Court",
-				CourtCategory.CITY, location);
 		final ConditionTitle conditionTitle = this.conditionTitleDelegate
 				.create("Condition Title");
 		final ConditionClause conditionClause = this.conditionClauseDelegate
 				.create("Condition Clause Description", conditionTitle, true);
 		final String description0 = "WCV First Description";
-		final Docket docket0 = this.docketDelegate.create(
-				person, court, "GOT-HAM12");
-		final CourtCase courtCase0 = this.courtCaseDelegate.create(
-				docket0, null, null, null, null, null, null, null, null, null);
-		final Agreement agreement = this.agreementDelegate
-				.create(warrant.getOffender(),
-						this.parseDateText("05/05/2017"),
-						this.parseDateText("05/05/2018"), null, null);
-		final Condition condition0 = this.conditionDelegate
-				.create(agreement, "Condition0Clause", conditionClause,
-						ConditionCategory.STANDARD, false);
 		WarrantCauseViolation warrantCauseViolation = this.warrantService
-				.createWarrantCauseViolation(warrant, courtCase0, condition0,
+				.createWarrantCauseViolation(warrant, conditionClause,
 						description0);
-		final Docket docket = this.docketDelegate.create(
-				person, court, "ARK-HAM9");
-		final CourtCase courtCase = this.courtCaseDelegate.create(
-				docket, null, null, null, null, null, null, null, null, null);
-		final Condition condition = this.conditionDelegate
-				.create(agreement, "Clause For Condition", conditionClause,
-						ConditionCategory.STANDARD, true);
-		
 		final String description = "WCV Description";
-		
-		
 		
 		warrantCauseViolation = this.warrantService
 				.updateWarrantCauseViolation(warrantCauseViolation,
-						courtCase, condition, description);
+				conditionClause, description);
 		
 		assert warrant.equals(warrantCauseViolation.getWarrant())
 		: String.format("Wrong warrant for warrantCauseViolation: %d found; "
 				+ "%d expected",
 				warrantCauseViolation.getWarrant().getId(), warrant.getId());
-		assert courtCase.equals(warrantCauseViolation.getCause())
-		: String.format("Wrong courtCase for warrantCauseViolation: %s found; "
-				+ "%s expected",
-				warrantCauseViolation.getCause().getDocket().getValue(),
-				courtCase.getDocket().getValue());
-		assert condition.equals(warrantCauseViolation.getCondition())
-		: String.format("Wrong condition for warrantCauseViolation: %s found;"
-				+ " %s expected",
-				warrantCauseViolation.getCondition().getClause(),
-				condition.getClause());
 		assert description.equals(warrantCauseViolation.getDescription())
 		: String.format("Wrong description for warrantCauseViolation: %s found;"
 				+ " %s expected",
@@ -358,7 +366,8 @@ public class WarrantServiceUpdateTests
 		}
 	}
 	
-	private Warrant createWarrant() throws DuplicateEntityFoundException {
+	private Warrant createWarrant() throws DuplicateEntityFoundException,
+	WarrantExistsException {
 		final Offender offender = this.offenderDelegate.createWithoutIdentity(
 				"Wayne", "Bruce", "Alen", null);
 		final Date date = this.parseDateText("05/12/2017");
@@ -369,9 +378,26 @@ public class WarrantServiceUpdateTests
 				.AUTHORIZATION_TO_PICKUP_AND_HOLD;
 		final Boolean bondable = true;
 		final BigDecimal bondRecommendation = new BigDecimal("500");
+		final Organization organization = this.organizationDelegate.create(
+				"Brkham Bsylum", "BB", null);
+		final Country country = this.countryDelegate.create(
+				"Country", "USA", true);
+		final State state = this.stateDelegate.create(
+				"State", "ST", country, true, true);
+		final City city = this.cityDelegate.create(
+				"Gotham", true, state, country);
+		final ZipCode zipCode = this.zipCodeDelegate.create(
+				city, "12345", null, true);
+		final Address address = this.addressDelegate.findOrCreate(
+				"321", "123", null,
+				null, zipCode);
+		final Location location = this.locationDelegate.create(organization,
+			new DateRange(this.parseDateText("01/01/2010"),
+					this.parseDateText("01/01/2022")), address);
+		final Jail jail = this.jailDelegate.create("Brkham Bsylum",
+				location, JailCategory.COUNTY, true, 1234567890L);
 		
 		return this.warrantService.create(offender, date, addressee,
-				issuedBy, bondable, bondRecommendation, warrantReason);
+				issuedBy, bondable, bondRecommendation, warrantReason, jail);
 	}
-	
 }

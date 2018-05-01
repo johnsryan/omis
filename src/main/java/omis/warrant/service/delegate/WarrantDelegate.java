@@ -1,4 +1,22 @@
+/*
+ *  OMIS - Offender Management Information System
+ *  Copyright (C) 2011 - 2017 State of Montana
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.warrant.service.delegate;
+
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -9,17 +27,21 @@ import omis.audit.domain.CreationSignature;
 import omis.audit.domain.UpdateSignature;
 import omis.exception.DuplicateEntityFoundException;
 import omis.instance.factory.InstanceFactory;
+import omis.jail.domain.Jail;
 import omis.offender.domain.Offender;
 import omis.person.domain.Person;
 import omis.warrant.dao.WarrantDao;
 import omis.warrant.domain.Warrant;
 import omis.warrant.domain.WarrantReasonCategory;
+import omis.warrant.exception.WarrantExistsException;
 
 /**
- * WarrantDelegate.java
+ * Warrant delegate.
  * 
- *@author Annie Jacques 
- *@version 0.1.0 (May 8, 2017)
+ *@author Annie Jacques
+ *@author Joel Norris
+ *@author Yidong Li
+ *@version 0.1.1 (April 4, 2018)
  *@since OMIS 3.0
  *
  */
@@ -60,6 +82,7 @@ public class WarrantDelegate {
 	 * @param bondable - Boolean
 	 * @param bondRecommendation - BigDecimal
 	 * @param warrantReason - WarrantReasonCategory
+	 * @param holdingJail holding jail
 	 * @return Newly created Warrant
 	 * @throws DuplicateEntityFoundException - When a Warrant already exists
 	 * on given date for the specified offender
@@ -67,10 +90,10 @@ public class WarrantDelegate {
 	public Warrant create(final Offender offender, final Date date,
 			final String addressee, final Person issuedBy,
 			final Boolean bondable, final BigDecimal bondRecommendation,
-			final WarrantReasonCategory warrantReason)
-					throws DuplicateEntityFoundException{
+			final WarrantReasonCategory warrantReason, final Jail holdingJail)
+					throws WarrantExistsException{
 		if(this.warrantDao.find(offender, date) != null){
-			throw new DuplicateEntityFoundException(DUPLICATE_ENTITY_FOUND_MSG);
+			throw new WarrantExistsException(DUPLICATE_ENTITY_FOUND_MSG);
 		}
 		
 		Warrant warrant = 
@@ -83,6 +106,7 @@ public class WarrantDelegate {
 		warrant.setDate(date);
 		warrant.setIssuedBy(issuedBy);
 		warrant.setWarrantReason(warrantReason);
+		warrant.setHoldingJail(holdingJail);
 		warrant.setCreationSignature(
 				new CreationSignature(
 						this.auditComponentRetriever.retrieveUserAccount(), 
@@ -104,18 +128,20 @@ public class WarrantDelegate {
 	 * @param bondable - Boolean
 	 * @param bondRecommendation - BigDecimal
 	 * @param warrantReason - WarrantReasonCategory
+	 * @param holdingJail holding jail
 	 * @return Updated Warrant
-	 * @throws DuplicateEntityFoundException - When a Warrant already exists
+	 * @throws WarrantExistsException - When a Warrant already exists
 	 * on given date for the specified offender
 	 */
 	public Warrant update(final Warrant warrant, final Date date,
 			final String addressee, final Person issuedBy,
 			final Boolean bondable, final BigDecimal bondRecommendation,
-			final WarrantReasonCategory warrantReason)
-			throws DuplicateEntityFoundException{
+			final WarrantReasonCategory warrantReason,
+			final Jail holdingJail)
+			throws WarrantExistsException{
 		if(this.warrantDao.findExcluding(
 				warrant.getOffender(), date, warrant) != null){
-			throw new DuplicateEntityFoundException(DUPLICATE_ENTITY_FOUND_MSG);
+			throw new WarrantExistsException(DUPLICATE_ENTITY_FOUND_MSG);
 		}
 		
 		warrant.setAddressee(addressee);
@@ -124,6 +150,7 @@ public class WarrantDelegate {
 		warrant.setDate(date);
 		warrant.setIssuedBy(issuedBy);
 		warrant.setWarrantReason(warrantReason);
+		warrant.setHoldingJail(holdingJail);
 		warrant.setUpdateSignature(
 				new UpdateSignature(
 						this.auditComponentRetriever.retrieveUserAccount(),

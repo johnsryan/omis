@@ -26,5 +26,7 @@
 	<li><omis:reportPro reportPath="/Medical/Pending_Labs_Report" decorate="no" title="" className="newTab reportLink"><fmt:message key="pendingLabsReportLabel"/></omis:reportPro></li>
 	<li><omis:reportPro reportPath="/Medical/External_Referral_Call_Out" decorate="no" title="" className="newTab reportLink"><fmt:message key="externalCallOutReportLabel"/></omis:reportPro></li>
 	<li><omis:reportPro reportPath="/Medical/Call_Out_List___Labs" decorate="no" title="" className="newTab reportLink"><fmt:message key="labCallOutReportLabel"/></omis:reportPro></li>
+    <li><omis:reportPro reportPath="/Health/Nursing_and_Provider_Progress_Notes" decorate="no" title="" className="newTab reportLink"><fmt:message key="NurseProviderProgressNotesReportLabel"/></omis:reportPro></li>
+    <li><omis:reportPro reportPath="/Health/Inmate_Appointment_Slips" decorate="no" title="" className="newTab reportLink"><fmt:message key="InmateAppointmentSlipsReportLabel"/></omis:reportPro></li>
 </ul>
 </fmt:bundle>

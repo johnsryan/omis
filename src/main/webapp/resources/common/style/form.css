@@ -16,6 +16,8 @@ div.editScreenContainer h1 {
 	margin: 0px;
 }
 
+/* EDIT FORM */
+
 /* Form. */
 form.editForm {
 	margin-top: 0px;
@@ -311,6 +313,53 @@ form select::-ms-expand {
 
 form.editForm span.characterCounter{
 	display: inline-block;
+}
+
+/* SEARCH FORM */
+
+form.searchForm {
+	margin-top: 0px;
+	margin-bottom: 0px;
+	margin-left: 0px;
+	margin-right: 0px;
+	padding-left: 25px;
+	padding-right: 10px;
+	padding-bottom: 10px;
+	padding-top: 0px;
+	border-width: 0px;
+}
+
+form.searchForm fieldset span.fieldGroup {
+	display: block;
+	padding: 0 0 5px 0;
+}
+
+/* Field sets. */
+form.searchForm fieldset {
+	padding: 23px;
+	margin: 2px;
+	border-width: 2px;
+	border-style: solid;
+	margin-bottom: 12px;
+	clear: left;
+	
+}
+
+form.searchForm fieldset legend {
+	padding: 5px;
+	padding-left: 9px;
+	padding-right: 9px;
+}
+
+/* Labels. */
+form.searchForm fieldset span.fieldGroup label.fieldLabel {
+	display: inline-block;
+	width: 150px;
+	text-align: right;
+}
+
+form.searchForm fieldset span.fieldGroup label {
+	padding: 0 0 0 5px;
 }
 
 /* jQuery UI styling */

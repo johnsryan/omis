@@ -82,4 +82,24 @@ public interface VictimAssociationReportService {
 	 * @return is offender
 	 */
 	boolean isOffender(Person person);
+	
+	/**
+	 * Returns whether a victim association exists.
+	 *
+	 *
+	 * @param offender offender
+	 * @param victim victim
+	 * @return true or false
+	 */
+	Boolean victimAssociationExists(Offender offender, Person victim);
+	
+	/**
+	 * Finds victim association.
+	 *
+	 *
+	 * @param offender offender
+	 * @param victim victim
+	 * @return victim association
+	 */
+	VictimAssociation findVictimAssociation(Offender offender, Person victim);
 }

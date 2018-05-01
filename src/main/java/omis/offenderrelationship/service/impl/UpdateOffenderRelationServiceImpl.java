@@ -47,6 +47,7 @@ import omis.country.domain.Country;
 import omis.country.service.delegate.CountryDelegate;
 import omis.demographics.domain.Sex;
 import omis.offender.domain.Offender;
+import omis.offender.service.delegate.OffenderDelegate;
 import omis.offenderrelationship.service.UpdateOffenderRelationService;
 import omis.person.domain.Person;
 import omis.person.domain.PersonIdentity;
@@ -101,6 +102,7 @@ public class UpdateOffenderRelationServiceImpl
 	private final RelationshipNoteDelegate relationshipNoteDelegate;
 	private final RelationshipNoteCategoryDesignatorDelegate
 		relationshipNoteCategoryDesignatorDelegate;
+	private final OffenderDelegate offenderDelegate;
 	
 	/**
 	 * Instantiates implementation of service to update offender relations.
@@ -123,6 +125,7 @@ public class UpdateOffenderRelationServiceImpl
 	 * @param relationshipNoteDelegate delegate for relationship notes
 	 * @param relationshipNoteCategoryDesignatorDelegate delegate for
 	 * relationship note category designators
+	 * @param offenderDelegate delegate for offenders
 	 */
 	public UpdateOffenderRelationServiceImpl(
 			final AddressDelegate addressDelegate,
@@ -142,7 +145,8 @@ public class UpdateOffenderRelationServiceImpl
 			final RelationshipDelegate relationshipDelegate,
 			final RelationshipNoteDelegate relationshipNoteDelegate,
 			final RelationshipNoteCategoryDesignatorDelegate
-			relationshipNoteCategoryDesignatorDelegate) {
+			relationshipNoteCategoryDesignatorDelegate,
+			final OffenderDelegate offenderDelegate) {
 		this.addressDelegate = addressDelegate;
 		this.personDelegate = personDelegate;
 		this.personIdentityDelegate = personIdentityDelegate;
@@ -161,6 +165,7 @@ public class UpdateOffenderRelationServiceImpl
 		this.relationshipNoteDelegate = relationshipNoteDelegate;
 		this.relationshipNoteCategoryDesignatorDelegate
 				= relationshipNoteCategoryDesignatorDelegate;
+		this.offenderDelegate = offenderDelegate;
 	}
 	
 	/** {@inheritDoc} */
@@ -173,6 +178,7 @@ public class UpdateOffenderRelationServiceImpl
 		final Boolean deceased, final Date deathDate) 
 		throws PersonNameExistsException,
 		PersonIdentityExistsException {
+		this.checkIfRelationIsOffender(person);
 		Person updatedPerson = this.personDelegate.update(
 				person, lastName, firstName, middleName, suffix);
 		if (person.getIdentity() != null) {
@@ -205,6 +211,7 @@ public class UpdateOffenderRelationServiceImpl
 		PersonIdentityExistsException {
 		Person updatedPerson = this.personDelegate.update(
 				person, lastName, firstName, middleName, suffix);
+		this.checkIfRelationIsOffender(person);
 		if (person.getIdentity() != null) {
 			this.personIdentityDelegate.update(person.getIdentity(), sex, 
 				birthDate,	birthCountry, birthState, birthCity, 
@@ -490,5 +497,15 @@ public class UpdateOffenderRelationServiceImpl
 	@Override
 	public List<RelationshipNote> findNotes(final Relationship relationship) {
 		return this.relationshipNoteDelegate.findByRelationship(relationship);
+	}
+	
+	/* Helper methods. */
+	
+	// Throws exception if relation is an offender
+	private void checkIfRelationIsOffender(final Person relation) {
+		if (this.offenderDelegate.isOffender(relation)) {
+			throw new IllegalArgumentException(
+					"Cannot update if relation is an offender");
+		}
 	}
 }

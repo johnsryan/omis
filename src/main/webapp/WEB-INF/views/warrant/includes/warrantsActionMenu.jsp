@@ -16,5 +16,12 @@
 				</li>
 			</c:forEach>
 		</sec:authorize>
+		<sec:authorize access="hasRole('WARRANT_VIEW') or hasRole('ADMIN')">
+			<c:if test="${not empty offender}">
+			<li>
+				<a href="${pageContext.request.contextPath}/warrant/warrantListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="warrantListingReportLinkLabel"/></a>
+			</li>
+		</c:if>
+		</sec:authorize>		
 	</ul>
 </fmt:bundle>

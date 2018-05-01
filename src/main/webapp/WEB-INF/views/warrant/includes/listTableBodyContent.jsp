@@ -17,7 +17,9 @@
 	<td>
 		<c:set var="clearedMethod" value="${not empty summary.warrantCancellationId ? 'canceled' : not empty summary.warrantArrestId ? 'arrested' : 'none'}"/>
 		<c:set var="released" value="${not empty summary.warrantArrestId && not empty summary.warrantReleaseId ? 'released' : ''}" />
+		<c:if test="${clearedMethod != 'none'}">
 		<fmt:message key="${clearedMethod}${released}ClearedMethodLabel"/>
+		</c:if>
 	</td>
 </tr>
 </c:forEach>

@@ -884,6 +884,197 @@ public class PlacementTermServiceUpdateTests
 				placementTerm.getEndChangeReason());
 	}
 	
+	/**
+	 * Tests that supervisory organization term end date is updated.
+	 * 
+	 * @throws DuplicateEntityFoundException if duplicate entities exist
+	 * @throws PlacementTermLockedException if placement term is locked
+	 * @throws SupervisoryOrganizationTermConflictException if conflicting
+	 * supervisory organization terms exist
+	 * @throws CorrectionalStatusTermConflictException if conflicting
+	 * correctional status terms exist 
+	 */
+	public void testUpdateSupervisoryOrganizationTermEndDate()
+			throws DuplicateEntityFoundException,
+				CorrectionalStatusTermConflictException,
+				SupervisoryOrganizationTermConflictException,
+				PlacementTermLockedException {
+		
+		// Arrangements - places Blofeld with an erroneous release date
+		Offender offender = this.createOffender();
+		CorrectionalStatus paroleStatus = this.createParoleStatus();
+		SupervisoryOrganization pnpOffice = this.createPnpOffice();
+		DateRange originalDateRange = new DateRange(
+				this.parseDateText("12/12/2012"),
+				this.parseDateText("12/12/2016"));
+		CorrectionalStatusTerm paroleTerm
+			= this.correctionalStatusTermDelegate
+				.create(offender, originalDateRange, paroleStatus);
+		SupervisoryOrganizationTerm pnpTerm
+			= this.supervisoryOrganizationTermDelegate
+				.create(offender, originalDateRange, pnpOffice);
+		PlacementTerm placementTerm
+			= this.placementTermDelegate.create(
+					offender, originalDateRange, pnpTerm, paroleTerm, null,
+					null, false);
+		
+		// Action - corrects release date
+		Date updatedEndDate = this.parseDateText("12/12/2017");
+		placementTerm = this.placementTermService.update(placementTerm,
+				updatedEndDate, PlacementStatus.PLACED, null, null, null);
+		
+		// Assertions - verifies that end date of supervisory organization
+		// term was also corrected
+		assert placementTerm.getSupervisoryOrganizationTerm().getDateRange()
+				.getEndDate().equals(updatedEndDate)
+			: String.format("Wrong end date: %s expected; %s found",
+				updatedEndDate,
+				placementTerm.getSupervisoryOrganizationTerm().getDateRange()
+					.getEndDate());
+	}
+	
+	/**
+	 * Tests that supervisory organization term {@code null} end date is updated
+	 * to not {@code null}.
+	 * 
+	 * @throws DuplicateEntityFoundException if duplicate entities exist 
+	 * @throws PlacementTermLockedException if placement term is locked
+	 * @throws SupervisoryOrganizationTermConflictException if conflicting
+	 * supervisory organization terms exist
+	 * @throws CorrectionalStatusTermConflictException if conflicting
+	 * correctional status terms exist 
+	 */
+	public void testUpdateSupervisoryOrganizationTermNullEndDate()
+			throws DuplicateEntityFoundException,
+				CorrectionalStatusTermConflictException,
+				SupervisoryOrganizationTermConflictException,
+				PlacementTermLockedException {
+		
+		// Arrangements - places Blofeld with an unknown (null) end date
+		Offender offender = this.createOffender();
+		CorrectionalStatus paroleStatus = this.createParoleStatus();
+		SupervisoryOrganization pnpOffice = this.createPnpOffice();
+		DateRange originalDateRange = new DateRange(
+				this.parseDateText("12/12/2012"), null);
+		CorrectionalStatusTerm paroleTerm = this.correctionalStatusTermDelegate
+				.create(offender, originalDateRange, paroleStatus);
+		SupervisoryOrganizationTerm pnpTerm
+			= this.supervisoryOrganizationTermDelegate
+				.create(offender, originalDateRange, pnpOffice);
+		PlacementTerm placementTerm = this.placementTermDelegate
+				.create(offender, originalDateRange, pnpTerm, paroleTerm,
+						null, null, false);
+		
+		// Action - updates to known end date
+		Date endDate = this.parseDateText("12/12/2017");
+		placementTerm = this.placementTermService
+				.update(placementTerm, endDate, PlacementStatus.PLACED,
+						null, null, null);
+		
+		// Asserts that supervisory organization term was updated to known
+		// end date
+		assert placementTerm.getSupervisoryOrganizationTerm().getDateRange()
+				.getEndDate().equals(endDate)
+			: String.format("Wrong end date: %s expected; %s found",
+					endDate, placementTerm.getSupervisoryOrganizationTerm()
+						.getDateRange().getEndDate());
+	}
+	
+	/**
+	 * Tests that correctional status term end date is updated. 
+	 * 
+	 * @throws DuplicateEntityFoundException if duplicate entities exist 
+	 * @throws PlacementTermLockedException  if placement term is locked
+	 * @throws SupervisoryOrganizationTermConflictException if conflicting
+	 * supervisory organization terms exist
+	 * @throws CorrectionalStatusTermConflictException if conflicting
+	 * correctional stauts terms exist
+	 */
+	public void testUpdateCorrectionalStatusTermEndDate()
+			throws DuplicateEntityFoundException,
+				CorrectionalStatusTermConflictException,
+				SupervisoryOrganizationTermConflictException,
+				PlacementTermLockedException {
+		
+		// Arrangements - places Blofeld with an erroneous release date
+		Offender offender = this.createOffender();
+		CorrectionalStatus paroleStatus = this.createParoleStatus();
+		SupervisoryOrganization pnpOffice = this.createPnpOffice();
+		DateRange originalDateRange = new DateRange(
+				this.parseDateText("12/12/2012"),
+				this.parseDateText("12/12/2016"));
+		CorrectionalStatusTerm paroleTerm
+			= this.correctionalStatusTermDelegate
+				.create(offender, originalDateRange, paroleStatus);
+		SupervisoryOrganizationTerm pnpTerm
+			= this.supervisoryOrganizationTermDelegate
+				.create(offender, originalDateRange, pnpOffice);
+		PlacementTerm placementTerm
+			= this.placementTermDelegate.create(
+					offender, originalDateRange, pnpTerm, paroleTerm, null,
+					null, false);
+		
+		// Action - corrects release date
+		Date updatedEndDate = this.parseDateText("12/12/2017");
+		placementTerm = this.placementTermService.update(placementTerm,
+				updatedEndDate, PlacementStatus.PLACED, null, null, null);
+		
+		// Assertions - verifies that end date of correctional status
+		// term was also corrected
+		assert placementTerm.getCorrectionalStatusTerm().getDateRange()
+				.getEndDate().equals(updatedEndDate)
+			: String.format("Wrong end date: %s expected; %s found",
+				updatedEndDate,
+				placementTerm.getCorrectionalStatusTerm().getDateRange()
+					.getEndDate());
+	}
+	
+	/**
+	 * Tests that correctional status term {@code null} end date is updated to
+	 * not {@code null}.
+	 * 
+	 * @throws DuplicateEntityFoundException if duplicate entities exist 
+	 * @throws PlacementTermLockedException  if placement term is locked
+	 * @throws SupervisoryOrganizationTermConflictException if conflicting
+	 * supervisory organization terms exist
+	 * @throws CorrectionalStatusTermConflictException if conflicting
+	 * correctional status terms eixst 
+	 */
+	public void testUpdateCorrectionalStatusTermNullEndDate()
+			throws DuplicateEntityFoundException,
+				CorrectionalStatusTermConflictException,
+				SupervisoryOrganizationTermConflictException,
+				PlacementTermLockedException {
+		
+		// Arrangements - places Blofeld with an unknown (null) end date
+		Offender offender = this.createOffender();
+		CorrectionalStatus paroleStatus = this.createParoleStatus();
+		SupervisoryOrganization pnpOffice = this.createPnpOffice();
+		DateRange originalDateRange = new DateRange(
+				this.parseDateText("12/12/2012"), null);
+		CorrectionalStatusTerm paroleTerm = this.correctionalStatusTermDelegate
+				.create(offender, originalDateRange, paroleStatus);
+		SupervisoryOrganizationTerm pnpTerm
+			= this.supervisoryOrganizationTermDelegate
+				.create(offender, originalDateRange, pnpOffice);
+		PlacementTerm placementTerm = this.placementTermDelegate
+				.create(offender, originalDateRange, pnpTerm, paroleTerm,
+						null, null, false);
+		
+		// Action - updates to known end date
+		Date endDate = this.parseDateText("12/12/2017");
+		placementTerm = this.placementTermService
+				.update(placementTerm, endDate, PlacementStatus.PLACED,
+						null, null, null);
+		
+		// Asserts that correctional status term was updated to known end date
+		assert placementTerm.getCorrectionalStatusTerm().getDateRange()
+				.getEndDate().equals(endDate)
+			: String.format("Wrong end date: %s expected; %s found",
+					endDate, placementTerm.getCorrectionalStatusTerm()
+						.getDateRange().getEndDate());
+	}
+	
 	/* Helper methods. */
 	
 	private void assertValues(PlacementTerm placementTerm, 
@@ -964,5 +1155,17 @@ public class PlacementTermServiceUpdateTests
 			throws DuplicateEntityFoundException {
 		return this.placementTermChangeReasonDelegate.create(name, sortOrder, 
 				validStartReason, validEndReason);
+	}
+	
+	// Returns parole status
+	private CorrectionalStatus createParoleStatus()
+			throws DuplicateEntityFoundException {
+		return this.createCorrectionalStatus("Parole", "PAR", false, (short) 1);
+	}
+	
+	// Returns P & P office
+	private SupervisoryOrganization createPnpOffice()
+			throws DuplicateEntityFoundException {
+		return this.createSupervisoryOrganization("PnP Office", "PNP");
 	}
 }

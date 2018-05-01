@@ -2,8 +2,7 @@ package omis.warrant.domain;
 
 import omis.audit.domain.Creatable;
 import omis.audit.domain.Updatable;
-import omis.condition.domain.Condition;
-import omis.courtcase.domain.CourtCase;
+import omis.condition.domain.ConditionClause;
 
 /**
  * WarrantCause.java
@@ -40,28 +39,17 @@ public interface WarrantCauseViolation extends Creatable, Updatable {
 	public void setWarrant(Warrant warrant);
 	
 	/**
-	 * Returns the Cause for the WarrantCause
-	 * @return cause - CourtCase
+	 * Returns the condition clause.
+	 * 
+	 * @return condition clause
 	 */
-	public CourtCase getCause();
+	public ConditionClause getConditionClause();
 	
 	/**
-	 * Sets the Cause for the WarrantCause
-	 * @param cause - CourtCase
+	 * Sets the condition clause.
+	 * @param conditionClause condition clause
 	 */
-	public void setCause(CourtCase cause);
-	
-	/**
-	 * Returns the Condition for the WarrantViolation
-	 * @return condition - Condition
-	 */
-	public Condition getCondition();
-	
-	/**
-	 * Sets the Condition for the WarrantViolation
-	 * @param condition - Condition
-	 */
-	public void setCondition(Condition condition);
+	public void setConditionClause(ConditionClause conditionClause);
 	
 	/**
 	 * Returns the Description for the WarrantCauseViolation

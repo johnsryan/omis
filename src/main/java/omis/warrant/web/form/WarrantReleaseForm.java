@@ -2,9 +2,7 @@ package omis.warrant.web.form;
 
 import java.util.Date;
 
-import omis.facility.domain.Facility;
 import omis.person.domain.Person;
-import omis.region.domain.County;
 
 /**
  * WarrantReleaseForm.java
@@ -17,10 +15,6 @@ import omis.region.domain.County;
 public class WarrantReleaseForm {
 	
 	public String addressee;
-	
-	public Facility facility;
-	
-	public County county;
 	
 	public Date releaseDate;
 	
@@ -50,38 +44,6 @@ public class WarrantReleaseForm {
 	 */
 	public void setAddressee(final String addressee) {
 		this.addressee = addressee;
-	}
-
-	/**
-	 * Returns the facility
-	 * @return facility - Facility
-	 */
-	public Facility getFacility() {
-		return facility;
-	}
-
-	/**
-	 * Sets the facility
-	 * @param facility - Facility
-	 */
-	public void setFacility(final Facility facility) {
-		this.facility = facility;
-	}
-
-	/**
-	 * Returns the county
-	 * @return county - County
-	 */
-	public County getCounty() {
-		return county;
-	}
-
-	/**
-	 * Sets the county
-	 * @param county - County
-	 */
-	public void setCounty(final County county) {
-		this.county = county;
 	}
 
 	/**

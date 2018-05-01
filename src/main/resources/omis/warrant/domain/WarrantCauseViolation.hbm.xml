@@ -13,8 +13,7 @@
 				</generator>
 			</id>
 			<many-to-one name="warrant" column="`WARRANT_ID`" entity-name="omis.warrant.domain.Warrant" not-null="true" />
-			<many-to-one name="cause" column="`WARRANT_COURT_CASE_ID`" entity-name="omis.courtcase.domain.CourtCase" not-null="true" />
-			<many-to-one name="condition" column="`CONDITION_ID`" entity-name="omis.condition.domain.Condition" not-null="true" />
+			<many-to-one name="conditionClause" column="`CONDITION_CLAUSE_ID`" entity-name="omis.condition.domain.ConditionClause" not-null="true" />
 			<property name="description" column="`DESCRIPTION`" type="java.lang.String" not-null="false" />
 			<component name="creationSignature">
 				<many-to-one name="userAccount" column="`CREATE_ACCOUNT_ID`" not-null="true"/>
@@ -32,9 +31,7 @@
 		where
 			warrantCauseViolation.warrant = :warrant
 		and
-			warrantCauseViolation.cause = :cause
-		and
-			warrantCauseViolation.condition = :condition
+			warrantCauseViolation.conditionClause = :conditionClause
 	]]></query>
 	<query name="findWarrantCauseViolationExcluding"><![CDATA[
 		select warrantCauseViolation
@@ -43,9 +40,7 @@
 		where
 			warrantCauseViolation.warrant = :warrant
 		and
-			warrantCauseViolation.cause = :cause
-		and
-			warrantCauseViolation.condition = :condition
+			warrantCauseViolation.conditionClause = :conditionClause
 		and
 			warrantCauseViolation != :warrantCauseViolation
 	]]></query>

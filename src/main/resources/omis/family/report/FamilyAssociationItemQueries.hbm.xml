@@ -45,4 +45,31 @@
 		   		and (familyAssociation.dateRange.endDate is null
 		   		or familyAssociation.dateRange.endDate >= :effectiveDate))
 	]]></query>
+	<query name="countFamilyAssociationByOffenderFamilyMember"><![CDATA[
+		select 
+			case
+				when count(*) > 0
+				then
+					true
+				else
+					false
+				end
+		from 
+			omis.family.domain.FamilyAssociation familyAssociation
+			left outer join familyAssociation.relationship relationship
+		where
+			relationship.firstPerson = :offender
+			and 
+			relationship.secondPerson = :familyMember
+	]]></query>
+	<query name="findFamilyAssociationByOffenderFamilyMember"><![CDATA[
+		select familyAssociation
+			from 
+				omis.family.domain.FamilyAssociation familyAssociation
+				left outer join familyAssociation.relationship relationship
+		where
+			relationship.firstPerson = :offender
+			and 
+			relationship.secondPerson = :familyMember
+	]]></query>
 </hibernate-mapping>

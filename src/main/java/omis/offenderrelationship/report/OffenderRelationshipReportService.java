@@ -3,6 +3,10 @@ package omis.offenderrelationship.report;
 import java.util.Date;
 import java.util.List;
 
+import omis.offender.domain.Offender;
+import omis.person.domain.Person;
+import omis.relationship.domain.Relationship;
+
 /**
  * Service to report offender relationships.
  *
@@ -82,4 +86,24 @@ public interface OffenderRelationshipReportService {
 	 */
 	Boolean exceedsMaximumResults(String lastName, String firstName, 
 		Boolean approximateMatch);
+	
+	/**
+	 * Check if the relationship exist.
+	 *
+	 *
+	 * @param offender offender
+	 * @param relation relations
+	 * @return true or false 
+	 */
+	Boolean relationshipExists(Offender offender, Person relation);	
+	
+	/**
+	 * Find a relationship by offender and relation.
+	 *
+	 *
+	 * @param offender offender
+	 * @param relation relation
+	 * @return relationship
+	 */
+	Relationship findRelationship(Offender offender, Person relation);
 }

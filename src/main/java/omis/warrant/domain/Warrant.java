@@ -5,6 +5,7 @@ import java.util.Date;
 
 import omis.audit.domain.Creatable;
 import omis.audit.domain.Updatable;
+import omis.jail.domain.Jail;
 import omis.offender.domain.Offender;
 import omis.person.domain.Person;
 
@@ -114,6 +115,19 @@ public interface Warrant extends Creatable, Updatable {
 	 */
 	public void setWarrantReason(
 			WarrantReasonCategory warrantReason);
+	/**
+	 * Returns holding jail.
+	 * 
+	 * @return holding jail
+	 */
+	public Jail getHoldingJail();
+	
+	/**
+	 * Sets holding jail.
+	 * 
+	 * @param holdingJail holding jail
+	 */
+	public void setHoldingJail(Jail holdingJail);
 	
 	/** Compares {@code this} and {@code obj} for equality.
 	 * <p>

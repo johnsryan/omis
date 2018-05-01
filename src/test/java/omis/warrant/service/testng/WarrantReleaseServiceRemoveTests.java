@@ -1,3 +1,20 @@
+/*
+ *  OMIS - Offender Management Information System
+ *  Copyright (C) 2011 - 2017 State of Montana
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.warrant.service.testng;
 
 import java.math.BigDecimal;
@@ -11,14 +28,17 @@ import org.testng.annotations.Test;
 
 import omis.address.domain.Address;
 import omis.address.domain.ZipCode;
+import omis.address.exception.ZipCodeExistsException;
 import omis.address.service.delegate.AddressDelegate;
 import omis.address.service.delegate.ZipCodeDelegate;
 import omis.country.domain.Country;
+import omis.country.exception.CountryExistsException;
 import omis.country.service.delegate.CountryDelegate;
 import omis.datatype.DateRange;
 import omis.exception.DuplicateEntityFoundException;
-import omis.facility.domain.Facility;
-import omis.facility.service.delegate.FacilityDelegate;
+import omis.jail.domain.Jail;
+import omis.jail.domain.JailCategory;
+import omis.jail.service.delegate.JailDelegate;
 import omis.location.domain.Location;
 import omis.location.service.delegate.LocationDelegate;
 import omis.offender.domain.Offender;
@@ -28,15 +48,17 @@ import omis.organization.service.delegate.OrganizationDelegate;
 import omis.person.domain.Person;
 import omis.person.service.delegate.PersonDelegate;
 import omis.region.domain.City;
-import omis.region.domain.County;
 import omis.region.domain.State;
+import omis.region.exception.CityExistsException;
+import omis.region.exception.StateExistsException;
 import omis.region.service.delegate.CityDelegate;
-import omis.region.service.delegate.CountyDelegate;
 import omis.region.service.delegate.StateDelegate;
 import omis.testng.AbstractHibernateTransactionalTestNGSpringContextTests;
 import omis.warrant.domain.Warrant;
 import omis.warrant.domain.WarrantReasonCategory;
 import omis.warrant.domain.WarrantRelease;
+import omis.warrant.exception.WarrantExistsException;
+import omis.warrant.exception.WarrantReleaseExistsException;
 import omis.warrant.service.WarrantReleaseService;
 import omis.warrant.service.WarrantService;
 
@@ -45,7 +67,8 @@ import omis.warrant.service.WarrantService;
  * 
  *@author Annie Jacques 
  *@author Sheronda Vaughn
- *@version 0.1.0 (May 15, 2017)
+ *@author Yidong Li
+ *@version 0.1.0 (April 24, 2018)
  *@since OMIS 3.0
  *
  */
@@ -65,8 +88,6 @@ public class WarrantReleaseServiceRemoveTests
 	@Qualifier("warrantReleaseService")
 	private WarrantReleaseService warrantReleaseService;
 	
-	@Autowired
-	private FacilityDelegate facilityDelegate;
 	
 	@Autowired
 	private LocationDelegate locationDelegate;
@@ -90,12 +111,13 @@ public class WarrantReleaseServiceRemoveTests
 	private ZipCodeDelegate zipCodeDelegate;
 	
 	@Autowired
-	private CountyDelegate countyDelegate;
+	@Qualifier("jailDelegate")
+	private JailDelegate jailDelegate;
 	
 	@Test
-	public void testWarrantReleaseRemove() throws DuplicateEntityFoundException {
-		final Organization organization = this.organizationDelegate.create(
-				"Arkham Asylum", "AA", null);
+	public void testWarrantReleaseRemove() throws WarrantReleaseExistsException,
+	CountryExistsException, StateExistsException, CityExistsException, 
+	ZipCodeExistsException, DuplicateEntityFoundException {
 		final Country country = this.countryDelegate.create(
 				"Country", "USA", true);
 		final State state = this.stateDelegate.create(
@@ -104,26 +126,17 @@ public class WarrantReleaseServiceRemoveTests
 				"Gotham", true, state, country);
 		final ZipCode zipCode = this.zipCodeDelegate.create(
 				city, "12345", null, true);
-		final Address address = this.addressDelegate.findOrCreate("123", "321", null,
-				null, zipCode);
-		final Long telephoneNumber = new Long("1234567");
-		final Location location = this.locationDelegate.create(organization,
-				new DateRange(this.parseDateText("01/01/2001"),
-						this.parseDateText("01/01/2020")), address);
-		final Facility facility = this.facilityDelegate.create(location,
-				"Arkham Asylum", "AA", true, telephoneNumber);
-		final County county = this.countyDelegate.create("Gotham County",
-				state, true);
 		final String instructions = "Instructions!";
 		final Date releaseTimestamp = this.parseDateText("01/01/2017");
 		final String addressee = "Addressee";
-		final Warrant warrant = this.createWarrant();
+		final Warrant warrant = this.createWarrant(country, state, city,
+			zipCode);
 		final Person clearedBy = this.personDelegate.create("Dent", "Harvey",
 				null, null);
 		final Date clearedByDate = this.parseDateText("01/01/2017");
 		
 		final WarrantRelease warrantRelease = this.warrantReleaseService
-				.create(warrant, instructions, county, facility,
+				.create(warrant, instructions,
 						releaseTimestamp, addressee, clearedBy, clearedByDate);
 		
 		this.warrantReleaseService.remove(warrantRelease);
@@ -140,7 +153,8 @@ public class WarrantReleaseServiceRemoveTests
 		}
 	}
 	
-	private Warrant createWarrant() throws DuplicateEntityFoundException {
+	private Warrant createWarrant(Country country, State state, City city,
+			ZipCode zipCode) throws WarrantExistsException, DuplicateEntityFoundException {
 		final Offender offender = this.offenderDelegate.createWithoutIdentity(
 				"Wayne", "Bruce", "Alen", null);
 		final Date date = this.parseDateText("05/12/2017");
@@ -152,8 +166,18 @@ public class WarrantReleaseServiceRemoveTests
 		final Boolean bondable = true;
 		final BigDecimal bondRecommendation = new BigDecimal("500");
 		
+		final Organization organization = this.organizationDelegate.create(
+				"Brkham Bsylum", "BB", null);
+		final Address address = this.addressDelegate.findOrCreate(
+				"321", "123", null,
+				null, zipCode);
+		final Location location = this.locationDelegate.create(organization,
+			new DateRange(this.parseDateText("01/01/2010"),
+					this.parseDateText("01/01/2022")), address);
+		final Jail jail = this.jailDelegate.create("Brkham Bsylum",
+				location, JailCategory.COUNTY, true, 1234567890L);
+		
 		return this.warrantService.create(offender, date, addressee,
-				issuedBy, bondable, bondRecommendation, warrantReason);
-	}
-	
+				issuedBy, bondable, bondRecommendation, warrantReason, jail);
+	}	
 }

@@ -20,6 +20,8 @@
         	<constructor-arg name="courtDelegate" ref="courtDelegate" />
         	<constructor-arg name="offenderDelegate" ref="offenderDelegate" />
         	<constructor-arg name="userAccountDelegate" ref="userAccountDelegate" />
+        	<constructor-arg name="presentenceInvestigationDelayDelegate" ref="presentenceInvestigationDelayDelegate"/>
+        	<constructor-arg name="presentenceInvestigationDelayCategoryDelegate" ref="presentenceInvestigationDelayCategoryDelegate"/>
         </bean>
         
 		<bean id="presentenceInvestigationTaskService" class="omis.presentenceinvestigation.service.impl.PresentenceInvestigationTaskServiceImpl">
@@ -302,6 +304,17 @@
 			<constructor-arg name="entityName" value="omis.presentenceinvestigation.domain.EvaluationRecommendationSectionSummaryNote" />
 		</bean>
 		
+		<bean id="presentenceInvestigationDelayInstanceFactory"
+        	class="omis.instance.factory.hibernate.impl.InstanceFactoryHibernateImpl">
+        	<constructor-arg name="instanceFactoryDelegate" ref="instanceFactoryDelegate"/>
+        	<constructor-arg name="entityName" value="omis.presentenceinvestigation.domain.PresentenceInvestigationDelay"/>	
+        </bean>
+        
+        <bean id="presentenceInvestigationDelayCategoryInstanceFactory"
+        	class="omis.instance.factory.hibernate.impl.InstanceFactoryHibernateImpl">
+        	<constructor-arg name="instanceFactoryDelegate" ref="instanceFactoryDelegate"/>
+        	<constructor-arg name="entityName" value="omis.presentenceinvestigation.domain.PresentenceInvestigationDelayCategory"/>	
+        </bean>
         
         <!--  Service delegates -->
         <bean id="presentenceInvestigationRequestDelegate"
@@ -524,6 +537,19 @@
 			<constructor-arg name="auditComponentRetriever" ref="auditComponentRetriever" />
 		</bean>
 		
+		<bean id="presentenceInvestigationDelayDelegate"
+        	class="omis.presentenceinvestigation.service.delegate.PresentenceInvestigationDelayDelegate">
+        	<constructor-arg name="presentenceInvestigationDelayDao" ref="presentenceInvestigationDelayDao"/>
+        	<constructor-arg name="presentenceInvestigationDelayInstanceFactory" ref="presentenceInvestigationDelayInstanceFactory"/>
+        	<constructor-arg name="auditComponentRetriever" ref="auditComponentRetriever"/>	
+        </bean>
+        
+        <bean id="presentenceInvestigationDelayCategoryDelegate"
+        	class="omis.presentenceinvestigation.service.delegate.PresentenceInvestigationDelayCategoryDelegate">
+        	<constructor-arg name="presentenceInvestigationDelayCategoryDao" ref="presentenceInvestigationDelayCategoryDao"/>
+        	<constructor-arg name="presentenceInvestigationDelayCategoryInstanceFactory" ref="presentenceInvestigationDelayCategoryInstanceFactory"/>
+        </bean>
+		
         <!-- Daos -->
         <bean id="presentenceInvestigationRequestDao"
 			class="omis.presentenceinvestigation.dao.impl.hibernate.PresentenceInvestigationRequestDaoHibernateImpl">
@@ -710,6 +736,18 @@
 			<constructor-arg name="sessionFactory" ref="sessionFactory" />
 			<constructor-arg name="entityName" value="omis.presentenceinvestigation.domain.EvaluationRecommendationSectionSummaryNote" />
 		</bean>
+		
+		<bean id="presentenceInvestigationDelayDao"
+			class="omis.presentenceinvestigation.dao.impl.hibernate.PresentenceInvestigationDelayDaoHibernateImpl">
+        	<constructor-arg name="sessionFactory" ref="sessionFactory"/>
+        	<constructor-arg name="entityName" value="omis.presentenceinvestigation.domain.PresentenceInvestigationDelay"/>	
+        </bean>
+        
+        <bean id="presentenceInvestigationDelayCategoryDao"
+			class="omis.presentenceinvestigation.dao.impl.hibernate.PresentenceInvestigationDelayCategoryDaoHibernateImpl">
+        	<constructor-arg name="sessionFactory" ref="sessionFactory"/>
+        	<constructor-arg name="entityName" value="omis.presentenceinvestigation.domain.PresentenceInvestigationDelayCategory"/>	
+        </bean>
 		
 		<!-- Document Beans -->
 		

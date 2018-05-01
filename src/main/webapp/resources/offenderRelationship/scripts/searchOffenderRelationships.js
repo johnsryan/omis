@@ -2,6 +2,7 @@
  * Script for searching for offender relationships.
  * 
  * @author: Stephen Abson
+ * @author: Sheronda Vaughn
  */
 window.onload = function() {
 	
@@ -39,4 +40,11 @@ window.onload = function() {
 	applyInputFocus("searchSocialSecurityNumber", "searchTypeSocialSecurityNumberRadio");
 	applyFieldFocus("searchTypeBirthDateRadio", "searchTypeBirthDateLabel", "searchBirthDate");
 	applyInputFocus("searchBirthDate", "searchTypeBirthDateRadio");
+	
+	var relationRows = document.getElementsByClassName("rowActionMenuItem");
+	for(var count =0; count < relationRows.length; count++) {
+		applyActionMenu(relationRows[count], function() {
+			applyRemoveLinkConfirmation();
+			});
+	}
 };

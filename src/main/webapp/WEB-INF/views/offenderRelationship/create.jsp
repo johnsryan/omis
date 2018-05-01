@@ -40,6 +40,7 @@
 	<jsp:include page="/WEB-INF/views/common/includes/personFieldsResources.jsp"/>
 	<jsp:include page="/WEB-INF/views/address/includes/addressFieldsResources.jsp"/>
 	<jsp:include page="/WEB-INF/views/contact/includes/poBoxFieldsResources.jsp"/>
+	<jsp:include page="/WEB-INF/views/common/includes/contactSummaryResources.jsp"/> 
 	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/offenderRelationship/scripts/createOffenderRelationships.js?VERSION=1"></script>
 	<script type="text/javascript">
 		var offender = ${offender.id};

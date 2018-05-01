@@ -4,7 +4,7 @@
 <fmt:bundle basename="omis.hearing.msgs.hearing">
 <c:forEach var="summary" items="${summaries}" varStatus="status">
 <tr>
-	<td><a class="actionMenuItem" id="actionMenuLink" href="${pageContext.request.contextPath}/hearing/violations/scheduledViolationsActionMenu.html?hearing=${summary.key.hearingId}"></a></td>
+	<td><a class="actionMenuItem" id="actionMenuLink" href="${pageContext.request.contextPath}/hearing/violations/scheduledViolationsRowActionMenu.html?hearing=${summary.key.hearingId}"></a></td>
 	<td>
 		<fmt:formatDate value="${summary.key.hearingDate}" pattern="MM/dd/yyyy" />
 	</td>

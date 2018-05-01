@@ -21,8 +21,7 @@ import java.util.List;
 
 import org.hibernate.SessionFactory;
 
-import omis.condition.domain.Condition;
-import omis.courtcase.domain.CourtCase;
+import omis.condition.domain.ConditionClause;
 import omis.dao.impl.hibernate.GenericHibernateDaoImpl;
 import omis.warrant.dao.WarrantCauseViolationDao;
 import omis.warrant.domain.Warrant;
@@ -52,9 +51,7 @@ public class WarrantCauseViolationDaoHibernateImpl
 	
 	private static final String WARRANT_PARAM_NAME = "warrant";
 	
-	private static final String CAUSE_PARAM_NAME = "cause";
-	
-	private static final String CONDITION_PARAM_NAME = "condition";
+	private static final String CONDITION_CLAUSE_PARAM_NAME = "conditionClause";
 	
 	private static final String WARRANT_CAUSE_VIOLATION_PARAM_NAME =
 			"warrantCauseViolation";
@@ -75,15 +72,13 @@ public class WarrantCauseViolationDaoHibernateImpl
 	@Override
 	public WarrantCauseViolation find(
 			final Warrant warrant,
-			final CourtCase cause,
-			final Condition condition) {
+			final ConditionClause conditionClause) {
 		WarrantCauseViolation warrantCauseViolation = (WarrantCauseViolation)
 				this.getSessionFactory()
 				.getCurrentSession()
 				.getNamedQuery(FIND_WARRANT_CAUSE_VIOLATION_QUERY_NAME)
 				.setParameter(WARRANT_PARAM_NAME, warrant)
-				.setParameter(CAUSE_PARAM_NAME, cause)
-				.setParameter(CONDITION_PARAM_NAME, condition)
+				.setParameter(CONDITION_CLAUSE_PARAM_NAME, conditionClause)
 				.uniqueResult();
 		
 		return warrantCauseViolation;
@@ -92,16 +87,15 @@ public class WarrantCauseViolationDaoHibernateImpl
 	/**{@inheritDoc} */
 	@Override
 	public WarrantCauseViolation findExcluding(
-			final Warrant warrant, final CourtCase cause,
-			final Condition condition,
+			final Warrant warrant, 
+			final ConditionClause conditionClause,
 			final WarrantCauseViolation warrantCauseViolationExcluding) {
 		WarrantCauseViolation warrantCauseViolation = (WarrantCauseViolation)
 				this.getSessionFactory()
 				.getCurrentSession()
 				.getNamedQuery(FIND_WARRANT_CAUSE_VIOLATION_EXCLUDING_QUERY_NAME)
 				.setParameter(WARRANT_PARAM_NAME, warrant)
-				.setParameter(CAUSE_PARAM_NAME, cause)
-				.setParameter(CONDITION_PARAM_NAME, condition)
+				.setParameter(CONDITION_CLAUSE_PARAM_NAME, conditionClause)
 				.setParameter(WARRANT_CAUSE_VIOLATION_PARAM_NAME,
 						warrantCauseViolationExcluding)
 				.uniqueResult();

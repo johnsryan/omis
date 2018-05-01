@@ -49,12 +49,21 @@ public class ViolationReportController {
 	/* View Names */
 	
 	private static final String LIST_VIEW_NAME = "/hearing/violations/list";
+
+	private static final String VIOLATION_STATUS_ACTION_MENU_VIEW_NAME =
+			"/hearing/violations/includes/violationStatusActionMenu";
 	
 	private static final String UNRESOLVED_VIOLATIONS_ACTION_MENU_VIEW_NAME =
 			"/hearing/violations/includes/unresolvedViolationsActionMenu";
 	
 	private static final String SCHEDULED_VIOLATIONS_ACTION_MENU_VIEW_NAME =
 			"/hearing/violations/includes/scheduledViolationsActionMenu";
+	
+	private static final String SCHEDULED_VIOLATIONS_ROW_ACTION_MENU_VIEW_NAME =
+			"/hearing/violations/includes/scheduledViolationsRowActionMenu";
+
+	private static final String RESOLVED_VIOLATIONS_ACTION_MENU_VIEW_NAME =
+			"/hearing/violations/includes/resolvedViolationsActionMenu";
 
 	private static final String RESOLVED_VIOLATIONS_ROW_ACTION_MENU_VIEW_NAME =
 			"/hearing/violations/includes/resolvedViolationsRowActionMenu";
@@ -93,6 +102,9 @@ public class ViolationReportController {
 	private static final String VIOLATION_STATUS_REPORT_NAME =
 			"/Compliance/Violations/Violation_Status_Report";
 	
+	private static final String VIOLATION_SUMMARY_OFFENDER_REPORT_NAME =
+			"/Compliance/Violations/Violation_Summary_for_Offender_Distribution";	
+	
 	private static final String VIOLATIONS_SCHEDULED_FOR_HEARING_REPORT_NAME =
 			"/Compliance/Violations/Violations_Scheduled_for_Hearing_Listing";
 	
@@ -104,16 +116,7 @@ public class ViolationReportController {
 	
 	/* Report Parameter Names */
 	
-	private static final String RESOLVED_VIOLATION_LISTING_REPORT_PARAM_NAME =
-			"DOC_ID";
-	
-	private static final String UNRESOLVED_VIOLATION_LISTING_REPORT_PARAM_NAME =
-			"DOC_ID";
-	
-	private static final String VIOLATION_STATUS_REPORT_PARAM_NAME =
-			"DOC_ID";
-	
-	private static final String VIOLATIONS_SCHEDULED_FOR_HEARING_REPORT_PARAM_NAME =
+	private static final String DOC_ID_REPORT_PARAM_NAME =
 			"DOC_ID";
 	
 	private static final String HEARING_DETAILS_REPORT_PARAM_NAME =
@@ -236,6 +239,19 @@ public class ViolationReportController {
 	
 	/* Action Menus Views */
 	
+	/**
+	 * Returns the ModelAndView for the Action Menu for Violation Status
+	 * @param offender - Offender
+	 * @return ModelAndView for the Action Menu for Violation Status
+	 */
+	@RequestMapping(value = "/violationStatusActionMenu.html", 
+			method = RequestMethod.GET)
+	public ModelAndView displayViolationStatusActionMenu(@RequestParam
+			(value = "offender", required = true) final Offender offender){
+		ModelMap map = new ModelMap();
+		map.addAttribute(OFFENDER_MODEL_KEY, offender);
+		return new ModelAndView(VIOLATION_STATUS_ACTION_MENU_VIEW_NAME, map);
+	}
 	
 	/**
 	 * Returns the ModelAndView for the Action Menu for Unresolved Violations
@@ -261,18 +277,50 @@ public class ViolationReportController {
 	}
 	
 	/**
-	 * Returns the ModelAndView for the Action Menu for scheduled Violations
-	 * @param hearing - Hearing
-	 * @return ModelAndView for the Action Menu for scheduled Violations
+	 * Returns the ModelAndView for the Action Menu for Scheduled Violations
+	 * @param offender - Offender
+	 * @return ModelAndView for the Action Menu for Scheduled Violations
 	 */
 	@RequestMapping(value = "/scheduledViolationsActionMenu.html", 
 			method = RequestMethod.GET)
 	public ModelAndView displayScheduledViolationsActionMenu(@RequestParam
+			(value = "offender", required = true) final Offender offender){
+		ModelMap map = new ModelMap();
+		map.addAttribute(OFFENDER_MODEL_KEY, offender);
+		return new ModelAndView(SCHEDULED_VIOLATIONS_ACTION_MENU_VIEW_NAME,
+				map);
+	}
+	
+	/**
+	 * Returns the ModelAndView for the Action Menu for scheduled Violations
+	 * Rows
+	 * @param hearing - Hearing
+	 * @return ModelAndView for the Action Menu for scheduled Violations rows
+	 */
+	@RequestMapping(value = "/scheduledViolationsRowActionMenu.html", 
+			method = RequestMethod.GET)
+	public ModelAndView displayScheduledViolationsRowActionMenu(@RequestParam
 			(value = "hearing", required = true) final Hearing hearing){
 		ModelMap map = new ModelMap();
 		map.addAttribute(HEARING_MODEL_KEY, hearing);
 		
-		return new ModelAndView(SCHEDULED_VIOLATIONS_ACTION_MENU_VIEW_NAME, map);
+		return new ModelAndView(SCHEDULED_VIOLATIONS_ROW_ACTION_MENU_VIEW_NAME,
+				map);
+	}
+	
+	/**
+	 * Returns the ModelAndView for the Action Menu for Resolved Violations
+	 * @param offender - Offender
+	 * @return ModelAndView for the Action Menu for Resolved Violations
+	 */
+	@RequestMapping(value = "/resolvedViolationsActionMenu.html", 
+			method = RequestMethod.GET)
+	public ModelAndView displayResolvedViolationsActionMenu(@RequestParam
+			(value = "offender", required = true) final Offender offender){
+		ModelMap map = new ModelMap();
+		map.addAttribute(OFFENDER_MODEL_KEY, offender);
+		return new ModelAndView(RESOLVED_VIOLATIONS_ACTION_MENU_VIEW_NAME,
+				map);
 	}
 	
 	/**
@@ -309,7 +357,7 @@ public class ViolationReportController {
 			@RequestParam(value = "reportFormat", required = true)
 			final ReportFormat reportFormat) {
 		Map<String, String> reportParamMap = new HashMap<String, String>();
-		reportParamMap.put(RESOLVED_VIOLATION_LISTING_REPORT_PARAM_NAME,
+		reportParamMap.put(DOC_ID_REPORT_PARAM_NAME,
 				Long.toString(offender.getOffenderNumber()));
 		byte[] doc = this.reportRunner.runReport(
 				RESOLVED_VIOLATION_LISTING_REPORT_NAME,
@@ -334,7 +382,7 @@ public class ViolationReportController {
 			@RequestParam(value = "reportFormat", required = true)
 			final ReportFormat reportFormat) {
 		Map<String, String> reportParamMap = new HashMap<String, String>();
-		reportParamMap.put(UNRESOLVED_VIOLATION_LISTING_REPORT_PARAM_NAME,
+		reportParamMap.put(DOC_ID_REPORT_PARAM_NAME,
 				Long.toString(offender.getOffenderNumber()));
 		byte[] doc = this.reportRunner.runReport(
 				UNRESOLVED_VIOLATION_LISTING_REPORT_NAME,
@@ -359,10 +407,35 @@ public class ViolationReportController {
 			@RequestParam(value = "reportFormat", required = true)
 			final ReportFormat reportFormat) {
 		Map<String, String> reportParamMap = new HashMap<String, String>();
-		reportParamMap.put(VIOLATION_STATUS_REPORT_PARAM_NAME,
+		reportParamMap.put(DOC_ID_REPORT_PARAM_NAME,
 				Long.toString(offender.getOffenderNumber()));
 		byte[] doc = this.reportRunner.runReport(
 				VIOLATION_STATUS_REPORT_NAME,
+				reportParamMap, reportFormat);
+		return this.reportControllerDelegate.constructReportResponseEntity(
+				doc, reportFormat);
+	}
+
+	/**
+	 * Returns the report for the specified offenders violation summary.
+	 * 
+	 * @param offender offender
+	 * @param reportFormat report format
+	 * @return response entity with report
+	 */
+	@RequestMapping(value = "/violationSummaryOffenderReport.html",
+			method = RequestMethod.GET)
+	@PreAuthorize("hasRole('VIOLATION_VIEW') or hasRole('ADMIN')")
+	public ResponseEntity<byte []> reportViolationSummary(@RequestParam(
+			value = "offender", required = true)
+			final Offender offender,
+			@RequestParam(value = "reportFormat", required = true)
+			final ReportFormat reportFormat) {
+		Map<String, String> reportParamMap = new HashMap<String, String>();
+		reportParamMap.put(DOC_ID_REPORT_PARAM_NAME,
+				Long.toString(offender.getOffenderNumber()));
+		byte[] doc = this.reportRunner.runReport(
+				VIOLATION_SUMMARY_OFFENDER_REPORT_NAME,
 				reportParamMap, reportFormat);
 		return this.reportControllerDelegate.constructReportResponseEntity(
 				doc, reportFormat);
@@ -384,7 +457,7 @@ public class ViolationReportController {
 			@RequestParam(value = "reportFormat", required = true)
 			final ReportFormat reportFormat) {
 		Map<String, String> reportParamMap = new HashMap<String, String>();
-		reportParamMap.put(VIOLATIONS_SCHEDULED_FOR_HEARING_REPORT_PARAM_NAME,
+		reportParamMap.put(DOC_ID_REPORT_PARAM_NAME,
 				Long.toString(offender.getOffenderNumber()));
 		byte[] doc = this.reportRunner.runReport(
 				VIOLATIONS_SCHEDULED_FOR_HEARING_REPORT_NAME,

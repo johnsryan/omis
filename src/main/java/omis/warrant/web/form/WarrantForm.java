@@ -32,16 +32,17 @@ public class WarrantForm {
 	
 	private Jail arrestJail;
 	
-	private Date contactBy;//TODO figure out exactly what this is supposed to be
+	private Jail holdingJail;
+	
+	private Date determinationDeadline;
 	
 	private List<WarrantNoteItem> warrantNoteItems;
 	
 	private List<WarrantCauseViolationItem> warrantCauseViolationItems;
 	
-	/**
-	 * 
-	 */
+	/** Instantiates a default instance of warrant form. */
 	public WarrantForm() {
+		//Default constructor.
 	}
 	
 	/**
@@ -173,19 +174,39 @@ public class WarrantForm {
 	}
 
 	/**
-	 * Returns the contactBy
-	 * @return contactBy - Date
+	 * Returns the holding jail.
+	 * 
+	 * @return holding jail
 	 */
-	public Date getContactBy() {
-		return contactBy;
+	public Jail getHoldingJail() {
+		return this.holdingJail;
 	}
 
 	/**
-	 * Sets the contactBy
-	 * @param contactBy - Date
+	 * Sets the holding jail.
+	 * 
+	 * @param holdingJail holding jail
 	 */
-	public void setContactBy(final Date contactBy) {
-		this.contactBy = contactBy;
+	public void setHoldingJail(final Jail holdingJail) {
+		this.holdingJail = holdingJail;
+	}
+	
+	/**
+	 * Returns the determination deadline.
+	 * 
+	 * @return determination deadline
+	 */
+	public Date getDeterminationDeadline() {
+		return this.determinationDeadline;
+	}
+
+	/**
+	 * Sets the determination deadline.
+	 * 
+	 * @param determinationDeadline determination deadline.
+	 */
+	public void setDeterminationDeadline(final Date determinationDeadline) {
+		this.determinationDeadline = determinationDeadline;
 	}
 
 	/**

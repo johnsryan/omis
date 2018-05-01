@@ -68,8 +68,34 @@ function warrantCauseViolationItemsCreateOnClick() {
 	}
 };
 
+function violationToWitItemCreateLinkOnClick() {
+	var link = document.getElementById("createViolationToWitItemLink");
+	link.onclick = function() {
+		$.ajax(config.ServerConfig.getContextPath() + "/warrant/createViolationToWitItem.html",
+				   {
+						type: "GET",
+						async: false,
+						data: {
+							violationToWitItemIndex: currentViolationToWitItemIndex,
+							offender: offenderId,
+						},
+						success: function(data) {
+							$("#warrantCauseViolationTableBody").append(data);
+							warrantCauseViolationItemRowOnClick(currentViolationToWitItemIndex);
+							currentViolationToWitItemIndex++;
+						},
+						error: function(jqXHR, textStatus, errorThrown) {
+							alert("Error - status: " + textStatus + "; error: "
+								+ errorThrown);
+							$("#warrantCauseViolationTableBody").html(jqXHR.responseText );
+						}
+					});
+		return false;
+	}
+};
+
+
 function warrantCauseViolationItemRowOnClick(warrantCauseViolationItemIndex) {
-	conditionOnSelect(warrantCauseViolationItemIndex);
 	$("#removeWarrantCauseViolationLink" + warrantCauseViolationItemIndex).click(function() {
 		if ($("#warrantCauseViolationOperation" + warrantCauseViolationItemIndex).val() == "UPDATE") {
 			$("#warrantCauseViolationOperation" + warrantCauseViolationItemIndex).val("REMOVE");
@@ -82,38 +108,32 @@ function warrantCauseViolationItemRowOnClick(warrantCauseViolationItemIndex) {
 		}
 		return false;
 	});
+	applyDocketDisplayOnClick(document.getElementById("warrantConditionClause" + warrantCauseViolationItemIndex));
 };
 
-
-function displayConditionOptions(warrantCauseViolationItemIndex){
-	var courtCase = $("#warrantCourtCaseId" + warrantCauseViolationItemIndex).val();
-	var condition = $("#warrantCauseViolationItems\\[" + warrantCauseViolationItemIndex + "\\]\\.condition").val();
-	$.ajax(config.ServerConfig.getContextPath() + "/warrant/displayConditions.html",
-	{
-		type: "GET",
-		async: false,
-		data: {
-			courtCase: courtCase,
-			condition: condition
-		},
-		success: function(data) {
-			$("#warrantCondition" + warrantCauseViolationItemIndex).html(data);
-		},
-		error: function(jqXHR, textStatus, errorThrown) {
-			alert("Error - status: " + textStatus + "; error: "
-				+ errorThrown);
-			$("#warrantCondition" + warrantCauseViolationItemIndex).html(jqXHR.responseText );
-		}
-	});
-}
-
-function conditionOnSelect(warrantCauseViolationItemIndex){
-	$("#warrantCondition" + warrantCauseViolationItemIndex).change(function(){
-		if(this.value){
-			$("#warrantCauseViolationItems\\[" + warrantCauseViolationItemIndex + "\\]\\.condition").val(this.value);
-		}
-		else{
-			$("#warrantCauseViolationItems\\[" + warrantCauseViolationItemIndex + "\\]\\.condition").val('');
+function applyDocketDisplayOnClick(ele) {
+	
+	$(ele).change(function () {
+		if ($(ele).val()) {
+			$.ajax(config.ServerConfig.getContextPath() + "/warrant/displayConditionClauseDockets.html",
+				   {
+						type: "GET",
+						async: false,
+						data: {
+							conditionClause: $(ele).val(),
+							offender: offenderId,
+						},
+						success: function(data) {
+							$("#" + ele.id + "Dockets").html(data);
+						},
+						error: function(jqXHR, textStatus, errorThrown) {
+							alert("Error - status: " + textStatus + "; error: "
+								+ errorThrown);
+							$(ele.id + "Dockets").html(jqXHR.responseText );
+						}
+					});
+		} else {
+			$("#" + ele.id + "Dockets").html("");
 		}
 	});
 }

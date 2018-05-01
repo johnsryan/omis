@@ -39,7 +39,7 @@ public class WarrantFormValidator implements Validator {
 	private static final String JAIL_REQUIRED_MSG_KEY = "warrant.jail.empty";
 	
 	private static final String CONDITION_REQUIRED_MESSAGE_KEY =
-			"warrant.condition.empty";
+			"warrant.conditionClause.empty";
 	
 	private static final String COURT_CASE_REQUIRED_MESSAGE_KEY =
 			"warrant.courtCase.empty";
@@ -95,11 +95,8 @@ public class WarrantFormValidator implements Validator {
 						WarrantItemOperation.UPDATE).contains(
 								item.getItemOperation())){
 					ValidationUtils.rejectIfEmpty(errors,
-							"warrantCauseViolationItems["+i+"].condition",
+							"warrantCauseViolationItems["+i+"].conditionClause",
 							CONDITION_REQUIRED_MESSAGE_KEY);
-					ValidationUtils.rejectIfEmpty(errors,
-							"warrantCauseViolationItems["+i+"].courtCase",
-							COURT_CASE_REQUIRED_MESSAGE_KEY);
 				}
 				i++;
 			}

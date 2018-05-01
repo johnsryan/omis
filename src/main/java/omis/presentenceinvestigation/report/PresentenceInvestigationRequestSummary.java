@@ -1,12 +1,33 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.presentenceinvestigation.report;
 
 import java.util.Date;
 
-/** Report object for presentence investigation summary.
+/** 
+ * Report object for presentence investigation summary.
+ * 
  * @author Ryan Johns
- * @author Annie Jacques
- * @version 0.1.2 (March 22, 2017)
- * @since OMIS 3.0 */
+ * @author Annie Wahl
+ * @author Josh Divine
+ * @version 0.1.3 (Apr 24, 2018)
+ * @since OMIS 3.0
+ */
 public class PresentenceInvestigationRequestSummary {
 	
 	private final Long presentenceInvestigationRequestId;
@@ -27,12 +48,11 @@ public class PresentenceInvestigationRequestSummary {
 	private final Long completedTaskCount;
 	private final Long totalTaskCount;
 	private final Date submissionDate;
+	private final PresentenceInvestigationRequestStatus status;
 	
-	
-	
-	
-	
-	/** Constructor.
+	/** 
+	 * Constructor.
+	 * 
 	 * @param presentenceInvestigationRequstId - presentence investigation
 	 * request id.
 	 * @param offenderId - offender id
@@ -51,6 +71,7 @@ public class PresentenceInvestigationRequestSummary {
 	 * @param category - Presentence Investigation Category
 	 * @param completedTaskCount - Completed task count.
 	 * @param totalTaskCount - Total task count.
+	 * @param status presentence investigation request status
 	 */
 	public PresentenceInvestigationRequestSummary(
 			final Long presentenceInvestigationRequestId, final Long offenderId,
@@ -61,7 +82,8 @@ public class PresentenceInvestigationRequestSummary {
 			final String offenderLastName, final String offenderMiddleName,
 			final Integer offenderNumber, final Date sentenceDate,
 			final String category, final Long completedTaskCount, 
-			final Long totalTaskCount, final Date submissionDate) {
+			final Long totalTaskCount, final Date submissionDate,
+			final Long delayCount) {
 		this.presentenceInvestigationRequestId = presentenceInvestigationRequestId;
 		this.offenderId = offenderId;
 		this.docketValue = docketValue;
@@ -80,9 +102,14 @@ public class PresentenceInvestigationRequestSummary {
 		this.completedTaskCount = completedTaskCount;
 		this.totalTaskCount = totalTaskCount;
 		this.submissionDate = submissionDate;
+		if (submissionDate != null) {
+			this.status = PresentenceInvestigationRequestStatus.SUBMITTED;
+		} else if (delayCount > 0) {
+			this.status = PresentenceInvestigationRequestStatus.DELAYED;
+		} else {
+			this.status = PresentenceInvestigationRequestStatus.IN_PROGRESS;
+		}
 	}
-
-	
 
 	/**
 	 * @return the presentenceInvestigationRequestId
@@ -211,6 +238,13 @@ public class PresentenceInvestigationRequestSummary {
 	public Date getSubmissionDate() {
 		return this.submissionDate;
 	}
-	
-	
+
+	/**
+	 * Returns the status.
+	 *
+	 * @return status
+	 */
+	public PresentenceInvestigationRequestStatus getStatus() {
+		return status;
+	}
 }

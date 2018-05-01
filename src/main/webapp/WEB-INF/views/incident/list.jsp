@@ -31,6 +31,5 @@
 	<h1><a class="actionMenuItem" id="actionMenuLink" href="${pageContext.request.contextPath}/incident/statement/incidentActionMenu.html"></a><span class="visibleLinkLabel"><fmt:message key="incidentStatementLabel"/></span></h1>
 	<jsp:include page="includes/searchResults.jsp"/>
 </body>
-	
 </fmt:bundle>
 </html>

@@ -10,11 +10,13 @@
 	<jsp:include page="/WEB-INF/views/common/includes/headerOffenderFormResources.jsp"/>
 	<jsp:include page="/WEB-INF/views/common/includes/toolsResources.jsp"/>
 	<jsp:include page="/WEB-INF/views/common/includes/searchResources.jsp"/>
-	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/warrant/scripts/includes/jquery.omis.warrant.js?VERSION=1"></script>
-	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/warrant/scripts/warrant.js?VERSION=1"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/warrant/scripts/includes/jquery.omis.warrant.js?VERSION=2"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/warrant/scripts/warrant.js?VERSION=2"></script>
 	<script type="text/javascript">
 		var currentWarrantNoteItemIndex = ${warrantNoteItemIndex};
 		var currentWarrantCauseViolationItemIndex = ${warrantCauseViolationItemIndex};
+		var currentViolationToWitItemIndex = ${violationToWitItemIndex};
+		var offenderId = ${offender.id};
 	</script>
 	<title>
 		<c:if test="${empty warrant}">

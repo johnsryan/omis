@@ -28,14 +28,14 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <fmt:setBundle basename="omis.offender.msgs.offender" var="offenderBundle"/>
 <fmt:bundle basename="omis.msgs.homeLinks">
-		<h1 class="accentRegular">
+		<h1 class="foregroundUltraLight">
 			<a class="actionMenuItem" id="searchActionMenu" href="${pageContext.request.contextPath}/searchActionMenu.html"></a>
 			<span class="contentHeading"><fmt:message key="searchHeader"/></span>
 		</h1>
-		<ul class="content">		
+		<ul class="content foregroundUltraLight">		
 			<li>
 				<a href="${pageContext.request.contextPath}/offender/advancedOffenderSearch.html">
-					<span class="banner hoverable">
+					<span class="banner">
 						<img src="${pageContext.request.contextPath}/resources/common/images/offenderSearch.png" height="90" width="90"/>
 						<span class="label"><fmt:message key="offenderSearchLabel"/></span>
 					</span>
@@ -80,11 +80,11 @@
 			</li>
 			</sec:authorize>			
 		</ul>
-		<h1 class="accentRegular">
+		<h1 class="foregroundUltraLight">
 			<a class="actionMenuItem" id="caseLoadActionMenu" href="${pageContext.request.contextPath}/caseLoadActionMenu.html"></a>
 			<span class="contentHeading"><fmt:message key="caseLoadHeader"/></span>
 		</h1>
-		<ul class="content">
+		<ul class="content foregroundUltraLight">
 			<sec:authorize access="(hasRole('ADMIN') and hasRole('APP_DEV'))">
 			<li>
 				<a href="${pageContext.request.contextPath}/caseload/list.html">								
@@ -136,11 +136,11 @@
 			</li>
 			</sec:authorize> --%>
 		</ul>
-		<h1 class="accentRegular">
+		<h1 class="foregroundUltraLight">
 			<a class="actionMenuItem" id="workCentersActionMenu" href="${pageContext.request.contextPath}/workCentersActionMenu.html"></a>
 			<span class="contentHeading"><fmt:message key="workCentersHeader"/></span>
 		</h1>
-		<ul class="content">
+		<ul class="content foregroundUltraLight">
 			<li>
 				<a href="${pageContext.request.contextPath}/health/referral/referralCenter.html">
 					<span class="banner">

@@ -66,4 +66,15 @@ public interface ConditionDao extends GenericDao<Condition>{
 	 * @return List of Waived Conditions by specified agreement
 	 */
 	List<Condition> findWaivedByAgreement(Agreement agreement);
+
+	/**
+	 * Finds conditions for the specified condition clause, offender, and effective date.
+	 * 
+	 * @param clause condition clause
+	 * @param offender offender
+	 * @param effectiveDate effective date
+	 * @return list of conditions
+	 */
+	List<Condition> findByConditionClauseAndOffenderOnDate(ConditionClause clause, Offender offender,
+			Date effectiveDate);
 }

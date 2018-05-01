@@ -23,7 +23,7 @@
 		</id>
 		<properties name="uniqueRelationshipNote">
 			<many-to-one name="relationship" entity-name="omis.relationship.domain.Relationship" not-null="true" column="`RELATIONSHIP_ID`"/>
-			<many-to-one name="category" entity-name="omis.relationship.domain.RelationshipNoteCategory" not-null="true" column="CATEGORY_ID"/>
+			<many-to-one name="category" entity-name="omis.relationship.domain.RelationshipNoteCategory" not-null="true" column="`CATEGORY_ID`"/>
 			<property name="date" type="java.util.Date" not-null="true" column="`DATE`"/>
 			<property name="value" type="java.lang.String" not-null="true" column="`VALUE`"/>
 		</properties>

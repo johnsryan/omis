@@ -1,3 +1,20 @@
+/*
+ *  OMIS - Offender Management Information System
+ *  Copyright (C) 2011 - 2017 State of Montana
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.warrant.service.delegate;
 
 import java.util.List;
@@ -5,18 +22,18 @@ import java.util.List;
 import omis.audit.AuditComponentRetriever;
 import omis.audit.domain.CreationSignature;
 import omis.audit.domain.UpdateSignature;
-import omis.condition.domain.Condition;
-import omis.courtcase.domain.CourtCase;
-import omis.exception.DuplicateEntityFoundException;
+import omis.condition.domain.ConditionClause;
 import omis.instance.factory.InstanceFactory;
 import omis.warrant.dao.WarrantCauseViolationDao;
 import omis.warrant.domain.Warrant;
 import omis.warrant.domain.WarrantCauseViolation;
+import omis.warrant.exception.WarrantCauseViolationExistsException;
 
 /**
  * WarrantCauseDelegate.java
  * 
  *@author Annie Jacques 
+ *@author Yidong Li
  *@version 0.1.0 (May 8, 2017)
  *@since OMIS 3.0
  *
@@ -59,23 +76,23 @@ public class WarrantCauseViolationDelegate {
 	 * @param condition - Condition
 	 * @param description - String
 	 * @return Newly created WarrantCauseViolation
-	 * @throws DuplicateEntityFoundException - When a WarrantCauseViolation already
+	 * @throws WarrantCauseViolationExistsException - When a
+	 * WarrantCauseViolation already
 	 * exists with the given Cause and Condition for the specified Warrant
 	 */
 	public WarrantCauseViolation create(final Warrant warrant,
-			final CourtCase cause, final Condition condition,
-			final String description)
-					throws DuplicateEntityFoundException{
-		if(this.warrantCauseViolationDao.find(warrant, cause, condition) != null){
-			throw new DuplicateEntityFoundException(DUPLICATE_ENTITY_FOUND_MSG);
+			final ConditionClause conditionClause, final String description)
+					throws WarrantCauseViolationExistsException{
+		if(this.warrantCauseViolationDao.find(warrant, conditionClause) != null){
+			throw new WarrantCauseViolationExistsException(
+				DUPLICATE_ENTITY_FOUND_MSG);
 		}
 		
 		WarrantCauseViolation warrantCauseViolation = 
 				this.warrantCauseViolationInstanceFactory.createInstance();
 		
 		warrantCauseViolation.setWarrant(warrant);
-		warrantCauseViolation.setCause(cause);
-		warrantCauseViolation.setCondition(condition);
+		warrantCauseViolation.setConditionClause(conditionClause);
 		warrantCauseViolation.setDescription(description);
 		warrantCauseViolation.setCreationSignature(
 				new CreationSignature(
@@ -90,29 +107,29 @@ public class WarrantCauseViolationDelegate {
 	}
 	
 	/**
-	 * Updates a WarrantCauseViolation with the specified properties
-	 * @param warrantCauseViolation - WarrantCauseViolation to update
-	 * @param cause - CourtCase
-	 * @param condition - Condition
-	 * @param description - String
-	 * @return Updated WarrantCauseViolation
-	 * @throws DuplicateEntityFoundException - When a WarrantCauseViolation already
-	 * exists with the given Cause and Condition for the specified
-	 * WarrantCauseViolation Warrant
+	 * Updates the specified warrant clause violation.
+	 * 
+	 * @param warrantCauseViolation warrant clause violation
+	 * @param conditionClause condition clause
+	 * @param description description
+	 * @return updated warrant clause violation
+	 * @throws WarrantCauseViolationExistsException thrown when a duplicate
+	 * warrant clause violation
+	 * is found, excluding the specified warrant clause violation
 	 */
 	public WarrantCauseViolation update(
 			final WarrantCauseViolation warrantCauseViolation,
-			final CourtCase cause, final Condition condition,
+			final ConditionClause conditionClause,
 			final String description)
-					throws DuplicateEntityFoundException{
+					throws WarrantCauseViolationExistsException{
 		if(this.warrantCauseViolationDao.findExcluding(
 				warrantCauseViolation.getWarrant(),
-				cause, condition, warrantCauseViolation) != null){
-			throw new DuplicateEntityFoundException(DUPLICATE_ENTITY_FOUND_MSG);
+				conditionClause, warrantCauseViolation) != null){
+			throw new WarrantCauseViolationExistsException(
+				DUPLICATE_ENTITY_FOUND_MSG);
 		}
 		
-		warrantCauseViolation.setCause(cause);
-		warrantCauseViolation.setCondition(condition);
+		warrantCauseViolation.setConditionClause(conditionClause);
 		warrantCauseViolation.setDescription(description);
 		warrantCauseViolation.setUpdateSignature(
 				new UpdateSignature(

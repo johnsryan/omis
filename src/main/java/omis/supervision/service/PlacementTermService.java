@@ -47,7 +47,7 @@ import omis.supervision.exception.SupervisoryOrganizationTermConflictException;
  * 
  * @author Stephen Abson
  * @author Jason Nelson
- * @version 0.1.1 (Nov 12, 2014)
+ * @version 0.1.2 (April 19, 2018)
  * @since OMIS 3.0
  */
 public interface PlacementTermService {
@@ -83,6 +83,13 @@ public interface PlacementTermService {
 	 * and new ones began. If the correctional status and/or supervisory
 	 * organization matches, the date ranges of the respective terms are
 	 * lengthened for use by the placement term.
+	 * 
+	 * <p>Placement terms that overlap will be shortened, placement terms that
+	 * occur within the new placement term will cause a
+	 * {@code PlacementTermConflictException}.
+	 * 
+	 * <p>Placement term conflicts are reported first, then correctional status
+	 * terms, then supervisory organization terms.
 	 * 
 	 * @param offender offender
 	 * @param supervisoryOrganization of supervisory organization
@@ -154,6 +161,10 @@ public interface PlacementTermService {
 	 * <p>If status is set to {@link PlacementStatus#ESCAPED}, the location
 	 * on the status start date, if one exists, will be ended with the status
 	 * start date.
+	 * 
+	 * <p>Correctional status term and supervisory organization term end
+	 * dates are updated to new end date of placement term if matching
+	 * old end date.
 	 * 
 	 * @param placementTerm placement term to update
 	 * @param endDate end date

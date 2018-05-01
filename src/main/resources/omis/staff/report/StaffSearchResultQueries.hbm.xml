@@ -65,17 +65,17 @@
 	]]></query>
 	
 	<query name="findStaffSummaryByLast"><![CDATA[
-	    SELECT new omis.staff.report.StaffSearchResult(staffAssignment.id, 
-		       staffTitle.name, supervisoryOrganization.name, name.id,
-		       person.id, name.firstName, name.middleName, name.lastName, name.suffix)
-		  FROM omis.staff.domain.StaffAssignment as staffAssignment
-	RIGHT JOIN staffAssignment.staffMember as person
-    RIGHT JOIN staffAssignment.title as staffTitle
-    RIGHT JOIN staffAssignment.supervisoryOrganization as supervisoryOrganization
-    RIGHT JOIN person.name as name
-	     WHERE upper(name.lastName) like upper(:last || '%' )
-	        AND (staffAssignment.dateRange.startDate is null
-	            OR staffAssignment.dateRange.startDate <= :date)
+            SELECT new omis.staff.report.StaffSearchResult(staffAssignment.id,
+                       staffTitle.name, supervisoryOrganization.name, name.id,
+                       person.id, name.firstName, name.middleName, name.lastName, name.suffix)
+                  FROM omis.staff.domain.StaffAssignment as staffAssignment
+        INNER JOIN staffAssignment.staffMember as person
+    INNER JOIN staffAssignment.title as staffTitle
+    INNER JOIN staffAssignment.supervisoryOrganization as supervisoryOrganization
+    INNER JOIN person.name as name
+             WHERE upper(name.lastName) like upper(:last || '%' )
+                AND (staffAssignment.dateRange.startDate is null
+                    OR staffAssignment.dateRange.startDate <= :date)
             AND (staffAssignment.dateRange.endDate is null
                 OR staffAssignment.dateRange.endDate > :date)
 	]]></query>

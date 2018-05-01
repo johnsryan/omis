@@ -57,7 +57,9 @@ import omis.supervision.exception.PlacementTermLockedException;
 import omis.supervision.exception.PlacementTermNoteExistsException;
 import omis.supervision.exception.SupervisoryOrganizationTermConflictException;
 import omis.supervision.service.PlacementTermService;
+import omis.supervision.service.delegate.CorrectionalStatusTermDelegate;
 import omis.supervision.service.delegate.PlacementTermNoteDelegate;
+import omis.supervision.service.delegate.SupervisoryOrganizationTermDelegate;
 import omis.util.DateManipulator;
 
 /**
@@ -99,6 +101,11 @@ public class PlacementTermServiceImpl
 	
 	private final PlacementTermNoteDelegate placementTermNoteDelegate;
 	
+	private final CorrectionalStatusTermDelegate correctionalStatusTermDelegate;
+	
+	private final SupervisoryOrganizationTermDelegate
+	supervisoryOrganizationTermDelegate;
+	
 	private final AuditComponentRetriever auditComponentRetriever;
 
 	/**
@@ -120,6 +127,10 @@ public class PlacementTermServiceImpl
 	 * @param locationDao data access object for locations
 	 * @param locationTermDao data access object for location terms
 	 * @param placementTermNoteDelegate delegate for notes for placement terms
+	 * @param correctionalStatusTermDelegate delegate for correctional status
+	 * terms
+	 * @param supervisoryOrganizationTermDelegate delegate for supervisory
+	 * organization terms
 	 * @param auditComponentRetriever audit component retriever
 	 */
 	public PlacementTermServiceImpl(
@@ -139,6 +150,9 @@ public class PlacementTermServiceImpl
 			final LocationDao locationDao,
 			final LocationTermDao locationTermDao,
 			final PlacementTermNoteDelegate placementTermNoteDelegate,
+			final CorrectionalStatusTermDelegate correctionalStatusTermDelegate,
+			final SupervisoryOrganizationTermDelegate
+			supervisoryOrganizationTermDelegate,
 			final AuditComponentRetriever auditComponentRetriever) {
 		this.placementTermInstanceFactory = placementTermInstanceFactory;
 		this.placementTermDao = placementTermDao;
@@ -155,6 +169,9 @@ public class PlacementTermServiceImpl
 		this.locationDao = locationDao;
 		this.locationTermDao = locationTermDao;
 		this.placementTermNoteDelegate = placementTermNoteDelegate;
+		this.correctionalStatusTermDelegate = correctionalStatusTermDelegate;
+		this.supervisoryOrganizationTermDelegate
+			= supervisoryOrganizationTermDelegate;
 		this.auditComponentRetriever = auditComponentRetriever;
 	}
 
@@ -200,6 +217,79 @@ public class PlacementTermServiceImpl
 			throw new PlacementTermExistsException("Placement term exists");
 		}
 		
+		// Adjusts end date of placement term on start date and start date
+		// of placement term on end date if existing
+		PlacementTerm startPlacementTerm = this.placementTermDao
+				.findForOffenderOnDate(offender, startDate);
+		PlacementTerm endPlacementTerm = this.placementTermDao
+				.findForOffenderOnDate(offender, endDate);
+		if (startPlacementTerm != null) {
+			if (startPlacementTerm.equals(endPlacementTerm)) {
+				
+				// TODO: Implement splitting of placement terms - SA
+				throw new UnsupportedOperationException(
+						"Don\'t know how to split placement terms");
+			}
+			if (startDate == null && (startPlacementTerm.getDateRange()
+					== null || startPlacementTerm.getDateRange().getEndDate()
+					== null)) {
+				throw new PlacementTermConflictException(
+						"Conflict with existing placement term");
+			}
+			startPlacementTerm.setDateRange(
+					DateRange.adjustEndDate(startPlacementTerm.getDateRange(),
+							startDate));
+			startPlacementTerm.setUpdateSignature(this.createUpdateSignature());
+			this.placementTermDao.makePersistent(startPlacementTerm);
+		}
+		if (endPlacementTerm != null) {
+			if (endDate == null && (endPlacementTerm.getDateRange() == null
+					|| endPlacementTerm.getDateRange().getStartDate()
+					== null)) {
+				throw new PlacementTermConflictException(
+						"Conflict with existing placement term");
+			}
+			endPlacementTerm.setDateRange(DateRange.adjustStartDate(
+					endPlacementTerm.getDateRange(), endDate));
+			endPlacementTerm.setUpdateSignature(this.createUpdateSignature());
+			this.placementTermDao.makePersistent(endPlacementTerm);
+		}
+		
+		// Throws exception if placement term conflicts with existing
+		// placement terms
+		long placementTermCountBetweenDates;
+		if (startPlacementTerm == null && endPlacementTerm == null) {
+			placementTermCountBetweenDates
+				= this.placementTermDao.countForOffenderBetweenDates(
+					offender, startDate, endDate);
+		} else {
+			PlacementTerm[] excludedPlacementTerms;
+			if (startPlacementTerm != null && endPlacementTerm != null) {
+				excludedPlacementTerms = new PlacementTerm[] {
+					startPlacementTerm, endPlacementTerm
+				};
+			} else if (startPlacementTerm != null) {
+				excludedPlacementTerms = new PlacementTerm[] {
+					startPlacementTerm
+				};
+			} else if (endPlacementTerm != null) {
+				excludedPlacementTerms = new PlacementTerm[] {
+					endPlacementTerm
+				};
+			} else {
+				
+				// Logically impossible
+				throw new AssertionError();
+			}
+			placementTermCountBetweenDates
+				= this.placementTermDao.countForOffenderBetweenDatesExcluding(
+					offender, startDate, endDate, excludedPlacementTerms);
+		}
+		if (placementTermCountBetweenDates > 0) {
+			throw new PlacementTermConflictException(
+					"Conflict with existing placement term");
+		}
+
 		// Determines correctional status term. Use existing if the correctional
 		// status matches that of the placement term - otherwise end existing
 		// and create a new one
@@ -320,7 +410,7 @@ public class PlacementTermServiceImpl
 		}
 		
 		// Ensures no other correctional status terms exist during range
-		if (this.correctionalStatusTermDao
+		if (this.correctionalStatusTermDelegate
 				.countForOffenderBetweenDatesExcluding(
 					offender, startDate, endDate, startCorrectionalStatusTerm,
 					endCorrectionalStatusTerm) > 0) {
@@ -461,7 +551,7 @@ public class PlacementTermServiceImpl
 		}
 		
 		// Ensures no other supervisory organization terms exist during range
-		if (this.supervisoryOrganizationTermDao
+		if (this.supervisoryOrganizationTermDelegate
 				.countForOffenderBetweenDatesExcluding(
 						offender, startDate, endDate,
 						startSupervisoryOrganizationTerm,
@@ -473,54 +563,7 @@ public class PlacementTermServiceImpl
 		// Saves supervisory organization term
 		this.supervisoryOrganizationTermDao
 			.makePersistent(supervisoryOrganizationTerm);
-		
-		// Adjusts end date of placement term on start date and start date
-		// of placement term on end date if existing
-		PlacementTerm startPlacementTerm = this.placementTermDao
-				.findForOffenderOnDate(offender, startDate);
-		PlacementTerm endPlacementTerm = this.placementTermDao
-				.findForOffenderOnDate(offender, endDate);
-		if (startPlacementTerm != null) {
-			if (startPlacementTerm.equals(endPlacementTerm)) {
 				
-				// TODO: Implement splitting of placement terms - SA
-				throw new UnsupportedOperationException(
-						"Don\'t know how to split placement terms");
-			}
-			if (startDate == null && (startPlacementTerm.getDateRange()
-					== null || startPlacementTerm.getDateRange().getEndDate()
-					== null)) {
-				throw new PlacementTermConflictException(
-						"Conflict with existing placement term");
-			}
-			startPlacementTerm.setDateRange(
-					DateRange.adjustEndDate(startPlacementTerm.getDateRange(),
-							startDate));
-			startPlacementTerm.setUpdateSignature(this.createUpdateSignature());
-			this.placementTermDao.makePersistent(startPlacementTerm);
-		}
-		if (endPlacementTerm != null) {
-			if (endDate == null && (endPlacementTerm.getDateRange() == null
-					|| endPlacementTerm.getDateRange().getStartDate()
-					== null)) {
-				throw new PlacementTermConflictException(
-						"Conflict with existing placement term");
-			}
-			endPlacementTerm.setDateRange(DateRange.adjustStartDate(
-					endPlacementTerm.getDateRange(), endDate));
-			endPlacementTerm.setUpdateSignature(this.createUpdateSignature());
-			this.placementTermDao.makePersistent(endPlacementTerm);
-		}
-		
-		// Throws exception if placement term conflicts with existing
-		// placement terms
-		if (this.placementTermDao.countForOffenderBetweenDatesExcluding(
-				offender, startDate, endDate, startPlacementTerm,
-				endPlacementTerm) > 0) {
-			throw new PlacementTermConflictException(
-					"Conflict with existing placement term");
-		}
-		
 		// Creates, persists and returns new placement term
 		PlacementTerm placementTerm
 			= this.placementTermInstanceFactory.createInstance();
@@ -676,7 +719,7 @@ public class PlacementTermServiceImpl
 		
 		// Determines start and end date of existing placement term
 		final Date oldStartDate
-			= DateRange.getStartDate(placementTerm.getDateRange());
+		= DateRange.getStartDate(placementTerm.getDateRange());
 		final Date oldEndDate
 			= DateRange.getEndDate(placementTerm.getDateRange());
 		
@@ -696,77 +739,20 @@ public class PlacementTermServiceImpl
 						correctionalStatusTermOnEndDate))) {
 			
 			// Throws exception if conflicting correctional status terms exist
+			// TODO - Remove this block once proven logically impossible - SA
 			if (!placementTerm.getCorrectionalStatusTerm()
 					.equals(correctionalStatusTermOnStartDate)) {
 				
-				// Figures out date bounds
-				Date searchStartDate
-					= DateManipulator.findEarliest(startDate, oldStartDate);
-				Date searchEndDate
-					= DateManipulator.findLatest(startDate, oldStartDate);
-				
-				// Prepares to search for conflicting correctional status terms
-				List<CorrectionalStatusTerm> excludedCorrectionalStatusTerms
-					= new ArrayList<CorrectionalStatusTerm>();
-				excludedCorrectionalStatusTerms.add(
-						correctionalStatusTermOnStartDate);
-				if (correctionalStatusTermOnStartDate != null
-					&& DateRange.getStartDate(correctionalStatusTermOnStartDate
-						.getDateRange()) != null
-					&& startDate != null && !correctionalStatusTermOnStartDate
-						.getDateRange().getStartDate().equals(startDate)) {
-					
-					// Exclude correctional status term with end date of start
-					// date from search for conflicting correctional status
-					// terms
-					CorrectionalStatusTerm correctionalStatusTermWithEndDate;
-					correctionalStatusTermWithEndDate
-						= this.correctionalStatusTermDao
-							.findForOffenderWithEndDate(offender,
-								correctionalStatusTermOnStartDate
-									.getDateRange().getStartDate());
-					if (correctionalStatusTermWithEndDate != null) {
-						excludedCorrectionalStatusTerms.add(
-								correctionalStatusTermWithEndDate);
-					}
-				}
-				
-				// Performs search - throws exception if conflicts are found
-				if (searchStartDate != null || searchEndDate != null) {
-					if (this.correctionalStatusTermDao
-							.countForOffenderBetweenDatesExcluding(
-									offender, searchStartDate, searchEndDate,
-									excludedCorrectionalStatusTerms.toArray(
-											new CorrectionalStatusTerm[] { }))
-										> 0) {
-						throw new CorrectionalStatusTermConflictException(
-								"Conflicting correctional status terms exist");
-					}
-				}
-				
-				// Removes old correctional status term and uses one on start
-				// date
-				// TODO - Figure out why equals is not used - SA
-				if (correctionalStatusTermOnStartDate != null
-						&& correctionalStatusTermOnStartDate
-							.getCorrectionalStatus().equals(placementTerm
-									.getCorrectionalStatusTerm()
-									.getCorrectionalStatus())
-						&& !placementTerm.getCorrectionalStatusTerm()
-							.getCorrectionalStatus().equals(
-									placementTerm.getCorrectionalStatusTerm()
-									.getCorrectionalStatus())) {
-					CorrectionalStatusTerm oldCorrectionalStatusTerm
-						= placementTerm.getCorrectionalStatusTerm();
-					placementTerm.setCorrectionalStatusTerm(
-							correctionalStatusTermOnStartDate);
-					this.correctionalStatusTermDao.makeTransient(
-							oldCorrectionalStatusTerm);
-				}
+				// It is logically impossible for correctional status term
+				// of placement term to not be correctional status term
+				// on placement term start date when start date cannot be
+				// changed.
+				throw new AssertionError("Logically impossible condition");
 			}
 			
 			// Adjusts start date of placement status term only if equal
 			// to old start date of placement term
+			// TODO - Remove this block once proven redundant - SA
 			if (DateRange.startDateEquals(
 					placementTerm.getCorrectionalStatusTerm()
 						.getDateRange(), oldStartDate)) {
@@ -902,84 +888,20 @@ public class PlacementTermServiceImpl
 			
 			// Throws exception if conflicting supervisory organization terms
 			// exist
+			// TODO - Remove this block once proven logically impossible - SA
 			if (!placementTerm.getSupervisoryOrganizationTerm()
 					.equals(supervisoryOrganizationTermOnStartDate)) {
 				
-				// Figures out date bounds
-				Date searchStartDate
-					= DateManipulator.findEarliest(startDate, oldStartDate);
-				Date searchEndDate
-					= DateManipulator.findLatest(startDate, oldStartDate);
-				
-				// Prepares to search for conflicting supervisory organization
-				// terms
-				List<SupervisoryOrganizationTerm>
-					excludedSupervisoryOrganizationTerms
-						= new ArrayList<SupervisoryOrganizationTerm>();
-				excludedSupervisoryOrganizationTerms.add(
-						supervisoryOrganizationTermOnStartDate);
-				if (supervisoryOrganizationTermOnStartDate != null
-					&& DateRange.getStartDate(
-							supervisoryOrganizationTermOnStartDate
-								.getDateRange()) != null
-					&& startDate != null
-						&& !supervisoryOrganizationTermOnStartDate
-							.getDateRange().getStartDate().equals(startDate)) {
-					
-					// Exclude supervisory organization term with end date of
-					// start date from search for conflicting supervisory
-					// organization  terms
-					SupervisoryOrganizationTerm
-						supervisoryOrganizationTermWithEndDate;
-					supervisoryOrganizationTermWithEndDate
-						= this.supervisoryOrganizationTermDao
-							.findForOffenderWithEndDate(offender,
-								supervisoryOrganizationTermOnStartDate
-									.getDateRange().getStartDate());
-					if (supervisoryOrganizationTermWithEndDate != null) {
-						excludedSupervisoryOrganizationTerms.add(
-								supervisoryOrganizationTermWithEndDate);
-					}
-				}
-				
-				// Performs search - throws exception if conflicts are found
-				if (searchStartDate != null || searchEndDate != null) {
-					if (this.supervisoryOrganizationTermDao
-							.countForOffenderBetweenDatesExcluding(
-									offender, searchStartDate, searchEndDate,
-									excludedSupervisoryOrganizationTerms
-										.toArray(
-										new SupervisoryOrganizationTerm[] { }))
-										> 0) {
-						throw new SupervisoryOrganizationTermConflictException(
-							"Conflicting supervisory organization terms exist");
-					}
-				}
-				
-				// Removes old supervisory organization term and uses one on
-				// start date
-				if (supervisoryOrganizationTermOnStartDate != null
-						&& supervisoryOrganizationTermOnStartDate
-							.getSupervisoryOrganization().equals(
-									placementTerm
-										.getSupervisoryOrganizationTerm()
-										.getSupervisoryOrganization())
-						&& !placementTerm.getSupervisoryOrganizationTerm()
-							.getSupervisoryOrganization().equals(
-									placementTerm
-										.getSupervisoryOrganizationTerm()
-										.getSupervisoryOrganization())) {
-					SupervisoryOrganizationTerm oldSupervisoryOrganizationTerm
-						= placementTerm.getSupervisoryOrganizationTerm();
-					placementTerm.setSupervisoryOrganizationTerm(
-							supervisoryOrganizationTermOnStartDate);
-					this.supervisoryOrganizationTermDao.makeTransient(
-							oldSupervisoryOrganizationTerm);
-				}
+				// It is logically impossible for supervisory organization term
+				// of placement term to not be supervisory organization term
+				// on placement term start date when start date cannot be
+				// changed
+				throw new AssertionError("Logically impossible condition");
 			}
 			
 			// Adjusts start date of supervisory organization term only if
 			// equal to old start date of placement term
+			// TODO - Remove this block once proven redundant - SA
 			if (DateRange.startDateEquals(
 					placementTerm.getSupervisoryOrganizationTerm()
 						.getDateRange(), oldStartDate)) {

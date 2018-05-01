@@ -20,20 +20,23 @@ package omis.visitation.report.impl.hibernate;
 import java.util.Date;
 import java.util.List;
 
+import org.hibernate.SessionFactory;
+
 import omis.facility.domain.Facility;
 import omis.offender.domain.Offender;
+import omis.offender.service.delegate.OffenderDelegate;
 import omis.person.domain.Person;
 import omis.person.report.AlternateNameSummary;
+import omis.visitation.domain.VisitationAssociation;
 import omis.visitation.report.VisitationAssociationSummary;
 import omis.visitation.report.VisitationAssociationSummaryReportService;
-
-import org.hibernate.SessionFactory;
 
 /**
  * Report service implementation for visitor list.
  * 
  * @author Joel Norris
  * @author Josh Divine
+ * @author Sheronda Vaughn
  * @version 0.1.1 (Feb 14, 2018)
  * @since OMIS 3.0
  */
@@ -54,6 +57,14 @@ public class VisitationAssociationSummaryReportServiceHibernateImpl
 	private static final String FIND_ALTERNATIVE_NAMES_QUERY_NAME
 		= "findAlternativeNames";
 	
+	private static final String 
+		COUNT_VISITATION_ASSOCIATION_BY_OFFENDER_VISITOR_QUERY_NAME
+		= "countVistationAssociationByOffenderVisitor";
+
+	private static final String 
+		FIND_VISITATION_ASSOCIATION_BY_OFFENDER_VISITOR_QUERY_NAME
+		= "findVisitationAssociationByOffenderVisitor";
+	
 	/* Parameters */
 	
 	private static final String OFFENDER_PARAM = "offender";
@@ -68,16 +79,23 @@ public class VisitationAssociationSummaryReportServiceHibernateImpl
 	
 	private static final String PERSON_PARAM_NAME = "person";
 	
+	private static final String VISITOR_PARAM_NAME = "visitor";
+	
 	private static final String EFFECTIVE_DATE_PARAM_NAME = "effectiveDate";
 	
 	private SessionFactory sessionFactory;
 	
+	private final OffenderDelegate offenderDelegate;
+	
 	/**
 	 * Instantiates a default instance of visitor list report service
 	 * hibernate implementation.
+	 * 
+	 * @param offenderDelegate offenderDelegate
 	 */
-	public VisitationAssociationSummaryReportServiceHibernateImpl() {
-		//Default constructor.
+	public VisitationAssociationSummaryReportServiceHibernateImpl(
+			final OffenderDelegate offenderDelegate) {
+		this.offenderDelegate = offenderDelegate;
 	}
 
 	/**
@@ -151,13 +169,47 @@ public class VisitationAssociationSummaryReportServiceHibernateImpl
 	public List<AlternateNameSummary>  summarizeAlternativeNames(
 		final Person person, final Date effectiveDate) {
 		@SuppressWarnings("unchecked")
-		List<AlternateNameSummary> alternativeNameSummaries
-		= this.sessionFactory.getCurrentSession()
-		.getNamedQuery(FIND_ALTERNATIVE_NAMES_QUERY_NAME)
-		.setParameter(PERSON_PARAM_NAME, person)
-		.setParameter(EFFECTIVE_DATE_PARAM_NAME, effectiveDate)
-		.setReadOnly(true)
-		.list();
+		List<AlternateNameSummary> alternativeNameSummaries 
+			 = this.sessionFactory.getCurrentSession()
+			 .getNamedQuery(FIND_ALTERNATIVE_NAMES_QUERY_NAME)
+			 .setParameter(PERSON_PARAM_NAME, person)
+			 .setParameter(EFFECTIVE_DATE_PARAM_NAME, effectiveDate)
+			 .setReadOnly(true)
+			 .list();
 		return alternativeNameSummaries;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public Boolean visitationAssociationExists(
+			final Offender offender, final Person visitor) {
+		final Boolean query = (Boolean) this.sessionFactory.getCurrentSession()
+				.getNamedQuery(
+						COUNT_VISITATION_ASSOCIATION_BY_OFFENDER_VISITOR_QUERY_NAME)
+				.setParameter(OFFENDER_PARAM, offender)
+				.setParameter(VISITOR_PARAM_NAME, visitor)
+				.uniqueResult();
+		return query;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public VisitationAssociation findVisitationAssociation(
+			final Offender offender, final Person visitor) {
+		VisitationAssociation association 
+			= (VisitationAssociation) this.sessionFactory
+				.getCurrentSession()
+				.getNamedQuery(
+						FIND_VISITATION_ASSOCIATION_BY_OFFENDER_VISITOR_QUERY_NAME)
+				.setParameter(OFFENDER_PARAM, offender)
+				.setParameter(VISITOR_PARAM_NAME, visitor)
+				.uniqueResult();
+		return association;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public Boolean isOffender(final Person person) {
+		return this.offenderDelegate.isOffender(person);
 	}
 }

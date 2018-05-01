@@ -54,6 +54,7 @@
 				<constructor-arg name="relationshipDelegate" ref="relationshipDelegate"/>
 				<constructor-arg name="relationshipNoteDelegate" ref="relationshipNoteDelegate"/>
 				<constructor-arg name="relationshipNoteCategoryDesignatorDelegate" ref="relationshipNoteCategoryDesignatorDelegate"/>
+				<constructor-arg name="offenderDelegate" ref="offenderDelegate"/>
 		</bean>
 		
 	<!--  Report Services -->	

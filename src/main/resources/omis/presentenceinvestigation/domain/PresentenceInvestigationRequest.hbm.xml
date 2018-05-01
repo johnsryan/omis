@@ -1,4 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+ - OMIS - Offender Management Information System
+ - Copyright (C) 2011 - 2017 State of Montana
+ -
+ - This program is free software: you can redistribute it and/or modify
+ - it under the terms of the GNU General Public License as published by
+ - the Free Software Foundation, either version 3 of the License, or
+ - (at your option) any later version.
+ -
+ - This program is distributed in the hope that it will be useful,
+ - but WITHOUT ANY WARRANTY; without even the implied warranty of
+ - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ - GNU General Public License for more details.
+ -
+ - You should have received a copy of the GNU General Public License
+ - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<!--
+ - Presentence investigation request hibernate definition.
+ -
+ - Author: Ryan Johns
+ - Author: Annie Wahl
+ - Author: Josh Divine
+ - Version: 0.1.9 (Apr 24, 2018)
+ -->
 <!DOCTYPE hibernate-mapping PUBLIC
 	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
@@ -14,12 +39,13 @@
 	       </id>
 	       
 	       <property name="requestDate" column="`REQUEST_DATE`" type="java.util.Date" not-null="true"/>
-	       <property name="expectedCompletionDate" column="`EXPECTED_COMPLETION_DATE`" type="java.util.Date" not-null="true"/>
+	       <property name="expectedCompletionDate" column="`EXPECTED_COMPLETION_DATE`" type="java.util.Date" not-null="false"/>
 	       <property name="completionDate" column="`COMPLETION_DATE`" type="java.util.Date" not-null="false"/>
 	       <many-to-one name="assignedUser" column="`USER_ID`" entity-name="omis.user.domain.UserAccount" not-null="true"/>
 	       <many-to-one name="docket" column="`DOCKET_ID`" entity-name="omis.docket.domain.Docket" not-null="true" />
 	       <property name="sentenceDate" column="`SENTENCE_DATE`" type="java.util.Date" not-null="false" />
 	       <many-to-one name="category" column="`CATEGORY_ID`" entity-name="omis.presentenceinvestigation.domain.PresentenceInvestigationCategory" not-null="true" />
+	       <property name="actualSentenceDate" column="`ACTUAL_SENTENCE_DATE`" type="java.util.Date" not-null="false" />
 	       <component name="creationSignature">
 	       	<many-to-one name="userAccount" column="`CREATE_ACCOUNT_ID`" not-null="true"/>
 	       	<property name="date" column="`CREATE_DATE`" not-null="true"/> 	

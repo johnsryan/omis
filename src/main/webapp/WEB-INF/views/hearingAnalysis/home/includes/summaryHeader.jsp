@@ -47,15 +47,6 @@
 		</span>
 		<span class="fieldGroup">
 			<label class="fieldLabel detailsLabel">
-				<fmt:message key="boardHearingLabel"/>
-			</label>
-			<span class="detail">
-				<c:out value="${hearingAnalysisSummary.boardMeetingLocationName} - "/>
-				<fmt:formatDate value="${hearingAnalysisSummary.boardMeetingDate}" pattern="MM/dd/yyyy"/>
-			</span>
-		</span>
-		<span class="fieldGroup">
-			<label class="fieldLabel detailsLabel">
 				<fmt:message key="analystLabel"/>
 			</label>
 			<c:out value="${hearingAnalysisSummary.analystLastName}, ${hearingAnalysisSummary.analystFirstName} ${hearingAnalysisSummary.analystMiddleName} (${hearingAnalysisSummary.analystTitleName})"/>

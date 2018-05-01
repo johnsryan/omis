@@ -65,16 +65,18 @@ public interface WarrantArrest extends Creatable, Updatable {
 	public void setJail(Jail jail);
 	
 	/**
-	 * Returns the ContactByDate for the WarrantArrest
-	 * @return contactByDate - Date
+	 * Returns the determination deadline.
+	 * 
+	 * @return determination deadline
 	 */
-	public Date getContactByDate();
+	public Date getDeterminationDeadline();
 	
 	/**
-	 * Sets the ContactByDate for the WarrantArrest
-	 * @param contactByDate - Date
+	 * Sets the determination deadline.
+	 * 
+	 * @param determinationDeadline determination deadline
 	 */
-	public void setContactByDate(Date contactByDate);
+	public void setDeterminationDeadline(Date determinationDeadline);
 	
 	/** Compares {@code this} and {@code obj} for equality.
 	 * <p>

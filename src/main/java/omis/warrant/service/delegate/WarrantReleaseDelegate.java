@@ -1,3 +1,20 @@
+/*
+ *  OMIS - Offender Management Information System
+ *  Copyright (C) 2011 - 2017 State of Montana
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.warrant.service.delegate;
 
 import java.util.Date;
@@ -6,19 +23,24 @@ import omis.audit.AuditComponentRetriever;
 import omis.audit.domain.CreationSignature;
 import omis.audit.domain.UpdateSignature;
 import omis.exception.DuplicateEntityFoundException;
-import omis.facility.domain.Facility;
 import omis.instance.factory.InstanceFactory;
 import omis.person.domain.Person;
-import omis.region.domain.County;
 import omis.warrant.dao.WarrantReleaseDao;
 import omis.warrant.domain.Warrant;
 import omis.warrant.domain.WarrantRelease;
 import omis.warrant.domain.component.ClearSignature;
+import omis.warrant.exception.WarrantReleaseExistsException;
 
 /**
  * WarrantReleaseDelegate.java
  * 
  *@author Annie Jacques 
+<<<<<<< .mine
+ *@author Sheronda Vaughn
+||||||| .r5778
+=======
+ *@author Yidong Li
+>>>>>>> .r5779
  *@version 0.1.0 (May 8, 2017)
  *@since OMIS 3.0
  *
@@ -66,13 +88,12 @@ public class WarrantReleaseDelegate {
 	 * exists with the specified Warrant
 	 */
 	public WarrantRelease create(final Warrant warrant,
-			final String instructions, final County county,
-			final Facility facility, final Date releaseTimestamp,
+			final String instructions, final Date releaseTimestamp,
 			final String addressee, final Person clearedBy,
 			final Date clearedByDate)
-					throws DuplicateEntityFoundException{
+					throws WarrantReleaseExistsException{
 		if(this.warrantReleaseDao.find(warrant) != null){
-			throw new DuplicateEntityFoundException(DUPLICATE_ENTITY_FOUND_MSG);
+			throw new WarrantReleaseExistsException(DUPLICATE_ENTITY_FOUND_MSG);
 		}
 		
 		WarrantRelease warrantRelease = 
@@ -82,8 +103,6 @@ public class WarrantReleaseDelegate {
 		warrantRelease.setAddressee(addressee);
 		warrantRelease.setClearSignature(new ClearSignature(
 				clearedBy, clearedByDate));
-		warrantRelease.setCounty(county);
-		warrantRelease.setFacility(facility);
 		warrantRelease.setInstructions(instructions);
 		warrantRelease.setReleaseTimestamp(releaseTimestamp);
 		warrantRelease.setWarrant(warrant);
@@ -114,21 +133,18 @@ public class WarrantReleaseDelegate {
 	 * exists with the specified WarrantRelease's Warrant
 	 */
 	public WarrantRelease update(final WarrantRelease warrantRelease,
-			final String instructions, final County county,
-			final Facility facility, final Date releaseTimestamp,
+			final String instructions, final Date releaseTimestamp,
 			final String addressee, final Person clearedBy,
 			final Date clearedByDate)
-					throws DuplicateEntityFoundException{
+					throws WarrantReleaseExistsException{
 		if(this.warrantReleaseDao.findExcluding(warrantRelease.getWarrant(),
 				warrantRelease) != null){
-			throw new DuplicateEntityFoundException(DUPLICATE_ENTITY_FOUND_MSG);
+			throw new WarrantReleaseExistsException(DUPLICATE_ENTITY_FOUND_MSG);
 		}
 		
 		warrantRelease.setAddressee(addressee);
 		warrantRelease.setClearSignature(new ClearSignature(
 				clearedBy, clearedByDate));
-		warrantRelease.setCounty(county);
-		warrantRelease.setFacility(facility);
 		warrantRelease.setInstructions(instructions);
 		warrantRelease.setReleaseTimestamp(releaseTimestamp);
 		warrantRelease.setUpdateSignature(

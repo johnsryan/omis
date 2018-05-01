@@ -17,7 +17,9 @@
  */
 package omis.supervision.service.delegate;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import omis.audit.AuditComponentRetriever;
 import omis.audit.domain.CreationSignature;
@@ -155,6 +157,48 @@ public class SupervisoryOrganizationTermDelegate {
 				supervisoryOrganization);
 		return this.supervisoryOrganizationTermDao.makePersistent(
 				supervisoryOrganizationTerm);
+	}
+	
+	/**
+	 * Counts supervisory organization terms for offender between dates with
+	 * option of excluding terms.
+	 * 
+	 * <p>Ignores excluded terms that are {@code null}.
+	 * 
+	 * @param offender offender
+	 * @param startDate start date
+	 * @param endDate end date
+	 * @param excluded excluded terms; {@code null}s are ignored
+	 * @return count of supervisory organization terms for offender between
+	 * dates with option of excluding terms
+	 */
+	public long countForOffenderBetweenDatesExcluding(
+			final Offender offender,
+			final Date startDate, Date endDate,
+			final SupervisoryOrganizationTerm... excluded) {
+		if (excluded.length > 0) {
+			List<SupervisoryOrganizationTerm> notNullTerms
+				= new ArrayList<SupervisoryOrganizationTerm>();
+			for (SupervisoryOrganizationTerm term : excluded) {
+				if (term != null) {
+					notNullTerms.add(term);
+				}
+			}
+			if (notNullTerms.size() > 0) {
+				return this.supervisoryOrganizationTermDao
+					.countForOffenderBetweenDatesExcluding(
+						offender, startDate, endDate,
+						notNullTerms.toArray(
+								new SupervisoryOrganizationTerm[] { }));
+			} else {
+				return this.supervisoryOrganizationTermDao
+						.countForOffenderBetweenDates(
+								offender, startDate, endDate);
+			}
+		} else {
+			return this.supervisoryOrganizationTermDao
+					.countForOffenderBetweenDates(offender, startDate, endDate);
+		}
 	}
 	
 	/* Helper methods. */

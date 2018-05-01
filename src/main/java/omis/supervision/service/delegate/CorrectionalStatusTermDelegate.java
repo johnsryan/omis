@@ -17,7 +17,9 @@
  */
 package omis.supervision.service.delegate;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import omis.audit.AuditComponentRetriever;
 import omis.audit.domain.CreationSignature;
@@ -159,6 +161,47 @@ public class CorrectionalStatusTermDelegate {
 	 */
 	public void remove(final CorrectionalStatusTerm correctionalStatusTerm) {
 		this.correctionalStatusTermDao.makeTransient(correctionalStatusTerm);
+	}
+	
+	/**
+	 * Counts correctional status terms for offender between dates with option
+	 * of excluding terms.
+	 * 
+	 * <p>Ignores excluded terms that are {@code null}.
+	 * 
+	 * @param offender offender
+	 * @param startDate start date
+	 * @param endDate end date
+	 * @param excluded excluded terms; {@code null}s are ignored
+	 * @return count of correctional status terms for offender between dates
+	 * with option of excluding terms
+	 */
+	public long countForOffenderBetweenDatesExcluding(
+			final Offender offender,
+			final Date startDate,
+			final Date endDate,
+			final CorrectionalStatusTerm... excluded) {
+		if (excluded.length > 0) {
+			List<CorrectionalStatusTerm> notNullTerms
+				= new ArrayList<CorrectionalStatusTerm>();
+			for (CorrectionalStatusTerm term : excluded) {
+				if (term != null) {
+					notNullTerms.add(term);
+				}
+			}
+			if (notNullTerms.size() > 0) {
+				return this.correctionalStatusTermDao
+					.countForOffenderBetweenDatesExcluding(
+						offender, startDate, endDate,
+						notNullTerms.toArray(new CorrectionalStatusTerm[] { }));
+			} else {
+				return this.correctionalStatusTermDao
+					.countForOffenderBetweenDates(offender, startDate, endDate);
+			}
+		} else {
+			return this.correctionalStatusTermDao
+				.countForOffenderBetweenDates(offender, startDate, endDate);
+		}
 	}
 	
 	/* Helper methods. */

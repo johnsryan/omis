@@ -86,4 +86,17 @@
 		and 
 			condition.waived != true
 	]]></query>
+	<query name="findConditionsByClauseAndOffenderOnDate"><![CDATA[
+		select condition
+		from omis.condition.domain.Condition condition
+		inner join condition.agreement agreement
+		where
+			condition.conditionClause = :clause 
+		and
+			agreement.offender = :offender
+		and
+			(agreement.dateRange.startDate <= :effectiveDate)
+			and (agreement.dateRange.endDate > :effectiveDate
+				or agreement.dateRange.endDate is null)
+	]]></query>
 </hibernate-mapping>

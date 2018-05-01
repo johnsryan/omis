@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.presentenceinvestigation.service;
 
 import java.util.Date;
@@ -10,15 +27,19 @@ import omis.exception.DuplicateEntityFoundException;
 import omis.person.domain.Person;
 import omis.person.domain.Suffix;
 import omis.presentenceinvestigation.domain.PresentenceInvestigationCategory;
+import omis.presentenceinvestigation.domain.PresentenceInvestigationDelay;
+import omis.presentenceinvestigation.domain.PresentenceInvestigationDelayCategory;
 import omis.presentenceinvestigation.domain.PresentenceInvestigationRequest;
 import omis.presentenceinvestigation.domain.PresentenceInvestigationRequestNote;
 import omis.user.domain.UserAccount;
 
 /** Service for presentence investigation request related operations.
  * @author Ryan Johns
- * @author Annie Jacques
- * @version 0.1.1 (Jun 23, 2017)
- * @since OMIS 3.0 */
+ * @author Annie Wahl
+ * @author Josh Divine
+ * @version 0.1.2 (Apr 24, 2018)
+ * @since OMIS 3.0
+ */
 public interface PresentenceInvestigationRequestService {
 	
 	/** Creates a presentence investigation request.
@@ -28,6 +49,7 @@ public interface PresentenceInvestigationRequestService {
 	 * @param docket - docket.
 	 * @param completionDate - completion date.
 	 * @param sentenceDate - sentence date.
+	 * @param actualSentenceDate actual sentence date
 	 * @param category - PresentenceInvestigationCategory
 	 * @param submissionDate - submission date.
 	 * @return presentence investigation request. 
@@ -36,7 +58,7 @@ public interface PresentenceInvestigationRequestService {
 	 public PresentenceInvestigationRequest create(
 			 UserAccount assignedUser, Date requestDate, 
 			 Date expectedCompletionDate, Docket docket, 
-			 Date completionDate, Date sentenceDate,
+			 Date completionDate, Date sentenceDate, Date actualSentenceDate,
 			 PresentenceInvestigationCategory category, Date submissionDate)
 	 throws DuplicateEntityFoundException;
 	 
@@ -50,6 +72,7 @@ public interface PresentenceInvestigationRequestService {
 	 * @param completionDate - completion date.
 	 * @param docket - docket.
 	 * @param sentenceDate - sentence date.
+	 * @param actualSentenceDate actual sentence date
 	 * @param category - PresentenceInvestigationCategory
 	 * @param submissionDate - submission date.
 	 * @return presentence investigation request.
@@ -59,8 +82,8 @@ public interface PresentenceInvestigationRequestService {
 			PresentenceInvestigationRequest 
 				presentenceInvestigationRequest,
 			UserAccount assignedUser, Date requestDate,
-			Date completionDate,
-			Date expectedCompletionDate, Docket docket, Date sentenceDate,
+			Date completionDate, Date expectedCompletionDate, 
+			Docket docket, Date sentenceDate, Date actualSentenceDate,
 			PresentenceInvestigationCategory category, Date submissionDate)
 	throws DuplicateEntityFoundException;
 	
@@ -223,5 +246,58 @@ public interface PresentenceInvestigationRequestService {
 	 */
 	public List<PresentenceInvestigationCategory>
 			findAllPresentenceInvestigationCategories();
+
+	/**
+	 * Creates a new presentence investigation delay.
+	 * 
+	 * @param presentenceInvestigationRequest presentence investigation request
+	 * @param date date
+	 * @param reason presentence investigation delay category
+	 * @return presentence investigation delay
+	 * @throws DuplicateEntityFoundException if duplicate entity exists
+	 */
+	PresentenceInvestigationDelay createPresentenceInvestigationDelay(
+			PresentenceInvestigationRequest presentenceInvestigationRequest, 
+			Date date, PresentenceInvestigationDelayCategory reason) 
+					throws DuplicateEntityFoundException;
 	
+	/**
+	 * Updates an existing presentence investigation delay.
+	 * 
+	 * @param presentenceInvestigationDelay presentence investigation delay
+	 * @param date date
+	 * @param reason presentence investigation delay category
+	 * @return presentence investigation delay
+	 * @throws DuplicateEntityFoundException if duplicate entity exists
+	 */
+	PresentenceInvestigationDelay updatePresentenceInvestigationDelay(
+			PresentenceInvestigationDelay presentenceInvestigationDelay, 
+			Date date, PresentenceInvestigationDelayCategory reason) 
+					throws DuplicateEntityFoundException;
+	
+	/**
+	 * Removes the specified presentence investigation delay.
+	 * 
+	 * @param presentenceInvestigationDelay presentence investigation delay
+	 */
+	void removePresentenceInvestigationDelay(
+			PresentenceInvestigationDelay presentenceInvestigationDelay);
+	
+	/**
+	 * Returns a list of presentence investigation delay categories.
+	 *  
+	 * @return list of presentence investigation delay categories
+	 */
+	List<PresentenceInvestigationDelayCategory> 
+			findPresentenceInvestigationDelayCategories();
+	
+	/**
+	 * Returns a list of presentence investigation delays for the specified 
+	 * presentence investigation request.
+	 * 
+	 * @param presentenceInvestigationRequest presentence investigation request
+	 * @return list of presentence investigation delays
+	 */
+	List<PresentenceInvestigationDelay> findPresentenceInvestigationDelays(
+			PresentenceInvestigationRequest presentenceInvestigationRequest);
 }

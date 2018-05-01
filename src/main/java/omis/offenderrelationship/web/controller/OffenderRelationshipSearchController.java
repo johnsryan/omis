@@ -21,6 +21,20 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
+
+import omis.beans.factory.PropertyEditorFactory;
 import omis.beans.factory.spring.CustomDateEditorFactory;
 import omis.offender.beans.factory.OffenderPropertyEditorFactory;
 import omis.offender.domain.Offender;
@@ -30,19 +44,9 @@ import omis.offenderrelationship.report.OffenderRelationshipSummary;
 import omis.offenderrelationship.web.form.OffenderRelationshipSearchForm;
 import omis.offenderrelationship.web.form.OffenderRelationshipSearchType;
 import omis.offenderrelationship.web.validator.OffenderRelationshipSearchFormValidator;
+import omis.person.domain.Person;
+import omis.relationship.domain.Relationship;
 import omis.web.form.SearchOperation;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 
 /**
  * Controller to search for offender relationships.
@@ -55,6 +59,7 @@ import org.springframework.web.servlet.ModelAndView;
  *
  * @author Stephen Abson
  * @author Yidong Li
+ * @author Sheronda Vaughn
  * @version 0.0.1 (Jun 23, 2015)
  * @since OMIS 3.0
  */
@@ -66,6 +71,10 @@ public class OffenderRelationshipSearchController {
 	/* View names */
 	
 	private static final String VIEW_NAME = "offenderRelationship/search";
+	
+	private static final String 
+		OFFENDER_RELATIONSHIP_SEARCH_ROW_ACTION_MENU_VIEW_NAME 
+			= "offenderRelationship/includes/offenderRelationshipSearchRowActionMenu";
 
 	/* Model keys */
 	
@@ -76,6 +85,15 @@ public class OffenderRelationshipSearchController {
 
 	private static final String OFFENDER_RELATIONSHIP_SUMMARIES_MODEL_KEY
 		= "offenderRelationshipSummaries";
+	
+	private static final String OFFENDER_MODEL_KEY = "offender";
+	
+	private static final String RELATION_MODEL_KEY = "relation";
+	
+	private static final String RELATIONSHIP_MODEL_KEY = "relationship";
+	
+	private static final String RELATIONSHIP_EXIST_MODEL_KEY 
+		= "relationshipExist";
 	
 	/* Constants. */
 	
@@ -115,6 +133,14 @@ public class OffenderRelationshipSearchController {
 	@Autowired
 	@Qualifier("offenderPropertyEditorFactory")
 	private OffenderPropertyEditorFactory offenderPropertyEditorFactory;
+	
+	@Autowired
+	@Qualifier("personPropertyEditorFactory")
+	private PropertyEditorFactory personPropertyEditorFactory;
+	
+	@Autowired
+	@Qualifier("relationshipPropertyEditorFactory")
+	private PropertyEditorFactory relationshipPropertyEditorFactory;
 
 	/* Validators. */
 	
@@ -188,14 +214,14 @@ public class OffenderRelationshipSearchController {
 					offenderRelationshipSearchForm, result);
 			if (result.hasErrors()) {	
 				return this.prepareRedisplayMav(offenderRelationshipSearchForm, 
-						offender, options, result);
+					offender, options, result);
 			}		
 		}
 		ModelAndView mav = this.prepareMav(offenderRelationshipSearchForm,
-				offender, options);
-		List<OffenderRelationshipSummary> offenderRelationshipSummaries;
+			offender, options);
+		List<OffenderRelationshipSummary> offenderRelationshipSummaries;		
 		if (OffenderRelationshipSearchType.NAME
-				.equals(offenderRelationshipSearchForm.getType())) {
+				.equals(offenderRelationshipSearchForm.getType())) {			
 			Boolean approximateMatch;
 			if ((offenderRelationshipSearchForm.getFirstName().length() 
 					<= FIRST_NAME_LENGTH_FIVE
@@ -273,6 +299,36 @@ public class OffenderRelationshipSearchController {
 		return mav; 
 	}
 	
+	
+	/**
+	 * Model and view of offender relationship search row action menu.
+	 *
+	 *
+	 * @param offender offender
+	 * @param relation relation
+	 * @return model and view
+	 */
+	@RequestMapping(value="/offenderRelationshipSearchRowActionMenu.html", 
+			method=RequestMethod.GET)
+	public ModelAndView offenderRelationshipSearchRowActionMenu(
+			@RequestParam(value = "offender", required = false) 
+				final Offender offender,
+			@RequestParam(value = "relation", required = false) 
+				final Person relation) {
+		ModelMap map = new ModelMap();
+		map.addAttribute(OFFENDER_MODEL_KEY,  offender);
+		map.addAttribute(RELATION_MODEL_KEY, relation);
+		map.addAttribute(RELATIONSHIP_EXIST_MODEL_KEY, 
+				this.offenderRelationshipReportService.relationshipExists(
+						offender, relation));
+		map.addAttribute(RELATIONSHIP_MODEL_KEY, 
+				this.offenderRelationshipReportService.findRelationship(
+						offender, relation));
+		return new ModelAndView(
+				OFFENDER_RELATIONSHIP_SEARCH_ROW_ACTION_MENU_VIEW_NAME, map);
+	}	
+	
+	
 	/* Helper methods */
 	
 	// Prepares model and view
@@ -283,18 +339,18 @@ public class OffenderRelationshipSearchController {
 		ModelAndView mav = new ModelAndView(VIEW_NAME);
 		mav.addObject(OPTIONS_MODEL_KEY, options);
 		mav.addObject(FORM_MODEL_KEY, offenderRelationshipSearchForm);
-		this.offenderSummaryModelDelegate.add(mav.getModel(), offender);
+			this.offenderSummaryModelDelegate.add(mav.getModel(), offender);
 		return mav;
 	}
 	
 	// Prepares redisplay model and view
 	private ModelAndView prepareRedisplayMav(
 			final OffenderRelationshipSearchForm offenderRelationshipSearchForm,
-			final Offender offender,
+				final Offender offender,
 			final OffenderRelationshipOption[] options,
 			final BindingResult result) {
 		ModelAndView mav = this.prepareMav(offenderRelationshipSearchForm, 
-			offender, options);		
+				offender, options);		
 		mav.addObject(BindingResult.MODEL_KEY_PREFIX + FORM_MODEL_KEY, result);
 		return mav;
 	}
@@ -317,5 +373,11 @@ public class OffenderRelationshipSearchController {
 		binder.registerCustomEditor(Date.class,
 				this.customDateEditorFactory
 					.createCustomDateOnlyEditor(true));
+		binder.registerCustomEditor(Person.class,
+				this.personPropertyEditorFactory
+				.createPropertyEditor());
+		binder.registerCustomEditor(Relationship.class,
+				this.relationshipPropertyEditorFactory
+				.createPropertyEditor());
 	}
 }

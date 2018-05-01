@@ -18,12 +18,6 @@ public class WarrantReleaseFormValidator implements Validator {
 
 	private static final String ADDRESSEE_REQUIRED_MSG_KEY =
 			"warrantRelease.addressee.empty";
-	
-	private static final String FACILITY_REQUIRED_MSG_KEY =
-			"warrantRelease.facility.empty";
-
-	private static final String COUNTY_REQUIRED_MSG_KEY =
-			"warrantRelease.county.empty";
 
 	private static final String RELEASE_DATE_REQUIRED_MSG_KEY =
 			"warrantRelease.releaseDate.empty";
@@ -47,10 +41,6 @@ public class WarrantReleaseFormValidator implements Validator {
 		
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "addressee",
 				ADDRESSEE_REQUIRED_MSG_KEY);
-		ValidationUtils.rejectIfEmpty(errors, "facility",
-				FACILITY_REQUIRED_MSG_KEY);
-		ValidationUtils.rejectIfEmpty(errors, "county",
-				COUNTY_REQUIRED_MSG_KEY);
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "releaseDate",
 				RELEASE_DATE_REQUIRED_MSG_KEY);
 		ValidationUtils.rejectIfEmpty(errors, "clearedBy",

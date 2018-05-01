@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.presentenceinvestigation.service.impl;
 
 import java.util.Date;
@@ -15,20 +32,28 @@ import omis.person.domain.Suffix;
 import omis.person.service.delegate.PersonDelegate;
 import omis.person.service.delegate.SuffixDelegate;
 import omis.presentenceinvestigation.domain.PresentenceInvestigationCategory;
+import omis.presentenceinvestigation.domain.PresentenceInvestigationDelay;
+import omis.presentenceinvestigation.domain.PresentenceInvestigationDelayCategory;
 import omis.presentenceinvestigation.domain.PresentenceInvestigationRequest;
 import omis.presentenceinvestigation.domain.PresentenceInvestigationRequestNote;
 import omis.presentenceinvestigation.service.PresentenceInvestigationRequestService;
 import omis.presentenceinvestigation.service.delegate.PresentenceInvestigationCategoryDelegate;
+import omis.presentenceinvestigation.service.delegate.PresentenceInvestigationDelayCategoryDelegate;
+import omis.presentenceinvestigation.service.delegate.PresentenceInvestigationDelayDelegate;
 import omis.presentenceinvestigation.service.delegate.PresentenceInvestigationRequestDelegate;
 import omis.presentenceinvestigation.service.delegate.PresentenceInvestigationRequestNoteDelegate;
 import omis.user.domain.UserAccount;
 import omis.user.service.delegate.UserAccountDelegate;
 
-/** Implementation of presentence investigation request service.
+/** 
+ * Implementation of presentence investigation request service.
+ * 
  * @author Ryan Johns
  * @author Annie Jacques
- * @version 0.1.1 (Jun 23, 2017)
- * @since OMIS 3.0 */
+ * @author Josh Divine
+ * @version 0.1.2 (Apr 24, 2018)
+ * @since OMIS 3.0
+ */
 public class PresentenceInvestigationRequestServiceImpl 
 	implements PresentenceInvestigationRequestService {
 	
@@ -53,6 +78,12 @@ public class PresentenceInvestigationRequestServiceImpl
 	
 	private final UserAccountDelegate userAccountDelegate;
 	
+	private final PresentenceInvestigationDelayDelegate 
+			presentenceInvestigationDelayDelegate;
+	
+	private final PresentenceInvestigationDelayCategoryDelegate 
+			presentenceInvestigationDelayCategoryDelegate;
+	
 	/** Constructor.
 	 * @param presentenceInvestigationRequestDelegate - presentence 
 	 * investigation request delegate. */
@@ -68,7 +99,11 @@ public class PresentenceInvestigationRequestServiceImpl
 			final SuffixDelegate suffixDelegate,
 			final CourtDelegate courtDelegate,
 			final OffenderDelegate offenderDelegate,
-			final UserAccountDelegate userAccountDelegate) {
+			final UserAccountDelegate userAccountDelegate,
+			final PresentenceInvestigationDelayDelegate 
+					presentenceInvestigationDelayDelegate,
+			final PresentenceInvestigationDelayCategoryDelegate 
+					presentenceInvestigationDelayCategoryDelegate) {
 		this.presentenceInvestigationRequestDelegate 
 			= presentenceInvestigationRequestDelegate;
 		this.presentenceInvestigationRequestNoteDelegate =
@@ -81,8 +116,11 @@ public class PresentenceInvestigationRequestServiceImpl
 		this.courtDelegate = courtDelegate;
 		this.offenderDelegate = offenderDelegate;
 		this.userAccountDelegate = userAccountDelegate;
+		this.presentenceInvestigationDelayCategoryDelegate = 
+				presentenceInvestigationDelayCategoryDelegate;
+		this.presentenceInvestigationDelayDelegate = 
+				presentenceInvestigationDelayDelegate;
 	}
-	
 	
 	/** {@inheritDoc} */
 	@Override
@@ -90,11 +128,12 @@ public class PresentenceInvestigationRequestServiceImpl
 			final UserAccount assignedUser, final Date requestDate, 
 			final Date expectedCompletionDate, final Docket docket,
 			final Date completionDate, final Date sentenceDate,
-			final PresentenceInvestigationCategory category, final Date submissionDate)
-					throws DuplicateEntityFoundException {
-		return this.presentenceInvestigationRequestDelegate.create(
-				assignedUser, requestDate, expectedCompletionDate, 
-				docket, completionDate, sentenceDate, category, submissionDate);
+			final Date actualSentenceDate, 
+			final PresentenceInvestigationCategory category, 
+			final Date submissionDate) throws DuplicateEntityFoundException {
+		return this.presentenceInvestigationRequestDelegate.create(assignedUser, 
+				requestDate, expectedCompletionDate, docket, completionDate, 
+				sentenceDate, actualSentenceDate, category, submissionDate);
 	}
 
 	/** {@inheritDoc} */
@@ -105,15 +144,15 @@ public class PresentenceInvestigationRequestServiceImpl
 			final UserAccount assignedUser, final Date requestDate, 
 			final Date completionDate, final Date expectedCompletionDate,
 			final Docket docket, final Date sentenceDate,
-			final PresentenceInvestigationCategory category, final Date submissionDate) 
-					throws DuplicateEntityFoundException {
+			final Date actualSentenceDate,
+			final PresentenceInvestigationCategory category, 
+			final Date submissionDate) throws DuplicateEntityFoundException {
 		return this.presentenceInvestigationRequestDelegate.update(
 				presentenceInvestigationRequest, assignedUser, requestDate,
 				completionDate, expectedCompletionDate, docket, sentenceDate,
-				category, submissionDate);
+				actualSentenceDate, category, submissionDate);
 	}
 
-	
 	/** {@inheritDoc} */
 	@Override
 	public void remove(
@@ -141,13 +180,11 @@ public class PresentenceInvestigationRequestServiceImpl
 				middleName, suffix);
 	}
 
-
 	/**{@inheritDoc} */
 	@Override
 	public void removePerson(final Person person) {
 		this.personDelegate.remove(person);
 	}
-
 
 	/**{@inheritDoc} */
 	@Override
@@ -156,7 +193,6 @@ public class PresentenceInvestigationRequestServiceImpl
 		return this.docketDelegate.create(person, court, value);
 	}
 
-
 	/**{@inheritDoc} */
 	@Override
 	public Docket updateDocket(final Docket docket, final Court court,
@@ -164,13 +200,11 @@ public class PresentenceInvestigationRequestServiceImpl
 		return this.docketDelegate.update(docket, court, value);
 	}
 
-
 	/**{@inheritDoc} */
 	@Override
 	public void removeDocket(final Docket docket) {
 		this.docketDelegate.remove(docket);
 	}
-
 
 	/**{@inheritDoc} */
 	@Override
@@ -182,7 +216,6 @@ public class PresentenceInvestigationRequestServiceImpl
 		return this.presentenceInvestigationRequestNoteDelegate.create(
 				presentenceInvestigationRequest, description, date);
 	}
-
 
 	/**{@inheritDoc} */
 	@Override
@@ -196,7 +229,6 @@ public class PresentenceInvestigationRequestServiceImpl
 				presentenceInvestigationRequestNote, description, date);
 	}
 
-
 	/**{@inheritDoc} */
 	@Override
 	public void removePresentenceInvestigationRequestNote(
@@ -205,7 +237,6 @@ public class PresentenceInvestigationRequestServiceImpl
 		this.presentenceInvestigationRequestNoteDelegate.remove(
 				presentenceInvestigationRequestNote);
 	}
-
 
 	/**{@inheritDoc} */
 	@Override
@@ -217,20 +248,17 @@ public class PresentenceInvestigationRequestServiceImpl
 						presentenceInvestigationRequest);
 	}
 
-
 	/**{@inheritDoc} */
 	@Override
 	public List<Suffix> findSuffixes() {
 		return this.suffixDelegate.findAll();
 	}
 
-
 	/**{@inheritDoc} */
 	@Override
 	public List<Court> findCourts() {
 		return this.courtDelegate.findAllCourts();
 	}
-
 
 	/**{@inheritDoc} */
 	@Override
@@ -244,7 +272,6 @@ public class PresentenceInvestigationRequestServiceImpl
 		return this.userAccountDelegate.findByUsername(username);
 	}
 
-
 	/**{@inheritDoc} */
 	@Override
 	public List<PresentenceInvestigationCategory>
@@ -252,4 +279,53 @@ public class PresentenceInvestigationRequestServiceImpl
 		return this.presentenceInvestigationCategoryDelegate.findAll();
 	}
 
+	/** {@inheritDoc} */
+	@Override
+	public PresentenceInvestigationDelay createPresentenceInvestigationDelay(
+			final PresentenceInvestigationRequest 
+					presentenceInvestigationRequest, final Date date,
+			final PresentenceInvestigationDelayCategory reason) 
+					throws DuplicateEntityFoundException {
+		return this.presentenceInvestigationDelayDelegate.create(
+				presentenceInvestigationRequest, date, reason);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public PresentenceInvestigationDelay updatePresentenceInvestigationDelay(
+			final PresentenceInvestigationDelay presentenceInvestigationDelay, 
+			final Date date, final PresentenceInvestigationDelayCategory reason) 
+					throws DuplicateEntityFoundException {
+		return this.presentenceInvestigationDelayDelegate.update(
+				presentenceInvestigationDelay, 
+				presentenceInvestigationDelay
+					.getPresentenceInvestigationRequest(), date, reason);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void removePresentenceInvestigationDelay(
+			final PresentenceInvestigationDelay presentenceInvestigationDelay) {
+		this.presentenceInvestigationDelayDelegate.remove(
+				presentenceInvestigationDelay);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public List<PresentenceInvestigationDelayCategory> 
+			findPresentenceInvestigationDelayCategories() {
+		return this.presentenceInvestigationDelayCategoryDelegate
+				.findPresentenceInvestigationDelayCategories();
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public List<PresentenceInvestigationDelay> 
+			findPresentenceInvestigationDelays(
+					final PresentenceInvestigationRequest 
+							presentenceInvestigationRequest) {
+		return this.presentenceInvestigationDelayDelegate
+				.findByPresentenceInvestigationRequest(
+						presentenceInvestigationRequest);
+	}
 }
