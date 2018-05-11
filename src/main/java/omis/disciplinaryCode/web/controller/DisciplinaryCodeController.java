@@ -205,7 +205,7 @@ public class DisciplinaryCodeController {
 	 * @return ModelAndView - to edit a supervisory organization code
 	 */
 	@RequestMapping(value = "/edit.html", method = RequestMethod.GET)
-	@PreAuthorize("hasRole('DISCIPLINARY_CODE_CREATE') or "
+	@PreAuthorize("hasRole('DISCIPLINARY_CODE_VIEW') or "
 			+ "hasRole('ADMIN')")
 	public ModelAndView edit(@RequestParam(value
 				= "supervisoryOrganizationCode", required = true)
@@ -239,7 +239,7 @@ public class DisciplinaryCodeController {
 	 * or disciplinary code already has a specified value)
 	 */
 	@RequestMapping(value = "/edit.html", method = RequestMethod.POST)
-	@PreAuthorize("hasRole('DISCIPLINARY_CODE_CREATE') or "
+	@PreAuthorize("hasRole('DISCIPLINARY_CODE_EDIT') or "
 			+ "hasRole('ADMIN')")
 	public ModelAndView update(@RequestParam(
 				value = "supervisoryOrganizationCode", required = true)

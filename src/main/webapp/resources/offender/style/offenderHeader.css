@@ -356,8 +356,18 @@ it ensures that the last pane can scroll to the far left as needed */
 .activeNavItem {
 	filter: saturate(130%);
 	margin-bottom: 0px;
+	
+	box-shadow: none;
 	/* border-bottom-left-radius: 0px;
 	border-bottom-right-radius: 0px; */
+}
+
+/* Cancel hoverable styling for activeNavItem */
+a.activeNavItem.hoverable {
+	box-shadow:none;
+}
+a.activeNavItem.hoverable:after {
+	box-shadow:none;
 }
 
 /* Nav Content Containers */

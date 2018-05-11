@@ -9,7 +9,7 @@ import omis.audit.domain.UpdateSignature;
 import omis.exception.DuplicateEntityFoundException;
 import omis.instance.factory.InstanceFactory;
 import omis.offender.domain.Offender;
-import omis.supervision.domain.SupervisoryOrganization;
+import omis.organization.domain.Organization;
 import omis.violationevent.dao.ViolationEventDao;
 import omis.violationevent.domain.ViolationEvent;
 import omis.violationevent.domain.ViolationEventCategory;
@@ -18,8 +18,9 @@ import omis.violationevent.domain.component.Event;
 /**
  * ViolationEventDelegate.java
  * 
- *@author Annie Jacques 
- *@version 0.1.0 (Aug 30, 2017)
+ *@author Annie Jacques
+ *@author Ryan Johns 
+ *@version 0.1.1 (May 10, 2018)
  *@since OMIS 3.0
  *
  */
@@ -56,7 +57,7 @@ private static final String DUPLICATE_ENTITY_FOUND_MSG =
 	/**
 	 * Creates a new ViolationEvent with the specified properties
 	 * @param offender - Offender
-	 * @param jurisdiction - SupervisoryOrganization
+	 * @param jurisdiction - Organization
 	 * @param date - Date
 	 * @param details - String
 	 * @param category - ViolationEventCategory
@@ -65,7 +66,7 @@ private static final String DUPLICATE_ENTITY_FOUND_MSG =
 	 * exists with all of the given properties for the Offender
 	 */
 	public ViolationEvent create(final Offender offender,
-			final SupervisoryOrganization jurisdiction,
+			final Organization jurisdiction,
 			final Date date, final String details,
 			final ViolationEventCategory category)
 					throws DuplicateEntityFoundException{
@@ -100,7 +101,7 @@ private static final String DUPLICATE_ENTITY_FOUND_MSG =
 	/**
 	 * Updates a violation event with specified properties
 	 * @param violationEvent - ViolationEvent to update
-	 * @param jurisdiction - SupervisoryOrganization
+	 * @param jurisdiction - Organization
 	 * @param date - Date
 	 * @param details - String
 	 * @param category - ViolationEventCategory
@@ -109,7 +110,7 @@ private static final String DUPLICATE_ENTITY_FOUND_MSG =
 	 * exists with all of the given properties for the Offender
 	 */
 	public ViolationEvent update(final ViolationEvent violationEvent,
-			final SupervisoryOrganization jurisdiction,
+			final Organization jurisdiction,
 			final Date date, final String details,
 			final ViolationEventCategory category)
 					throws DuplicateEntityFoundException{

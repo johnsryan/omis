@@ -19,6 +19,7 @@ package omis.hearing.service;
 
 import java.util.Date;
 import java.util.List;
+
 import omis.exception.DuplicateEntityFoundException;
 import omis.hearing.domain.Hearing;
 import omis.hearing.domain.HearingCategory;
@@ -28,12 +29,12 @@ import omis.hearing.domain.HearingStatusCategory;
 import omis.hearing.domain.ImposedSanction;
 import omis.hearing.domain.Infraction;
 import omis.hearing.domain.InfractionPlea;
-import omis.hearing.domain.StaffAttendance;
+import omis.hearing.domain.UserAttendance;
 import omis.hearing.domain.component.Resolution;
 import omis.location.domain.Location;
 import omis.offender.domain.Offender;
-import omis.staff.domain.StaffAssignment;
 import omis.supervision.domain.SupervisoryOrganization;
+import omis.user.domain.UserAccount;
 import omis.violationevent.domain.ConditionViolation;
 import omis.violationevent.domain.DisciplinaryCodeViolation;
 import omis.violationevent.domain.ViolationEvent;
@@ -41,9 +42,10 @@ import omis.violationevent.domain.ViolationEvent;
 /**
  * Hearing Service.
  * 
- *@author AnnieimposedSanctionDelegate
- *@since OMIS 3.0
- *
+ * @author Annie Wahl
+ * @author Josh Divine
+ * @version 0.1.1 (May 3, 2018)
+ * @since OMIS 3.0
  */
 public interface HearingService {
 	
@@ -55,14 +57,14 @@ public interface HearingService {
 	 * @param inAttendance - Boolean
 	 * @param date - Date
 	 * @param category - HearingCategory
-	 * @param officer - StaffAssignment
+	 * @param officer user account
 	 * @return Newly Created Hearing
 	 * @throws DuplicateEntityFoundException - when Hearing exists with
 	 * specified offender, location, date, and officer
 	 */
 	Hearing createHearing(Location location, Offender offender,
 			Boolean inAttendance, Date date, HearingCategory category,
-			StaffAssignment officer)
+			UserAccount officer)
 			throws DuplicateEntityFoundException;
 	
 	/**
@@ -72,14 +74,14 @@ public interface HearingService {
 	 * @param inAttendance - Boolean
 	 * @param date - Date
 	 * @param category - HearingCategory
-	 * @param officer - StaffAssignment
+	 * @param officer user account
 	 * @return Updated Hearing
 	 * @throws DuplicateEntityFoundException - when Hearing exists with
 	 * specified offender, location, date, and officer
 	 */
 	Hearing updateHearing(Hearing hearing, Location location,
 			Boolean inAttendance, Date date, HearingCategory category,
-			StaffAssignment officer)
+			UserAccount officer)
 			throws DuplicateEntityFoundException;
 	
 	/**
@@ -127,33 +129,34 @@ public interface HearingService {
 	List<HearingNote> findHearingNotesByHearing(Hearing hearing);
 	
 	/**
-	 * Creates a staffAttendance with specified properties.
-	 * @param hearing - Hearing
-	 * @param staff - StaffAssignment
-	 * @return newly created StaffAttendance
-	 * @throws DuplicateEntityFoundException - when Staff Attendance exists for
-	 * specified hearing with given staff assignment
+	 * Creates a user attendance with the specified properties.
+	 * 
+	 * @param hearing hearing
+	 * @param userAccount user account
+	 * @return user attendance
+	 * @throws DuplicateEntityFoundException if user attendance exists for
+	 * specified hearing
 	 */
-	StaffAttendance createStaffAttendance(Hearing hearing,
-			StaffAssignment staff)throws DuplicateEntityFoundException;
+	UserAttendance createUserAttendance(Hearing hearing,
+			UserAccount userAccount)throws DuplicateEntityFoundException;
 	
 	/**
-	 * Updates a staffAttendance with specified properties.
-	 * @param staffAttendance - staffAttendance to update
-	 * @param staff - StaffAssignment
-	 * @return updated StaffAttendance
-	 * @throws DuplicateEntityFoundException - when Staff Attendance exists for
-	 * specified hearing with given staff assignment
+	 * Updates a user attendance with the specified properties.
+	 * 
+	 * @param userAttendance user attendance
+	 * @param userAccount user account
+	 * @return user attendance
+	 * @throws DuplicateEntityFoundException if user attendance exists for
+	 * specified hearing
 	 */
-	StaffAttendance updateStaffAttendance(StaffAttendance staffAttendance,
-			StaffAssignment staff)
-					throws DuplicateEntityFoundException;
+	UserAttendance updateUserAttendance(UserAttendance userAttendance,
+			UserAccount userAccount) throws DuplicateEntityFoundException;
 	
 	/**
-	 * Removes a staffAttendance.
-	 * @param staffAttendance - StaffAttendance to remove
+	 * Removes a user attendance.
+	 * @param userAttendance user attendance
 	 */
-	void removeStaffAttendance(StaffAttendance staffAttendance);
+	void removeUserAttendance(UserAttendance userAttendance);
 	
 	/**
 	 * Creates a HearingStatus with the specified properties.
@@ -253,11 +256,12 @@ public interface HearingService {
 			Infraction infraction);
 	
 	/**
-	 * Returns a list of StaffAttendance by specified Hearing.
-	 * @param hearing - Hearing
-	 * @return list of StaffAttendance by specified Hearing
+	 * Returns a list of user attendances by specified Hearing.
+	 * 
+	 * @param hearing hearing
+	 * @return list of user attendances
 	 */
-	List<StaffAttendance> findStaffAttendedByHearing(Hearing hearing);
+	List<UserAttendance> findUserAttendedByHearing(Hearing hearing);
 	
 	/**
 	 * Returns a list of facility locations.

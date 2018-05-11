@@ -939,10 +939,15 @@ public class ViolationEventController {
 				new ArrayList<SupervisoryOrganization>();
 		if(form.getJurisdiction() != null && ViolationEventCategory.DISCIPLINARY
 				.equals(category) && form.getEventDate() != null){
-			map.addAttribute(DISCIPLINARY_CODES_MODEL_KEY,
-					this.violationEventService
-					.findDisciplinaryCodesByJurisdictionAndEventDate(
-							form.getJurisdiction(), form.getEventDate()));
+			if (form.getJurisdiction() instanceof SupervisoryOrganization) {
+				map.addAttribute(DISCIPLINARY_CODES_MODEL_KEY,
+						this.violationEventService
+						.findDisciplinaryCodesByJurisdictionAndEventDate(
+								(SupervisoryOrganization) form
+								.getJurisdiction(), form.getEventDate()));
+			} else {
+				map.addAttribute(DISCIPLINARY_CODES_MODEL_KEY, null);
+			}
 		}
 		else if(form.getEventDate() != null && ViolationEventCategory.SUPERVISION
 				.equals(category)){
@@ -1166,7 +1171,10 @@ public class ViolationEventController {
 		
 		form.setEventDate(violationEvent.getEvent().getDate());
 		form.setEventDetails(violationEvent.getEvent().getDetails());
-		form.setJurisdiction(violationEvent.getJurisdiction());
+		if (violationEvent.getJurisdiction() instanceof SupervisoryOrganization) {
+			form.setJurisdiction((SupervisoryOrganization) violationEvent
+					.getJurisdiction());
+		}
 		form.setViolationEventDocumentItems(vedItems);
 		form.setViolationEventNoteItems(venItems);
 		form.setDisciplinaryCodeViolationItems(dcvItems);

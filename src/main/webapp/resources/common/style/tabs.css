@@ -108,6 +108,7 @@ ul.tabs li.tab_li.active{
 	z-index:100;
 	background-color:#fff;
 	opacity: 1;
+	color: black;
 }
 
 ul.tabs li.tab_li:nth-child(n+2) {

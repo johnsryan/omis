@@ -7,7 +7,7 @@ import org.hibernate.SessionFactory;
 
 import omis.dao.impl.hibernate.GenericHibernateDaoImpl;
 import omis.offender.domain.Offender;
-import omis.supervision.domain.SupervisoryOrganization;
+import omis.organization.domain.Organization;
 import omis.violationevent.dao.ViolationEventDao;
 import omis.violationevent.domain.ViolationEvent;
 import omis.violationevent.domain.ViolationEventCategory;
@@ -16,7 +16,8 @@ import omis.violationevent.domain.ViolationEventCategory;
  * ViolationEventDaoHibernateImpl.java
  * 
  *@author Annie Jacques 
- *@version 0.1.0 (Aug 30, 2017)
+ *@author Ryan Johns
+ *@version 0.1.1 (May 5, 2018)
  *@since OMIS 3.0
  *
  */
@@ -65,7 +66,7 @@ public class ViolationEventDaoHibernateImpl
 	/**{@inheritDoc} */
 	@Override
 	public ViolationEvent find(final Offender offender,
-			final SupervisoryOrganization jurisdiction,
+			final Organization jurisdiction,
 			final Date date, final String details,
 			final ViolationEventCategory category) {
 		ViolationEvent violationEvent = (ViolationEvent) this.getSessionFactory()
@@ -85,7 +86,7 @@ public class ViolationEventDaoHibernateImpl
 	@Override
 	public ViolationEvent findExcluding(
 			final ViolationEvent excludedViolationEvent, final Offender offender,
-			final SupervisoryOrganization jurisdiction,
+			final Organization jurisdiction,
 			final Date date, final String details,
 			final ViolationEventCategory category) {
 		ViolationEvent violationEvent = (ViolationEvent) this.getSessionFactory()

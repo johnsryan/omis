@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 package omis.hearing.domain.impl;
 
 import java.util.Date;
@@ -8,15 +25,15 @@ import omis.hearing.domain.Hearing;
 import omis.hearing.domain.HearingCategory;
 import omis.hearing.domain.component.Subject;
 import omis.location.domain.Location;
-import omis.staff.domain.StaffAssignment;
+import omis.user.domain.UserAccount;
 
 /**
- * HearingImpl.java
+ * Implementation of hearing.
  * 
- *@author Annie Jacques 
- *@version 0.1.1 (Apr 17, 2017)
- *@since OMIS 3.0
- *
+ * @author Annie Wahl 
+ * @author Josh Divine
+ * @version 0.1.2 (May 3, 2018)
+ * @since OMIS 3.0
  */
 public class HearingImpl implements Hearing {
 
@@ -26,7 +43,7 @@ public class HearingImpl implements Hearing {
 	
 	private Date date;
 	
-	private StaffAssignment officer;
+	private UserAccount officer;
 	
 	private HearingCategory category;
 	
@@ -64,13 +81,13 @@ public class HearingImpl implements Hearing {
 
 	/**{@inheritDoc} */
 	@Override
-	public StaffAssignment getOfficer() {
+	public UserAccount getOfficer() {
 		return this.officer;
 	}
 
 	/**{@inheritDoc} */
 	@Override
-	public void setOfficer(final StaffAssignment officer) {
+	public void setOfficer(final UserAccount officer) {
 		this.officer = officer;
 	}
 
@@ -211,7 +228,4 @@ public class HearingImpl implements Hearing {
 		return hashCode;
 		
 	}
-
-	
-	
 }

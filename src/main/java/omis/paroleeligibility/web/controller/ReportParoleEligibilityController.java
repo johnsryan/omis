@@ -252,6 +252,9 @@ public class ReportParoleEligibilityController {
 			mav.addObject(HEARING_ANALYSIS_MODEL_KEY, 
 					this.paroleEligibilityReportService
 					.findHearingAnalysisByParoleEligibility(eligibility));
+			mav.addObject(BOARD_HEARING_MODEL_KEY, 
+					this.paroleEligibilityReportService
+					.findBoardHearingByParoleEligibility(eligibility));
 		}			
 		return mav;
 	}

@@ -38,7 +38,7 @@
 	<div class="profileItems">
 		<h2>
 			<a class="actionMenuItem profileActionMenuItem" id="profilePlacementActionMenuLink" href="${pageContext.request.contextPath}/offender/profilePlacementActionMenu.html?offender=${offender.id}"></a>
-			<fmt:message key="placementLabel"/>
+			<span class="contentHeading"><fmt:message key="placementLabel"/></span>
 		</h2>
 		<div class="profileItemsWrapper accentDark">
 			<div class="foregroundUltraLight profileItemsInnerWrapper">

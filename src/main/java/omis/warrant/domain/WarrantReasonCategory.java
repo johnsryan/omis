@@ -5,21 +5,29 @@ package omis.warrant.domain;
  * 
  * @author Annie Jacques 
  * @author: Joel Norris
+ * @author: Stephen Abson
  * @version 0.1.1 (April 4, 2018)
  * @since OMIS 3.0
  */
 public enum WarrantReasonCategory {
 	
-	/** Warrant to Arrest Parolee. */
-	WARRANT_PAROLEE,
-	/** Warrant to Arrest Conditional Release. */
-	WARRANT_CONDITIONAL_RELEASE,
+	/** Warrant to arrest parolee. */
+	ARREST_PAROLEE,
 	
-	/** Authorization to Pick Up and Hold Probationer. */
-	AUTHORIZATION_TO_PICKUP_AND_HOLD,
+	/** Warrant to arrest conditional release offender. */
+	ARREST_CONDITIONAL_RELEASE_OFFENDER,
 	
-	/**Warrant to Arrest  */
-	WARRANT_INTERSTATE_COMPACT;
+	/** Authorization to pick up and hold probationer. */
+	AUTHORIZATION_TO_PICKUP_AND_HOLD_PROBATIONER,
+	
+	/** Warrant to arrest ISC Offender */
+	ARREST_INTERSTATE_COMPACT_OFFENDER,
+	
+	/** Warrant to arrest parole absconder. */
+	ARREST_PAROLE_ABSCONDER,
+	
+	/** Warrant to arrest conditional release absconder. */
+	ARREST_CONDITIONAL_RELEASE_ABSCONDER;
 	
 	/**
 	 * Returns the instance name.

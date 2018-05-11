@@ -10,11 +10,15 @@ package omis.hearing.domain;
  */
 public enum DispositionCategory {
 	
+	DISMISSED,
+	
 	GUILTY,
 	
 	NOT_GUILTY,
 	
-	NO_FINDING;
+	NO_FINDING,
+	
+	REDUCED;
 	
 	/**
 	 * Returns the instance name.

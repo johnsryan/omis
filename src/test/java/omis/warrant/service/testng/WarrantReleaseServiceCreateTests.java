@@ -182,7 +182,7 @@ public class WarrantReleaseServiceCreateTests
 				"Grayson", "Richard", "J", null);
 		final String addressee = "Addressed To Someone, Somewhere";
 		final WarrantReasonCategory warrantReason = WarrantReasonCategory
-				.AUTHORIZATION_TO_PICKUP_AND_HOLD;
+				.AUTHORIZATION_TO_PICKUP_AND_HOLD_PROBATIONER;
 		final Boolean bondable = true;
 		final BigDecimal bondRecommendation = new BigDecimal("500");
 

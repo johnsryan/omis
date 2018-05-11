@@ -3,14 +3,15 @@ package omis.violationevent.domain;
 import omis.audit.domain.Creatable;
 import omis.audit.domain.Updatable;
 import omis.offender.domain.OffenderAssociable;
-import omis.supervision.domain.SupervisoryOrganization;
+import omis.organization.domain.Organization;
 import omis.violationevent.domain.component.Event;
 
 /**
  * ViolationEvent.java
  * 
- *@author Annie Jacques 
- *@version 0.1.0 (Aug 30, 2017)
+ *@author Annie Jacques
+ *@author Ryan Johns 
+ *@version 0.1.1 (May 10, 2018)
  *@since OMIS 3.0
  *
  */
@@ -31,15 +32,15 @@ public interface ViolationEvent
 	
 	/**
 	 * Returns the Jurisdiction of the ViolationEvent
-	 * @return jurisdiction - SupervisoryOrganization
+	 * @return jurisdiction - Organization
 	 */
-	public SupervisoryOrganization getJurisdiction();
+	public Organization getJurisdiction();
 	
 	/**
 	 * Sets the jurisdiction of the ViolationEvent
-	 * @param jurisdiction - SupervisoryOrganization
+	 * @param jurisdiction - Organization
 	 */
-	public void setJurisdiction(SupervisoryOrganization jurisdiction);
+	public void setJurisdiction(Organization jurisdiction);
 	
 	/**
 	 * Returns the Event for the ViolationEvent

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ - OMIS - Offender Management Information System
+ - Copyright (C) 2011 - 2017 State of Montana
+ -
+ - This program is free software: you can redistribute it and/or modify
+ - it under the terms of the GNU General Public License as published by
+ - the Free Software Foundation, either version 3 of the License, or
+ - (at your option) any later version.
+ -
+ - This program is distributed in the hope that it will be useful,
+ - but WITHOUT ANY WARRANTY; without even the implied warranty of
+ - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ - GNU General Public License for more details.
+ -
+ - You should have received a copy of the GNU General Public License
+ - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="omis.hearing.domain">
+	<class entity-name="omis.hearing.domain.UserAttendance"
+			proxy="omis.hearing.domain.UserAttendance"
+			name="omis.hearing.domain.impl.UserAttendanceImpl"
+			table="`USER_HEARING_ATTENDED`">
+			<id name="id" column="`ID`" type="java.lang.Long">
+				<generator class="sequence">
+					<param name="sequence">`USER_HEARING_ATTENDED_SEQ`</param>
+				</generator>
+			</id>
+			<many-to-one name="hearing" column="`HEARING_ID`" entity-name="omis.hearing.domain.Hearing" not-null="true"/>
+			<many-to-one name="userAccount" column="`USER_ACCOUNT_ID`" entity-name="omis.user.domain.UserAccount" not-null="true"/>
+			<component name="creationSignature">
+				<many-to-one name="userAccount" column="`CREATE_ACCOUNT_ID`" not-null="true"/>
+				<property name="date" column="`CREATE_DATE`" not-null="true"/> 	
+			</component>
+			<component name="updateSignature">
+				<many-to-one name="userAccount" column="`UPDATE_ACCOUNT_ID`" not-null="true"/>
+				<property name="date" column="`UPDATE_DATE`" not-null="true"/>
+			</component>
+	</class>
+	<query name="findUserAttendance"><![CDATA[
+		select userAttendance
+		from
+			omis.hearing.domain.UserAttendance userAttendance
+		where
+			userAttendance.hearing = :hearing
+		and
+			userAttendance.userAccount = :userAccount
+	]]></query>
+	<query name="findUserAttendanceExcluding"><![CDATA[
+		select userAttendance
+		from
+			omis.hearing.domain.UserAttendance userAttendance
+		where
+			userAttendance.hearing = :hearing
+		and
+			userAttendance.userAccount = :userAccount
+		and
+			userAttendance != :excludedUserAttendance
+	]]></query>
+	<query name="findUserAttendanceByHearing"><![CDATA[
+		select userAttendance
+		from
+			omis.hearing.domain.UserAttendance userAttendance
+		where
+			userAttendance.hearing = :hearing
+	]]></query>
+	
+</hibernate-mapping>

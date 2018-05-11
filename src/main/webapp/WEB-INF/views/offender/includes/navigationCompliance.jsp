@@ -58,5 +58,16 @@
 			</div>
 		</div>
 	</c:if>
+	<c:if test="${offenderProfileItemsProperties.warrantProfileItemEnabled}">
+		<div class="foregroundUltraLight navItemContainer hoverable">
+			<div class="navItem">
+				<a href="${pageContext.request.contextPath}/warrant/list.html?offender=${offenderSummary.id}">
+					<span>
+						<fmt:message key="warrantLabel"/>
+					</span>
+				</a>
+			</div>
+		</div>
+	</c:if>
 </div>
 </fmt:bundle>

@@ -20,19 +20,20 @@ package omis.hearing.web.form;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import omis.hearing.domain.HearingCategory;
 import omis.hearing.domain.HearingStatusCategory;
 import omis.hearing.domain.LocationType;
 import omis.location.domain.Location;
-import omis.staff.domain.StaffAssignment;
+import omis.user.domain.UserAccount;
 
 /**
  * Hearing Form.
  * 
- *@author Annie Wahl 
- *@version 0.1.2 (Mar 1, 2018)
- *@since OMIS 3.0
- *
+ * @author Annie Wahl 
+ * @author Josh Divine
+ * @version 0.1.3 (May 3, 2018)
+ * @since OMIS 3.0
  */
 public class HearingForm {
 	
@@ -46,7 +47,7 @@ public class HearingForm {
 	
 	private HearingStatusCategory status;
 	
-	private StaffAssignment officer;
+	private UserAccount officer;
 	
 	private List<HearingNoteItem> hearingNoteItems =
 			new ArrayList<HearingNoteItem>();
@@ -142,17 +143,17 @@ public class HearingForm {
 
 	/**
 	 * Returns the officer.
-	 * @return officer - StaffAssignment
+	 * @return officer user account
 	 */
-	public StaffAssignment getOfficer() {
+	public UserAccount getOfficer() {
 		return this.officer;
 	}
 
 	/**
 	 * Sets the officer.
-	 * @param officer - StaffAssignment
+	 * @param officer user account
 	 */
-	public void setOfficer(final StaffAssignment officer) {
+	public void setOfficer(final UserAccount officer) {
 		this.officer = officer;
 	}
 

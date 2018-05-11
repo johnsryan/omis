@@ -58,7 +58,7 @@
 <body>
 	<jsp:include page="/WEB-INF/views/offender/includes/offenderHeader.jsp"/>
 	<h1>
-		<a class="actionMenuItem" id="actionMenuLink" href="${pageContext.request.contextPath}/paroleEligibility/paroleEligibilityActionMenu.html?offender=${offenderSummary.id}"></a>
+		<a class="actionMenuItem" id="actionMenuLink" href="${pageContext.request.contextPath}/paroleEligibility/paroleEligibilityActionMenu.html?offender=${offenderSummary.id}&eligibility=${paroleEligibility.id}"></a>
 		<c:choose>
 			<c:when test="${not empty paroleEligibility}">
 				<fmt:message key="editParoleEligibilityTitle"/>

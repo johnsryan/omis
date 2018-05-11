@@ -213,6 +213,9 @@ public class WarrantController {
 	private static final String AUTHORIZATION_TO_PICK_UP_AND_HOLD_REPORT_NAME =
 			"/Compliance/Warrants/Authorization_to_Pick_Up_and_Hold";	
 	
+	private static final String WARRANT_TO_ARREST_ISC_REPORT_NAME =
+			"/Compliance/Warrants/Warrant_to_Arrest_Interstate_Offender";
+	
 	private static final String WARRANT_TO_ARREST_REPORT_NAME =
 			"/Compliance/Warrants/Warrant_to_Arrest";	
 	
@@ -461,7 +464,7 @@ public class WarrantController {
 	 * already exists with the given Note and Date, for the specified Warrant
 	 */
 	@RequestMapping(value = "/edit.html", method = RequestMethod.POST)
-	@PreAuthorize("hasRole('WARRANT_VIEW') or hasRole('ADMIN')")
+	@PreAuthorize("hasRole('WARRANT_EDIT') or hasRole('ADMIN')")
 	public ModelAndView update(
 			@RequestParam(value = "warrant", required = true)
 				final Warrant warrant,
@@ -817,7 +820,7 @@ public class WarrantController {
 			final Offender offender, final WarrantReasonCategory category,
 			final WarrantForm form, final ModelMap map){
 		
-		if(!(WarrantReasonCategory.AUTHORIZATION_TO_PICKUP_AND_HOLD
+		if(!(WarrantReasonCategory.AUTHORIZATION_TO_PICKUP_AND_HOLD_PROBATIONER
 				.equals(category))){
 			form.setBondRecommended(false);
 		}
@@ -1200,6 +1203,32 @@ public class WarrantController {
 		return this.reportControllerDelegate.constructReportResponseEntity(
 				doc, reportFormat);
 	}	
+	
+	/**
+	 * Returns the warrant to arrest isc report for the specified warrant.
+	 * 
+	 * @param Warrant warrant
+	 * @param reportFormat report format
+	 * @return response entity with report
+	 */
+	@RequestMapping(value = "/warrantToArrestIscReport.html",
+			method = RequestMethod.GET)
+	@PreAuthorize("hasRole('WARRANT_VIEW') "
+			+ "or hasRole('ADMIN')")
+	public ResponseEntity<byte []> reportWarrantToArrestIsc(@RequestParam(
+			value = "offender", required = true)
+			final Warrant warrant,
+			@RequestParam(value = "reportFormat", required = true)
+			final ReportFormat reportFormat) {
+		Map<String, String> reportParamMap = new HashMap<String, String>();
+		reportParamMap.put(WARRANT_ID_REPORT_PARAM_NAME,
+				Long.toString(warrant.getId()));
+		byte[] doc = this.reportRunner.runReport(
+				WARRANT_TO_ARREST_ISC_REPORT_NAME,
+				reportParamMap, reportFormat);
+		return this.reportControllerDelegate.constructReportResponseEntity(
+				doc, reportFormat);
+	}
 	
 	/**
 	 * Returns the warrant cancellation details report for the specified warrant.

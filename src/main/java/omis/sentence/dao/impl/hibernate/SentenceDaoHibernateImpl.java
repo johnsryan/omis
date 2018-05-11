@@ -145,7 +145,7 @@ public class SentenceDaoHibernateImpl
 				.getCurrentSession()
 				.getNamedQuery(FIND_QUERY_NAME)
 				.setParameter(CONVICTION_PARAM_NAME, conviction)
-				.setParameter(EFFECTIVE_DATE_PARAM_NAME, effectiveDate)
+				.setTimestamp(EFFECTIVE_DATE_PARAM_NAME, effectiveDate)
 				.uniqueResult();
 		return sentence;
 	}
@@ -158,7 +158,7 @@ public class SentenceDaoHibernateImpl
 				.getCurrentSession()
 				.getNamedQuery(FIND_EXCLUDING_QUERY_NAME)
 				.setParameter(CONVICTION_PARAM_NAME, conviction)
-				.setParameter(EFFECTIVE_DATE_PARAM_NAME, effectiveDate)
+				.setTimestamp(EFFECTIVE_DATE_PARAM_NAME, effectiveDate)
 				.setParameter(SENTENCE_PARAM_NAME, excludedSentence)
 				.uniqueResult();
 		return sentence;

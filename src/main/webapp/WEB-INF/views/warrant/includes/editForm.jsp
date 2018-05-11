@@ -27,7 +27,7 @@
 			<form:label path="issuedBy" class="fieldLabel">
 				<fmt:message key="issuedByLabel"/>
 			</form:label>
-			<input id="issuedByInput"/>
+			<input type="text" id="issuedByInput"/>
 			<form:hidden id="issuedBy" path="issuedBy"/>
 			<a id="clearIssuedBy" class="clearLink"></a>
 			<span id="issuedByDisplay">
@@ -103,7 +103,7 @@
 		</div>
 	</fieldset>
 	<c:choose>
-		<c:when test="${warrantReasonCategory eq 'AUTHORIZATION_TO_PICKUP_AND_HOLD'}">
+		<c:when test="${warrantReasonCategory eq 'AUTHORIZATION_TO_PICKUP_AND_HOLD_PROBATIONER'}">
 			<fieldset>
 				<legend><fmt:message key="bondFieldsetLegendLabel"/></legend>
 				<!-- Bond options -->

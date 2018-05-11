@@ -655,7 +655,7 @@ div.panel {
 }
 
 .hoverable:hover:after, .profileItem a:hover:after, .moduleLink > a:hover:after {
-	box-shadow: inset 0 0 15px 15px  hsla(0, 100%, 100%, .33), 0 0 2px 5px  hsla(0, 100%, 100%, .33) ;
+	box-shadow: inset 0 0 5px 5px  hsla(0, 100%, 100%, .33);
 	transition: box-shadow 150ms ease-in-out;
 }
 
@@ -679,4 +679,11 @@ span.banner:hover::before {
 span.banner:before {
 background:
   linear-gradient(45deg,  hsla(${accentHue}, ${accentSaturation}%, 85%, 1) 33.333%, transparent 33.333%, transparent 66.667%,  hsla(${accentHue}, ${accentSaturation}%, 85%, 1) 66.667%), linear-gradient(135deg,  hsla(${accentHue}, ${accentSaturation}%, 85%, 1) 33.333%, transparent 33.333%, transparent 66.667%, hsla(${accentHue}, ${accentSaturation}%, 85%, 1) 66.667%);
+}
+
+<%-- Offender Profile Screen colors --%>
+div.offenderProfile div.profileItems h2 {
+	border-color: hsla(${foregroundHue}, ${foregroundSaturation}%, 90%, 1);
+	background-color: hsla(${foregroundHue}, ${foregroundSaturation}%, 90%, 1);
+	color: black;
 }

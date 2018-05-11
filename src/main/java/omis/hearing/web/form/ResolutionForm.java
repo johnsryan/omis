@@ -20,6 +20,7 @@ package omis.hearing.web.form;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import omis.hearing.domain.HearingStatusCategory;
 import omis.hearing.domain.ResolutionClassificationCategory;
 
@@ -27,17 +28,17 @@ import omis.hearing.domain.ResolutionClassificationCategory;
 /**
  * Resolution Form.
  * 
- *@author Annie Wahl 
- *@version 0.1.1 (Mar 1, 2018)
- *@since OMIS 3.0
- *
+ * @author Annie Wahl 
+ * @author Josh Divine
+ * @version 0.1.2 (May 7, 2018)
+ * @since OMIS 3.0
  */
 public class ResolutionForm {
 	
 	private List<ViolationItem> violationItems = new ArrayList<ViolationItem>();
 	
-	private List<StaffAttendanceItem> staffAttendanceItems =
-			new ArrayList<StaffAttendanceItem>();
+	private List<UserAttendanceItem> userAttendanceItems =
+			new ArrayList<UserAttendanceItem>();
 	
 	private HearingStatusCategory category;
 	
@@ -76,20 +77,22 @@ public class ResolutionForm {
 	}
 	
 	/**
-	 * Returns the staffAttendanceItems.
-	 * @return staffAttendanceItems - List<StaffAttendanceItem>
+	 * Returns the user attendance items.
+	 * 
+	 * @return user attendance items
 	 */
-	public List<StaffAttendanceItem> getStaffAttendanceItems() {
-		return this.staffAttendanceItems;
+	public List<UserAttendanceItem> getUserAttendanceItems() {
+		return this.userAttendanceItems;
 	}
 
 	/**
-	 * Sets the staffAttendanceItems.
-	 * @param staffAttendanceItems - List<StaffAttendanceItem>
+	 * Sets the user attendance items.
+	 * 
+	 * @param userAttendanceItems user attendance items
 	 */
-	public void setStaffAttendanceItems(
-			final List<StaffAttendanceItem> staffAttendanceItems) {
-		this.staffAttendanceItems = staffAttendanceItems;
+	public void setUserAttendanceItems(
+			final List<UserAttendanceItem> userAttendanceItems) {
+		this.userAttendanceItems = userAttendanceItems;
 	}
 	
 	/**

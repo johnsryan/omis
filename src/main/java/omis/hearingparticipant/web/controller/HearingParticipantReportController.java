@@ -117,7 +117,7 @@ public class HearingParticipantReportController {
 	 * @return ModelAndView - model and view for hearing participants list
 	 */
 	@RequestMapping(value = "/list.html", method = RequestMethod.GET)
-	@PreAuthorize("hasRole('ADMIN') or hasRole ('HEARING_LIST')")
+	@PreAuthorize("hasRole('ADMIN') or hasRole ('HEARING_PARTICIPANT_LIST')")
 	public ModelAndView list(@RequestParam(value = "boardHearing",
 		required = true) final BoardHearing boardHearing) {
 		

@@ -13,7 +13,8 @@ import omis.offender.domain.Offender;
  * @author Jonny Santy
  * @author Trevor Isles
  * @author Annie Wahl
- * @version 0.1.2 (Nov 27, 2017)
+ * @author Josh Divine
+ * @version 0.1.3 (May 9, 2018)
  * @since OMIS 3.0
  */
 public class AgreementImpl implements Agreement {
@@ -23,8 +24,6 @@ public class AgreementImpl implements Agreement {
 	private static final String EMPTY_START_DATE_MSG = "Start Date Required";
 
 	private static final String EMPTY_OFFENDER_MSG = "Offender Required";
-	
-	private static final String EMPTY_END_DATE_MSG = "End Date Required";
 	
 	private CreationSignature creationSignature;
 	
@@ -128,24 +127,50 @@ public class AgreementImpl implements Agreement {
 	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object obj) {
-		boolean result = false;
 		if (this == obj) {
-			result = true;
-		} else if (obj instanceof Agreement) {
-			this.checkState();
-			Agreement that 
-				= (Agreement) obj;
-			if (this.getDateRange().getStartDate().equals(that.getDateRange()
-					.getStartDate())
-				&& this.getDateRange().getEndDate().equals(that.getDateRange()
-					.getEndDate())
-				&& this.getOffender().equals(that.getOffender())
-				&& this.getDescription().equals(that.getDescription())
-				&& this.getCategory().equals(that.getCategory())) {
-				result = true;
+			return true;
+		} 
+		if (!(obj instanceof Agreement)) {
+			return false;
+		}
+		this.checkState();
+		Agreement that = (Agreement) obj;
+		if (!this.getDateRange().getStartDate().equals(that.getDateRange()
+				.getStartDate())) {
+			return false;
+		}
+		if (this.getDateRange().getEndDate() != null) {
+			if (!this.getDateRange().getEndDate().equals(that.getDateRange()
+					.getEndDate())) {
+				return false;
+			}
+		} else {
+			if (that.getDateRange().getEndDate() != null) {
+				return false;
 			}
 		}
-		return result;
+		if (!this.getOffender().equals(that.getOffender())) {
+			return false;
+		}
+		if (this.getDescription() != null) {
+			if (!this.getDescription().equals(that.getDescription())) {
+				return false;
+			}
+		} else {
+			if (that.getDescription() != null) {
+				return false;
+			}
+		}
+		if (this.getCategory() != null) {
+			if (!this.getCategory().equals(that.getCategory())) {
+				return false;
+			}
+		} else {
+			if (that.getCategory() != null) {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	/** {@inheritDoc} */
@@ -153,28 +178,24 @@ public class AgreementImpl implements Agreement {
 	public int hashCode() {
 		this.checkState();
 		int hashCode = 14;
-
 		hashCode = 29 * hashCode + this.getOffender().hashCode();
-		hashCode = 29 * hashCode + this.getDateRange().getStartDate()
-				.hashCode();
-		hashCode = 29 * hashCode + this.getDateRange().getEndDate().hashCode();
-		hashCode = 29 * hashCode + this.getDescription().hashCode();
-		hashCode = 29 * hashCode + this.getCategory().hashCode();
-		
+		hashCode = 29 * hashCode + this.getDateRange().hashCode();
+		if (this.getDescription() != null) {
+			hashCode = 29 * hashCode + this.getDescription().hashCode();
+		}
+		if (this.getCategory() != null) {
+			hashCode = 29 * hashCode + this.getCategory().hashCode();
+		}
 		return hashCode;
 	}
 		
 	/* Checks state. */
 	private void checkState() {
-
 		if (this.getOffender() == null) {
 			throw new IllegalStateException(EMPTY_OFFENDER_MSG);
 		}
 		if (this.getDateRange().getStartDate() == null) {
 			throw new IllegalStateException(EMPTY_START_DATE_MSG);
-		}
-		if (this.getDateRange().getEndDate() == null) {
-			throw new IllegalStateException(EMPTY_END_DATE_MSG);
 		}
 	}
 }

@@ -20,6 +20,7 @@ package omis.hearing.service.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import omis.communitysupervision.dao.CommunitySupervisionOfficeDao;
 import omis.communitysupervision.domain.CommunitySupervisionOffice;
 import omis.exception.DuplicateEntityFoundException;
@@ -33,7 +34,7 @@ import omis.hearing.domain.HearingStatusCategory;
 import omis.hearing.domain.ImposedSanction;
 import omis.hearing.domain.Infraction;
 import omis.hearing.domain.InfractionPlea;
-import omis.hearing.domain.StaffAttendance;
+import omis.hearing.domain.UserAttendance;
 import omis.hearing.domain.component.Resolution;
 import omis.hearing.service.HearingService;
 import omis.hearing.service.delegate.HearingDelegate;
@@ -41,7 +42,7 @@ import omis.hearing.service.delegate.HearingNoteDelegate;
 import omis.hearing.service.delegate.HearingStatusDelegate;
 import omis.hearing.service.delegate.ImposedSanctionDelegate;
 import omis.hearing.service.delegate.InfractionDelegate;
-import omis.hearing.service.delegate.StaffAttendanceDelegate;
+import omis.hearing.service.delegate.UserAttendanceDelegate;
 import omis.jail.domain.Jail;
 import omis.jail.service.delegate.JailDelegate;
 import omis.location.domain.Location;
@@ -49,11 +50,11 @@ import omis.location.service.delegate.LocationDelegate;
 import omis.offender.domain.Offender;
 import omis.prerelease.dao.PreReleaseCenterDao;
 import omis.prerelease.domain.PreReleaseCenter;
-import omis.staff.domain.StaffAssignment;
 import omis.supervision.dao.SupervisoryOrganizationDao;
 import omis.supervision.domain.SupervisoryOrganization;
 import omis.treatment.dao.TreatmentCenterDao;
 import omis.treatment.domain.TreatmentCenter;
+import omis.user.domain.UserAccount;
 import omis.violationevent.domain.ConditionViolation;
 import omis.violationevent.domain.DisciplinaryCodeViolation;
 import omis.violationevent.domain.ViolationEvent;
@@ -64,10 +65,10 @@ import omis.violationevent.service.delegate.ViolationEventDelegate;
 /**
  * Hearing Service Implementation.
  * 
- *@author Annie Wahl 
- *@version 0.1.2 (Feb 28, 2018)
- *@since OMIS 3.0
- *
+ * @author Annie Wahl 
+ * @author Josh Divine
+ * @version 0.1.3 (May 3, 2018)
+ * @since OMIS 3.0
  */
 public class HearingServiceImpl implements HearingService {
 	
@@ -75,7 +76,7 @@ public class HearingServiceImpl implements HearingService {
 	
 	private final HearingNoteDelegate hearingNoteDelegate;
 	
-	private final StaffAttendanceDelegate staffAttendanceDelegate;
+	private final UserAttendanceDelegate userAttendanceDelegate;
 	
 	private final HearingStatusDelegate hearingStatusDelegate;
 	
@@ -108,7 +109,7 @@ public class HearingServiceImpl implements HearingService {
 	/**
 	 * @param hearingDelegate - hearing delegate
 	 * @param hearingNoteDelegate - hearing note delegate
-	 * @param staffAttendanceDelegate - staff attendance delegate
+	 * @param userAttendanceDelegate user attendance delegate
 	 * @param hearingStatusDelegate - hearing status delegate
 	 * @param infractionDelegate - infraction delegate
 	 * @param imposedSanctionDelegate - imposed sanction delegate
@@ -126,7 +127,7 @@ public class HearingServiceImpl implements HearingService {
 	 */
 	public HearingServiceImpl(final HearingDelegate hearingDelegate,
 			final HearingNoteDelegate hearingNoteDelegate,
-			final StaffAttendanceDelegate staffAttendanceDelegate,
+			final UserAttendanceDelegate userAttendanceDelegate,
 			final HearingStatusDelegate hearingStatusDelegate,
 			final InfractionDelegate infractionDelegate,
 			final ImposedSanctionDelegate imposedSanctionDelegate,
@@ -143,7 +144,7 @@ public class HearingServiceImpl implements HearingService {
 			final SupervisoryOrganizationDao supervisoryOrganizationDao) {
 		this.hearingDelegate = hearingDelegate;
 		this.hearingNoteDelegate = hearingNoteDelegate;
-		this.staffAttendanceDelegate = staffAttendanceDelegate;
+		this.userAttendanceDelegate = userAttendanceDelegate;
 		this.hearingStatusDelegate = hearingStatusDelegate;
 		this.infractionDelegate = infractionDelegate;
 		this.imposedSanctionDelegate = imposedSanctionDelegate;
@@ -165,7 +166,7 @@ public class HearingServiceImpl implements HearingService {
 	public Hearing createHearing(final Location location,
 			final Offender offender, final Boolean inAttendance,
 			final Date date, final HearingCategory category,
-			final StaffAssignment officer)
+			final UserAccount officer)
 					throws DuplicateEntityFoundException {
 		return this.hearingDelegate.create(location, offender, inAttendance,
 				date, category, officer);
@@ -175,7 +176,7 @@ public class HearingServiceImpl implements HearingService {
 	@Override
 	public Hearing updateHearing(final Hearing hearing, final Location location,
 			final Boolean inAttendance, final Date date,
-			final HearingCategory category, final StaffAssignment officer)
+			final HearingCategory category, final UserAccount officer)
 					throws DuplicateEntityFoundException {
 		return this.hearingDelegate.update(hearing, location, inAttendance,
 				date, category, officer);
@@ -218,32 +219,32 @@ public class HearingServiceImpl implements HearingService {
 
 	/**{@inheritDoc} */
 	@Override
-	public StaffAttendance createStaffAttendance(final Hearing hearing,
-			final StaffAssignment staff)
+	public UserAttendance createUserAttendance(final Hearing hearing,
+			final UserAccount userAccount)
 			throws DuplicateEntityFoundException {
-		return this.staffAttendanceDelegate.create(hearing, staff);
+		return this.userAttendanceDelegate.create(hearing, userAccount);
 	}
 
 	/**{@inheritDoc} */
 	@Override
-	public StaffAttendance updateStaffAttendance(
-			final StaffAttendance staffAttendance, final StaffAssignment staff)
+	public UserAttendance updateUserAttendance(
+			final UserAttendance userAttendance, final UserAccount userAccount)
 					throws DuplicateEntityFoundException {
-		return this.staffAttendanceDelegate.update(
-				staffAttendance, staff);
+		return this.userAttendanceDelegate.update(userAttendance, 
+				userAttendance.getHearing(), userAccount);
 	}
 
 	/**{@inheritDoc} */
 	@Override
-	public void removeStaffAttendance(final StaffAttendance staffAttendance) {
-		this.staffAttendanceDelegate.remove(staffAttendance);
+	public void removeUserAttendance(final UserAttendance userAttendance) {
+		this.userAttendanceDelegate.remove(userAttendance);
 	}
 
 	/**{@inheritDoc} */
 	@Override
-	public List<StaffAttendance> findStaffAttendedByHearing(
+	public List<UserAttendance> findUserAttendedByHearing(
 			final Hearing hearing) {
-		return this.staffAttendanceDelegate.findAllByHearing(hearing);
+		return this.userAttendanceDelegate.findAllByHearing(hearing);
 	}
 
 	/**{@inheritDoc} */

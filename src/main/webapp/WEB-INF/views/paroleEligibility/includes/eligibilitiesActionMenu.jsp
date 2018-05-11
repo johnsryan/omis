@@ -18,7 +18,7 @@
 
 <%--
  - Author: Trevor Isles
- - Date: Dec 15, 2017
+ - Version: 0.1.0 (Dec 15, 2017)
  - Since: OMIS 3.0
  --%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
@@ -38,7 +38,6 @@
 		</li>
 		</c:if>
 	</sec:authorize>
-	
 	<sec:authorize access="hasRole('PAROLE_ELIGIBILITY_VIEW') or hasRole('ADMIN')">
 		<c:if test="${not empty eligibility}"><li><a class="viewEditLink" href="${pageContext.request.contextPath}/paroleEligibility/edit.html?eligibility=${eligibility.id}"><span class="visibleLinkLabel"><fmt:message key="viewParoleEligibilityEditLink"/></span></a></li>
 		</c:if>
@@ -47,6 +46,24 @@
 		<c:if test="${not empty eligibility}"><li><a class="viewEditLink" href="${pageContext.request.contextPath}/hearingAnalysis/edit.html?eligibility=${eligibility.id}"><span class="visibleLinkLabel"><fmt:message key="viewHearingAnalysisLink"/></span></a></li>
 		</c:if>
 	</sec:authorize>
+	
+	<sec:authorize access="hasRole('HEARING_ANALYSIS_EDIT') or hasRole('ADMIN')">
+		<c:choose>
+			<c:when test="${not empty boardHearing}">
+				<li>
+					<a class="viewEditLink" href="${pageContext.request.contextPath}/boardHearing/edit.html?boardHearing=${boardHearing.id}"><span class="visibleLinkLabel"><fmt:message key="editBoardHearingLink"/></span></a>
+				</li>
+			</c:when>
+		<c:otherwise>
+			<c:if test="${not empty eligibility}">
+				<li>
+					<a class="viewEditLink" href="${pageContext.request.contextPath}/boardHearing/create.html?paroleEligibility=${eligibility.id}"><span class="visibleLinkLabel"><fmt:message key="editBoardHearingLink"/></span></a>
+				</li>
+			</c:if>
+		</c:otherwise>
+		</c:choose>
+	</sec:authorize>
+	
 	<sec:authorize access="hasRole('HEARING_ANALYSIS_VIEW') or hasRole('ADMIN')">
 		<c:if test="${not empty hearingAnalysis}"><li><a class="viewEditLink" href="${pageContext.request.contextPath}/hearingAnalysis/home.html?hearingAnalysis=${hearingAnalysis.id}"><span class="visibleLinkLabel"><fmt:message key="workHearingAnalysisLink"/></span></a></li>
 		</c:if>

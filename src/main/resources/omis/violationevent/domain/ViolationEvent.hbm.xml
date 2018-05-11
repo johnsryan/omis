@@ -12,7 +12,7 @@
 					<param name="sequence">`VIOLATION_EVENT_SEQ`</param>
 				</generator>
 			</id>
-			<many-to-one name="jurisdiction" column="`SUPERVISORY_ORGANIZATION_ID`" entity-name="omis.supervision.domain.SupervisoryOrganization" not-null="false" />
+			<many-to-one name="jurisdiction" column="`SUPERVISORY_ORGANIZATION_ID`" entity-name="omis.organization.domain.Organization" not-null="false" />
 			<many-to-one name="offender" column="`OFFENDER_ID`" entity-name="omis.offender.domain.Offender" not-null="true" />
 			<component name="event">
 				<property name="date" column="`EVENT_DATE`" type="java.util.Date" not-null="true" />

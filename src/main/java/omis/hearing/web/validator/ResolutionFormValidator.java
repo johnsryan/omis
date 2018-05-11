@@ -2,23 +2,25 @@ package omis.hearing.web.validator;
 
 import java.util.Date;
 import java.util.EnumSet;
+
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
+
 import omis.hearing.domain.DispositionCategory;
 import omis.hearing.domain.HearingStatusCategory;
 import omis.hearing.domain.ResolutionClassificationCategory;
 import omis.hearing.web.form.ItemOperation;
 import omis.hearing.web.form.ResolutionForm;
-import omis.hearing.web.form.StaffAttendanceItem;
+import omis.hearing.web.form.UserAttendanceItem;
 
 /**
  * Resolution Form Validator.
  * 
- *@author Annie Wahl 
- *@version 0.1.2 (Apr 18, 2018)
- *@since OMIS 3.0
- *
+ * @author Annie Wahl 
+ * @author Josh Divine
+ * @version 0.1.3 (May 3, 2018)
+ * @since OMIS 3.0
  */
 public class ResolutionFormValidator implements Validator {
 	
@@ -53,10 +55,11 @@ public class ResolutionFormValidator implements Validator {
 	private static final String OFFENDER_ATTENDANCE_FUTURE_MSG_KEY =
 			"offenderAttendance.future";
 	
-	private static final String STAFF_REQUIRED_MSG_KEY = "staff.required";
+	private static final String USER_ACCOUNT_REQUIRED_MSG_KEY = 
+			"userAccount.required";
 	
-	private static final String STAFF_EMPTY_IF_HELD_MSG_KEY =
-			"staff.emptyIfHeld";
+	private static final String USER_ATTENDANCE_EMPTY_IF_HELD_MSG_KEY =
+			"userAttendance.emptyIfHeld";
 
 	/**{@inheritDoc} */
 	@Override
@@ -89,23 +92,23 @@ public class ResolutionFormValidator implements Validator {
 						errors.rejectValue("inAttendance",
 								OFFENDER_ATTENDANCE_FUTURE_MSG_KEY);
 					}
-					if (!form.getStaffAttendanceItems().isEmpty()) {
-						errors.rejectValue("staffAttendanceItems",
-								STAFF_EMPTY_IF_HELD_MSG_KEY);
+					if (!form.getUserAttendanceItems().isEmpty()) {
+						errors.rejectValue("userAttendanceItems",
+								USER_ATTENDANCE_EMPTY_IF_HELD_MSG_KEY);
 					}
 				}
 			}
-			if (form.getStaffAttendanceItems() != null) {
+			if (form.getUserAttendanceItems() != null) {
 				int i = 0;
-				for (StaffAttendanceItem item
-						: form.getStaffAttendanceItems()) {
+				for (UserAttendanceItem item
+						: form.getUserAttendanceItems()) {
 					if (ItemOperation.CREATE.equals(item.getItemOperation())
 						|| ItemOperation.UPDATE.equals(
 								item.getItemOperation())) {
-						if (item.getStaff() == null) {
+						if (item.getUserAccount() == null) {
 							errors.rejectValue(
-									"staffAttendanceItems[" + i + "].staff",
-									STAFF_REQUIRED_MSG_KEY);
+									"userAttendanceItems[" + i + "].userAccount",
+									USER_ACCOUNT_REQUIRED_MSG_KEY);
 						}
 					}
 					i++;

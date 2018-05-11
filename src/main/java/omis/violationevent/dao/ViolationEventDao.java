@@ -5,7 +5,7 @@ import java.util.List;
 
 import omis.dao.GenericDao;
 import omis.offender.domain.Offender;
-import omis.supervision.domain.SupervisoryOrganization;
+import omis.organization.domain.Organization;
 import omis.violationevent.domain.ViolationEvent;
 import omis.violationevent.domain.ViolationEventCategory;
 
@@ -13,7 +13,8 @@ import omis.violationevent.domain.ViolationEventCategory;
  * ViolationEventDao.java
  * 
  *@author Annie Jacques 
- *@version 0.1.0 (Aug 30, 2017)
+ *@author Ryan Johns
+ *@version 0.1.1 (May 10, 2018)
  *@since OMIS 3.0
  *
  */
@@ -23,13 +24,13 @@ public interface ViolationEventDao extends GenericDao<ViolationEvent> {
 	/**
 	 * Finds and returns a ViolationEvent with specified properties
 	 * @param offender - offender
-	 * @param jurisdiction - SupervisoryOrganization
+	 * @param jurisdiction - Organization
 	 * @param date - Date
 	 * @param details - String
 	 * @param category - ViolationEventCategory
 	 * @return ViolationEvent with specified properties
 	 */
-	ViolationEvent find(Offender offender, SupervisoryOrganization jurisdiction,
+	ViolationEvent find(Offender offender, Organization jurisdiction,
 			Date date, String details, ViolationEventCategory category);
 	
 	/**
@@ -37,7 +38,7 @@ public interface ViolationEventDao extends GenericDao<ViolationEvent> {
 	 * specified ViolationEvent
 	 * @param excludedViolationEvent - ViolationEvent to exclude
 	 * @param offender - Offender
-	 * @param jurisdiction - SupervisoryOrganization
+	 * @param jurisdiction - Organization
 	 * @param date - Date
 	 * @param details - String
 	 * @param category - ViolationEventCategory
@@ -45,7 +46,7 @@ public interface ViolationEventDao extends GenericDao<ViolationEvent> {
 	 * specified ViolationEvent
 	 */
 	ViolationEvent findExcluding(ViolationEvent excludedViolationEvent,
-			Offender offender, SupervisoryOrganization jurisdiction,
+			Offender offender, Organization jurisdiction,
 			Date date, String details, ViolationEventCategory category);
 	
 	/**

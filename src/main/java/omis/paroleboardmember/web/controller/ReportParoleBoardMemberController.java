@@ -108,10 +108,9 @@ public class ReportParoleBoardMemberController {
 			paroleBoardMembers = this.paroleBoardMemberSummaryReportService
 					.findByDates(startDate, endDate);
 		} else {
-			form.setDate(new Date());
-			form.setSingleDate(true);
+			form.setSingleDate(false);
 			paroleBoardMembers = this.paroleBoardMemberSummaryReportService
-					.findByDate(new Date());
+					.findByDates(null, null);
 		}
 		ModelAndView mav = new ModelAndView(VIEW_NAME);
 		mav.addObject(PAROLE_BOARD_MEMBER_SEARCH_FORM_MODEL_KEY, form);

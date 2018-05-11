@@ -1,4 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ - OMIS - Offender Management Information System
+ - Copyright (C) 2011 - 2017 State of Montana
+ -
+ - This program is free software: you can redistribute it and/or modify
+ - it under the terms of the GNU General Public License as published by
+ - the Free Software Foundation, either version 3 of the License, or
+ - (at your option) any later version.
+ -
+ - This program is distributed in the hope that it will be useful,
+ - but WITHOUT ANY WARRANTY; without even the implied warranty of
+ - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ - GNU General Public License for more details.
+ -
+ - You should have received a copy of the GNU General Public License
+ - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+
+<!--
+  - Unit testing configuration.
+  -
+  - Author: Stephen Abson
+  -->
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:context="http://www.springframework.org/schema/context"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -28,13 +52,26 @@
    <constructor-arg><value>MM/dd/yyyy k:mm</value></constructor-arg>
   </bean>
   
-  <!-- Module imports -->
+  <!--
+    - Only import module configurations - web tier is not currently unit tested
+    - as configured in the application though separate components of the web
+    - tier can be with a mock configuration (such as validators - see below).
+    -->
   
   <import resource="file:src/main/webapp/WEB-INF/config/module/applicationContext-module.xml"/>
   
+  <!-- 
+    - Includes string length validator checks so validators can be targeted
+    - for unit testing.
+    -->
+  
   <import resource="file:src/main/webapp/WEB-INF/config/web/applicationContext-stringLengthChecks.xml"/>
   
-  <!-- Helpers -->
+  <!--
+    - Configures a mock audit component retriever that returns the user named
+    - AUDIT and and arbitrary audit date. This is required for entity auditing
+    - in the service layer.
+    -->
   
   <bean id="auditComponentRetriever"
         class="omis.audit.test.AuditComponentRetrieverTestImpl">

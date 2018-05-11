@@ -32,6 +32,43 @@ div.profileItemsInnerWrapper {
 	margin: 4px;
 }
 
+/* Profile item headers */
+/* div.offenderProfile div.profileItems h2 { */
+/* 	border: 1px; */
+/* 	border-color: black; */
+/* 	border-style: solid; */
+/* 	vertical-align: bottom; */
+/* 	display: inline-block; */
+/* } */
+
+div.offenderProfile div.profileItems h2 {
+	padding: 5px;
+	margin: 9px 0 12px 25px;
+	border-width: 1px;
+	border-style: solid;
+	clear: left;
+	display: inline-block;
+	height: 20px;
+}
+
+div.offenderProfile div.profileItems h2 a.profileActionMenuItem {
+	padding: 0 0 0 0;
+	margin: 0 0 0 0;
+}
+
+div.offenderProfile div.profileItems h2 a.profileActionMenuItem:before {
+	vertical-align: 0%;
+}
+
+div.offenderProfile div.profileItems h2 span.contentHeading {
+/* 	display: block; */
+    margin-bottom: 0;
+    padding-bottom: 0;
+    text-align: center;
+    vertical-align: bottom;
+    width: 100%;
+}
+
 /* Profile Item Container */
 div.profileItemContainer {
 	margin-left: 5px;

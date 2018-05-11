@@ -33,5 +33,21 @@
 			<span class="visibleLinkLabel"><fmt:message key="listParoleEligibilityLink"/></span></a>
 		</li>
 	</sec:authorize>
+	<sec:authorize access="hasRole('HEARING_ANALYSIS_EDIT') or hasRole('ADMIN')">
+		<c:choose>
+			<c:when test="${not empty boardHearing}">
+				<li>
+					<a class="viewEditLink" href="${pageContext.request.contextPath}/boardHearing/edit.html?boardHearing=${boardHearing.id}"><span class="visibleLinkLabel"><fmt:message key="editBoardHearingLink"/></span></a>
+				</li>
+			</c:when>
+		<c:otherwise>
+			<c:if test="${not empty paroleEligibility}">
+				<li>
+					<a class="viewEditLink" href="${pageContext.request.contextPath}/boardHearing/create.html?paroleEligibility=${paroleEligibility.id}"><span class="visibleLinkLabel"><fmt:message key="editBoardHearingLink"/></span></a>
+				</li>
+			</c:if>
+		</c:otherwise>
+		</c:choose>
+	</sec:authorize>
 </ul>
 </fmt:bundle>

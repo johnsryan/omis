@@ -19,7 +19,7 @@
  - Author: Ryan Johns
  - Author: Annie Wahl
  - Author: Josh Divine
- - Version: 0.1.3 (Apr 24, 2018)
+ - Version: 0.1.4 (May 2, 2018)
  - Since: OMIS 3.0
  --%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
@@ -182,6 +182,13 @@
 			</form:label>
 			<form:input path="actualSentenceDate" class="date"/>
 			<form:errors path="actualSentenceDate" cssClass="error"/>
+		</span>
+		<span class="fieldGroup">
+			<form:label path="expectedCompletionDate" class="fieldLabel">
+				<fmt:message key="expectedCompletionDateLabel"/>
+			</form:label>
+			<form:input path="expectedCompletionDate" class="date"/>
+			<form:errors path="expectedCompletionDate" cssClass="error"/>
 		</span>
 		<span class="fieldGroup">
 			<form:label path="submissionDate" class="fieldLabel">

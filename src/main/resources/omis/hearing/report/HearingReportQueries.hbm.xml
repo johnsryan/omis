@@ -27,7 +27,7 @@
 				(select MAX(status.date) from status 
 				where 
 					status.hearing = hearing)
-		order by hearing.date asc
+		order by hearing.date desc
 	]]></query>
 	<query name="summarizeHearing"><![CDATA[
 		select new omis.hearing.report.HearingSummary(

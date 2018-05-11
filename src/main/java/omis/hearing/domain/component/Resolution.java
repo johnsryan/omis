@@ -1,6 +1,25 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.hearing.domain.component;
+
 import java.io.Serializable;
 import java.util.Date;
+
 import omis.hearing.domain.DispositionCategory;
 import omis.hearing.domain.ResolutionClassificationCategory;
 import omis.person.domain.Person;
@@ -8,10 +27,10 @@ import omis.person.domain.Person;
 /**
  * Resolution.
  * 
- *@author Annie Wahl 
- *@version 0.1.1 (Apr 17, 2018)
- *@since OMIS 3.0
- *
+ * @author Annie Wahl 
+ * @author Josh Divine
+ * @version 0.1.2 (May 4, 2018)
+ * @since OMIS 3.0
  */
 public class Resolution implements Serializable {
 	
@@ -19,7 +38,7 @@ public class Resolution implements Serializable {
 	
 	private Date date;
 	
-	private String descision;
+	private String decision;
 	
 	private String reason;
 	
@@ -38,6 +57,30 @@ public class Resolution implements Serializable {
 	}
 
 	/**
+	 * Instantiates a resolution with all properties.
+	 *  
+	 * @param date date
+	 * @param decision decision
+	 * @param reason reason
+	 * @param authority authority
+	 * @param appealDate appeal date
+	 * @param disposition disposition category
+	 * @param category resolution classification category
+	 */
+	public Resolution(final Date date, final String decision, 
+			final String reason, final Person authority, final Date appealDate, 
+			final DispositionCategory disposition, 
+			final ResolutionClassificationCategory category) {
+		this.date = date;
+		this.decision = decision;
+		this.reason = reason;
+		this.authority = authority;
+		this.appealDate = appealDate;
+		this.disposition = disposition;
+		this.category = category;
+	}
+	
+	/**
 	 * Returns the date.
 	 * @return date - Date
 	 */
@@ -54,19 +97,21 @@ public class Resolution implements Serializable {
 	}
 
 	/**
-	 * Returns the descision.
-	 * @return descision - String
+	 * Returns the decision.
+	 * 
+	 * @return decision
 	 */
-	public String getDescision() {
-		return descision;
+	public String getDecision() {
+		return decision;
 	}
 
 	/**
-	 * Sets the descision.
-	 * @param descision - String
+	 * Sets the decision.
+	 * 
+	 * @param decision decision
 	 */
-	public void setDescision(final String descision) {
-		this.descision = descision;
+	public void setDecision(final String decision) {
+		this.decision = decision;
 	}
 
 	/**

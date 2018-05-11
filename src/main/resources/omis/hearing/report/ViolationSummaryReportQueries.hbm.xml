@@ -1,4 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+ - OMIS - Offender Management Information System
+ - Copyright (C) 2011 - 2017 State of Montana
+ -
+ - This program is free software: you can redistribute it and/or modify
+ - it under the terms of the GNU General Public License as published by
+ - the Free Software Foundation, either version 3 of the License, or
+ - (at your option) any later version.
+ -
+ - This program is distributed in the hope that it will be useful,
+ - but WITHOUT ANY WARRANTY; without even the implied warranty of
+ - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ - GNU General Public License for more details.
+ -
+ - You should have received a copy of the GNU General Public License
+ - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
 <!DOCTYPE hibernate-mapping PUBLIC
 	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
@@ -101,7 +118,7 @@
 		and
 			hearing
 			in
-				(select hearing from omis.hearing.domain.Infraction infraction
+				(select infraction.hearing from omis.hearing.domain.Infraction infraction
 				where
 				infraction.hearing = hearing
 				and
@@ -258,7 +275,7 @@
 			infraction.conditionViolation.violationEvent.event.details,
 			infraction.conditionViolation.violationEvent.event.date,
 			infraction.resolution.reason,
-			infraction.resolution.descision,
+			infraction.resolution.decision,
 			cast(infraction.resolution.disposition as string),
 			infraction.resolution.appealDate,
 			imposedSanction.description,
@@ -286,7 +303,7 @@
 			infraction.disciplinaryCodeViolation.violationEvent.event.details,
 			infraction.disciplinaryCodeViolation.violationEvent.event.date,
 			infraction.resolution.reason,
-			infraction.resolution.descision,
+			infraction.resolution.decision,
 			cast(infraction.resolution.disposition as string),
 			infraction.resolution.appealDate,
 			imposedSanction.description,

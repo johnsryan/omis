@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 package omis.hearing.service.delegate;
 
 import java.util.Date;
@@ -14,15 +31,15 @@ import omis.hearing.domain.component.Subject;
 import omis.instance.factory.InstanceFactory;
 import omis.location.domain.Location;
 import omis.offender.domain.Offender;
-import omis.staff.domain.StaffAssignment;
+import omis.user.domain.UserAccount;
 
 /**
  * HearingDelegate.java
  * 
- *@author Annie Jacques 
- *@version 0.1.1 (Apr 17, 2017)
- *@since OMIS 3.0
- *
+ * @author Annie Wahl 
+ * @author Josh Divine
+ * @version 0.1.2 (May 3, 2018)
+ * @since OMIS 3.0
  */
 public class HearingDelegate {
 	private static final String DUPLICATE_ENTITY_FOUND_MSG =
@@ -59,7 +76,7 @@ public class HearingDelegate {
 	 * @param date
 	 * @param category - HearingCategory
 	 * @param status - HearingStatusCategory
-	 * @param officer - StaffAssignment
+	 * @param officer user account
 	 * @return Newly Created Hearing
 	 * @throws DuplicateEntityFoundException - when Hearing exists with
 	 * specified offender, location, date, and officer
@@ -67,37 +84,24 @@ public class HearingDelegate {
 	public Hearing create(final Location location, final Offender offender,
 			final Boolean inAttendance, final Date date,
 			final HearingCategory category,
-			final StaffAssignment officer)
+			final UserAccount officer)
 			throws DuplicateEntityFoundException{
-		if(this.hearingDao
-				.find(location, offender, date, officer, category) != null){
+		if(this.hearingDao.find(location, offender, date, officer, category) 
+				!= null){
 			throw new DuplicateEntityFoundException(DUPLICATE_ENTITY_FOUND_MSG);
 		}
 		
 		Hearing hearing = 
 				this.hearingInstanceFactory.createInstance();
-		
-		Subject subject = new Subject();
-		subject.setInAttendance(inAttendance);
-		subject.setOffender(offender);
-		
-		hearing.setLocation(location);
-		hearing.setSubject(subject);
-		hearing.setCategory(category);
-		hearing.setDate(date);
-		hearing.setOfficer(officer);
+		populateHearing(hearing, location, offender, inAttendance, date, 
+				category, officer);
 		hearing.setCreationSignature(
 				new CreationSignature(
 						this.auditComponentRetriever.retrieveUserAccount(), 
 						this.auditComponentRetriever.retrieveDate()));
-		hearing.setUpdateSignature(
-				new UpdateSignature(
-						this.auditComponentRetriever.retrieveUserAccount(),
-						this.auditComponentRetriever.retrieveDate()));
-		
 		return this.hearingDao.makePersistent(hearing);
 	}
-	
+
 	/**
 	 * Updates a hearing with the specified parameters
 	 * @param hearing - Hearing to update
@@ -106,7 +110,7 @@ public class HearingDelegate {
 	 * @param inAttendance - Boolean
 	 * @param date
 	 * @param category - HearingCategory
-	 * @param officer - StaffAssignment
+	 * @param officer user account
 	 * @return Updated Hearing
 	 * @throws DuplicateEntityFoundException - when Hearing exists with
 	 * specified offender, location, date, and officer
@@ -114,28 +118,15 @@ public class HearingDelegate {
 	public Hearing update(final Hearing hearing, final Location location,
 			final Boolean inAttendance, final Date date,
 			final HearingCategory category,
-			final StaffAssignment officer)
+			final UserAccount officer)
 			throws DuplicateEntityFoundException{
-		if(this.hearingDao.findExcluding(
-				location, hearing.getSubject().getOffender(), date, officer,
-				category, hearing) != null){
+		if(this.hearingDao.findExcluding(location, 
+				hearing.getSubject().getOffender(), date, officer, category, 
+				hearing) != null){
 			throw new DuplicateEntityFoundException(DUPLICATE_ENTITY_FOUND_MSG);
 		}
-		 
-		Subject subject = new Subject();
-		subject.setInAttendance(inAttendance);
-		subject.setOffender(hearing.getSubject().getOffender());
-		
-		hearing.setLocation(location);
-		hearing.setSubject(subject);
-		hearing.setCategory(category);
-		hearing.setDate(date);
-		hearing.setOfficer(officer);
-		hearing.setUpdateSignature(
-				new UpdateSignature(
-						this.auditComponentRetriever.retrieveUserAccount(),
-						this.auditComponentRetriever.retrieveDate()));
-		
+		populateHearing(hearing, location, hearing.getSubject().getOffender(), 
+				inAttendance, date, category, officer);
 		return this.hearingDao.makePersistent(hearing);
 	}
 	
@@ -156,5 +147,22 @@ public class HearingDelegate {
 		return this.hearingDao.findByOffender(offender);
 	}
 	
-	
+	// Populates a hearing
+	private void populateHearing(final Hearing hearing, final Location location,
+			final Offender offender, final Boolean inAttendance, 
+			final Date date, final HearingCategory category, 
+			final UserAccount officer) {
+		Subject subject = new Subject();
+		subject.setInAttendance(inAttendance);
+		subject.setOffender(offender);
+		hearing.setLocation(location);
+		hearing.setSubject(subject);
+		hearing.setCategory(category);
+		hearing.setDate(date);
+		hearing.setOfficer(officer);
+		hearing.setUpdateSignature(
+				new UpdateSignature(
+						this.auditComponentRetriever.retrieveUserAccount(),
+						this.auditComponentRetriever.retrieveDate()));
+	}
 }

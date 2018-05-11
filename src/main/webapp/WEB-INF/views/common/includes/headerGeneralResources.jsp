@@ -11,10 +11,10 @@
 		<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/common/style/general.css?VERSION=2"/>
 		<c:choose>
 			<c:when test="${not empty sessionScope.userAppearance}">
-				<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/common/style/colors.css?USER_APPEARANCE=${sessionScope.userAppearance.date.time}"/>
+				<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/common/style/colors.css?USER_APPEARANCE=${sessionScope.userAppearance.date.time}&&VERSION=8"/>
 			</c:when>
 			<c:otherwise>
-				<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/common/style/colors.css?VERSION=7"/>
+				<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/common/style/colors.css?VERSION=8"/>
 			</c:otherwise>
 		</c:choose>
 		<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/common/style/fonts.css?VERSION=1"/>

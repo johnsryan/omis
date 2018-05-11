@@ -22,7 +22,7 @@
   - Author: Ryan Johns
   - Author: Annie Wahl
   - Author: Josh Divine
-  - Version: 0.1.8 (Apr 24, 2018)
+  - Version: 0.1.9 (May 2, 2018)
   -->
 <!DOCTYPE hibernate-mapping PUBLIC
 	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
@@ -132,5 +132,41 @@
 		left outer join docket.person offender
 		left outer join offender.name offenderName
 	where psir = :presentenceInvestigationRequest
+]]></query>
+<query name="findUnsubmittedPresentenceInvestigationRequestSummariesByUser"><![CDATA[
+	select new omis.presentenceinvestigation.report.PresentenceInvestigationRequestSummary(
+		   psir.id,
+		   offender.id,
+			docket.value,
+		   psir.requestDate, personName.firstName, personName.lastName, userAccount.username,
+		   psir.expectedCompletionDate, psir.completionDate,
+		   offenderName.firstName, offenderName.lastName, offenderName.middleName, offender.offenderNumber,
+		   psir.sentenceDate, category.name,
+		   (select count(*)
+		      from omis.presentenceinvestigation.domain.PresentenceInvestigationTaskAssociation pita2
+		inner join pita2.task task
+		     where pita2.presentenceInvestigationRequest = psir
+		       and task.completionDate is not null
+		   ),
+		   (select count(*) 
+		       from omis.presentenceinvestigation.domain.PresentenceInvestigationTaskGroup pitg,
+		            omis.task.domain.TaskTemplate tt
+		      where pitg.presentenceInvestigationCategory = category
+		        and pitg.group = tt.group),
+		  psir.submissionDate,
+		  (select count(*) 
+		  	from omis.presentenceinvestigation.domain.PresentenceInvestigationDelay delay
+		  	where delay.presentenceInvestigationRequest = psir))
+      from
+	omis.presentenceinvestigation.domain.PresentenceInvestigationRequest psir
+		inner join psir.category category
+		inner join psir.docket docket
+		inner join psir.assignedUser userAccount
+		inner join userAccount.user user
+		left outer join user.name personName
+		left outer join docket.person offender
+		left outer join offender.name offenderName
+		where userAccount = :assignedUser
+	 	and psir.submissionDate is null
 ]]></query>
 </hibernate-mapping>

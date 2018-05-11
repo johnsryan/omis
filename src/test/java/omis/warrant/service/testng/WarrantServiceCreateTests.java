@@ -32,18 +32,13 @@ import omis.address.service.delegate.AddressDelegate;
 import omis.address.service.delegate.ZipCodeDelegate;
 import omis.condition.domain.ConditionClause;
 import omis.condition.domain.ConditionTitle;
-import omis.condition.service.delegate.AgreementDelegate;
 import omis.condition.service.delegate.ConditionClauseDelegate;
-import omis.condition.service.delegate.ConditionDelegate;
 import omis.condition.service.delegate.ConditionTitleDelegate;
 import omis.country.domain.Country;
 import omis.country.service.delegate.CountryDelegate;
-import omis.court.service.delegate.CourtDelegate;
 import omis.courtcase.exception.CourtCaseExistsException;
-import omis.courtcase.service.delegate.CourtCaseDelegate;
 import omis.datatype.DateRange;
 import omis.docket.exception.DocketExistsException;
-import omis.docket.service.delegate.DocketDelegate;
 import omis.exception.DuplicateEntityFoundException;
 import omis.jail.domain.Jail;
 import omis.jail.domain.JailCategory;
@@ -94,22 +89,6 @@ public class WarrantServiceCreateTests
 	@Autowired
 	private PersonDelegate personDelegate;
 	
-	//for condition and courtCase creating for WarrantCauseViolations:
-	@Autowired
-	private ConditionDelegate conditionDelegate;
-	
-	@Autowired
-	private AgreementDelegate agreementDelegate;
-	
-	@Autowired
-	private CourtCaseDelegate courtCaseDelegate;
-	
-	@Autowired
-	private CourtDelegate courtDelegate;
-	
-	@Autowired
-	private DocketDelegate docketDelegate;
-	
 	@Autowired
 	private ConditionClauseDelegate conditionClauseDelegate;
 	
@@ -155,7 +134,7 @@ public class WarrantServiceCreateTests
 				"Grayson", "Richard", "J", null);
 		final String addressee = "Addressed To Someone, Somewhere";
 		final WarrantReasonCategory warrantReason = WarrantReasonCategory
-				.AUTHORIZATION_TO_PICKUP_AND_HOLD;
+				.AUTHORIZATION_TO_PICKUP_AND_HOLD_PROBATIONER;
 		final Boolean bondable = true;
 		final BigDecimal bondRecommendation = new BigDecimal("500");
 		
@@ -292,7 +271,7 @@ public class WarrantServiceCreateTests
 				"Grayson", "Richard", "J", null);
 		final String addressee = "Addressed To Someone, Somewhere";
 		final WarrantReasonCategory warrantReason = WarrantReasonCategory
-				.AUTHORIZATION_TO_PICKUP_AND_HOLD;
+				.AUTHORIZATION_TO_PICKUP_AND_HOLD_PROBATIONER;
 		final Boolean bondable = true;
 		final BigDecimal bondRecommendation = new BigDecimal("500");
 
@@ -383,7 +362,7 @@ public class WarrantServiceCreateTests
 				"Grayson", "Richard", "J", null);
 		final String addressee = "Addressed To Someone, Somewhere";
 		final WarrantReasonCategory warrantReason = WarrantReasonCategory
-				.AUTHORIZATION_TO_PICKUP_AND_HOLD;
+				.AUTHORIZATION_TO_PICKUP_AND_HOLD_PROBATIONER;
 		final Boolean bondable = true;
 		final BigDecimal bondRecommendation = new BigDecimal("500");
 		

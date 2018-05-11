@@ -51,6 +51,7 @@
 	<td><c:out value="${summary.docketValue}"/></td>
 	<td><fmt:message key="presentenceInvestigationRequestStatusLabel.${summary.status}"/></td>
 	<td><fmt:formatDate value="${summary.requestDate}" pattern="MM/dd/yyyy" /></td>
+	<td><fmt:formatDate value="${summary.expectedCompletionDate}" pattern="MM/dd/yyyy" /></td>
 	<td><fmt:formatDate value="${summary.sentenceDate}" pattern="MM/dd/yyyy" /></td>
 	<td><c:out value="${summary.category}"/></td>
 </tr>

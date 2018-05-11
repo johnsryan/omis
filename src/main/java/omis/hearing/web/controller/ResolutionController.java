@@ -46,7 +46,7 @@ import omis.hearing.domain.ImposedSanction;
 import omis.hearing.domain.Infraction;
 import omis.hearing.domain.InfractionPlea;
 import omis.hearing.domain.ResolutionClassificationCategory;
-import omis.hearing.domain.StaffAttendance;
+import omis.hearing.domain.UserAttendance;
 import omis.hearing.domain.component.Resolution;
 import omis.hearing.report.HearingSummaryReportService;
 import omis.hearing.report.ViolationSummaryReportService;
@@ -55,7 +55,7 @@ import omis.hearing.service.ResolutionService;
 import omis.hearing.web.form.GoToOption;
 import omis.hearing.web.form.ItemOperation;
 import omis.hearing.web.form.ResolutionForm;
-import omis.hearing.web.form.StaffAttendanceItem;
+import omis.hearing.web.form.UserAttendanceItem;
 import omis.hearing.web.form.ViolationItem;
 import omis.hearing.web.form.ViolationSelectionItem;
 import omis.hearing.web.form.ViolationsSelectForm;
@@ -64,7 +64,7 @@ import omis.offender.beans.factory.OffenderPropertyEditorFactory;
 import omis.offender.domain.Offender;
 import omis.offender.web.controller.delegate.OffenderSummaryModelDelegate;
 import omis.person.domain.Person;
-import omis.staff.domain.StaffAssignment;
+import omis.user.domain.UserAccount;
 import omis.util.StringUtility;
 import omis.violationevent.domain.ConditionViolation;
 import omis.violationevent.domain.DisciplinaryCodeViolation;
@@ -74,10 +74,10 @@ import omis.web.controller.delegate.BusinessExceptionHandlerDelegate;
 /**
  * Resolution Controller.
  * 
- *@author Annie Wahl
- *@version 0.1.3 (Apr 17, 2018)
- *@since OMIS 3.0
- *
+ * @author Annie Wahl
+ * @author Josh Divine
+ * @version 0.1.4 (May 3, 2018)
+ * @since OMIS 3.0
  */
 @Controller
 @RequestMapping("/hearing/resolution/")
@@ -94,11 +94,11 @@ public class ResolutionController {
 	private static final String RESOLUTION_ACTION_MENU_VIEW_NAME =
 			"/hearing/resolution/includes/resolutionActionMenu";
 	
-	private static final String STAFF_ATTENDANCE_ITEMS_ACTION_MENU_VIEW_NAME =
-			"/hearing/includes/staffAttendanceItemsActionMenu";
+	private static final String USER_ATTENDANCE_ITEMS_ACTION_MENU_VIEW_NAME =
+			"/hearing/resolution/includes/userAttendanceItemsActionMenu";
 	
-	private static final String STAFF_ATTENDANCE_ITEM_ROW_VIEW_NAME =
-			"/hearing/includes/staffAttendanceItemTableRow";
+	private static final String USER_ATTENDANCE_ITEM_ROW_VIEW_NAME =
+			"/hearing/resolution/includes/userAttendanceItemTableRow";
 	
 	private static final String VIOLATIONS_LIST_REDIRECT =
 			"redirect:/hearing/violations/list.html?offender=%d";
@@ -129,11 +129,11 @@ public class ResolutionController {
 	
 	private static final String INFRACTION_PLEAS_MODEL_KEY = "infractionPleas";
 	
-	private static final String STAFF_ATTENDANCE_ITEM_MODEL_KEY =
-			"staffAttendanceItem";
+	private static final String USER_ATTENDANCE_ITEM_MODEL_KEY =
+			"userAttendanceItem";
 	
-	private static final String STAFF_ATTENDANCE_ITEM_INDEX_MODEL_KEY =
-			"staffAttendanceItemIndex";
+	private static final String USER_ATTENDANCE_ITEM_INDEX_MODEL_KEY =
+			"userAttendanceItemIndex";
 	
 	private static final String RESOLUTION_FORM_MODEL_KEY =
 			"resolutionForm";
@@ -195,12 +195,12 @@ public class ResolutionController {
 	private PropertyEditorFactory hearingPropertyEditorFactory;
 	
 	@Autowired
-	@Qualifier("staffAttendancePropertyEditorFactory")
-	private PropertyEditorFactory staffAttendancePropertyEditorFactory;
+	@Qualifier("userAttendancePropertyEditorFactory")
+	private PropertyEditorFactory userAttendancePropertyEditorFactory;
 	
 	@Autowired
-	@Qualifier("staffAssignmentPropertyEditorFactory")
-	private PropertyEditorFactory staffAssignmentPropertyEditorFactory;
+	@Qualifier("userAccountPropertyEditorFactory")
+	private PropertyEditorFactory userAccountPropertyEditorFactory;
 	
 	@Autowired
 	@Qualifier("personPropertyEditorFactory")
@@ -361,7 +361,7 @@ public class ResolutionController {
 							hearing.getDate(), hearing.getCategory(),
 							hearing.getOfficer());
 				}
-				this.processStaffAttendanceItems(form.getStaffAttendanceItems(),
+				this.processUserAttendanceItems(form.getUserAttendanceItems(),
 						hearing);
 			}
 			for (ViolationItem item : form.getViolationItems()) {
@@ -373,7 +373,7 @@ public class ResolutionController {
 						case FORMAL:
 							resolution.setDate(hearing.getDate());
 							resolution.setAuthority(hearing.getOfficer()
-									.getStaffMember());
+									.getUser());
 							resolution.setDisposition(form
 								.getViolationItems().get(0).getDisposition());
 						case INFORMAL:
@@ -392,7 +392,7 @@ public class ResolutionController {
 							}
 							if (!ResolutionClassificationCategory.FORMAL.equals(
 									resolutionCategory)) {
-								resolution.setDescision(form
+								resolution.setDecision(form
 										.getViolationItems().get(0)
 										.getDecision());
 							}
@@ -404,7 +404,7 @@ public class ResolutionController {
 						case FORMAL:
 							resolution.setDate(hearing.getDate());
 							resolution.setAuthority(hearing.getOfficer()
-									.getStaffMember());
+									.getUser());
 							resolution.setDisposition(item.getDisposition());
 						case INFORMAL:
 							sanctionDescription = item.getSanction();
@@ -415,7 +415,7 @@ public class ResolutionController {
 							resolution.setAppealDate(item.getAppealDate());
 							if (!ResolutionClassificationCategory.FORMAL.equals(
 									resolutionCategory)) {
-								resolution.setDescision(item.getDecision());
+								resolution.setDecision(item.getDecision());
 								resolution.setAuthority(item.getAuthority());
 								resolution.setDate(item.getDate());
 							}
@@ -557,14 +557,14 @@ public class ResolutionController {
 								infraction.getHearing().getCategory(),
 								infraction.getHearing().getOfficer());
 					}
-					this.processStaffAttendanceItems(
-							form.getStaffAttendanceItems(),
+					this.processUserAttendanceItems(
+							form.getUserAttendanceItems(),
 							infraction.getHearing());
 					resolution.setDisposition(form.getViolationItem()
 							.getDisposition());
 					resolution.setDate(infraction.getHearing().getDate());
 					resolution.setAuthority(infraction.getHearing().getOfficer()
-							.getStaffMember());
+							.getUser());
 				case INFORMAL:
 					sanctionDescription = form.getViolationItem().getSanction();
 				case DISMISSED:
@@ -574,7 +574,7 @@ public class ResolutionController {
 							.getAppealDate());
 					if (!ResolutionClassificationCategory.FORMAL.equals(
 							resolutionCategory)) {
-						resolution.setDescision(form.getViolationItem()
+						resolution.setDecision(form.getViolationItem()
 								.getDecision());
 						resolution.setAuthority(form.getViolationItem()
 								.getAuthority());
@@ -668,35 +668,39 @@ public class ResolutionController {
 	}
 	
 	/**
-	 * Displays a staff attendance item row.
-	 * @param staffAttendanceItemIndex - Integer
-	 * @return ModelAndView - view for staff attendance item row
+	 * Displays a user attendance item row.
+	 * @param userAttendanceItemIndex - Integer
+	 * @return ModelAndView - view for user attendance item row
 	 */
-	@RequestMapping(value = "createStaffAttendanceItem.html",
+	@RequestMapping(value = "createUserAttendanceItem.html",
 			method = RequestMethod.GET)
-	public ModelAndView displayStaffAttendanceItemRow(@RequestParam(
-			value = "staffAttendanceItemIndex", required = true)
-			final Integer staffAttendanceItemIndex) {
+	public ModelAndView displayUserAttendanceItemRow(@RequestParam(
+			value = "userAttendanceItemIndex", required = true)
+			final Integer userAttendanceItemIndex) {
 		ModelMap map = new ModelMap();
-		StaffAttendanceItem noteItem = new StaffAttendanceItem();
-		noteItem.setItemOperation(ItemOperation.CREATE);
-		map.addAttribute(STAFF_ATTENDANCE_ITEM_MODEL_KEY, noteItem);
-		map.addAttribute(STAFF_ATTENDANCE_ITEM_INDEX_MODEL_KEY,
-				staffAttendanceItemIndex);
-		return new ModelAndView(STAFF_ATTENDANCE_ITEM_ROW_VIEW_NAME, map);
+		UserAttendanceItem userAttendanceItem = new UserAttendanceItem();
+		userAttendanceItem.setItemOperation(ItemOperation.CREATE);
+		map.addAttribute(USER_ATTENDANCE_ITEM_MODEL_KEY, userAttendanceItem);
+		map.addAttribute(USER_ATTENDANCE_ITEM_INDEX_MODEL_KEY,
+				userAttendanceItemIndex);
+		return new ModelAndView(USER_ATTENDANCE_ITEM_ROW_VIEW_NAME, map);
 	}
 	
 	/**
-	 * Returns a model and view of staff attendance items action menu.
-	 * @return ModelAndView - model and view of staff attendance items
+	 * Returns a model and view of user attendance items action menu.
+	 * @return ModelAndView - model and view of user attendance items
 	 * action menu
 	 */
-	@RequestMapping(value = "staffAttendanceItemsActionMenu.html",
+	@RequestMapping(value = "userAttendanceItemsActionMenu.html",
 			method = RequestMethod.GET)
-	public ModelAndView displayStaffAttendanceItemsActionMenu() {
+	public ModelAndView displayUserAttendanceItemsActionMenu(@RequestParam(
+			value = "userAttendanceItemIndex", required = true)
+			final Integer userAttendanceItemIndex) {
 		ModelMap map = new ModelMap();	
+		map.addAttribute(USER_ATTENDANCE_ITEM_INDEX_MODEL_KEY,
+				userAttendanceItemIndex);
 		return new ModelAndView(
-				STAFF_ATTENDANCE_ITEMS_ACTION_MENU_VIEW_NAME, map);
+				USER_ATTENDANCE_ITEMS_ACTION_MENU_VIEW_NAME, map);
 	}
 	
 	/* Helper Methods */
@@ -728,8 +732,8 @@ public class ResolutionController {
 		map.addAttribute(DISPOSITION_CATEGORIES_MODEL_KEY,
 				DispositionCategory.values());
 		map.addAttribute(HEARING_MODEL_KEY, hearing);
-		map.addAttribute(STAFF_ATTENDANCE_ITEM_INDEX_MODEL_KEY,
-				form.getStaffAttendanceItems().size());
+		map.addAttribute(USER_ATTENDANCE_ITEM_INDEX_MODEL_KEY,
+				form.getUserAttendanceItems().size());
 		map.addAttribute(HEARING_SUMMARY_MODEL_KEY,
 				this.hearingSummaryReportService.summarize(hearing));
 		return prepareResolutionMav(hearing.getSubject().getOffender(),
@@ -751,8 +755,8 @@ public class ResolutionController {
 		map.addAttribute(RESOLUTION_FORM_MODEL_KEY, form);
 		map.addAttribute(INFRACTION_PLEAS_MODEL_KEY,
 				this.resolutionService.findInfractionPleas());
-		map.addAttribute(STAFF_ATTENDANCE_ITEM_INDEX_MODEL_KEY,
-				form.getStaffAttendanceItems().size());
+		map.addAttribute(USER_ATTENDANCE_ITEM_INDEX_MODEL_KEY,
+				form.getUserAttendanceItems().size());
 		map.addAttribute(OFFENDER_MODEL_KEY, offender);
 		this.offenderSummaryModelDelegate.add(map, offender);
 		
@@ -802,8 +806,8 @@ public class ResolutionController {
 		map.addAttribute(RESOLUTION_FORM_MODEL_KEY, form);
 		map.addAttribute(INFRACTION_PLEAS_MODEL_KEY,
 				this.resolutionService.findInfractionPleas());
-		map.addAttribute(STAFF_ATTENDANCE_ITEM_INDEX_MODEL_KEY,
-				form.getStaffAttendanceItems().size());
+		map.addAttribute(USER_ATTENDANCE_ITEM_INDEX_MODEL_KEY,
+				form.getUserAttendanceItems().size());
 		map.addAttribute(OFFENDER_MODEL_KEY, offender);
 		this.offenderSummaryModelDelegate.add(map, offender);
 		
@@ -841,7 +845,7 @@ public class ResolutionController {
 			item.setInfraction(infraction);
 			
 			if (infraction.getResolution() != null) {
-				item.setDecision(infraction.getResolution().getDescision());
+				item.setDecision(infraction.getResolution().getDecision());
 				item.setDisposition(infraction.getResolution()
 						.getDisposition());
 				item.setReason(infraction.getResolution().getReason());
@@ -860,23 +864,23 @@ public class ResolutionController {
 			violationItems.add(item);
 		}
 		
-		List<StaffAttendanceItem> staffAttendanceItems =
-				new ArrayList<StaffAttendanceItem>();
-		List<StaffAttendance> staffAttended =
-				this.hearingService.findStaffAttendedByHearing(hearing);
-		for (StaffAttendance staff : staffAttended) {
-			StaffAttendanceItem item = new StaffAttendanceItem();
-			item.setStaffAttended(staff);
-			item.setStaff(staff.getStaff());
+		List<UserAttendanceItem> userAttendanceItems =
+				new ArrayList<UserAttendanceItem>();
+		List<UserAttendance> userAttended =
+				this.hearingService.findUserAttendedByHearing(hearing);
+		for (UserAttendance user : userAttended) {
+			UserAttendanceItem item = new UserAttendanceItem();
+			item.setUserAttended(user);
+			item.setUserAccount(user.getUserAccount());
 			item.setItemOperation(ItemOperation.UPDATE);
 			
-			staffAttendanceItems.add(item);
+			userAttendanceItems.add(item);
 		}
 		form.setViolationItems(violationItems);
 		form.setResolutionCategory(resolutionCategory);
 		form.setDate(hearing.getDate());
 		form.setInAttendance(hearing.getSubject().getInAttendance());
-		form.setStaffAttendanceItems(staffAttendanceItems);
+		form.setUserAttendanceItems(userAttendanceItems);
 		form.setGroupEdit(false);
 		
 		HearingStatus latestStatus =
@@ -959,20 +963,20 @@ public class ResolutionController {
 					.getDescription());
 			form.setInAttendance(infraction.getHearing().getSubject()
 					.getInAttendance());
-			List<StaffAttendanceItem> staffAttendanceItems =
-					new ArrayList<StaffAttendanceItem>();
-			List<StaffAttendance> staffAttended =
-					this.hearingService.findStaffAttendedByHearing(
+			List<UserAttendanceItem> userAttendanceItems =
+					new ArrayList<UserAttendanceItem>();
+			List<UserAttendance> userAttended =
+					this.hearingService.findUserAttendedByHearing(
 							infraction.getHearing());
-			for (StaffAttendance staff : staffAttended) {
-				StaffAttendanceItem item = new StaffAttendanceItem();
-				item.setStaffAttended(staff);
-				item.setStaff(staff.getStaff());
+			for (UserAttendance user : userAttended) {
+				UserAttendanceItem item = new UserAttendanceItem();
+				item.setUserAttended(user);
+				item.setUserAccount(user.getUserAccount());
 				item.setItemOperation(ItemOperation.UPDATE);
 				
-				staffAttendanceItems.add(item);
+				userAttendanceItems.add(item);
 			}
-			form.setStaffAttendanceItems(staffAttendanceItems);
+			form.setUserAttendanceItems(userAttendanceItems);
 		}
 		ViolationItem violation = new ViolationItem();
 		
@@ -995,7 +999,7 @@ public class ResolutionController {
 		violation.setAuthority(infraction.getResolution().getAuthority());
 		violation.setDate(infraction.getResolution().getDate());
 		violation.setPlea(infraction.getPlea());
-		violation.setDecision(infraction.getResolution().getDescision());
+		violation.setDecision(infraction.getResolution().getDecision());
 		violation.setDisposition(infraction.getResolution().getDisposition());
 		violation.setReason(infraction.getResolution().getReason());
 		violation.setAppealDate(infraction.getResolution().getAppealDate());
@@ -1008,30 +1012,30 @@ public class ResolutionController {
 	}
 	
 	/**
-	 * Creates, updates, and removes staff attendances based on their item
+	 * Creates, updates, and removes user attendances based on their item
 	 * operation.
-	 * @param staffAttendanceItems - list of staffAttendanceItems to be 
+	 * @param userAttendanceItems - list of userAttendanceItems to be 
 	 * processed
 	 * @param hearing - hearing for which the items are being processed
-	 * @throws DuplicateEntityFoundException - when a staff attendance already
+	 * @throws DuplicateEntityFoundException - when a user attendance already
 	 * exists for the hearing
 	 */
-	private void processStaffAttendanceItems(
-			final List<StaffAttendanceItem> staffAttendanceItems,
+	private void processUserAttendanceItems(
+			final List<UserAttendanceItem> userAttendanceItems,
 			final Hearing hearing) throws DuplicateEntityFoundException {
-		if (staffAttendanceItems != null) {
-			for (StaffAttendanceItem item : staffAttendanceItems) {
+		if (userAttendanceItems != null) {
+			for (UserAttendanceItem item : userAttendanceItems) {
 				if (ItemOperation.CREATE.equals(item.getItemOperation())) {
-					this.hearingService.createStaffAttendance(hearing,
-							item.getStaff());
+					this.hearingService.createUserAttendance(hearing,
+							item.getUserAccount());
 				} else if (ItemOperation.UPDATE.equals(
 						item.getItemOperation())) {
-					this.hearingService.updateStaffAttendance(
-							item.getStaffAttended(), item.getStaff());
+					this.hearingService.updateUserAttendance(
+							item.getUserAttended(), item.getUserAccount());
 				} else if (ItemOperation.REMOVE.equals(
 						item.getItemOperation())) {
-					this.hearingService.removeStaffAttendance(
-							item.getStaffAttended());
+					this.hearingService.removeUserAttendance(
+							item.getUserAttended());
 				}
 			}
 		}
@@ -1089,11 +1093,11 @@ public class ResolutionController {
 				this.personPropertyEditorFactory
 				.createPropertyEditor());
 		binder.registerCustomEditor(
-				StaffAttendance.class, this.staffAttendancePropertyEditorFactory
+				UserAttendance.class, this.userAttendancePropertyEditorFactory
 				.createPropertyEditor());
 		binder.registerCustomEditor(
-				StaffAssignment.class,
-				this.staffAssignmentPropertyEditorFactory
+				UserAccount.class,
+				this.userAccountPropertyEditorFactory
 				.createPropertyEditor());
 	}
 }

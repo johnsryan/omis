@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 function hearingNoteItemsCreateOnClick() {
 	$("#createHearingNoteItemLink").click(function() {
 		$.ajax(config.ServerConfig.getContextPath() + "/hearing/createHearingNoteItem.html",
@@ -141,43 +158,3 @@ function locationTypeChangeFunction() {
 		}
 	});
 }
-
-function applyStaffAssignmentSearch(input, target, targetLabel, clear, options) {
-	var msg = new common.MessageResolver("omis.search.msgs.search");
-	
-	if (!$(input).hasClass("lookup")) {
-		var settings = options;
-		settings = $.extend({ 
-			onSelect: function(event, ui) {
-				$(target).val(ui.item.value);
-				displaySelection(ui.item.label, input, targetLabel);
-				return false;
-			}}, options);
-		$(input).autocomplete({
-			autoFocus: true,
-			minLength: 4,
-			source: function(request, response) {
-				$.ajax({
-					url: config.ServerConfig.getContextPath() + "/staffSearch/searchByNonSpecified.json?searchCriteria="+request.term,
-					dataType: "json",
-					cache:false,
-					success: function(data) {
-						response($.map( data, function( item ) {
-							return {
-										label: item.lastName + ", " + item.firstName + " "+ item.titleName,
-										value: item.staffId
-							 		};}));},
-					error: function() {
-						displaySelection(msg.getMessage("noResults"), input, targetLabel);
-					}});},
-			select: settings.onSelect });
-		$(input).addClass("lookup");
-		
-		if (typeof clear != 'undefined') {
-			$(clear).on("click", function() {
-				clearFields($(target), $(input), $(targetLabel));
-				return false;
-		});}
-		return this;
-	}};
-

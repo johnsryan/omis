@@ -45,6 +45,7 @@ import omis.paroleeligibility.domain.EligibilityStatusCategory;
 import omis.paroleeligibility.domain.EligibilityStatusReason;
 import omis.paroleeligibility.domain.ParoleEligibility;
 import omis.paroleeligibility.domain.ParoleEligibilityNote;
+import omis.paroleeligibility.report.ParoleEligibilityReportService;
 import omis.paroleeligibility.service.ParoleEligibilityService;
 import omis.paroleeligibility.web.form.ParoleEligibilityForm;
 import omis.paroleeligibility.web.form.ParoleEligibilityNoteItem;
@@ -106,6 +107,8 @@ public class ManageParoleEligibilityController {
 	private static final String ELIGIBILITY_STATUSES_MODEL_KEY 
 		= "eligibilityStatuses";
 	
+	private static final String BOARD_HEARING_MODEL_KEY = "boardHearing";
+	
 	/* Message keys. */
 	
 	/* Services. */
@@ -113,6 +116,10 @@ public class ManageParoleEligibilityController {
 	@Autowired
 	@Qualifier("paroleEligibilityService")
 	private ParoleEligibilityService paroleEligibilityService;
+
+	@Autowired
+	@Qualifier("paroleEligibilityReportService")
+	private ParoleEligibilityReportService paroleEligibilityReportService;
 	
 	/* Helpers. */
 	
@@ -357,10 +364,18 @@ public class ManageParoleEligibilityController {
 			method = RequestMethod.GET)
 	public ModelAndView showParoleEligibilityActionMenu(
 			@RequestParam(value = "offender", required = true) 
-			final Offender offender) {
+			final Offender offender,
+			@RequestParam(value = "eligibility", required = false) 
+			final ParoleEligibility eligibility) {
 		ModelAndView mav = new ModelAndView(
 				PAROLE_ELIGIBILITY_ACTION_MENU_VIEW_NAME);
 		mav.addObject(OFFENDER_MODEL_KEY, offender);
+		if (eligibility != null) {
+			mav.addObject(PAROLE_ELIGIBILITY_MODEL_KEY, eligibility);
+			mav.addObject(BOARD_HEARING_MODEL_KEY, 
+					this.paroleEligibilityReportService
+					.findBoardHearingByParoleEligibility(eligibility));
+		}	
 		return mav;
 	}
 	

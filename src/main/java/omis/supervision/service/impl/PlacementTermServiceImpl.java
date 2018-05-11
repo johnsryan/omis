@@ -779,35 +779,34 @@ public class PlacementTermServiceImpl
 				Date searchEndDate
 					= DateManipulator.findLatest(endDate, oldEndDate);
 				
-				// Prepares to search for conflicting correctional status terms
-				
-				// TODO Should correctionalStatusTermOnEndDate be added to
-				// excludedCorrectionalStatusTerms? [SA]
-				List<CorrectionalStatusTerm> excludedCorrectionalStatusTerms
-					= new ArrayList<CorrectionalStatusTerm>();
-				if (correctionalStatusTermOnEndDate != null
-					&& DateRange.getEndDate(correctionalStatusTermOnEndDate
-							.getDateRange()) != null
-					&& startDate != null && !correctionalStatusTermOnEndDate
-						.getDateRange().getEndDate().equals(endDate)) {
-					
-					// Exclude correctional status term with start date of end
-					// date from search for conflicting correctional status
-					// terms
-					CorrectionalStatusTerm correctionalStatusTermWithStartDate;
-					correctionalStatusTermWithStartDate
-						= this.correctionalStatusTermDao
-							.findForOffenderWithStartDate(offender,
-									correctionalStatusTermOnEndDate
-										.getDateRange().getEndDate());
-					if (correctionalStatusTermWithStartDate != null) {
-						excludedCorrectionalStatusTerms.add(
-								correctionalStatusTermWithStartDate);
-					}
-				}
-				
-				// Performs search - throws exception if conflicts are found
+				// Performs search for conflicting correctional status term -
+				// throws exception if conflicts are found
 				if (searchStartDate != null || searchEndDate != null) {
+					
+					// TODO Should correctionalStatusTermOnEndDate be added to
+					// excludedCorrectionalStatusTerms? [SA]
+					List<CorrectionalStatusTerm> excludedCorrectionalStatusTerms
+						= new ArrayList<CorrectionalStatusTerm>();
+					if (correctionalStatusTermOnEndDate != null
+						&& DateRange.getEndDate(correctionalStatusTermOnEndDate
+								.getDateRange()) != null
+						&& startDate != null && !correctionalStatusTermOnEndDate
+							.getDateRange().getEndDate().equals(endDate)) {
+						
+						// Exclude correctional status term with start date of
+						// end  date from search for conflicting correctional
+						// status  terms
+						CorrectionalStatusTerm
+						correctionalStatusTermWithStartDate
+							= this.correctionalStatusTermDao
+								.findForOffenderWithStartDate(offender,
+										correctionalStatusTermOnEndDate
+											.getDateRange().getEndDate());
+						if (correctionalStatusTermWithStartDate != null) {
+							excludedCorrectionalStatusTerms.add(
+									correctionalStatusTermWithStartDate);
+						}
+					}
 					long count;
 					if (excludedCorrectionalStatusTerms.size() > 0) {
 						count = this.correctionalStatusTermDao
@@ -929,37 +928,37 @@ public class PlacementTermServiceImpl
 				Date searchEndDate
 					= DateManipulator.findLatest(endDate, oldEndDate);
 				
-				// Prepares to search for conflicting supervisory organization
-				// terms
-				// TODO Should supervisoryOrganizationTermOnEndDate be added to
-				// excludedSupervisoryOrganizationTerms? [SA]
-				List<SupervisoryOrganizationTerm>
-					excludedSupervisoryOrganizationTerms
-						= new ArrayList<SupervisoryOrganizationTerm>();
-				if (supervisoryOrganizationTermOnEndDate != null
-					&& DateRange.getEndDate(supervisoryOrganizationTermOnEndDate
-							.getDateRange()) != null
-					&& startDate != null && supervisoryOrganizationTermOnEndDate
-						.getDateRange().getEndDate().equals(endDate)) {
-					
-					// Exclude supervisory organization term with start date of
-					// end  date from search for conflicting supervisory
-					// organization  terms
-					SupervisoryOrganizationTerm
-					supervisoryOrganizationTermWithStartDate;
-					supervisoryOrganizationTermWithStartDate
-						= this.supervisoryOrganizationTermDao
-							.findForOffenderWithStartDate(offender,
-									supervisoryOrganizationTermOnEndDate
-										.getDateRange().getEndDate());
-					if (supervisoryOrganizationTermWithStartDate != null) {
-						excludedSupervisoryOrganizationTerms.add(
-								supervisoryOrganizationTermWithStartDate);
-					}
-				}
-				
-				// Performs search - throws exception if conflicts are found
+				// Performs search for conflicting supervisory organization
+				// terms - throws exception if conflicts are found
 				if (searchStartDate != null || searchEndDate != null) {
+
+					// TODO Should supervisoryOrganizationTermOnEndDate be added
+					// to excludedSupervisoryOrganizationTerms? [SA]
+					List<SupervisoryOrganizationTerm>
+						excludedSupervisoryOrganizationTerms
+							= new ArrayList<SupervisoryOrganizationTerm>();
+					if (supervisoryOrganizationTermOnEndDate != null
+						&& DateRange.getEndDate(
+								supervisoryOrganizationTermOnEndDate
+									.getDateRange()) != null
+						&& startDate != null
+							&& supervisoryOrganizationTermOnEndDate
+								.getDateRange().getEndDate().equals(endDate)) {
+						
+						// Exclude supervisory organization term with start date
+						// of end date from search for conflicting supervisory
+						// organization  terms
+						SupervisoryOrganizationTerm
+						supervisoryOrganizationTermWithStartDate
+							= this.supervisoryOrganizationTermDao
+								.findForOffenderWithStartDate(offender,
+										supervisoryOrganizationTermOnEndDate
+											.getDateRange().getEndDate());
+						if (supervisoryOrganizationTermWithStartDate != null) {
+							excludedSupervisoryOrganizationTerms.add(
+									supervisoryOrganizationTermWithStartDate);
+						}
+					}
 					long count;
 					if (excludedSupervisoryOrganizationTerms.size() > 0) {
 						count = this.supervisoryOrganizationTermDao

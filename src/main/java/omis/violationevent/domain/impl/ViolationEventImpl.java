@@ -3,7 +3,7 @@ package omis.violationevent.domain.impl;
 import omis.audit.domain.CreationSignature;
 import omis.audit.domain.UpdateSignature;
 import omis.offender.domain.Offender;
-import omis.supervision.domain.SupervisoryOrganization;
+import omis.organization.domain.Organization;
 import omis.violationevent.domain.ViolationEvent;
 import omis.violationevent.domain.ViolationEventCategory;
 import omis.violationevent.domain.component.Event;
@@ -11,8 +11,9 @@ import omis.violationevent.domain.component.Event;
 /**
  * ViolationEventImpl.java
  * 
- *@author Annie Jacques 
- *@version 0.1.0 (Aug 30, 2017)
+ *@author Annie Jacques
+ *@author Ryan Johns 
+ *@version 0.1.1 (May 10, 2018)
  *@since OMIS 3.0
  *
  */
@@ -22,7 +23,7 @@ public class ViolationEventImpl implements ViolationEvent {
 
 	private Offender offender;
 	
-	private SupervisoryOrganization jurisdiction;
+	private Organization jurisdiction;
 	
 	private Event event;
 	
@@ -90,13 +91,13 @@ public class ViolationEventImpl implements ViolationEvent {
 
 	/**{@inheritDoc} */
 	@Override
-	public SupervisoryOrganization getJurisdiction() {
+	public Organization getJurisdiction() {
 		return this.jurisdiction;
 	}
 
 	/**{@inheritDoc} */
 	@Override
-	public void setJurisdiction(final SupervisoryOrganization jurisdiction) {
+	public void setJurisdiction(final Organization jurisdiction) {
 		this.jurisdiction = jurisdiction;
 	}
 

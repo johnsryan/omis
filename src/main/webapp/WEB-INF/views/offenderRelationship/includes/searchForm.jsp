@@ -27,9 +27,9 @@
 			</c:otherwise>
 		</c:choose>
 		<label class="fieldLabel" for="searchTypeName" id="searchTypeNameLabel"><fmt:message key="searchByNameLabel" bundle="${offenderRelationshipBundle}"/></label>
-		<input id="searchTypeName" name="lastName" value="${offenderRelationshipSearchForm.lastName}"/>
+		<input type="text" id="searchTypeName" name="lastName" value="${offenderRelationshipSearchForm.lastName}"/>
 		<label class="" for="searchTypeFirstName"><fmt:message key="searchByFirstNameLabel" bundle="${offenderRelationshipBundle}"/></label>
-		<input id="searchTypeFirstName" name="firstName" value="${offenderRelationshipSearchForm.firstName}"/>
+		<input type="text" id="searchTypeFirstName" name="firstName" value="${offenderRelationshipSearchForm.firstName}"/>
 		<form:errors path="offenderRelationshipSearchForm.lastName" cssClass="error"/>
 	</span>
 	<span class="fieldGroup">
@@ -42,7 +42,7 @@
 			</c:otherwise>
 		</c:choose>
 		<label class="fieldLabel" for="searchTypeOffenderNumber" id="searchTypeOffenderNumberLabel"><fmt:message key="searchByOffenderNumberLabel" bundle="${offenderRelationshipBundle}"/></label>
-		<input id="searchOffenderNumber" name="offenderNumber" value="${offenderRelationshipSearchForm.offenderNumber}"/>
+		<input type="text" id="searchOffenderNumber" name="offenderNumber" value="${offenderRelationshipSearchForm.offenderNumber}"/>
 		<form:errors path="offenderRelationshipSearchForm.offenderNumber" cssClass="error"/>
 	</span>
 	<span class="fieldGroup">
@@ -55,7 +55,7 @@
 			</c:otherwise>
 		</c:choose>
 		<label class="fieldLabel" for="searchTypeSocialSecurityNumber" id="searchTypeSocialSecurityNumberLabel"><fmt:message key="searchBySocialSecurityNumber" bundle="${offenderRelationshipBundle}"/></label>
-		<input id="searchSocialSecurityNumber" name="socialSecurityNumber" value="${offenderRelationshipSearchForm.socialSecurityNumber}"/>
+		<input type="text" id="searchSocialSecurityNumber" name="socialSecurityNumber" value="${offenderRelationshipSearchForm.socialSecurityNumber}"/>
 		<form:errors path="offenderRelationshipSearchForm.socialSecurityNumber" cssClass="error"/>
 	</span>
 	<span class="fieldGroup">
@@ -68,7 +68,7 @@
 			</c:otherwise>
 		</c:choose>
 		<label class="fieldLabel" for="searchTypeBirthDate" id="searchTypeBirthDateLabel"><fmt:message key="searchByBirthDateLabel" bundle="${offenderRelationshipBundle}"/></label>
-		<input id="searchBirthDate" name="birthDate" class="date" value="<fmt:formatDate value='${offenderRelationshipSearchForm.birthDate}' pattern='MM/dd/yyyy'/>"/>
+		<input type="text" id="searchBirthDate" name="birthDate" class="date" value="<fmt:formatDate value='${offenderRelationshipSearchForm.birthDate}' pattern='MM/dd/yyyy'/>"/>
 		<form:errors path="offenderRelationshipSearchForm.birthDate" cssClass="error"/>
 	</span>
 	<p class="buttons">

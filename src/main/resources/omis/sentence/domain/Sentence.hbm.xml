@@ -109,7 +109,8 @@
 		where
 			sentence.conviction = :conviction
 		and
-			sentence.effectiveDate = :effectiveDate
+			(sentence.effectiveDate = :effectiveDate
+				or (sentence.effectiveDate is null and :effectiveDate is null))
 		and
 			sentence.active = 'Y'
 	]]></query>
@@ -119,7 +120,8 @@
 		where
 			sentence.conviction = :conviction
 		and
-			sentence.effectiveDate = :effectiveDate
+			(sentence.effectiveDate = :effectiveDate
+				or (sentence.effectiveDate is null and :effectiveDate is null))
 		and
 			sentence.active = 'Y'
 		and

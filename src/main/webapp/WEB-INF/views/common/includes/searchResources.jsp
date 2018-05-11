@@ -12,7 +12,7 @@
 	<c:if test="${empty searchLIB}">
 		<c:set var="searchLIB" value="true" scope="request"/>
 		<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/search/style/offenderSearchList.css?VERSION=4"/>
-		<script type="text/javascript" src="${pageContext.request.contextPath}/resources/common/scripts/JQuery/jquery.omis.search.js?VERSION=10"></script>
+		<script type="text/javascript" src="${pageContext.request.contextPath}/resources/common/scripts/JQuery/jquery.omis.search.js?VERSION=11"></script>
 		<script type="text/javascript" src="${pageContext.request.contextPath}/resources/common/scripts/search.js?VERSION=5"></script>		
 		<script type="text/javascript" src="${pageContext.request.contextPath}/resources/caseload/scripts/JQuery/jquery.omis.caseloadSearch.js?VERSION=1"></script>
 		<script type="text/javascript" src="${pageContext.request.contextPath}/resources/caseload/scripts/caseloadSearch.js?VERSION=1"></script>

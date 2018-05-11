@@ -119,8 +119,8 @@ ui.search = new function () {
 							dataType: "json",
 							cache:false,
 							success: function(data) {
-								if (data.personId != null && data.personId !== undefined) {
-									$(target).val(data.personId);
+								if (data.userId != null && data.userId !== undefined) {
+									$(target).val(data.userId);
 									displaySelection(data.lastName + ", " + data.firstName + " (" + data.username + ")", input, targetLabel);
 								} else {
 									displaySelection(msg.getMessage("noResults"), input, targetLabel);

@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 package omis.hearing.domain;
 
 import java.util.Date;
@@ -6,15 +23,15 @@ import omis.audit.domain.Creatable;
 import omis.audit.domain.Updatable;
 import omis.hearing.domain.component.Subject;
 import omis.location.domain.Location;
-import omis.staff.domain.StaffAssignment;
+import omis.user.domain.UserAccount;
 
 /**
- * Hearing.java
+ * Hearing.
  * 
- *@author Annie Jacques 
- *@version 0.1.1 (Apr 17, 2017)
- *@since OMIS 3.0
- *
+ * @author Annie Wahl 
+ * @author Josh Divine
+ * @version 0.1.2 (May 3, 2018)
+ * @since OMIS 3.0
  */
 public interface Hearing extends Creatable, Updatable{
 	
@@ -43,17 +60,19 @@ public interface Hearing extends Creatable, Updatable{
 	public void setDate(Date date);
 	
 	/**
-	 * Returns the hearing Officer
-	 * @return officer - StaffAssignment
+	 * Returns the hearing officer.
+	 * 
+	 * @return user account
 	 */
-	public StaffAssignment getOfficer();
+	public UserAccount getOfficer();
 	
 	
 	/**
-	 * Sets the hearing Officer
-	 * @param officer - StaffAssignment
+	 * Sets the hearing officer.
+	 * 
+	 * @param officer user account
 	 */
-	public void setOfficer(StaffAssignment officer);
+	public void setOfficer(UserAccount officer);
 	
 	/**
 	 * Returns the hearing Category

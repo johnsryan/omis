@@ -40,8 +40,9 @@ import omis.report.web.controller.delegate.ReportControllerDelegate;
  * Report presentence investigation request controller.
  * 
  * @author Joel Norris
- * @author Annie Jacques
- * @version 0.1.2 (May 18, 2017)
+ * @author Annie Wahl
+ * @author Josh Divine
+ * @version 0.1.3 (May 2, 2018)
  * @since OMIS 3.0
  */
 @Controller
@@ -193,7 +194,8 @@ public class ReportPresentenceInvestigationRequestController {
 		
 		if(offender == null && assignedUser != null){
 			summaries = this.presentenceInvestigationRequestReportService
-			.findPresentenceInvestigationRequestSummariesByUser(assignedUser);
+					.findUnsubmittedPresentenceInvestigationRequestSummariesByUser(
+							assignedUser);
 			map.addAttribute(ASSIGNED_USER_MODEL_KEY, assignedUser);
 		}
 		else if(offender != null){
@@ -208,8 +210,9 @@ public class ReportPresentenceInvestigationRequestController {
 		else if(offender == null && assignedUser == null){
 			UserAccount user = this.retrieveUserAccount();
 			summaries = this.presentenceInvestigationRequestReportService
-				.findPresentenceInvestigationRequestSummariesByUser(user);
-				map.addAttribute(ASSIGNED_USER_MODEL_KEY, user);
+					.findUnsubmittedPresentenceInvestigationRequestSummariesByUser(
+							user);
+			map.addAttribute(ASSIGNED_USER_MODEL_KEY, user);
 		}
 		map.addAttribute(SUMMARIES_MODEL_KEY, summaries);
 		

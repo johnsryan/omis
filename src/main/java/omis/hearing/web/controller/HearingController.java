@@ -49,7 +49,7 @@ import omis.hearing.domain.ImposedSanction;
 import omis.hearing.domain.Infraction;
 import omis.hearing.domain.LocationType;
 import omis.hearing.domain.ResolutionClassificationCategory;
-import omis.hearing.domain.StaffAttendance;
+import omis.hearing.domain.UserAttendance;
 import omis.hearing.domain.component.Resolution;
 import omis.hearing.service.HearingService;
 import omis.hearing.web.form.GoToOption;
@@ -67,7 +67,7 @@ import omis.offender.web.controller.delegate.OffenderSummaryModelDelegate;
 import omis.report.ReportFormat;
 import omis.report.ReportRunner;
 import omis.report.web.controller.delegate.ReportControllerDelegate;
-import omis.staff.domain.StaffAssignment;
+import omis.user.domain.UserAccount;
 import omis.violationevent.domain.ConditionViolation;
 import omis.violationevent.domain.DisciplinaryCodeViolation;
 import omis.web.controller.delegate.BusinessExceptionHandlerDelegate;
@@ -75,10 +75,10 @@ import omis.web.controller.delegate.BusinessExceptionHandlerDelegate;
 /**
  * Hearing Controller.
  * 
- *@author Annie Wahl
- *@version 0.1.2 (Apr 17, 2018)
- *@since OMIS 3.0
- *
+ * @author Annie Wahl
+ * @author Josh Divine
+ * @version 0.1.3 (May 3, 2018)
+ * @since OMIS 3.0
  */
 @Controller
 @RequestMapping("/hearing/")
@@ -220,8 +220,8 @@ public class HearingController {
 	private PropertyEditorFactory conditionViolationPropertyEditorFactory;
 	
 	@Autowired
-	@Qualifier("staffAssignmentPropertyEditorFactory")
-	private PropertyEditorFactory staffAssignmentPropertyEditorFactory;
+	@Qualifier("userAccountPropertyEditorFactory")
+	private PropertyEditorFactory userAccountPropertyEditorFactory;
 	
 	/* Helpers. */
 	
@@ -319,7 +319,7 @@ public class HearingController {
 	 * @return ModelAndView - hearing list on successful hearing creation, or
 	 * back to hearing creation on error
 	 * @throws DuplicateEntityFoundException - when hearing, hearing note, or
-	 * staff attended already exist with provided parameters
+	 * user attended already exist with provided parameters
 	 */
 	@RequestMapping(value = "/create.html", method = RequestMethod.POST)
 	@PreAuthorize("hasRole('HEARING_CREATE') or hasRole('ADMIN')")
@@ -450,7 +450,7 @@ public class HearingController {
 	 * @return ModelAndView - hearing list on successful hearing update, or
 	 * back to hearing editing on error
 	 * @throws DuplicateEntityFoundException - when hearing, hearing note, or
-	 * staff attended already exist with provided parameters
+	 * user attended already exist with provided parameters
 	 */
 	@RequestMapping(value = "/edit.html", method = RequestMethod.POST)
 	@PreAuthorize("hasRole('HEARING_EDIT') or hasRole('ADMIN')")
@@ -549,16 +549,16 @@ public class HearingController {
 		
 		List<HearingNote> hearingNotes = this.hearingService
 				.findHearingNotesByHearing(hearing);
-		List<StaffAttendance> staffAttended = this.hearingService
-				.findStaffAttendedByHearing(hearing);
+		List<UserAttendance> userAttended = this.hearingService
+				.findUserAttendedByHearing(hearing);
 		List<Infraction> infractions = this.hearingService
 				.findInfractionsByHearing(hearing);
 		
 		for (HearingNote note : hearingNotes) {
 			this.hearingService.removeHearingNote(note);
 		}
-		for (StaffAttendance staff : staffAttended) {
-			this.hearingService.removeStaffAttendance(staff);
+		for (UserAttendance user : userAttended) {
+			this.hearingService.removeUserAttendance(user);
 		}
 		for (Infraction infraction : infractions) {
 			ImposedSanction imposedSanction = this.hearingService
@@ -973,8 +973,8 @@ public class HearingController {
 				this.conditionViolationPropertyEditorFactory
 				.createPropertyEditor());
 		binder.registerCustomEditor(
-				StaffAssignment.class,
-				this.staffAssignmentPropertyEditorFactory
+				UserAccount.class,
+				this.userAccountPropertyEditorFactory
 				.createPropertyEditor());
 	}
 }

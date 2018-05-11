@@ -107,7 +107,7 @@ public class ReportParoleBoardItineraryController {
 				new ParoleBoardItinerarySearchForm();
 		if (date != null) {
 			form.setDate(date);
-			form.setSingleDate(true);
+			form.setSingleDate(false);
 			paroleBoardItineraries = this
 					.paroleBoardItinerarySummaryReportService
 					.findParoleBoardItineraryByEffectiveDate(date);
@@ -117,16 +117,12 @@ public class ReportParoleBoardItineraryController {
 			form.setSingleDate(false);
 			paroleBoardItineraries = this
 					.paroleBoardItinerarySummaryReportService
-					.findParoleBoardItineraryByDateRange(startDate, endDate);
+					.findParoleBoardItineraryByDateRange(null, null);
 		} else {
-			DateManipulator dateManipulator = new DateManipulator(new Date());
-			dateManipulator.setToEarliestTimeInDay();
-			form.setDate(dateManipulator.getDate());
-			form.setSingleDate(true);
+			form.setSingleDate(false);
 			paroleBoardItineraries = this
 					.paroleBoardItinerarySummaryReportService
-					.findParoleBoardItineraryByEffectiveDate(dateManipulator
-							.getDate());
+					.findParoleBoardItineraryByDateRange(null, null);
 		}
 		return prepareModelAndView(form, paroleBoardItineraries);
 	}
