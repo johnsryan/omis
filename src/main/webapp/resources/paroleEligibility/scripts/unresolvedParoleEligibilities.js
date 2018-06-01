@@ -24,7 +24,7 @@
  * Since: OMIS 3.0
  */
 window.onload = function() {
-	//applyActionMenu(document.getElementById("actionMenuLink"));
+	applyActionMenu(document.getElementById("actionMenuLink"));
 	var paroleEligibilitiesTableBody = document.getElementById("paroleEligibilities");
 	var rowLinks = paroleEligibilitiesTableBody.getElementsByTagName("a");
 	for (var rowLinkIndex = 0; rowLinkIndex < rowLinks.length; rowLinkIndex++) {

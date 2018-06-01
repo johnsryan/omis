@@ -40,7 +40,7 @@
 		</sec:authorize>
 		<sec:authorize access="hasRole('CHRONOLOGICAL_NOTE_VIEW') or hasRole('ADMIN')">
 			<li>
-				<a href="${pageContext.request.contextPath}/chronologicalNote/chronologicalNoteDetailsReport.html?chronologicalNote=${note.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="chronologicalNoteDetailsReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/chronologicalNote/chronologicalNoteDetailsReport.html?chronologicalNote=${note.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="chronologicalNoteDetailsReportLinkLabel"/></a>
 			</li>
 		</sec:authorize>			
 	</ul>

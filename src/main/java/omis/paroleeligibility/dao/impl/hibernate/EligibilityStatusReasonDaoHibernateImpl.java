@@ -23,13 +23,15 @@ import org.hibernate.SessionFactory;
 
 import omis.dao.impl.hibernate.GenericHibernateDaoImpl;
 import omis.paroleeligibility.dao.EligibilityStatusReasonDao;
+import omis.paroleeligibility.domain.EligibilityStatusCategory;
 import omis.paroleeligibility.domain.EligibilityStatusReason;
 
 /**
  * Hibernate implementation of data access object for eligibility status reason.
  *
  * @author Trevor Isles
- * @version 0.1.0 (Nov 8, 2017)
+ * @author Annie Wahl
+ * @version 0.1.1 (May 23, 2018)
  * @since OMIS 3.0
  */
 public class EligibilityStatusReasonDaoHibernateImpl 
@@ -48,9 +50,14 @@ public class EligibilityStatusReasonDaoHibernateImpl
 		FIND_ELIGIBILITY_STATUS_REASON_EXLCUDING_QUERY_NAME
 			= "findEligibilityStatusReasonExcluding";
 	
+	private static final String FIND_BY_STATUS_CATEGORY_QUERY_NAME =
+			"findEligibilityStatusReasonsByStatusCategory";
+	
 	/* Parameter names */
 	
 	private static final String NAME_PARAM_NAME = "name";
+	
+	private static final String STATUS_CATEGORY_PARAM_NAME = "statusCategory";
 	
 	private static final String EXCLUDED_REASON_PARAM_NAME
 		= "excludedReason";
@@ -86,11 +93,12 @@ public class EligibilityStatusReasonDaoHibernateImpl
 	/** {@inheritDoc} */
 	@Override
 	public EligibilityStatusReason findEligibilityStatusReason(
-			final String name) {
+			final String name, final EligibilityStatusCategory statusCategory) {
 		EligibilityStatusReason reason = (EligibilityStatusReason)
 		this.getSessionFactory().getCurrentSession()
 			.getNamedQuery(FIND_ELIGIBILITY_STATUS_REASON_QUERY_NAME)
 			.setParameter(NAME_PARAM_NAME, name)
+			.setParameter(STATUS_CATEGORY_PARAM_NAME, statusCategory)
 			.uniqueResult();
 		return reason;
 	}
@@ -99,15 +107,29 @@ public class EligibilityStatusReasonDaoHibernateImpl
 	@Override
 	public EligibilityStatusReason findEligibilityStatusReasonExcluding(
 			final EligibilityStatusReason excludedReason,
-			final String name) {
+			final String name, final EligibilityStatusCategory statusCategory) {
 		EligibilityStatusReason reason = (EligibilityStatusReason)
 		this.getSessionFactory().getCurrentSession()
 			.getNamedQuery(FIND_ELIGIBILITY_STATUS_REASON_EXLCUDING_QUERY_NAME)
 			.setParameter(NAME_PARAM_NAME, name)
+			.setParameter(STATUS_CATEGORY_PARAM_NAME, statusCategory)
 			.setParameter(EXCLUDED_REASON_PARAM_NAME, 
 					excludedReason)
 			.uniqueResult();
 		return reason;
 	}
 
+	/**{@inheritDoc} */
+	@Override
+	public List<EligibilityStatusReason> findByStatusCategory(
+			final EligibilityStatusCategory statusCategory) {
+		@SuppressWarnings("unchecked")
+		List<EligibilityStatusReason> reasons = this.getSessionFactory()
+			.getCurrentSession()
+			.getNamedQuery(FIND_BY_STATUS_CATEGORY_QUERY_NAME)
+			.setParameter(STATUS_CATEGORY_PARAM_NAME, statusCategory)
+			.list();
+		return reasons;
+	}
+	
 }

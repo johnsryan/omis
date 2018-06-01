@@ -10,7 +10,7 @@
 <fmt:setBundle var="contactBundle" basename="omis.contact.msgs.contact"/>
 <c:if test="${not empty onlineAccountItem.operation}">
 	<c:set var="rowClass" value="${'REMOVE' eq onlineAccountItem.operation.name ? 'removeRow' : ''}"/>
-	<tr id="onlineAccountItems[${onlineAccountItemIndex}].row">
+	<tr id="onlineAccountItems[${onlineAccountItemIndex}].row" class="${rowClass}">
 		<td>
 			<a id="onlineAccountItems[${onlineAccountItemIndex}].removeLink" class="removeLink" href="${pageContext.request.contextPath}/offenderConctact/contact/removeOnlineAccount.html?onlineAccount=${onlineAccountItem.onlineAccount.id}" title="<fmt:message key='removeLink' bundle='${commonBundle}'/>"></a>
 			<input id="onlineAccountItems[${onlineAccountItemIndex}].onlineAccount" name="onlineAccountItems[${onlineAccountItemIndex}].onlineAccount" type="hidden" value="${onlineAccountItem.onlineAccount.id}"/>

@@ -36,7 +36,7 @@ window.onload = function() {
 		correctionalStatus.onchange = function() {
 			var elt = this;
 			var allowSupervisoryOrganization = document.getElementById("allowSupervisoryOrganization");
-			if (allowSupervisoryOrganization.value && allowState.value) {
+			if (allowSupervisoryOrganization.value =="true" && allowState.value == "true") {
 				populateSupervisoryOrganizations(elt.options[elt.selectedIndex].value, state.options[state.selectedIndex].value);
 			}
 			if (allowStatusFields.value == "true") {
@@ -44,7 +44,10 @@ window.onload = function() {
 				toggleStatusDateAndReturnedByStatus(status);
 			}
 			populateStartChangeReasons(fromCorrectionalStatus, elt.options[elt.selectedIndex].value);
-			populateEndChangeReasons(elt.options[elt.selectedIndex].value);
+			var allowEndChangeReason = document.getElementById("allowEndChangeReason");
+			if (allowEndChangeReason.value == "true") {
+				populateEndChangeReasons(elt.options[elt.selectedIndex].value);
+			}
 			var locationRequired;
 			if (elt.options[elt.selectedIndex].value != null) {
 				var url = config.ServerConfig.getContextPath() + "/supervision/placementTerm/isLocationRequiredForCorrectionalStatus.json?correctionalStatus=" + elt.options[elt.selectedIndex].value;
@@ -75,7 +78,7 @@ window.onload = function() {
 			}
 		};
 	}
-	if (allowState.value) {
+	if (allowState.value == "true") {
 		state.onchange = function() {
 			var elt = this;
 			var correctionalStatusValue;

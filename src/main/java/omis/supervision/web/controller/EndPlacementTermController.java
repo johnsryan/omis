@@ -229,10 +229,11 @@ public class EndPlacementTermController {
 			final PlacementTerm placementTerm,
 			final EndPlacementTermForm endPlacementTermForm,
 			final Errors errors) {
-		if (placementTerm.getDateRange().getStartDate().after(
-				DateManipulator.getDateAtTimeOfDay(
-						endPlacementTermForm.getEndDate(),
-						endPlacementTermForm.getEndTime()))) {
+		if (endPlacementTermForm.getEndDate() != null
+				&& placementTerm.getDateRange().getStartDate().after(
+						DateManipulator.getDateAtTimeOfDay(
+								endPlacementTermForm.getEndDate(),
+								endPlacementTermForm.getEndTime()))) {
 			errors.rejectValue("endTime",
 					"endPlacementTermForm.endDate.beforeStartDate");
 		}

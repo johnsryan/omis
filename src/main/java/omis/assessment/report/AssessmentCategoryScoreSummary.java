@@ -41,6 +41,10 @@ public class AssessmentCategoryScoreSummary implements Serializable {
 	
 	private final BigDecimal assessmentCategoryScoreValue;
 	
+	private final BigDecimal assessmentRatingMin;
+	
+	private final BigDecimal assessmentRatingMax;
+	
 	/**
 	 * Instantiates an assessment category score summary with the specified 
 	 * parameters.
@@ -55,12 +59,16 @@ public class AssessmentCategoryScoreSummary implements Serializable {
 			final String ratingCategoryDescription,
 			final String ratingRankName,
 			final String assessmentRatingDescription,
-			final BigDecimal assessmentCategoryScoreValue) {
+			final BigDecimal assessmentCategoryScoreValue,
+			final BigDecimal assessmentRatingMin,
+			final BigDecimal assessmentRatingMax) {
 		this.assessmentCategoryScoreId = assessmentCategoryScoreId;
 		this.ratingCategoryDescription = ratingCategoryDescription;
 		this.ratingRankName = ratingRankName;
 		this.assessmentRatingDescription = assessmentRatingDescription;
 		this.assessmentCategoryScoreValue = assessmentCategoryScoreValue;
+		this.assessmentRatingMin = assessmentRatingMin;
+		this.assessmentRatingMax = assessmentRatingMax;
 	}
 
 	/**
@@ -107,4 +115,22 @@ public class AssessmentCategoryScoreSummary implements Serializable {
 	public BigDecimal getAssessmentCategoryScoreValue() {
 		return assessmentCategoryScoreValue;
 	}
+
+	/**
+	 * Returns the assessmentRatingMin.
+	 * @return assessmentRatingMin - BigDecimal
+	 */
+	public BigDecimal getAssessmentRatingMin() {
+		return this.assessmentRatingMin;
+	}
+
+	/**
+	 * Returns the assessmentRatingMax.
+	 * @return assessmentRatingMax - BigDecimal
+	 */
+	public BigDecimal getAssessmentRatingMax() {
+		return this.assessmentRatingMax;
+	}
+	
+	
 }

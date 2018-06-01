@@ -20,7 +20,7 @@
 		<sec:authorize access="hasRole('CUSTODY_REVIEW_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty offender}">
 			<li>
-				<a href="${pageContext.request.contextPath}/custody/custodyReviewListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="custodyReviewListingReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/custody/custodyReviewListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="custodyReviewListingReportLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>

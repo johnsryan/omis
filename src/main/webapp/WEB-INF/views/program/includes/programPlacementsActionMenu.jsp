@@ -16,7 +16,7 @@
 	<sec:authorize access="hasRole('PROGRAM_PLACEMENT_VIEW') or hasRole('ADMIN')">
 		<c:if test="${not empty offender}">
 			<li>
-				<a href="${pageContext.request.contextPath}/program/programPlacementListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="programPlacementListingReportLinkLabel" bundle="${programBundle}"/></a>
+				<a href="${pageContext.request.contextPath}/program/programPlacementListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="programPlacementListingReportLinkLabel" bundle="${programBundle}"/></a>
 			</li>
 		</c:if>
 	</sec:authorize>
@@ -33,7 +33,7 @@
 	<sec:authorize access="hasRole('PROGRAM_PLACEMENT_VIEW') or hasRole('ADMIN')">
 		<c:if test="${not empty programPlacement}">
 			<li>
-				<a href="${pageContext.request.contextPath}/program/programPlacementDetailsReport.html?programPlacement=${programPlacement.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="programPlacementDetailsReportLinkLabel" bundle="${programBundle}"/></a>
+				<a href="${pageContext.request.contextPath}/program/programPlacementDetailsReport.html?programPlacement=${programPlacement.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="programPlacementDetailsReportLinkLabel" bundle="${programBundle}"/></a>
 			</li>
 		</c:if>
 	</sec:authorize>

@@ -11,7 +11,7 @@
 		</sec:authorize>
 		<sec:authorize access="hasRole('OFFENDER_RELATIONSHIP_LIST') or hasRole('ADMIN')">
 			<li>
-				<a href="${pageContext.request.contextPath}/offenderRelationship/relationshipListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="printListReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/offenderRelationship/relationshipListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="printListReportLinkLabel"/></a>
 			</li>
 		</sec:authorize>
 	</ul>

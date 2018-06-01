@@ -29,9 +29,9 @@
     xmlns:aop="http://www.springframework.org/schema/aop"
     xsi:schemaLocation="
         http://www.springframework.org/schema/beans
-        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
         http://www.springframework.org/schema/context
-        http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/context/spring-context-3.1.xsd
         http://www.springframework.org/schema/aop
         http://www.springframework.org/schema/aop/spring-aop-3.1.xsd">
   
@@ -51,8 +51,8 @@
   
   <bean id="offenseTermDocketFormValidator" 
   		class="omis.offenseterm.web.validator.OffenseTermDocketFormValidator"/>
-
-   <!-- Profile Items -->
+  
+  <!-- Profile Items -->
   
   <bean id="offenseTermProfileItem" class="omis.offenseterm.web.profile.OffenseTermProfileItem">
   	<constructor-arg name="requiredAuthorizations">
@@ -123,5 +123,19 @@
     <aop:advisor advice-ref="transactionAdvice" pointcut-ref="manageOffenseTermDocketControllerOperation"/>
   </aop:config>
   
+  <!-- Helpers -->
+  
+  <beans profile="prod,preprod">
+  
+  	<bean id="offenseItemSortDelegate" class="omis.offenseterm.web.controller.delegate.impl.OffenseItemSortDelegateImpl"/>
+  
+  
+  </beans>
+  
+  <beans profile="test,dev,standalone">
+  
+  	<bean id="offenseItemSortDelegate" class="omis.offenseterm.web.controller.delegate.impl.OffenseItemSortDelegateImprovedImpl"/>
+  	
+  </beans>
   
 </beans>

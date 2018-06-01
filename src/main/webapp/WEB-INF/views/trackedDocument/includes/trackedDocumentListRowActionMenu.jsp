@@ -41,7 +41,7 @@
 		<sec:authorize access="hasRole('TRACKED_DOCUMENT_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty docket}">
 			<li>
-				<a href="${pageContext.request.contextPath}/trackedDocument/trackedDocumentDetailsReport.html?docket=${docket.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="trackedDocumentDetailsReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/trackedDocument/trackedDocumentDetailsReport.html?docket=${docket.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="trackedDocumentDetailsReportLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>			

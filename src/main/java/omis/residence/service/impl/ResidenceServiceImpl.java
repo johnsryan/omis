@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.residence.service.impl;
 
 import java.util.Date;
@@ -6,28 +23,35 @@ import java.util.List;
 import omis.address.domain.Address;
 import omis.address.domain.BuildingCategory;
 import omis.address.domain.ZipCode;
+import omis.address.exception.AddressExistsException;
+import omis.address.exception.ZipCodeExistsException;
 import omis.address.service.delegate.AddressDelegate;
 import omis.address.service.delegate.ZipCodeDelegate;
 import omis.audit.domain.VerificationMethod;
 import omis.audit.domain.VerificationSignature;
 import omis.audit.service.delegate.VerificationMethodDelegate;
+import omis.country.domain.Country;
 import omis.datatype.DateRange;
-import omis.exception.DuplicateEntityFoundException;
 import omis.location.domain.Location;
+import omis.location.exception.LocationExistsException;
 import omis.location.exception.LocationNotAllowedException;
 import omis.location.service.delegate.LocationDelegate;
 import omis.offender.domain.Offender;
 import omis.organization.domain.Organization;
+import omis.organization.exception.OrganizationExistsException;
 import omis.organization.service.delegate.OrganizationDelegate;
 import omis.person.domain.Person;
 import omis.region.domain.City;
 import omis.region.domain.State;
+import omis.region.exception.CityExistsException;
 import omis.region.service.delegate.CityDelegate;
 import omis.region.service.delegate.StateDelegate;
 import omis.residence.domain.NonResidenceTerm;
 import omis.residence.domain.ResidenceCategory;
 import omis.residence.domain.ResidenceStatus;
 import omis.residence.domain.ResidenceTerm;
+import omis.residence.exception.AllowedResidentialLocationRuleExistsException;
+import omis.residence.exception.NonResidenceTermExistsException;
 import omis.residence.exception.PrimaryResidenceExistsException;
 import omis.residence.exception.ResidenceStatusConflictException;
 import omis.residence.exception.ResidenceTermExistsException;
@@ -106,7 +130,7 @@ public class ResidenceServiceImpl implements ResidenceService {
 	@Override
 	public Address createAddress(final String number, final String designator, 
 			final String coordinates, final BuildingCategory category, 
-			final ZipCode zipCode) throws DuplicateEntityFoundException {
+			final ZipCode zipCode) throws AddressExistsException {
 		
 		return this.addressDelegate.findOrCreate(
 				number, designator, coordinates, category, zipCode);
@@ -117,19 +141,20 @@ public class ResidenceServiceImpl implements ResidenceService {
 	public Address updateAddress(final Address address, final String number,
 			final String designator, final String coordinates, 
 			final BuildingCategory category, final ZipCode zipCode) 
-					throws DuplicateEntityFoundException {
+					throws AddressExistsException {
 		
 		return this.addressDelegate.update(
 				address, number, designator, coordinates, category, zipCode);
 	}
 
-	/** {@inheritDoc} 
-	 * @throws DuplicateEntityFoundException */
+	/** {@inheritDoc} */
 	@Override
 	public Location createLocation(final String organization, 
 			final DateRange dateRange, final Address address, 
 			final ResidenceStatus status) 					
-					throws DuplicateEntityFoundException {
+					throws LocationExistsException, 
+					OrganizationExistsException, 
+					AllowedResidentialLocationRuleExistsException {
 		
 		Organization newOrganization 
 			= this.organizationDelegate.create(organization, null, null);
@@ -139,12 +164,11 @@ public class ResidenceServiceImpl implements ResidenceService {
 		return newLocation;
 	}
 	
-	/** {@inheritDoc} 
-	 * @throws DuplicateEntityFoundException */
+	/** {@inheritDoc} */
 	@Override
 	public Location updateLocation(final Location location,
 			final Organization organization, final DateRange dateRange, 
-			final Address address) throws DuplicateEntityFoundException {
+			final Address address) throws LocationExistsException {
 		
 		return this.locationDelegate.update(
 				location, organization, dateRange, address);
@@ -155,8 +179,8 @@ public class ResidenceServiceImpl implements ResidenceService {
 	public NonResidenceTerm createHomelessTerm(final Person person,
 			final DateRange dateRange, final City city, final State state, 
 			final String notes, final Boolean confirmed)
-			throws DuplicateEntityFoundException, 
-			ResidenceStatusConflictException {
+			throws ResidenceStatusConflictException, 
+			NonResidenceTermExistsException {
 		//gets list of non residence terms by dateRange
 		List<NonResidenceTerm> nonResidenceTerms = this.nonResidenceTermDelegate
 				.findNonResidenceTermByPersonAndDateRange(
@@ -190,8 +214,8 @@ public class ResidenceServiceImpl implements ResidenceService {
 			final NonResidenceTerm nonResidenceTerm, final DateRange dateRange, 
 			final City city, final State state, final String notes, 
 			final Boolean confirmed) 
-					throws DuplicateEntityFoundException,
-			ResidenceStatusConflictException {
+					throws ResidenceStatusConflictException, 
+					NonResidenceTermExistsException {
 		//get list of nonresidenceTerms
 		List<NonResidenceTerm> nonResidenceTerms 
 			= this.nonResidenceTermDelegate
@@ -295,9 +319,9 @@ public class ResidenceServiceImpl implements ResidenceService {
 			final Address address, final Boolean fosterCare, 
 			final Boolean confirmed, final String notes,
 			final VerificationSignature verificationSignature)
-			throws DuplicateEntityFoundException, 
-			PrimaryResidenceExistsException, ResidenceStatusConflictException,
-			ResidenceTermExistsException { 
+			throws PrimaryResidenceExistsException, 
+			ResidenceStatusConflictException,
+			ResidenceTermExistsException, NonResidenceTermExistsException { 
 		final ResidenceCategory residenceCategory;
 		final ResidenceStatus residenceStatus;
 		if (primary) {	
@@ -364,8 +388,8 @@ public class ResidenceServiceImpl implements ResidenceService {
 			final Address address, final Boolean fosterCare, 
 			final Boolean confirmed, final String notes,
 			final VerificationSignature verificationSignature)
-			throws DuplicateEntityFoundException, ResidenceTermExistsException,
-				PrimaryResidenceExistsException{
+			throws ResidenceTermExistsException,
+				PrimaryResidenceExistsException {
 		final ResidenceCategory residenceCategory;
 		final ResidenceStatus residenceStatus;
 		if (primary) {	
@@ -404,8 +428,9 @@ public class ResidenceServiceImpl implements ResidenceService {
 			final Location location, final Boolean confirmed, 
 			final String notes,
 			final VerificationSignature verificationSignature)
-			throws DuplicateEntityFoundException, LocationNotAllowedException,
-				ResidenceStatusConflictException {
+			throws LocationNotAllowedException,
+				ResidenceStatusConflictException, 
+				NonResidenceTermExistsException {
 		if (this.allowedResidentialLocationRuleDelegate
 				.find(location, status) == null) {
 			throw new LocationNotAllowedException("Location not allowed");
@@ -422,8 +447,9 @@ public class ResidenceServiceImpl implements ResidenceService {
 			final ResidenceStatus status, final Location location, 
 			final Boolean confirmed, final String notes, 
 			final VerificationSignature verificationSignature)
-			throws DuplicateEntityFoundException, LocationNotAllowedException, 
-				ResidenceStatusConflictException {
+			throws LocationNotAllowedException, 
+				ResidenceStatusConflictException, 
+				NonResidenceTermExistsException {
 		if (this.allowedResidentialLocationRuleDelegate
 				.find(location, status) == null) {
 			throw new LocationNotAllowedException("Location not allowed");
@@ -449,30 +475,50 @@ public class ResidenceServiceImpl implements ResidenceService {
 
 	/** {@inheritDoc} */
 	@Override
-	public ResidenceTerm findPrimaryResidence(final Date date, final Person person) {
+	public ResidenceTerm findPrimaryResidence(final Date date, 
+			final Person person) {
 		return this.residenceTermDelegate.findByPersonAndDate(person, date,
 				ResidenceCategory.PRIMARY);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public List<NonResidenceTerm> findNonResidenceTerms(final Date date, final Person person) {
-		return this.nonResidenceTermDelegate.findNonResidenceTermsByPersonAndDate(person, date);
+	public List<NonResidenceTerm> findNonResidenceTerms(final Date date, 
+			final Person person) {
+		return this.nonResidenceTermDelegate
+				.findNonResidenceTermsByPersonAndDate(person, date);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public NonResidenceTerm endNonResidenceTerm(NonResidenceTerm term, Date endDate)
-			throws DuplicateEntityFoundException {
+	public NonResidenceTerm endNonResidenceTerm(final NonResidenceTerm term, 
+			final Date endDate)
+			throws NonResidenceTermExistsException {
 		final DateRange dateRange;
-		if(term.getDateRange() == null) {
+		if (term.getDateRange() == null) {
 			dateRange = new DateRange(null, endDate);
 		} else {
-			dateRange = new DateRange(term.getDateRange().getStartDate(), endDate);
+			dateRange = new DateRange(term.getDateRange().getStartDate(), 
+					endDate);
 		}
 		
 		return this.nonResidenceTermDelegate.updateNonResidenceTerm(term,
 				dateRange, term.getStatus(), term.getLocation(),
-				term.getConfirmed(), term.getNotes(), term.getVerificationSignature());
+				term.getConfirmed(), term.getNotes(), 
+				term.getVerificationSignature());
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public City createCity(final String name, final State state, 
+			final Country country) throws CityExistsException {
+		return this.cityDelegate.create(name, true, state, country);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public ZipCode createZipCode(final String value, final String extension, 
+			final City city) throws ZipCodeExistsException {
+		return this.zipCodeDelegate.create(city, value, extension, true);
 	}
 }

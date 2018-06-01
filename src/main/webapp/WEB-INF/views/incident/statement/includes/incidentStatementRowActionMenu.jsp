@@ -22,7 +22,7 @@
 		</sec:authorize>
 		<sec:authorize access="hasRole('INCIDENT_STATEMENT_REPORT_VIEW') or hasRole('ADMIN')">
 			<li>
-				<a href="${pageContext.request.contextPath}/incident/statement/incidentStatementReport.html?incidentStatement=${incidentStatement.id}&reportFormat=PDF" class="newTab reportLink visibleLinkLabel"><fmt:message key="submittedIncidentStatementReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/incident/statement/incidentStatementReport.html?incidentStatement=${incidentStatement.id}&reportFormat=PDF" class="newTab adobeReportLink visibleLinkLabel"><fmt:message key="submittedIncidentStatementReportLinkLabel"/></a>
 			</li>
 		</sec:authorize>
 	</ul>

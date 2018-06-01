@@ -91,4 +91,15 @@
 		where
 			hearing.subject.offender = :offender
 	]]></query>
+	<query name="findHearingsByViolationEvent"><![CDATA[
+		select distinct hearing
+		from omis.hearing.domain.Infraction infraction
+		inner join infraction.hearing hearing
+		left join infraction.conditionViolation conditionViolation
+		left join infraction.disciplinaryCodeViolation disciplinaryCodeViolation
+		where
+			conditionViolation.violationEvent = :violationEvent
+		or
+			disciplinaryCodeViolation.violationEvent = :violationEvent
+	]]></query>
 </hibernate-mapping>

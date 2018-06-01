@@ -6,6 +6,6 @@ window.onload = function() {
 	applyUserSearch(document.getElementById("clearedByInput"),
 			document.getElementById("clearedBy"),
 			document.getElementById("clearedByDisplay"),
-			null,
+			document.getElementById("currentClearedBy"),
 			document.getElementById("clearClearedBy"));
 }

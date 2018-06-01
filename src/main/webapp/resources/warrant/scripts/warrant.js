@@ -29,7 +29,7 @@ window.onload = function() {
 	applyUserSearch(document.getElementById("issuedByInput"),
 			document.getElementById("issuedBy"),
 			document.getElementById("issuedByDisplay"),
-			null,
+			document.getElementById("currentIssuedBy"),
 			document.getElementById("clearIssuedBy"));
 	
 }

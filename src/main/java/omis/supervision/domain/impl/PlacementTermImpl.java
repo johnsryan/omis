@@ -243,13 +243,14 @@ public class PlacementTermImpl
 		if (!this.getDateRange().equals(that.getDateRange())) {
 			return false;
 		}
-		if (this.getSupervisoryOrganizationTerm() == null) {
-			throw new IllegalStateException(
-					"Supervisory organization term required");
-		}
-		if (!this.getSupervisoryOrganizationTerm().getSupervisoryOrganization()
-				.equals(that.getSupervisoryOrganizationTerm()
-						.getSupervisoryOrganization())) {
+		if (this.getSupervisoryOrganizationTerm() != null) {
+			if (!this.getSupervisoryOrganizationTerm()
+					.getSupervisoryOrganization()
+						.equals(that.getSupervisoryOrganizationTerm()
+							.getSupervisoryOrganization())) {
+				return false;
+			}
+		} else if (that.getSupervisoryOrganizationTerm() != null){
 			return false;
 		}
 		if (this.getCorrectionalStatusTerm() == null) {
@@ -275,10 +276,6 @@ public class PlacementTermImpl
 		if (this.getDateRange().getStartDate() == null) {
 			throw new IllegalStateException("Start date required");
 		}
-		if (this.getSupervisoryOrganizationTerm() == null) {
-			throw new IllegalStateException(
-					"Supervisory organization term required");
-		}
 		if (this.getCorrectionalStatusTerm() == null) {
 			throw new IllegalStateException(
 					"Correctional status term required");
@@ -286,8 +283,10 @@ public class PlacementTermImpl
 		int hashCode = 14;
 		hashCode = 29 * hashCode + this.getOffender().hashCode();
 		hashCode = 29 * hashCode + this.getDateRange().hashCode();
-		hashCode = 29 * hashCode + this.getSupervisoryOrganizationTerm()
-				.getSupervisoryOrganization().hashCode();
+		if (this.getSupervisoryOrganizationTerm() != null) {
+			hashCode = 29 * hashCode + this.getSupervisoryOrganizationTerm()
+					.getSupervisoryOrganization().hashCode();
+		}
 		hashCode = 29 * hashCode + this.getCorrectionalStatusTerm()
 				.getCorrectionalStatus().hashCode();
 		return hashCode;

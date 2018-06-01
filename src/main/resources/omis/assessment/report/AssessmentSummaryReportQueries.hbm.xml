@@ -36,8 +36,7 @@
 				name.lastName,
 				name.firstName
 			)
-		from omis.assessment.domain.AssessmentCategoryScore assessmentCategoryScore
-		inner join assessmentCategoryScore.administeredQuestionnaire administeredQuestionnaire
+		from omis.questionnaire.domain.AdministeredQuestionnaire administeredQuestionnaire
 		inner join administeredQuestionnaire.questionnaireType questionnaireType
 		inner join questionnaireType.questionnaireCategory questionnaireCategory
 		inner join administeredQuestionnaire.assessor assessor
@@ -47,12 +46,14 @@
 	]]></query>
 	<query name="findAssessmentCategoryScoreSummariesByAdministeredQuestionnaire"><![CDATA[
 		select new omis.assessment.report.AssessmentCategoryScoreSummary(
-				assessmentCategoryScore.id,
-				ratingCategory.description,
-				ratingRank.name,
-				assessmentRating.description,
-				assessmentCategoryScore.score
-			)
+			assessmentCategoryScore.id,
+			ratingCategory.description,
+			ratingRank.name,
+			assessmentRating.description,
+			assessmentCategoryScore.score,
+			assessmentRating.min,
+			assessmentRating.max
+		)
 		from omis.assessment.domain.AssessmentCategoryScore assessmentCategoryScore
 		inner join assessmentCategoryScore.administeredQuestionnaire administeredQuestionnaire
 		inner join assessmentCategoryScore.ratingCategory ratingCategory,
@@ -68,6 +69,8 @@
 			assessmentCategoryScore.score >= assessmentRating.min
 		and
 			assessmentCategoryScore.score <= assessmentRating.max
+		and
+			assessmentRating.category = ratingCategory
 	]]></query>
 	<query name="findAssessmentQuestionCategories"><![CDATA[
 		select distinct questionnaireCategory
@@ -76,5 +79,56 @@
 		inner join questionnaireType.questionnaireCategory questionnaireCategory
 		where
 			questionnaireCategory.valid = true
+	]]></query>
+	<query name="findAssessmentRatingSummariesByAdministeredQuestionnaire"><![CDATA[
+		select new omis.assessment.report.AssessmentRatingSummary(
+			assessmentRating.id,
+			assessmentCategoryScore.id,
+			assessmentCategoryScore.score,
+			case
+				when
+					assessmentCategoryScore.score >= assessmentRating.min
+					and assessmentCategoryScore.score <= assessmentRating.max
+				then
+					true
+				else
+					false
+			end,
+			case
+				when
+					assessmentCategoryOverride is not null
+				then
+					true
+				else
+					false
+			end,
+			assessmentRating.description,
+			rank.name,
+			assessmentRating.min,
+			assessmentRating.max
+		)
+		from
+			omis.assessment.domain.AssessmentCategoryOverride assessmentCategoryOverride
+		right outer join
+			assessmentCategoryOverride.assessmentCategoryScore assessmentCategoryScore
+		inner join
+			assessmentCategoryScore.administeredQuestionnaire administeredQuestionnaire
+		inner join
+			assessmentCategoryScore.ratingCategory ratingCategory,
+			omis.assessment.domain.AssessmentRating assessmentRating
+		inner join
+			assessmentRating.rank rank
+		where
+			administeredQuestionnaire = :administeredQuestionnaire
+		and
+			administeredQuestionnaire.questionnaireType = assessmentRating.questionnaireType
+		and
+			administeredQuestionnaire.answerer.identity.sex = assessmentRating.sex
+		and
+			ratingCategory.significance = 'PRIMARY'
+		and
+			assessmentRating.category = ratingCategory
+		order by
+			assessmentRating.id, ratingCategory.id
 	]]></query>
 </hibernate-mapping>

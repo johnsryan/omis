@@ -38,9 +38,11 @@
 					<c:out value="${locationTermSummary.singleReasonName}"/>
 				</c:when>
 				<c:otherwise>
-					<fmt:message key="reasonCountLabel" bundle="${locationTermBundle}">
-						<fmt:param value="${locationTermSummary.reasonCount}"/>
-					</fmt:message>
+					<c:if test="${locationTermSummary.reasonCount gt 0}">
+						<fmt:message key="reasonCountLabel" bundle="${locationTermBundle}">
+							<fmt:param value="${locationTermSummary.reasonCount}"/>
+						</fmt:message>
+					</c:if>
 				</c:otherwise>
 			</c:choose>
 		</td>

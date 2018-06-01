@@ -25,14 +25,14 @@
 		<sec:authorize access="hasRole('COURT_CASE_LIST') or hasRole('ADMIN')">
 			<c:if test="${not empty offender}">
 			<li>
-				<a href="${pageContext.request.contextPath}/courtCase/courtCaseListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="courtCaseListingReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/courtCase/courtCaseListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="courtCaseListingReportLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>
 		<sec:authorize access="hasRole('COURT_CASE_LIST') or hasRole('ADMIN')">
 			<c:if test="${not empty offender}">
 			<li>
-				<a href="${pageContext.request.contextPath}/courtCase/courtCaseDetailListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="courtCaseDetailListingReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/courtCase/courtCaseDetailListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="courtCaseDetailListingReportLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>		

@@ -13,7 +13,7 @@
 						<fmt:message key="assessmentCategory"/>
 					</label>
 					<span class="detail">
-						<c:out value="${assessmentSummary.assessmentCategory}"/>
+						<c:out value="${assessmentSummary.questionnaireCategoryName}"/>
 					</span>
 				</span>
 				<span class="fieldGroup onelineHalf">
@@ -21,7 +21,7 @@
 						<fmt:message key="assessmentName"/>
 					</label>
 					<span class="detail">
-						<c:out value="${assessmentSummary.assessmentName}"/>
+						<c:out value="${assessmentSummary.questionnaireTypeName}"/>
 					</span>
 				</span>
 			</span>
@@ -31,7 +31,7 @@
 						<fmt:message key="assessmentDateLabel"/>
 					</label>
 					<span class="detail">
-						<fmt:formatDate value="${assessmentSummary.assessmentDate}" pattern="MM/dd/yyyy" />
+						<fmt:formatDate value="${assessmentSummary.administeredQuestionnaireDate}" pattern="MM/dd/yyyy" />
 					</span>
 				</span>
 				<span class="fieldGroup onelineHalf">
@@ -39,7 +39,7 @@
 						<fmt:message key="assessorNameLabel"/>
 					</label>
 					<span class="detail">
-						<c:out value="${assessmentSummary.assessorName}"/>
+						<c:out value="${assessmentSummary.administeredQuestionnaireAssessorLastName}, ${assessmentSummary.administeredQuestionnaireAssessorFirstName}"/>
 					</span>
 				</span>
 			</span>
@@ -49,7 +49,7 @@
 						<fmt:message key="ratingScoreLabel"/>
 					</label>
 					<span class="detail">
-						<c:out value="${assessmentSummary.score}"/>
+						<c:out value="TODO"/>
 					</span>
 				</span>
 			</span>

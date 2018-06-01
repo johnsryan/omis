@@ -85,7 +85,7 @@ import omis.violationevent.service.delegate.ViolationEventDelegate;
  * Tests method to create infractions.
  *
  * @author Josh Divine
- * @version 0.1.0 (May 4, 2018)
+ * @version 0.1.1 (May 23, 2018)
  * @since OMIS 3.0
  */
 @Test
@@ -200,7 +200,7 @@ public class ResolutionServiceCreateInfractionTests
 		SupervisoryOrganization jurisdiction = this
 				.supervisoryOrganizationDelegate.create("Batcave", "TBC", null);
 		ViolationEvent violationEvent = this.violationEventDelegate.create(
-				offender, jurisdiction, this.parseDateText("05/05/2017"), 
+				offender, jurisdiction, null, this.parseDateText("05/05/2017"), 
 				"Event Details", ViolationEventCategory.DISCIPLINARY);
 		Agreement agreement = this.agreementDelegate.create(offender, 
 				this.parseDateText("05/05/2017"), null, null, null);
@@ -270,7 +270,7 @@ public class ResolutionServiceCreateInfractionTests
 		SupervisoryOrganization jurisdiction = this
 				.supervisoryOrganizationDelegate.create("Batcave", "TBC", null);
 		ViolationEvent violationEvent = this.violationEventDelegate.create(
-				offender, jurisdiction, this.parseDateText("05/05/2017"), 
+				offender, jurisdiction, null, this.parseDateText("05/05/2017"), 
 				"Event Details", ViolationEventCategory.DISCIPLINARY);
 		Agreement agreement = this.agreementDelegate.create(offender, 
 				this.parseDateText("05/05/2017"), null, null, null);

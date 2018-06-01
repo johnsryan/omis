@@ -32,7 +32,8 @@ import omis.paroleeligibility.domain.ParoleEligibilityNote;
  * Parole eligibility service.
  *
  * @author Trevor Isles
- * @version 0.1.0 (Nov 8, 2017)
+ * @author Annie Wahl
+ * @version 0.1.1 (May 23, 2018)
  * @since OMIS 3.0
  */
 public interface ParoleEligibilityService {
@@ -120,7 +121,20 @@ public interface ParoleEligibilityService {
 	 * 
 	 * @param note parole eligibility note
 	 */	
-	void removeParoleEligiblityNote(ParoleEligibilityNote paroleEligibilityNote);
+	void removeParoleEligiblityNote(
+			ParoleEligibilityNote paroleEligibilityNote);
+	
+	/**
+	 * Returns a list of Eligibility Status Reasons by the specified
+	 * Eligibility Status Category.
+	 * 
+	 * @param statusCategory Eligibility Status Category
+	 * @return List of Eligibility Status Reasons by the specified
+	 * Eligibility Status Category.
+	 */
+	List<EligibilityStatusReason>
+		findEligibilityStatusReasonsByEligibilityStatusCategory(
+				EligibilityStatusCategory statusCategory);
 	
 	/**
 	 * Returns a list of parole eligibility notes by parole eligibility.
@@ -143,5 +157,17 @@ public interface ParoleEligibilityService {
 	 * @return list of appearance categories
 	 */
 	List<AppearanceCategory> findAppearanceCategories();
+	
+	/**
+	 * Returns a list of Parole Eligibilities for an offender after the
+	 * given date.
+	 * 
+	 * @param offender Offender
+	 * @param date Date
+	 * @return List of Parole Eligibilities for an offender after the
+	 * given date.
+	 */
+	List<ParoleEligibility> findParoleEligibilitiesByOffenderAfterDate(
+			Offender offender, Date date);
 	
 }

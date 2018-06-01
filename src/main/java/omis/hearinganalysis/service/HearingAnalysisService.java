@@ -33,7 +33,8 @@ import omis.paroleeligibility.domain.ParoleEligibility;
  * Service for hearing analysis.
  * 
  * @author Josh Divine
- * @version 0.1.2 (Apr 18, 2018)
+ * @author Annie Wahl
+ * @version 0.1.3 (May 29, 2018)
  * @since OMIS 3.0
  */
 public interface HearingAnalysisService {
@@ -45,12 +46,13 @@ public interface HearingAnalysisService {
 	 * @param paroleBoardItinerary parole board itinerary
 	 * @param analyst board attendee
 	 * @param category hearing analysis category
+	 * @param expectedCompletionDate expected completion date
 	 * @return hearing analysis
 	 * @throws DuplicateEntityFoundException if duplicate entity exists
 	 */
 	HearingAnalysis createHearingAnalysis(ParoleEligibility eligibility, 
 			ParoleBoardItinerary paroleBoardItinerary, BoardAttendee analyst, 
-			HearingAnalysisCategory category) 
+			HearingAnalysisCategory category, Date expectedCompletionDate)
 					throws DuplicateEntityFoundException;
 	
 	/**
@@ -60,12 +62,13 @@ public interface HearingAnalysisService {
 	 * @param paroleBoardItinerary parole board itinerary
 	 * @param analyst board attendee
 	 * @param category hearing analysis category
+	 * @param expectedCompletionDate expected completion date
 	 * @return hearing analysis
 	 * @throws DuplicateEntityFoundException if duplicate entity exists
 	 */
 	HearingAnalysis updateHearingAnalysis(HearingAnalysis hearingAnalysis, 
 			ParoleBoardItinerary paroleBoardItinerary, BoardAttendee analyst, 
-			HearingAnalysisCategory category) 
+			HearingAnalysisCategory category, Date expectedCompletionDate) 
 					throws DuplicateEntityFoundException;
 	
 	/**

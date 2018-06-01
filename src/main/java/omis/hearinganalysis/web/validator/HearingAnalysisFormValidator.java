@@ -28,7 +28,8 @@ import omis.hearinganalysis.web.form.HearingAnalysisNoteItemOperation;
  * Validator for hearing analysis.
  * 
  * @author Josh Divine
- * @version 0.1.0 (Dec 19, 2017)
+ * @author Annie Wahl
+ * @version 0.1.1 (May 29, 2018)
  * @since OMIS 3.0
  */
 public class HearingAnalysisFormValidator implements Validator {
@@ -53,6 +54,10 @@ public class HearingAnalysisFormValidator implements Validator {
 		
 		if (form.getCategory() == null) {
 			errors.rejectValue("category", "hearingAnalysis.category.empty");
+		}
+		if (form.getBoardItinerary() == null) {
+			errors.rejectValue("boardItinerary",
+					"hearingAnalysis.boardItinerary.empty");
 		}
 		if (form.getHearingAnalysisNoteItems() != null && 
 				form.getHearingAnalysisNoteItems().size() > 0) {

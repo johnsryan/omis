@@ -47,6 +47,12 @@
 			<aop:advisor advice-ref="transactionAdvice" pointcut-ref="reportAssessmentControllerOperation"/>	
 		</aop:config>
 		
+		<aop:config>
+			<aop:pointcut id="assessmentCategoryOverrideControllerOperation"
+				expression="execution(* omis.assessment.web.controller.AssessmentCategoryOverrideController.*(..))"/>
+			<aop:advisor advice-ref="transactionAdvice" pointcut-ref="assessmentCategoryOverrideControllerOperation"/>	
+		</aop:config>
+		
 		<bean id="assessmentDocumentFormValidator"
 			class="omis.assessment.web.validator.AssessmentDocumentFormValidator">
 		</bean>
@@ -57,5 +63,9 @@
 		
 		<bean id="assessmentFormValidator"
 			class="omis.assessment.web.validator.AssessmentFormValidator">
+		</bean>
+		
+		<bean id="assessmentCategoryOverrideFormValidator"
+			class="omis.assessment.web.validator.AssessmentCategoryOverrideFormValidator">
 		</bean>
 </beans>

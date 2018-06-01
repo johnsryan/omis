@@ -18,18 +18,18 @@
 				</a>
 			</li>
 		</sec:authorize>
-		<sec:authorize access="hasRole('EMPLOYMENT_TERM_VIEW') or hasRole('ADMIN')">
-			<c:if test="${not empty offender}">
-			<li>
-				<a href="${pageContext.request.contextPath}/employment/employmentListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="employmentListingReportLinkLabel"/></a>
-			</li>
-			</c:if>
-		</sec:authorize>
 		<sec:authorize access="(hasRole('EMPLOYMENT_TERM_VIEW') and hasRole('OFFENDER_SSN_VIEW')) or hasRole('ADMIN')">
 			<li><omis:reportPro reportPath="/CaseManagement/Employment/Wage_Garnishment_Statement&DOC_ID=${offender.offenderNumber}" decorate="no" title="" className="newTab reportLink"><fmt:message key="wageGarnishmentStatementReportLinkLabel"/></omis:reportPro></li>
 		</sec:authorize>
 		<sec:authorize access="hasRole('EMPLOYMENT_TERM_VIEW') or hasRole('ADMIN')">
 			<li><omis:reportPro reportPath="/CaseManagement/Employment/Wage_Garnishment_Statement_Redacted&DOC_ID=${offender.offenderNumber}" decorate="no" title="" className="newTab reportLink"><fmt:message key="wageGarnishmentStatementRedactedReportLinkLabel"/></omis:reportPro></li>
 		</sec:authorize>
+		<sec:authorize access="hasRole('EMPLOYMENT_TERM_VIEW') or hasRole('ADMIN')">
+			<c:if test="${not empty offender}">
+			<li>
+				<a href="${pageContext.request.contextPath}/employment/employmentListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="employmentListingReportLinkLabel"/></a>
+			</li>
+			</c:if>
+		</sec:authorize>		
 	</ul>
 </fmt:bundle>

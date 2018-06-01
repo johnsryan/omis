@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="omis.travelpermit.domain">
+	<class entity-name="omis.travelpermit.domain.TravelPermitNote"
+		proxy="omis.travelpermit.domain.TravelPermitNote"
+		name="omis.travelpermit.domain.impl.TravelPermitNoteImpl"
+		table="`TRAVEL_PERMIT_NOTE`">
+		<id name="id" column="`ID`" type="java.lang.Long">
+			<generator class="sequence">
+				<param name="sequence">`TRAVEL_PERMIT_NOTE_SEQ`</param>
+			</generator>
+		</id>
+		<many-to-one name="permit" column="`PERMIT_ID`" not-null="true" entity-name="omis.travelpermit.domain.TravelPermit" unique="false"/>
+		<property name="date" column="`DATE`" not-null="true" type="java.util.Date"/>
+		<property name="value" type="text" not-null="true" column="`VALUE`"/>
+		<component name="creationSignature">
+			<many-to-one name="userAccount" column="`CREATE_ACCOUNT_ID`"
+				not-null="true" />
+			<property name="date" column="`CREATE_DATE`" not-null="true" />
+		</component>
+		<component name="updateSignature">
+			<many-to-one name="userAccount" column="`UPDATE_ACCOUNT_ID`"
+				not-null="true" />
+			<property name="date" column="`UPDATE_DATE`" not-null="true" />
+		</component>
+	</class>
+	<query name="findExistingTravelPermitNote"><![CDATA[
+	select note
+	from 
+		omis.travelpermit.domain.TravelPermitNote note	
+	where 
+		note.permit = :permit
+		and note.date = :date
+		and note.value = :value
+	]]></query>
+	
+	<query name="findExcludedExistingTravelPermitNote"><![CDATA[
+	select note
+	from 
+		omis.travelpermit.domain.TravelPermitNote note	
+	where 
+		note.date = :date
+		and note.value = :value
+		and note != :note
+	]]></query>
+	
+	<query name="findExistingTravelPermitNoteByPermit"><![CDATA[
+	select note
+	from 
+		omis.travelpermit.domain.TravelPermitNote note	
+	where 
+		note.permit = :permit
+	]]></query>
+</hibernate-mapping>	

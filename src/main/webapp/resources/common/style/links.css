@@ -200,6 +200,16 @@ a.tableViewLink:before {
 	cursor: pointer
 }
 
+a.msWordReportLink:before {
+	content: url('../images/msWordFile.png');
+	cursor: pointer;
+}
+
+a.adobeReportLink:before {
+	content: url('../images/adobeFile.png');
+	cursor: pointer;
+}
+
 a.quickReferenceGuideLink:before {
 	content: url('../images/quickReferenceGuide.png');
 	cursor: pointer
@@ -221,7 +231,8 @@ a.formLink:before, a.tableViewLink:before, a.applicationHelpLink:before {
 a.clearLink:before, a.createLink:before, a.listLink:before, 
 a.removeLink:before, a.searchLink:before, a.downloadLink:before, 
 a.viewEditLink:before, a.actionMenuItem:before,a.expandLink:before,
-a.collapseLink:before, a.deleteLink:before {
+a.collapseLink:before, a.deleteLink:before,
+a.msWordReportLink:before, a.adobeReportLink:before {
 	vertical-align: -20%;
 }
 
@@ -237,7 +248,7 @@ a.changePasswordLink, a.adminIndexLink, a.cancelLink, a.calendarLink,
 a.authorizeLink, a.clearLink, a.currentUserAccountLink, a.currentUserLink,
 a.searchLink, a.linkLink, a.unlinkLink, a.actionMenuItem, a.formLink,
 a.reportLink, a.quickReferenceGuideLink, a.expandLink, a.collapseLink, 
-a.deleteLink, a.applicationHelpLink {
+a.deleteLink, a.applicationHelpLink, a.msWordReportLink, a.adobeReportLink {
 	vertical-align: middle;
 }
 

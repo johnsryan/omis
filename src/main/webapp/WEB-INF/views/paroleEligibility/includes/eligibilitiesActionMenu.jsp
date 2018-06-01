@@ -34,7 +34,7 @@
 	<sec:authorize access="hasRole('PAROLE_ELIGIBILITY_VIEW') or hasRole('ADMIN')">
 		<c:if test="${not empty offender}">
 		<li>
-			<a href="${pageContext.request.contextPath}/paroleEligibility/paroleEligibilityListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="paroleEligibilityListingReportLinkLabel"/></a>
+			<a href="${pageContext.request.contextPath}/paroleEligibility/paroleEligibilityListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="paroleEligibilityListingReportLinkLabel"/></a>
 		</li>
 		</c:if>
 	</sec:authorize>
@@ -71,7 +71,7 @@
 	<sec:authorize access="hasRole('PAROLE_ELIGIBILITY_VIEW') or hasRole('ADMIN')">
 		<c:if test="${not empty eligibility}">
 		<li>
-			<a href="${pageContext.request.contextPath}/paroleEligibility/paroleEligibilityDetailsReport.html?eligibility=${eligibility.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="paroleEligibilityDetailsReportLinkLabel"/></a>
+			<a href="${pageContext.request.contextPath}/paroleEligibility/paroleEligibilityDetailsReport.html?eligibility=${eligibility.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="paroleEligibilityDetailsReportLinkLabel"/></a>
 		</li>
 		</c:if>
 	</sec:authorize>

@@ -22,7 +22,7 @@
 		<sec:authorize access="hasRole('PRISON_TERM_LIST') or hasRole('ADMIN')">
 			<c:if test="${not empty offender and empty prisonTerm}">
 			<li>
-				<a href="${pageContext.request.contextPath}/prisonTerm/prisonTermListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="prisonTermListingReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/prisonTerm/prisonTermListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="prisonTermListingReportLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>
@@ -51,7 +51,7 @@
 		<sec:authorize access="hasRole('PRISON_TERM_LIST') or hasRole('ADMIN')">
 			<c:if test="${not empty prisonTerm}">
 			<li>
-				<a href="${pageContext.request.contextPath}/prisonTerm/prisonTermDetailsReport.html?prisonTerm=${prisonTerm.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="prisonTermDetailsReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/prisonTerm/prisonTermDetailsReport.html?prisonTerm=${prisonTerm.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="prisonTermDetailsReportLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>

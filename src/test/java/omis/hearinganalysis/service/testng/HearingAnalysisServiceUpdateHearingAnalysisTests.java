@@ -195,7 +195,7 @@ public class HearingAnalysisServiceUpdateHearingAnalysisTests
 				EligibilityStatusCategory.APPEARING;
 		Date statusDate = this.parseDateText("01/01/2017");
 		EligibilityStatusReason statusReason = eligibilityStatusReasonDelegate
-				.create("Reason", true);
+				.create("Reason", statusCategory, true);
 		String statusComment = "Comment";
 		ParoleEligibilityStatus paroleEligibilityStatus = 
 				new ParoleEligibilityStatus(statusDate, statusComment, 
@@ -242,7 +242,7 @@ public class HearingAnalysisServiceUpdateHearingAnalysisTests
 		HearingAnalysisCategory category = this.hearingAnalysisCategoryDelegate
 				.create("Category", true);
 		HearingAnalysis hearingAnalysis = this.hearingAnalysisDelegate.create(
-				eligibility, boardItinerary, category, analyst);
+				eligibility, boardItinerary, category, analyst, null);
 		ParoleBoardItinerary newBoardItinerary = this
 				.paroleBoardItineraryDelegate.create(paroleBoardLocation, 
 						true, this.parseDateText("06/01/2017"), 
@@ -250,7 +250,7 @@ public class HearingAnalysisServiceUpdateHearingAnalysisTests
 		
 		// Action
 		hearingAnalysis = this.hearingAnalysisService.updateHearingAnalysis(
-				hearingAnalysis, newBoardItinerary, analyst, category);
+				hearingAnalysis, newBoardItinerary, analyst, category, null);
 
 		// Assertions
 		PropertyValueAsserter.create()
@@ -280,7 +280,7 @@ public class HearingAnalysisServiceUpdateHearingAnalysisTests
 				EligibilityStatusCategory.APPEARING;
 		Date statusDate = this.parseDateText("01/01/2017");
 		EligibilityStatusReason statusReason = eligibilityStatusReasonDelegate
-				.create("Reason", true);
+				.create("Reason", statusCategory, true);
 		String statusComment = "Comment";
 		ParoleEligibilityStatus paroleEligibilityStatus = 
 				new ParoleEligibilityStatus(statusDate, statusComment, 
@@ -327,13 +327,13 @@ public class HearingAnalysisServiceUpdateHearingAnalysisTests
 		HearingAnalysisCategory category = this.hearingAnalysisCategoryDelegate
 				.create("Category", true);
 		HearingAnalysis hearingAnalysis = this.hearingAnalysisDelegate.create(
-				eligibility, boardItinerary, category, analyst);
+				eligibility, boardItinerary, category, analyst, null);
 		HearingAnalysisCategory newCategory = 
 				this.hearingAnalysisCategoryDelegate.create("Category 2", true);
 		
 		// Action
 		hearingAnalysis = this.hearingAnalysisService.updateHearingAnalysis(
-				hearingAnalysis, boardItinerary, analyst, newCategory);
+				hearingAnalysis, boardItinerary, analyst, newCategory, null);
 
 		// Assertions
 		PropertyValueAsserter.create()
@@ -363,7 +363,7 @@ public class HearingAnalysisServiceUpdateHearingAnalysisTests
 				EligibilityStatusCategory.APPEARING;
 		Date statusDate = this.parseDateText("01/01/2017");
 		EligibilityStatusReason statusReason = eligibilityStatusReasonDelegate
-				.create("Reason", true);
+				.create("Reason", statusCategory, true);
 		String statusComment = "Comment";
 		ParoleEligibilityStatus paroleEligibilityStatus = 
 				new ParoleEligibilityStatus(statusDate, statusComment, 
@@ -410,7 +410,7 @@ public class HearingAnalysisServiceUpdateHearingAnalysisTests
 		HearingAnalysisCategory category = this.hearingAnalysisCategoryDelegate
 				.create("Category", true);
 		HearingAnalysis hearingAnalysis = this.hearingAnalysisDelegate.create(
-				eligibility, boardItinerary, category, analyst);
+				eligibility, boardItinerary, category, analyst, null);
 		Date newMemberStartDate = this.parseDateText("01/01/2017");
 		Date newMemberEndDate = null;
 		Person newStaffMember = this.personDelegate.create("Smith", "Ted", 
@@ -432,7 +432,7 @@ public class HearingAnalysisServiceUpdateHearingAnalysisTests
 		
 		// Action
 		hearingAnalysis = this.hearingAnalysisService.updateHearingAnalysis(
-				hearingAnalysis, boardItinerary, newAnalyst, category);
+				hearingAnalysis, boardItinerary, newAnalyst, category, null);
 
 		// Assertions
 		PropertyValueAsserter.create()
@@ -462,7 +462,7 @@ public class HearingAnalysisServiceUpdateHearingAnalysisTests
 				EligibilityStatusCategory.APPEARING;
 		Date statusDate = this.parseDateText("01/01/2017");
 		EligibilityStatusReason statusReason = eligibilityStatusReasonDelegate
-				.create("Reason", true);
+				.create("Reason", statusCategory, true);
 		String statusComment = "Comment";
 		ParoleEligibilityStatus paroleEligibilityStatus = 
 				new ParoleEligibilityStatus(statusDate, statusComment, 
@@ -509,14 +509,14 @@ public class HearingAnalysisServiceUpdateHearingAnalysisTests
 		HearingAnalysisCategory category = this.hearingAnalysisCategoryDelegate
 				.create("Category", true);
 		this.hearingAnalysisDelegate.create(eligibility, boardItinerary,
-				category, analyst);
+				category, analyst, null);
 		HearingAnalysisCategory newCategory = this
 				.hearingAnalysisCategoryDelegate.create("Category 2", true);
 		HearingAnalysis hearingAnalysis = this.hearingAnalysisDelegate.create(
-				eligibility, boardItinerary, newCategory, analyst);
+				eligibility, boardItinerary, newCategory, analyst, null);
 		// Action
 		hearingAnalysis = this.hearingAnalysisService.updateHearingAnalysis(
-				hearingAnalysis, boardItinerary, analyst, category);
+				hearingAnalysis, boardItinerary, analyst, category, null);
 	}
 	
 	// Parses date text

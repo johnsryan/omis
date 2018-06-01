@@ -17,17 +17,17 @@
 		<sec:authorize access="hasRole('SUPERVISION_FEE_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty monthlySupervisionFee}">
 			<li>
-				<a href="${pageContext.request.contextPath}/supervisionFee/supervisionFeeDetailsReport.html?monthlySupervisionFee=${monthlySupervisionFee.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="supervisionFeeDetailsReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/supervisionFee/supervisionFeeModificationsReport.html?monthlySupervisionFee=${monthlySupervisionFee.id}&reportFormat=DOCX" class="msWordReportLink"><fmt:message key="supervisionFeeModificationsLinkLabel"/></a>
 			</li>
 			<li>
-				<a href="${pageContext.request.contextPath}/supervisionFee/supervisionFeeModificationsReport.html?monthlySupervisionFee=${monthlySupervisionFee.id}&reportFormat=DOCX" class="reportLink"><fmt:message key="supervisionFeeModificationsLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/supervisionFee/supervisionFeeWaiverRequestReport.html?monthlySupervisionFee=${monthlySupervisionFee.id}&reportFormat=DOCX" class="msWordReportLink"><fmt:message key="supervisionFeeWaiverRequestLinkLabel"/></a>
 			</li>
 			<li>
-				<a href="${pageContext.request.contextPath}/supervisionFee/supervisionFeeWaiverRequestReport.html?monthlySupervisionFee=${monthlySupervisionFee.id}&reportFormat=DOCX" class="reportLink"><fmt:message key="supervisionFeeWaiverRequestLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/supervisionFee/supervisionFeeOffenderRightsResponsibilitiesReport.html?monthlySupervisionFee=${monthlySupervisionFee.id}&reportFormat=PDF" class="newTab adobeReportLink"><fmt:message key="supervisionFeeOffenderRightsResponsibilitiesLinkLabel"/></a>
 			</li>
 			<li>
-				<a href="${pageContext.request.contextPath}/supervisionFee/supervisionFeeOffenderRightsResponsibilitiesReport.html?monthlySupervisionFee=${monthlySupervisionFee.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="supervisionFeeOffenderRightsResponsibilitiesLinkLabel"/></a>
-			</li>
+				<a href="${pageContext.request.contextPath}/supervisionFee/supervisionFeeDetailsReport.html?monthlySupervisionFee=${monthlySupervisionFee.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="supervisionFeeDetailsReportLinkLabel"/></a>
+			</li>			
 			</c:if>
 		</sec:authorize>
 	</ul>

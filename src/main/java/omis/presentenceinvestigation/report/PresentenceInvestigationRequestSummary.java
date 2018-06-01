@@ -25,7 +25,7 @@ import java.util.Date;
  * @author Ryan Johns
  * @author Annie Wahl
  * @author Josh Divine
- * @version 0.1.3 (Apr 24, 2018)
+ * @version 0.1.4 (May 15, 2018)
  * @since OMIS 3.0
  */
 public class PresentenceInvestigationRequestSummary {
@@ -38,7 +38,6 @@ public class PresentenceInvestigationRequestSummary {
 	private final String assignedUserLastName;
 	private final String assignedUserUserName;
 	private final Date expectedCompletionDate;
-	private final Date completionDate;
 	private final String offenderFirstName;
 	private final String offenderLastName;
 	private final String offenderMiddleName;
@@ -62,7 +61,6 @@ public class PresentenceInvestigationRequestSummary {
 	 * @param assignedUserLastName - assigned user last name.
 	 * @param assignedUserUserName - assigned user user name
 	 * @param expectedCompletionDate - expected completion date.
-	 * @param completionDate - completion date.	 
 	 * @param offenderFirstName - offender first name
 	 * @param offenderLastName - offender last name
 	 * @param offenderMiddleName - offender middle name
@@ -78,12 +76,11 @@ public class PresentenceInvestigationRequestSummary {
 			final String docketValue, final Date requestDate,
 			final String assignedUserFirstName, final String assignedUserLastName,
 			final String assignedUserUserName, final Date expectedCompletionDate,
-			final Date completionDate, final String offenderFirstName,
-			final String offenderLastName, final String offenderMiddleName,
-			final Integer offenderNumber, final Date sentenceDate,
-			final String category, final Long completedTaskCount, 
-			final Long totalTaskCount, final Date submissionDate,
-			final Long delayCount) {
+			final String offenderFirstName, final String offenderLastName, 
+			final String offenderMiddleName, final Integer offenderNumber, 
+			final Date sentenceDate, final String category, 
+			final Long completedTaskCount, final Long totalTaskCount, 
+			final Date submissionDate, final Long delayCount) {
 		this.presentenceInvestigationRequestId = presentenceInvestigationRequestId;
 		this.offenderId = offenderId;
 		this.docketValue = docketValue;
@@ -92,7 +89,6 @@ public class PresentenceInvestigationRequestSummary {
 		this.assignedUserLastName = assignedUserLastName;
 		this.assignedUserUserName = assignedUserUserName;
 		this.expectedCompletionDate = expectedCompletionDate;
-		this.completionDate = completionDate;
 		this.offenderFirstName = offenderFirstName;
 		this.offenderLastName = offenderLastName;
 		this.offenderMiddleName = offenderMiddleName;
@@ -166,13 +162,6 @@ public class PresentenceInvestigationRequestSummary {
 	 */
 	public Date getExpectedCompletionDate() {
 		return this.expectedCompletionDate;
-	}
-
-	/**
-	 * @return the completionDate
-	 */
-	public Date getCompletionDate() {
-		return this.completionDate;
 	}
 
 	/**

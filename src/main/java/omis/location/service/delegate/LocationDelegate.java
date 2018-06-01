@@ -4,10 +4,10 @@ import java.util.List;
 
 import omis.address.domain.Address;
 import omis.datatype.DateRange;
-import omis.exception.DuplicateEntityFoundException;
 import omis.instance.factory.InstanceFactory;
 import omis.location.dao.LocationDao;
 import omis.location.domain.Location;
+import omis.location.exception.LocationExistsException;
 import omis.organization.domain.Organization;
 import omis.region.domain.State;
 
@@ -53,11 +53,11 @@ public class LocationDelegate {
 	 * @param dateRange date range
 	 * @param address address
 	 * @return created location
-	 * @throws DuplicateEntityFoundException if location exists
+	 * @throws LocationExistsException if location exists
 	 */
 	public Location create(final Organization organization,
 			final DateRange dateRange, final Address address)
-				throws DuplicateEntityFoundException {
+				throws LocationExistsException {
 		Location location = this.locationInstanceFactory
 				.createInstance();
 		this.populate(location, organization, dateRange, address);
@@ -72,12 +72,12 @@ public class LocationDelegate {
 	 * @param dateRange date range
 	 * @param address address
 	 * @return updated location
-	 * @throws DuplicateEntityFoundException if location exists
+	 * @throws LocationExistsException if location exists
 	 */
 	public Location update(final Location location,
 			final Organization organization, final DateRange dateRange,
 			final Address address)
-				throws DuplicateEntityFoundException {
+				throws LocationExistsException {
 		this.populate(location, organization, dateRange, address);
 		return this.locationDao.makePersistent(location);
 	}

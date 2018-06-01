@@ -20,7 +20,7 @@
 		<sec:authorize access="hasRole('OFFENDER_DEMOGRAPHICS_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty offender}">
 			<li>
-				<a href="${pageContext.request.contextPath}/offender/demographics/demographicsDetailsReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="offenderDemographicsDetailsReportLink"  bundle="${demographicsBundle}"/></a>
+				<a href="${pageContext.request.contextPath}/offender/demographics/demographicsDetailsReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="offenderDemographicsDetailsReportLink"  bundle="${demographicsBundle}"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>		

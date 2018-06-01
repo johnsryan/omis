@@ -27,14 +27,7 @@
 		<sec:authorize access="hasRole('HEARING_VIEW') or hasRole('ADMIN')">
 		<c:if test="${not empty hearing}">
 			<li>
-				<a href="${pageContext.request.contextPath}/hearing/adjudicateHearingReport.html?hearing=${hearing.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="adjudicateHearingReportLinkLabel"/></a>
-			</li>
-		</c:if>
-		</sec:authorize>
-		<sec:authorize access="hasRole('HEARING_VIEW') or hasRole('ADMIN')">
-		<c:if test="${not empty hearing}">
-			<li>
-				<a href="${pageContext.request.contextPath}/hearing/hearingDetailsReport.html?hearing=${hearing.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="hearingDetailsReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/hearing/adjudicateHearingReport.html?hearing=${hearing.id}&reportFormat=PDF" class="newTab adobeReportLink"><fmt:message key="adjudicateHearingReportLinkLabel"/></a>
 			</li>
 		</c:if>
 		</sec:authorize>	
@@ -44,6 +37,13 @@
 				<omis:reportPro reportPath="/Compliance/Hearings/Summary_of_Disciplinary_Hearing&HEARING_ID=${hearing.id}" decorate="no" title="" className="newTab reportLink"><fmt:message key="summaryDisciplinaryHearingReportLinkLabel"/></omis:reportPro>
 			</li>
 		</c:if>
-		</sec:authorize>			
+		</sec:authorize>
+		<sec:authorize access="hasRole('HEARING_VIEW') or hasRole('ADMIN')">
+		<c:if test="${not empty hearing}">
+			<li>
+				<a href="${pageContext.request.contextPath}/hearing/hearingDetailsReport.html?hearing=${hearing.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="hearingDetailsReportLinkLabel"/></a>
+			</li>
+		</c:if>
+		</sec:authorize>					
 	</ul>
 </fmt:bundle>

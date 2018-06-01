@@ -17,31 +17,32 @@
  */
 package omis.offender.service.testng;
 
-import omis.offender.service.AlternativeOffenderIdentityService;
-import omis.offender.service.delegate.OffenderDelegate;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.testng.annotations.Test;
-import omis.testng.AbstractHibernateTransactionalTestNGSpringContextTests;
-import omis.util.PropertyValueAsserter;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
 import omis.country.domain.Country;
+import omis.country.exception.CountryExistsException;
 import omis.country.service.delegate.CountryDelegate;
 import omis.datatype.DateRange;
 import omis.demographics.domain.Sex;
-import omis.exception.DuplicateEntityFoundException;
 import omis.offender.domain.Offender;
+import omis.offender.service.AlternativeOffenderIdentityService;
+import omis.offender.service.delegate.OffenderDelegate;
 import omis.person.domain.AlternativeIdentityAssociation;
 import omis.person.domain.AlternativeIdentityCategory;
 import omis.person.domain.AlternativeNameAssociation;
 import omis.person.domain.AlternativeNameCategory;
 import omis.person.domain.PersonIdentity;
 import omis.person.domain.PersonName;
+import omis.person.exception.AlternativeIdentityAssociationExistsException;
+import omis.person.exception.AlternativeNameAssociationExistsException;
+import omis.person.exception.PersonIdentityExistsException;
+import omis.person.exception.PersonNameExistsException;
 import omis.person.service.delegate.AlternativeIdentityAssociationDelegate;
 import omis.person.service.delegate.AlternativeIdentityCategoryDelegate;
 import omis.person.service.delegate.AlternativeNameAssociationDelegate;
@@ -50,17 +51,22 @@ import omis.person.service.delegate.PersonIdentityDelegate;
 import omis.person.service.delegate.PersonNameDelegate;
 import omis.region.domain.City;
 import omis.region.domain.State;
+import omis.region.exception.CityExistsException;
+import omis.region.exception.StateExistsException;
 import omis.region.service.delegate.CityDelegate;
 import omis.region.service.delegate.StateDelegate;
+import omis.testng.AbstractHibernateTransactionalTestNGSpringContextTests;
+import omis.util.PropertyValueAsserter;
 
 /**
- * Tests method to TODO.
+ * Tests method to update alternative identities without SSNs.
  *
  * @author Sheronda Vaughn
+ * @author Stephen Abson
  * @version 0.0.1 (Feb 22, 2018)
  * @since OMIS 3.0
  */
-@Test
+@Test(groups = {"alternativeIdentity", "service"})
 public class AlternativeOffenderIdentityServiceUpdateAssociationWithoutSsnTests
 	extends AbstractHibernateTransactionalTestNGSpringContextTests {
 
@@ -116,8 +122,28 @@ public class AlternativeOffenderIdentityServiceUpdateAssociationWithoutSsnTests
 
 	/* Test methods. */
 
-	@Test
-	public void testUpdateAssociationWithoutSsn() throws DuplicateEntityFoundException {
+	/**
+	 * Tests update of alternative identity association.
+	 * 
+	 * @throws AlternativeIdentityAssociationExistsException if alternative
+	 * identity association exists
+	 * @throws PersonIdentityExistsException if person identity exists
+	 * @throws CountryExistsException if country exists
+	 * @throws StateExistsException if State exists
+	 * @throws CityExistsException if city exists
+	 * @throws PersonNameExistsException if person name exists
+	 * @throws AlternativeNameAssociationExistsException if alternative name
+	 * association exists
+	 */
+	public void testUpdateAssociationWithoutSsn()
+				throws AlternativeIdentityAssociationExistsException,
+					PersonIdentityExistsException,
+					CountryExistsException,
+					StateExistsException,
+					CityExistsException,
+					PersonNameExistsException,
+					AlternativeNameAssociationExistsException {
+		
 		// Arrangements
 		final String lastName =  "LastName";
 		final String firstName = "FirstName";
@@ -188,9 +214,30 @@ public class AlternativeOffenderIdentityServiceUpdateAssociationWithoutSsnTests
 			.performAssertions(alternativeIdentityAssociation);
 	}
 
-	@Test(expectedExceptions = {DuplicateEntityFoundException.class})
-	public void testDuplicateEntityFoundException() 
-			throws DuplicateEntityFoundException {
+	/**
+	 * Tests that duplicate person identities are prevented on update.
+	 * 
+	 * @throws AlternativeIdentityAssociationExistsException if
+	 * alternative identity association exists
+	 * @throws PersonIdentityExistsException if person identity exists
+	 * - asserted
+	 * @throws AlternativeNameAssociationExistsException if alternative
+	 * name association exists
+	 * @throws PersonNameExistsException if person name exists
+	 * @throws CityExistsException if city exists
+	 * @throws StateExistsException if State exists
+	 * @throws CountryExistsException if country exists
+	 */
+	@Test(expectedExceptions = {PersonIdentityExistsException.class})
+	public void testPersonIdentityExistsException()
+			throws AlternativeIdentityAssociationExistsException,
+				PersonIdentityExistsException,
+				AlternativeNameAssociationExistsException,
+				PersonNameExistsException,
+				CityExistsException,
+				StateExistsException,
+				CountryExistsException {
+		
 		// Arrangements
 		final String lastName =  "LastName";
 		final String firstName = "FirstName";

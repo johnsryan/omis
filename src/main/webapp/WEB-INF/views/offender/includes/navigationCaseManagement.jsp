@@ -91,7 +91,7 @@
 			</div>
 		</div>
 	</c:if>
-	<if test="${offenderProfileItemsProperties.medicalReviewProfileItemEnabled}">
+	<c:if test="${offenderProfileItemsProperties.medicalReviewProfileItemEnabled}">
 		<div class="foregroundUltraLight navItemContainer hoverable">
 			<div class="navItem">
 				<a href="${pageContext.request.contextPath}/medicalReview/list.html?offender=${offenderSummary.id}">
@@ -101,8 +101,8 @@
 				</a>
 			</div>
 		</div>
-	</if>
-	<if test="${offenderProfileItemsProperties.mentalHealthReviewProfileItemEnabled}">
+	</c:if>
+	<c:if test="${offenderProfileItemsProperties.mentalHealthReviewProfileItemEnabled}">
 		<div class="foregroundUltraLight navItemContainer hoverable">
 			<div class="navItem">
 				<a href="${pageContext.request.contextPath}/mentalHealthReview/list.html?offender=${offenderSummary.id}">
@@ -112,6 +112,6 @@
 				</a>
 			</div>
 		</div>
-	</if>	
+	</c:if>	
 </div>
 </fmt:bundle>

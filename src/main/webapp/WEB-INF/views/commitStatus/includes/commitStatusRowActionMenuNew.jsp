@@ -18,7 +18,7 @@
 		<sec:authorize access="hasRole('COMMIT_STATUS_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty commitStatusTerm}">
 			<li>
-				<a href="${pageContext.request.contextPath}/commitStatus/commitStatusDetailsReport.html?commitStatusTerm=${commitStatusTerm.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="commitStatusDetailsReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/commitStatus/commitStatusDetailsReport.html?commitStatusTerm=${commitStatusTerm.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="commitStatusDetailsReportLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>

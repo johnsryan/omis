@@ -29,7 +29,7 @@
 		<sec:authorize access="hasRole('COURT_CASE_DOCUMENT_VIEW') or hasRole('ADMIN')">
 	    <c:if test="${not empty courtCaseDocumentAssociation}">
 	        <li>
-	            <a href="${pageContext.request.contextPath}/courtCase/document/courtDocumentDetailsReport.html?courtCaseDocumentAssociation=${courtCaseDocumentAssociation.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="courtDocumentDetailsReportLinkLabel"/></a>
+	            <a href="${pageContext.request.contextPath}/courtCase/document/courtDocumentDetailsReport.html?courtCaseDocumentAssociation=${courtCaseDocumentAssociation.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="courtDocumentDetailsReportLinkLabel"/></a>
 	        </li>
 	    </c:if>
 	</sec:authorize>

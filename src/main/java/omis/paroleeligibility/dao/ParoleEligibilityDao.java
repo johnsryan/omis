@@ -18,11 +18,20 @@
 package omis.paroleeligibility.dao;
 
 import java.util.Date;
+import java.util.List;
 
 import omis.dao.GenericDao;
 import omis.offender.domain.Offender;
 import omis.paroleeligibility.domain.ParoleEligibility;
 
+/**
+ * Parole Eligibility Data Access Object.
+ *
+ * @author Trevor Isles
+ * @author Annie Wahl
+ * @version 0.1.1 (May 24, 2018)
+ * @since OMIS 3.0
+ */
 public interface ParoleEligibilityDao extends GenericDao<ParoleEligibility> {
 
 	/**
@@ -45,5 +54,17 @@ public interface ParoleEligibilityDao extends GenericDao<ParoleEligibility> {
 	 */
 	ParoleEligibility findExcluding(ParoleEligibility paroleEligibility, 
 			Offender offender, Date hearingEligibilityDate);
-
+	
+	/**
+	 * Returns a list of Parole Eligibilities for an offender after the
+	 * given date.
+	 * 
+	 * @param offender Offender
+	 * @param date Date
+	 * @return List of Parole Eligibilities for an offender after the
+	 * given date.
+	 */
+	List<ParoleEligibility> findByOffenderAfterDate(
+			Offender offender, Date date);
+	
 }

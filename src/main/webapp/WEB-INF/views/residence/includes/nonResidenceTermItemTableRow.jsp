@@ -17,7 +17,9 @@
 			</fmt:message>
 		</td>
 		<td>
-			<fmt:message key="nonResidenceTerm.${nonResidenceTerm.status}.label"/>
+			<fmt:message key="nonResidenceTerm.status.label">
+				<fmt:param value="${nonResidenceTerm.status.name}"/>
+			</fmt:message>
 		</td>
 	</tr>
 </fmt:bundle>

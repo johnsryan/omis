@@ -89,6 +89,14 @@
 		</span>
 		
 		<span class="fieldGroup">
+			<form:label path="time" class="fieldLabel">
+				<fmt:message key="timeLabel"/>
+			</form:label>
+			<form:input path="time" cssClass="time" />
+			<form:errors path="time" cssClass="error"/>
+		</span>
+		
+		<span class="fieldGroup">
 			<form:label path="status" class="fieldLabel">
 				<fmt:message key="statusLabel"/>
 			</form:label>

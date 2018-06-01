@@ -27,7 +27,8 @@ import omis.questionnaire.domain.QuestionnaireCategory;
  * Assessment summary report service.
  * 
  * @author Josh Divine
- * @version 0.1.0 (Mar 14, 2018)
+ * @author Annie Wahl
+ * @version 0.1.1 (Apr 18, 2018)
  * @since OMIS 3.0
  */
 public interface AssessmentSummaryReportService {
@@ -68,4 +69,16 @@ public interface AssessmentSummaryReportService {
 	 * @return list of questionnaire categories
 	 */
 	List<QuestionnaireCategory> findAssessmentQuestionCategories();
+	
+	/**
+	 * Returns a list of Assessment Rating Summaries by the specified
+	 * Administered Questionnaire.
+	 * 
+	 * @param administeredQuestionnaire - Administered Questionnaire
+	 * @return List of Assessment Rating Summaries by the specified
+	 * Administered Questionnaire.
+	 */
+	List<AssessmentRatingSummary>
+		findAssessmentRatingSummariesByAdministeredQuestionnaire(
+				AdministeredQuestionnaire administeredQuestionnaire);
 }

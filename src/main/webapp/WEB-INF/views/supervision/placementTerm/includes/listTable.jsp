@@ -27,17 +27,17 @@
 	<thead>
 		<tr>
 			<th/>
-			<th><fmt:message key="supervisoryOrganizationLabel"/></th>
+			<th hidden="hidden"><fmt:message key="supervisoryOrganizationLabel"/></th>
 			<th><fmt:message key="correctionalStatusLabel"/></th>
 			<th class="datetime"><fmt:message key="startDateLabel"/></th>
 			<th class="datetime"><fmt:message key="endDateLabel"/></th>
 			<th><fmt:message key="dayCountLabel"/>
 			<th><fmt:message key="startChangeReasonLabel"/></th>
-			<th><fmt:message key="endChangeReasonLabel"/></th>
-			<th><fmt:message key="statusLabel"/></th>
-			<th class="datetime"><fmt:message key="statusDateLabel"/></th>
-			<th class="datetime"><fmt:message key="statusReturnedDateLabel"/></th>
-			<th><fmt:message key="statusDayCountLabel"/>
+			<th hidden="hidden"><fmt:message key="endChangeReasonLabel"/></th>
+			<th hidden="hidden"><fmt:message key="statusLabel"/></th>
+			<th hidden="hidden" class="datetime"><fmt:message key="statusDateLabel"/></th>
+			<th hidden="hidden" class="datetime"><fmt:message key="statusReturnedDateLabel"/></th>
+			<th hidden="hidden"><fmt:message key="statusDayCountLabel"/>
 		</tr>
 	</thead>
 	<tbody id="placementTerms">

@@ -27,7 +27,8 @@ import omis.paroleeligibility.domain.EligibilityStatusCategory;
  * 
  * @author Trevor Isles
  * @author Josh Divine
- * @version 0.1.1 (Apr 17, 2018)
+ * @author Annie Wahl
+ * @version 0.1.2 (May 29, 2018)
  * @since OMIS 3.0
  */
 public class ParoleEligibilitySummary implements Serializable {
@@ -58,6 +59,10 @@ public class ParoleEligibilitySummary implements Serializable {
 	
 	private final Integer offenderNumber;
 	
+	private final Date hearingAnalysisExpectedCompletionDate;
+	
+	private final String boardHearingItineraryLocationName;
+	
 	private final Date hearingDate;
 	
 	/**
@@ -81,7 +86,7 @@ public class ParoleEligibilitySummary implements Serializable {
 			final String reasonName) {
 		this(paroleEligibilityId, null, hearingEligibilityDate, 
 				appearanceCategoryName, statusCategory, statusDate, reviewDate, 
-				reasonName, null, null, null, null, null);
+				reasonName, null, null, null, null, null, null, null);
 	}
 	
 	/**
@@ -99,6 +104,10 @@ public class ParoleEligibilitySummary implements Serializable {
 	 * @param firstName first name of the offender
 	 * @param middleName middle name of the offender
 	 * @param offenderNumber offender number
+	 * @param hearingAnalysisExpectedCompletionDate hearing analysis expected
+	 * completion date
+	 * @param boardHearingItineraryLocationName board hearing itinerary
+	 * location name
 	 * @param hearingDate hearing date
 	 */
 	public ParoleEligibilitySummary(
@@ -109,7 +118,10 @@ public class ParoleEligibilitySummary implements Serializable {
 			final Date statusDate, final Date reviewDate, 
 			final String reasonName, final String lastName, 
 			final String firstName, final String middleName,
-			final Integer offenderNumber, final Date hearingDate) {
+			final Integer offenderNumber,
+			final Date hearingAnalysisExpectedCompletionDate,
+			final String boardHearingItineraryLocationName,
+			final Date hearingDate) {
 		this.paroleEligibilityId = paroleEligibilityId;
 		this.hearingEligibilityDate = hearingEligibilityDate;
 		this.appearanceCategoryName = appearanceCategoryName;
@@ -122,6 +134,10 @@ public class ParoleEligibilitySummary implements Serializable {
 		this.firstName = firstName;
 		this.middleName = middleName;
 		this.offenderNumber = offenderNumber;
+		this.hearingAnalysisExpectedCompletionDate =
+				hearingAnalysisExpectedCompletionDate;
+		this.boardHearingItineraryLocationName =
+				boardHearingItineraryLocationName;
 		this.hearingDate = hearingDate;
 	}
 	
@@ -231,6 +247,22 @@ public class ParoleEligibilitySummary implements Serializable {
 	 */
 	public Integer getOffenderNumber() {
 		return offenderNumber;
+	}
+	
+	/**
+	 * Returns the hearingAnalysisExpectedCompletionDate.
+	 * @return hearingAnalysisExpectedCompletionDate - Date
+	 */
+	public Date getHearingAnalysisExpectedCompletionDate() {
+		return this.hearingAnalysisExpectedCompletionDate;
+	}
+
+	/**
+	 * Returns the boardHearingItineraryLocationName.
+	 * @return boardHearingItineraryLocationName - String
+	 */
+	public String getBoardHearingItineraryLocationName() {
+		return this.boardHearingItineraryLocationName;
 	}
 
 	/**

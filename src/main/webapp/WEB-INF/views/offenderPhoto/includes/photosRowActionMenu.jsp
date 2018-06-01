@@ -29,7 +29,7 @@
 		<sec:authorize access="hasRole('OFFENDER_PHOTO_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty association}">
 			<li>
-				<a href="${pageContext.request.contextPath}/offenderPhoto/offenderPhotosDetailsReport.html?association=${association.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="offenderPhotosDetailsReportLinkLabel" bundle="${offenderPhotoBundle}"/></a>
+				<a href="${pageContext.request.contextPath}/offenderPhoto/offenderPhotosDetailsReport.html?association=${association.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="offenderPhotosDetailsReportLinkLabel" bundle="${offenderPhotoBundle}"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>

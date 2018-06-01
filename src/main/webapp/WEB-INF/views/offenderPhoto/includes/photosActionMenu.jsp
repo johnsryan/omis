@@ -24,7 +24,7 @@
 			<sec:authorize access="hasRole('OFFENDER_PHOTO_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty offender}">
 			<li>
-				<a href="${pageContext.request.contextPath}/offenderPhoto/offenderPhotosListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="offenderPhotosListingReportLinkLabel" bundle="${offenderPhotoBundle}"/></a>
+				<a href="${pageContext.request.contextPath}/offenderPhoto/offenderPhotosListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="offenderPhotosListingReportLinkLabel" bundle="${offenderPhotoBundle}"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>

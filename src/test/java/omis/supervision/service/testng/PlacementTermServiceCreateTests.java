@@ -167,6 +167,178 @@ public class PlacementTermServiceCreateTests
 	}
 	
 	/**
+	 * Tests creation without supervisory organization.
+	 * 
+	 * @throws PlacementTermExistsException if placement term exists
+	 * @throws CorrectionalStatusTermConflictException if conflicting
+	 * correctional status term exists
+	 * @throws SupervisoryOrganizationTermConflictException if conflicting
+	 * supervisory organization term exists
+	 * @throws PlacementTermConflictException if conflicting placement term
+	 * exists
+	 * @throws DuplicateEntityFoundException if duplicate entities exist
+	 */
+	public void testCreationWithoutSupervisoryOrganization()
+			throws PlacementTermExistsException,
+				CorrectionalStatusTermConflictException,
+				SupervisoryOrganizationTermConflictException,
+				PlacementTermConflictException,
+				DuplicateEntityFoundException {
+		
+		// Arrangements - creates Blofeld and correctional status
+		Offender offender = this.offenderDelegate
+				.createWithoutIdentity("Blofeld", "Ernst", "Stavro", null);
+		CorrectionalStatus secure = this.correctionalStatusDelegate
+				.create("Secure", "SEC", true, (short) 1, true);
+		DateRange dateRange = new DateRange(
+				this.parseDateText("12/12/2012"), null);
+		
+		// Action - places Blofeld on secure status without a supervisory
+		// organization
+		PlacementTerm placementTerm = this.placementTermService
+				.create(offender, null, secure, dateRange, null, null);
+		
+		// Asserts that Blofeld is secure without a supervisory organization
+		PropertyValueAsserter.create()
+			.addExpectedValue("offender", offender)
+			.addExpectedValue("dateRange", dateRange)
+			.addExpectedValue("correctionalStatusTerm.correctionalStatus",
+					secure)
+			.addExpectedValue("supervisoryOrganizationTerm", null)
+			.performAssertions(placementTerm);
+	}
+	
+	/**
+	 * Tests that an existing placement term without an end date is ended with
+	 * the start date of the new placement term.
+	 * 
+	 * @throws DuplicateEntityFoundException if entities exist
+	 * @throws PlacementTermExistsException if placement term exists
+	 * @throws CorrectionalStatusTermConflictException if conflicting
+	 * correctional status terms exist
+	 * @throws SupervisoryOrganizationTermConflictException if conflicting
+	 * supervisory organization terms exist
+	 * @throws PlacementTermConflictException if conflicting placement terms
+	 * exist
+	 */
+	public void testEndExistingPlacementTermWithoutEndDateOnCreation()
+			throws DuplicateEntityFoundException,
+				PlacementTermExistsException,
+				CorrectionalStatusTermConflictException,
+				SupervisoryOrganizationTermConflictException,
+				PlacementTermConflictException {
+		
+		// Arrangements - places Blofeld securely, at prison
+		Offender offender = this.offenderDelegate
+				.createWithoutIdentity("Blofeld", "Ernst", "Stavro", null);
+		DateRange dateRange = new DateRange(
+				this.parseDateText("12/12/2012"), null);
+		CorrectionalStatus secure = this.correctionalStatusDelegate
+				.create("Secure", "SEC", true, (short) 1, true);
+		CorrectionalStatusTerm secureTerm
+			= this.correctionalStatusTermDelegate.create(
+					offender, dateRange, secure);
+		SupervisoryOrganization prison
+			= this.supervisoryOrganizationDelegate
+				.create("Prison", "PRSN", null);
+		SupervisoryOrganizationTerm prisonTerm
+			= this.supervisoryOrganizationTermDelegate
+				.create(offender, dateRange, prison);
+		PlacementTerm existingPlacementTerm
+			= this.placementTermDelegate.create(
+				offender, dateRange, prisonTerm, secureTerm, null, null, false);
+		
+		// Action - places offender on alt-secure status
+		CorrectionalStatus altSecure = this.correctionalStatusDelegate
+				.create("Alt-Secure", "ALT", true, (short) 1, true);
+		SupervisoryOrganization preRelease
+			= this.supervisoryOrganizationDelegate
+				.create("PreRelease", "PRE", null);
+		DateRange altDateRange = new DateRange(
+				this.parseDateText("12/12/2014"), null);
+		this.placementTermService
+			.create(offender, preRelease, altSecure, altDateRange, null, null);
+		
+		// Asserts that original secure term is unaffected
+		PropertyValueAsserter.create()
+			.addExpectedValue("dateRange.startDate", dateRange.getStartDate())
+			.addExpectedValue("dateRange.endDate", altDateRange.getStartDate())
+			.addExpectedValue("offender", offender)
+			.addExpectedValue(
+					"supervisoryOrganizationTerm.supervisoryOrganization",
+					prison)
+			.addExpectedValue("correctionalStatusTerm.correctionalStatus",
+					secure)
+			.performAssertions(existingPlacementTerm);
+	}
+	
+	/**
+	 * Tests that an existing placement term with an end date has its end date
+	 * adjusted to that start date of the new placement term when the end date
+	 * is after the start date.
+	 * 
+	 * @throws DuplicateEntityFoundException if entities exist
+	 * @throws PlacementTermExistsException if placement term exists
+	 * @throws CorrectionalStatusTermConflictException if conflicting
+	 * correctional status terms exist
+	 * @throws SupervisoryOrganizationTermConflictException if conflicting
+	 * supervisory organization terms exist
+	 * @throws PlacementTermConflictException if conflicting placement terms
+	 * exist
+	 */
+	public void testEndExistingPlacementTermWithEndDateOnCreation()
+				throws DuplicateEntityFoundException,
+					PlacementTermExistsException,
+					CorrectionalStatusTermConflictException,
+					SupervisoryOrganizationTermConflictException,
+					PlacementTermConflictException {
+		
+		// Arrangements - places Blofeld securely, at prison
+		Offender offender = this.offenderDelegate
+				.createWithoutIdentity("Blofeld", "Ernst", "Stavro", null);
+		DateRange dateRange = new DateRange(
+				this.parseDateText("12/12/2012"),
+				this.parseDateText("12/12/2015"));
+		CorrectionalStatus secure = this.correctionalStatusDelegate
+				.create("Secure", "SEC", true, (short) 1, true);
+		CorrectionalStatusTerm secureTerm
+			= this.correctionalStatusTermDelegate.create(
+					offender, dateRange, secure);
+		SupervisoryOrganization prison
+			= this.supervisoryOrganizationDelegate
+				.create("Prison", "PRSN", null);
+		SupervisoryOrganizationTerm prisonTerm
+			= this.supervisoryOrganizationTermDelegate
+				.create(offender, dateRange, prison);
+		PlacementTerm existingPlacementTerm
+			= this.placementTermDelegate.create(
+				offender, dateRange, prisonTerm, secureTerm, null, null, false);
+		
+		// Action - places offender on alt-secure status
+		CorrectionalStatus altSecure = this.correctionalStatusDelegate
+				.create("Alt-Secure", "ALT", true, (short) 1, true);
+		SupervisoryOrganization preRelease
+			= this.supervisoryOrganizationDelegate
+				.create("PreRelease", "PRE", null);
+		DateRange altDateRange = new DateRange(
+				this.parseDateText("12/12/2014"), null);
+		this.placementTermService
+			.create(offender, preRelease, altSecure, altDateRange, null, null);
+		
+		// Asserts that original secure term is unaffected
+		PropertyValueAsserter.create()
+			.addExpectedValue("dateRange.startDate", dateRange.getStartDate())
+			.addExpectedValue("dateRange.endDate", altDateRange.getStartDate())
+			.addExpectedValue("offender", offender)
+			.addExpectedValue(
+					"supervisoryOrganizationTerm.supervisoryOrganization",
+					prison)
+			.addExpectedValue("correctionalStatusTerm.correctionalStatus",
+					secure)
+			.performAssertions(existingPlacementTerm);
+	}
+	
+	/**
 	 * Tests that when a correctional status term with a matching correctional
 	 * status and date range exists, it is used for the placement term.
 	 * 
@@ -254,6 +426,109 @@ public class PlacementTermServiceCreateTests
 		assert placementTerm.getSupervisoryOrganizationTerm()
 			.equals(paroleOfficeTerm)
 			: "Matching supervisory organization term not used";
+	}
+	
+	/**
+	 * Tests that overlapping supervisory organization term is left unchanged
+	 * when supervisory organization is not specified.
+	 * 
+	 * @throws DuplicateEntityFoundException if duplicate entities exist 
+	 * @throws PlacementTermConflictException if conflicting placement terms
+	 * exist
+	 * @throws SupervisoryOrganizationTermConflictException if conflicting
+	 * supervisory organization terms exist 
+	 * @throws CorrectionalStatusTermConflictException if conflicting
+	 * correctional status terms exist 
+	 * @throws PlacementTermExistsException if placement term exists 
+	 */
+	public void
+	testCreationWithoutSupervisoryOrganizationLeavesExistingUnchanged()
+			throws DuplicateEntityFoundException,
+				PlacementTermExistsException,
+				CorrectionalStatusTermConflictException,
+				SupervisoryOrganizationTermConflictException,
+				PlacementTermConflictException {
+		
+		// Arrangements - places Blofeld securely, at prison
+		Offender offender = this.offenderDelegate
+				.createWithoutIdentity("Blofeld", "Ernst", "Stavro", null);
+		DateRange dateRange = new DateRange(
+				this.parseDateText("12/12/2012"), null);
+		CorrectionalStatus secure = this.correctionalStatusDelegate
+				.create("Secure", "SEC", true, (short) 1, true);
+		CorrectionalStatusTerm secureTerm
+			= this.correctionalStatusTermDelegate.create(
+					offender, dateRange, secure);
+		SupervisoryOrganization prison
+			= this.supervisoryOrganizationDelegate
+				.create("Prison", "PRSN", null);
+		SupervisoryOrganizationTerm prisonTerm
+			= this.supervisoryOrganizationTermDelegate
+				.create(offender, dateRange, prison);
+		this.placementTermDelegate.create(
+				offender, dateRange, prisonTerm, secureTerm, null, null, false);
+		
+		// Action - places offender on alt-secure status
+		CorrectionalStatus altSecure = this.correctionalStatusDelegate
+				.create("Alt-Secure", "ALT", true, (short) 1, true);
+		DateRange altDateRange = new DateRange(
+				this.parseDateText("12/12/2014"), null);
+		this.placementTermService
+			.create(offender, null, altSecure, altDateRange, null, null);
+		
+		// Asserts that original secure term is unaffected
+		PropertyValueAsserter.create()
+			.addExpectedValue("dateRange", dateRange)
+			.addExpectedValue("offender", offender)
+			.addExpectedValue("supervisoryOrganization", prison)
+			.performAssertions(prisonTerm);
+	}
+	
+	/**
+	 * Tests that attempts to create duplicate placement terms are prevented
+	 * when supervisory organization is {@code null}.
+	 *  
+	 * @throws PlacementTermExistsException if placement term exists - asserted
+	 * @throws CorrectionalStatusTermConflictException if conflicting
+	 * correctional statuses exist
+	 * @throws SupervisoryOrganizationTermConflictException if conflicting
+	 * supervisory organizations exist
+	 * @throws PlacementTermConflictException if conflicting placement
+	 * terms exist
+	 * @throws DuplicateEntityFoundException if duplicate entities exist
+	 */
+	// Disabled as current implementation ends existing placement term of
+	// which new one is a duplicate. This should be resolved by dropping the
+	// correctional status and supervisory organization terms from the business
+	// key of placement term and performing the check before existing placement
+	// terms are adjusted.
+	@Test(enabled = false,
+			expectedExceptions = {PlacementTermExistsException.class})
+	public void
+	testPlacementTermExistsExceptionWithoutSupervisoryOrganization()
+			throws PlacementTermExistsException,
+			CorrectionalStatusTermConflictException,
+			SupervisoryOrganizationTermConflictException,
+			PlacementTermConflictException,
+			DuplicateEntityFoundException {
+	
+		// Arrangements - creates Blofeld, places securely
+		Offender offender = this.offenderDelegate
+				.createWithoutIdentity("Blofeld", "Ernst", "Stavro", null);
+		DateRange dateRange = new DateRange(
+				this.parseDateText("12/12/2012"), null);
+		CorrectionalStatus secureStatus
+			= this.correctionalStatusDelegate.create(
+					"Secure", "SEC", true, (short) 1, true);
+		CorrectionalStatusTerm secureTerm
+			= this.correctionalStatusTermDelegate
+				.create(offender, dateRange, secureStatus);
+		this.placementTermDelegate.create(offender, dateRange, null,
+				secureTerm, null, null, false);
+		
+		// Action - attempts to create duplicate placement term
+		this.placementTermService
+			.create(offender, null, secureStatus, dateRange, null, null);
 	}
 	
 	/**

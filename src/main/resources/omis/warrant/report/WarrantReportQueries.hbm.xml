@@ -30,6 +30,7 @@
 					warrantCancellation.warrant warrant2
 				where
 					warrant2 = warrant)
+		order by warrant.date desc
 	]]></query>
 	<query name="findReleasedWarrantSummariesByOffender"><![CDATA[
 		select new omis.warrant.report.WarrantSummary(

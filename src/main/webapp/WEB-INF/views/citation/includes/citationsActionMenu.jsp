@@ -22,7 +22,7 @@
 		<sec:authorize access="hasRole('MISDEMEANOR_CITATION_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty offender}">
 			<li>
-				<a href="${pageContext.request.contextPath}/citation/misdemeanorCitationsListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="citationListingReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/citation/misdemeanorCitationsListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="citationListingReportLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>
@@ -51,7 +51,7 @@
 		<sec:authorize access="hasRole('MISDEMEANOR_CITATION_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty citation}">
 			<li>
-				<a href="${pageContext.request.contextPath}/citation/misdemeanorCitationsDetailsReport.html?citation=${citation.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="citationDetailsReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/citation/misdemeanorCitationsDetailsReport.html?citation=${citation.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="citationDetailsReportLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>

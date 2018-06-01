@@ -1,3 +1,20 @@
+/* 
+* OMIS - Offender Management Information System 
+* Copyright (C) 2011 - 2017 State of Montana 
+* 
+* This program is free software: you can redistribute it and/or modify 
+* it under the terms of the GNU General Public License as published by 
+* the Free Software Foundation, either version 3 of the License, or 
+* (at your option) any later version. 
+* 
+* This program is distributed in the hope that it will be useful, 
+* but WITHOUT ANY WARRANTY; without even the implied warranty of 
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+* GNU General Public License for more details. 
+* 
+* You should have received a copy of the GNU General Public License 
+* along with this program.  If not, see <http://www.gnu.org/licenses/>. 
+*/
 package omis.residence.service.delegate;
 
 import java.util.Date;
@@ -8,7 +25,6 @@ import omis.audit.domain.CreationSignature;
 import omis.audit.domain.UpdateSignature;
 import omis.audit.domain.VerificationSignature;
 import omis.datatype.DateRange;
-import omis.exception.DuplicateEntityFoundException;
 import omis.instance.factory.InstanceFactory;
 import omis.location.domain.Location;
 import omis.person.domain.Person;
@@ -17,6 +33,7 @@ import omis.region.domain.State;
 import omis.residence.dao.NonResidenceTermDao;
 import omis.residence.domain.NonResidenceTerm;
 import omis.residence.domain.ResidenceStatus;
+import omis.residence.exception.NonResidenceTermExistsException;
 
 /**
  * Non-Residence term service implementation delegate.
@@ -76,7 +93,7 @@ public class NonResidenceTermDelegate {
 	 * @param notes notes
 	 * @param verificationSignature verification signature
 	 * @return non residence term
-	 * @throws DuplicateEntityFoundException thrown when a duplicate 
+	 * @throws NonResidenceTermExistsException thrown when a duplicate 
 	 * non residence term exist
 	 */
 	public NonResidenceTerm createNonResidenceTerm(final Person person,
@@ -84,10 +101,10 @@ public class NonResidenceTermDelegate {
 			final Location location, final Boolean confirmed,
 			final String notes, 
 			final VerificationSignature verificationSignature)
-			throws DuplicateEntityFoundException {
+			throws NonResidenceTermExistsException {
 		if (this.nonResidenceTermDao.find(
 				person, location, status) != null) {
-			throw new DuplicateEntityFoundException(
+			throw new NonResidenceTermExistsException(
 					"Duplicate non residence term found");
 		}		
 		NonResidenceTerm nonResidenceTerm = this.nonResidenceTermInstanceFactory
@@ -120,7 +137,7 @@ public class NonResidenceTermDelegate {
 	 * @param notes notes
 	 * @param verificationSignature verification signature
 	 * @return non residence term
-	 * @throws DuplicateEntityFoundException thrown when a duplicate 
+	 * @throws NonResidenceTermExistsException thrown when a duplicate 
 	 * non residence term exist
 	 */
 	public NonResidenceTerm updateNonResidenceTerm(
@@ -128,10 +145,10 @@ public class NonResidenceTermDelegate {
 			final ResidenceStatus status, final Location location, 
 			final Boolean confirmed, final String notes, 
 			final VerificationSignature verificationSignature)
-			throws DuplicateEntityFoundException {		
+			throws NonResidenceTermExistsException {		
 		if (this.nonResidenceTermDao.findExcluding(nonResidenceTerm.getPerson(),
 				location, status, nonResidenceTerm) != null) {
-			throw new DuplicateEntityFoundException(
+			throw new NonResidenceTermExistsException(
 					"Duplicate non residence term found");
 		}		
 		nonResidenceTerm.setDateRange(dateRange);
@@ -156,15 +173,16 @@ public class NonResidenceTermDelegate {
 	 * @param notes notes
 	 * @param confirmed 
 	 * @return homeless term
-	 * @throws DuplicateEntityFoundException thrown when a duplicate 
+	 * @throws NonResidenceTermExistsException thrown when a duplicate 
 	 * non residence term exist
 	 */
 	public NonResidenceTerm createHomelessTerm(final Person person,
 			final DateRange dateRange, final City city, final State state, 
-			final String notes, Boolean confirmed) throws DuplicateEntityFoundException {
-		if(this.nonResidenceTermDao.find(person, 
+			final String notes, final Boolean confirmed) 
+					throws NonResidenceTermExistsException {
+		if (this.nonResidenceTermDao.find(person, 
 				null, ResidenceStatus.HOMELESS) != null) {
-			throw new DuplicateEntityFoundException(
+			throw new NonResidenceTermExistsException(
 					"Duplicate non residence term found");
 		}		
 		NonResidenceTerm nonResidenceTerm = this.nonResidenceTermInstanceFactory
@@ -193,18 +211,19 @@ public class NonResidenceTermDelegate {
 	 * @param city city
 	 * @param state state
 	 * @param notes notes
+	 * @param confirmed confirmed
 	 * @return homeless term
-	 * @throws DuplicateEntityFoundException thrown when a duplicate 
+	 * @throws NonResidenceTermExistsException thrown when a duplicate 
 	 * non residence term exist
 	 */
 	public NonResidenceTerm updateHomelessTerm(
 			final NonResidenceTerm nonResidenceTerm, final DateRange dateRange,
 			final City city, final State state, final String notes, 
 			final Boolean confirmed) 
-					throws DuplicateEntityFoundException {
+					throws NonResidenceTermExistsException {
 		if (this.nonResidenceTermDao.findExcluding(nonResidenceTerm.getPerson(),
 				null, nonResidenceTerm.getStatus(), nonResidenceTerm) != null) {
-			throw new DuplicateEntityFoundException(
+			throw new NonResidenceTermExistsException(
 					"Duplicate non residence term found");
 		}
 		nonResidenceTerm.setConfirmed(confirmed);
@@ -237,7 +256,7 @@ public class NonResidenceTermDelegate {
 	 * @return list of non residence terms
 	 */
 	public List<NonResidenceTerm> findNonResidenceTermByPersonAndDateRange(
-			Person person, DateRange dateRange) {
+			final Person person, final DateRange dateRange) {
 		return this.nonResidenceTermDao
 				.findNonResidenceTermByPersonAndDateRange(person, dateRange);
 	}
@@ -253,8 +272,9 @@ public class NonResidenceTermDelegate {
 	 * @return list of non residence terms
 	 */
 	public List<NonResidenceTerm> 
-		findNonResidenceTermByPersonAndDateRangeExcluding(Person person, 
-				DateRange dateRange, NonResidenceTerm nonResidenceTerm) {
+		findNonResidenceTermByPersonAndDateRangeExcluding(final Person person, 
+				final DateRange dateRange, 
+				final NonResidenceTerm nonResidenceTerm) {
 		return this.nonResidenceTermDao
 				.findNonResidenceTermByPersonAndDateRangeExcluding(
 						person, dateRange, nonResidenceTerm);
@@ -268,21 +288,22 @@ public class NonResidenceTermDelegate {
 	 * @param dateRange date range
 	 * @return list of associated non residence terms
 	 */
-	public List<NonResidenceTerm> findAssociatedNonResidenceTerms(Person person,
-			DateRange dateRange) {
+	public List<NonResidenceTerm> findAssociatedNonResidenceTerms(
+			final Person person, final DateRange dateRange) {
 		return this.nonResidenceTermDao.findAssociatedNonResidenceTerms(
 				person, dateRange);
 	}
 
 	/**
-	 * Returns non residence terms for the specified person on the specified date.
+	 * Returns non residence terms for the specified person on the 
+	 * specified date.
 	 *  
 	 * @param person person
 	 * @param date effective date
 	 * @return list of non residence terms
 	 */
-	public List<NonResidenceTerm> findNonResidenceTermsByPersonAndDate(final Person person,
-			final Date date) {
+	public List<NonResidenceTerm> findNonResidenceTermsByPersonAndDate(
+			final Person person, final Date date) {
 		return this.nonResidenceTermDao.findByPersonAndDate(person, date);
 	}
 }	

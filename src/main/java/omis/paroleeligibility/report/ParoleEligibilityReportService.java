@@ -29,7 +29,8 @@ import omis.paroleeligibility.domain.ParoleEligibility;
  *
  * @author Trevor Isles
  * @author Josh Divine
- * @version 0.1.2 (Apr 17, 2018)
+ * @author Annie Wahl
+ * @version 0.1.3 (May 29, 2018)
  * @since OMIS 3.0
  */
 public interface ParoleEligibilityReportService {
@@ -67,4 +68,13 @@ public interface ParoleEligibilityReportService {
 	 */
 	BoardHearing findBoardHearingByParoleEligibility(
 			ParoleEligibility eligibility);
+	
+	/**
+	 * Returns a summary of the provided Parole Eligibility.
+	 * 
+	 * @param paroleEligibilitySummary parole eligibility summary
+	 * @return Summary of the provided Parole Eligibility.
+	 */
+	ParoleEligibilitySummary summarizeParoleEligibility(
+			ParoleEligibility paroleEligibility);
 }

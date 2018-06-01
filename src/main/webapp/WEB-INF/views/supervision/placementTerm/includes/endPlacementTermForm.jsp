@@ -41,15 +41,18 @@
 		<form:input path="endTime" class="time"/>
 		<form:errors path="endTime" cssClass="error"/>
 	</span>
-	<span class="fieldGroup">
-		<form:label path="endChangeReason" class="fieldLabel">
-			<fmt:message key="endChangeReasonLabel"/></form:label>
-		<form:select path="endChangeReason">
-			<form:option value=""><fmt:message key="nullLabel" bundle="${commonBundle}"/></form:option>
-			<form:options items="${endChangeReasons}" itemLabel="name" itemValue="id"/>
-		</form:select>
-		<form:errors path="endChangeReason" cssClass="error"/>
-	</span>
+	<form:hidden path="allowEndChangeReason"/>
+	<c:if test="${endPlacementTermForm.allowEndChangeReason}">
+		<span class="fieldGroup">
+			<form:label path="endChangeReason" class="fieldLabel">
+				<fmt:message key="endChangeReasonLabel"/></form:label>
+			<form:select path="endChangeReason">
+				<form:option value=""><fmt:message key="nullLabel" bundle="${commonBundle}"/></form:option>
+				<form:options items="${endChangeReasons}" itemLabel="name" itemValue="id"/>
+			</form:select>
+			<form:errors path="endChangeReason" cssClass="error"/>
+		</span>
+	</c:if>
 </fieldset>
 <p class="buttons">
 	<input type="submit" value="<fmt:message key='saveLabel' bundle="${commonBundle}"/>"/>

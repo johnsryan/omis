@@ -32,7 +32,7 @@ import omis.user.domain.UserAccount;
  * @author Ryan Johns
  * @author Annie Wahl
  * @author Josh Divine
- * @version 0.1.4 (Apr 23, 2018)
+ * @version 0.1.5 (May 9, 2018)
  * @since OMIS 3.0
  */
 public class PresentenceInvestigationRequestForm {
@@ -42,10 +42,6 @@ public class PresentenceInvestigationRequestForm {
 	private Date requestDate;
 	
 	private Date sentenceDate;
-	
-	private Date actualSentenceDate;
-	
-	private Date expectedCompletionDate;
 	
 	private String docketValue;
 	
@@ -121,45 +117,11 @@ public class PresentenceInvestigationRequestForm {
 	}
 
 	/**
-	 * Returns the actual sentence date.
-	 *
-	 * @return actual sentence date
-	 */
-	public Date getActualSentenceDate() {
-		return actualSentenceDate;
-	}
-
-	/**
-	 * Sets the actual sentence date.
-	 *
-	 * @param actualSentenceDate actual sentence date
-	 */
-	public void setActualSentenceDate(final Date actualSentenceDate) {
-		this.actualSentenceDate = actualSentenceDate;
-	}
-
-	/**
 	 * Sets the sentenceDate
 	 * @param sentenceDate - Date
 	 */
 	public void setSentenceDate(final Date sentenceDate) {
 		this.sentenceDate = sentenceDate;
-	}
-
-	/**
-	 * Returns the expectedCompletionDate
-	 * @return expectedCompletionDate - Date
-	 */
-	public Date getExpectedCompletionDate() {
-		return expectedCompletionDate;
-	}
-
-	/**
-	 * Sets the expectedCompletionDate
-	 * @param expectedCompletionDate - Date
-	 */
-	public void setExpectedCompletionDate(final Date expectedCompletionDate) {
-		this.expectedCompletionDate = expectedCompletionDate;
 	}
 
 	/**

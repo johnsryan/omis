@@ -1,13 +1,30 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.violationevent.service.impl;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import omis.asrc.dao.AssessmentSanctionRevocationCenterDao;
 import omis.asrc.domain.AssessmentSanctionRevocationCenter;
-import omis.communitysupervision.dao.CommunitySupervisionOfficeDao;
+import omis.asrc.service.delegate.AssessmentSanctionRevocationCenterDelegate;
 import omis.communitysupervision.domain.CommunitySupervisionOffice;
+import omis.communitysupervision.service.delegate.CommunitySupervisionOfficeDelegate;
 import omis.condition.domain.Condition;
 import omis.condition.service.delegate.ConditionDelegate;
 import omis.disciplinaryCode.domain.DisciplinaryCode;
@@ -18,14 +35,28 @@ import omis.document.service.delegate.DocumentDelegate;
 import omis.document.service.delegate.DocumentTagDelegate;
 import omis.exception.DuplicateEntityFoundException;
 import omis.facility.domain.Facility;
+import omis.facility.domain.Unit;
 import omis.facility.service.delegate.FacilityDelegate;
+import omis.facility.service.delegate.UnitDelegate;
+import omis.hearing.domain.Hearing;
+import omis.hearing.domain.HearingNote;
+import omis.hearing.domain.HearingStatus;
+import omis.hearing.domain.ImposedSanction;
+import omis.hearing.domain.Infraction;
+import omis.hearing.domain.UserAttendance;
+import omis.hearing.service.delegate.HearingDelegate;
+import omis.hearing.service.delegate.HearingNoteDelegate;
+import omis.hearing.service.delegate.HearingStatusDelegate;
+import omis.hearing.service.delegate.ImposedSanctionDelegate;
+import omis.hearing.service.delegate.InfractionDelegate;
+import omis.hearing.service.delegate.UserAttendanceDelegate;
 import omis.offender.domain.Offender;
-import omis.prerelease.dao.PreReleaseCenterDao;
 import omis.prerelease.domain.PreReleaseCenter;
-import omis.supervision.dao.SupervisoryOrganizationDao;
+import omis.prerelease.service.delegate.PreReleaseCenterDelegate;
 import omis.supervision.domain.SupervisoryOrganization;
-import omis.treatment.dao.TreatmentCenterDao;
+import omis.supervision.service.delegate.SupervisoryOrganizationDelegate;
 import omis.treatment.domain.TreatmentCenter;
+import omis.treatment.service.delegate.TreatmentCenterDelegate;
 import omis.violationevent.domain.ConditionViolation;
 import omis.violationevent.domain.DisciplinaryCodeViolation;
 import omis.violationevent.domain.ViolationEvent;
@@ -40,12 +71,12 @@ import omis.violationevent.service.delegate.ViolationEventDocumentDelegate;
 import omis.violationevent.service.delegate.ViolationEventNoteDelegate;
 
 /**
- * ViolationEventServiceImpl.java
+ * Implementation of service for violation event.
  * 
- *@author Annie Jacques 
- *@version 0.1.0 (Aug 30, 2017)
- *@since OMIS 3.0
- *
+ * @author Annie Wahl
+ * @author Josh Divine
+ * @version 0.1.2 (May 23, 2018)
+ * @since OMIS 3.0
  */
 public class ViolationEventServiceImpl implements ViolationEventService {
 	
@@ -64,22 +95,38 @@ public class ViolationEventServiceImpl implements ViolationEventService {
 	
 	private final DocumentTagDelegate documentTagDelegate;
 	
-	private final SupervisoryOrganizationDao supervisoryOrganizationDao;
+	private final SupervisoryOrganizationDelegate 
+			supervisoryOrganizationDelegate;
 	
 	private final DisciplinaryCodeDelegate disciplinaryCodeDelegate;
 	
 	private final FacilityDelegate facilityDelegate;
 	
-	private final TreatmentCenterDao treatmentCenterDao;
+	private final TreatmentCenterDelegate treatmentCenterDelegate;
 	
-	private final PreReleaseCenterDao preReleaseCenterDao;
+	private final PreReleaseCenterDelegate preReleaseCenterDelegate;
 	
-	private final CommunitySupervisionOfficeDao communitySupervisionOfficeDao;
+	private final CommunitySupervisionOfficeDelegate 
+			communitySupervisionOfficeDelegate;
 	
-	private final AssessmentSanctionRevocationCenterDao
-			assessmentSanctionRevocationCenterDao;
+	private final AssessmentSanctionRevocationCenterDelegate
+			assessmentSanctionRevocationCenterDelegate;
 	
 	private final ConditionDelegate conditionDelegate;
+	
+	private final HearingDelegate hearingDelegate;
+	
+	private final HearingNoteDelegate hearingNoteDelegate;
+	
+	private final HearingStatusDelegate hearingStatusDelegate;
+	
+	private final ImposedSanctionDelegate imposedSanctionDelegate;
+	
+	private final InfractionDelegate infractionDelegate;
+	
+	private final UserAttendanceDelegate userAttendanceDelegate;
+	
+	private final UnitDelegate unitDelegate;
 	
 	/**
 	 * Default Constructor for ViolationEventServiceImpl
@@ -90,32 +137,49 @@ public class ViolationEventServiceImpl implements ViolationEventService {
 	 * @param conditionViolationDelegate
 	 * @param documentDelegate
 	 * @param documentTagDelegate
-	 * @param supervisoryOrganizationDao
+	 * @param supervisoryOrganizationDelegate
 	 * @param disciplinaryCodeDelegate
 	 * @param facilityDelegate
-	 * @param treatmentCenterDao
-	 * @param preReleaseCenterDao
-	 * @param communitySupervisionOfficeDao
-	 * @param assessmentSanctionRevocationCenterDao
+	 * @param treatmentCenterDelegate
+	 * @param preReleaseCenterDelegate
+	 * @param communitySupervisionOfficeDelegate
+	 * @param assessmentSanctionRevocationCenterDelegate
 	 * @param conditionDelegate
+	 * @param hearingDelegate
+	 * @param hearingNoteDelegate
+	 * @param hearingStatusDelegate
+	 * @param imposedSanctionDelegate
+	 * @param infractionDelegate
+	 * @param userAttendanceDelegate
+	 * @param unitDelegate
 	 */
 	public ViolationEventServiceImpl(
 			final ViolationEventDelegate violationEventDelegate,
-			final DisciplinaryCodeViolationDelegate disciplinaryCodeViolationDelegate,
+			final DisciplinaryCodeViolationDelegate 
+					disciplinaryCodeViolationDelegate,
 			final ViolationEventDocumentDelegate violationEventDocumentDelegate,
 			final ViolationEventNoteDelegate violationEventNoteDelegate,
 			final ConditionViolationDelegate conditionViolationDelegate,
 			final DocumentDelegate documentDelegate,
 			final DocumentTagDelegate documentTagDelegate,
-			final SupervisoryOrganizationDao supervisoryOrganizationDao,
+			final SupervisoryOrganizationDelegate 
+					supervisoryOrganizationDelegate,
 			final DisciplinaryCodeDelegate disciplinaryCodeDelegate,
 			final FacilityDelegate facilityDelegate,
-			final TreatmentCenterDao treatmentCenterDao,
-			final PreReleaseCenterDao preReleaseCenterDao,
-			final CommunitySupervisionOfficeDao communitySupervisionOfficeDao,
-			final AssessmentSanctionRevocationCenterDao
-					assessmentSanctionRevocationCenterDao,
-			final ConditionDelegate conditionDelegate) {
+			final TreatmentCenterDelegate treatmentCenterDelegate,
+			final PreReleaseCenterDelegate preReleaseCenterDelegate,
+			final CommunitySupervisionOfficeDelegate 
+					communitySupervisionOfficeDelegate,
+			final AssessmentSanctionRevocationCenterDelegate
+					assessmentSanctionRevocationCenterDelegate,
+			final ConditionDelegate conditionDelegate,
+			final HearingDelegate hearingDelegate,
+			final HearingNoteDelegate hearingNoteDelegate,
+			final HearingStatusDelegate hearingStatusDelegate,
+			final ImposedSanctionDelegate imposedSanctionDelegate,
+			final InfractionDelegate infractionDelegate,
+			final UserAttendanceDelegate userAttendanceDelegate,
+			final UnitDelegate unitDelegate) {
 		this.violationEventDelegate = violationEventDelegate;
 		this.disciplinaryCodeViolationDelegate =
 				disciplinaryCodeViolationDelegate;
@@ -124,26 +188,33 @@ public class ViolationEventServiceImpl implements ViolationEventService {
 		this.conditionViolationDelegate = conditionViolationDelegate;
 		this.documentDelegate = documentDelegate;
 		this.documentTagDelegate = documentTagDelegate;
-		this.supervisoryOrganizationDao = supervisoryOrganizationDao;
+		this.supervisoryOrganizationDelegate = supervisoryOrganizationDelegate;
 		this.disciplinaryCodeDelegate = disciplinaryCodeDelegate;
 		this.facilityDelegate = facilityDelegate;
-		this.treatmentCenterDao = treatmentCenterDao;
-		this.preReleaseCenterDao = preReleaseCenterDao;
-		this.communitySupervisionOfficeDao = communitySupervisionOfficeDao;
-		this.assessmentSanctionRevocationCenterDao =
-				assessmentSanctionRevocationCenterDao;
+		this.treatmentCenterDelegate = treatmentCenterDelegate;
+		this.preReleaseCenterDelegate = preReleaseCenterDelegate;
+		this.communitySupervisionOfficeDelegate = 
+				communitySupervisionOfficeDelegate;
+		this.assessmentSanctionRevocationCenterDelegate =
+				assessmentSanctionRevocationCenterDelegate;
 		this.conditionDelegate = conditionDelegate;
+		this.hearingDelegate = hearingDelegate;
+		this.hearingNoteDelegate = hearingNoteDelegate;
+		this.hearingStatusDelegate = hearingStatusDelegate;
+		this.imposedSanctionDelegate = imposedSanctionDelegate;
+		this.infractionDelegate = infractionDelegate;
+		this.userAttendanceDelegate = userAttendanceDelegate;
+		this.unitDelegate = unitDelegate;
 	}
-	
 	
 	/**{@inheritDoc} */
 	@Override
 	public ViolationEvent createViolationEvent(final Offender offender,
-			final SupervisoryOrganization jurisdiction,
+			final SupervisoryOrganization jurisdiction, final Unit unit,
 			final Date date, final String details,
 			final ViolationEventCategory category)
 					throws DuplicateEntityFoundException {
-		return this.violationEventDelegate.create(offender, jurisdiction,
+		return this.violationEventDelegate.create(offender, jurisdiction, unit,
 				date, details, category);
 	}
 
@@ -151,12 +222,12 @@ public class ViolationEventServiceImpl implements ViolationEventService {
 	@Override
 	public ViolationEvent updateViolationEvent(
 			final ViolationEvent violationEvent,
-			final SupervisoryOrganization jurisdiction,
+			final SupervisoryOrganization jurisdiction, final Unit unit,
 			final Date date, final String details,
 			final ViolationEventCategory category)
 					throws DuplicateEntityFoundException {
 		return this.violationEventDelegate.update(violationEvent, jurisdiction,
-				date, details, category);
+				unit, date, details, category);
 	}
 
 	/**{@inheritDoc} */
@@ -331,7 +402,7 @@ public class ViolationEventServiceImpl implements ViolationEventService {
 	/**{@inheritDoc} */
 	@Override
 	public List<SupervisoryOrganization> findSupervisoryOrganizations() {
-		return this.supervisoryOrganizationDao.findAll();
+		return this.supervisoryOrganizationDelegate.findAll();
 	}
 
 	/**{@inheritDoc} */
@@ -341,7 +412,6 @@ public class ViolationEventServiceImpl implements ViolationEventService {
 		return this.documentTagDelegate.findByDocument(document);
 	}
 
-
 	/**{@inheritDoc} */
 	@Override
 	public List<SupervisoryOrganization> findFacilitySupervisoryOrganizations() {
@@ -350,7 +420,7 @@ public class ViolationEventServiceImpl implements ViolationEventService {
 		
 		List<Facility> facilities = this.facilityDelegate.findAll();
 		List<SupervisoryOrganization> supervisoryOrganizations =
-				this.supervisoryOrganizationDao.findAll();
+				this.supervisoryOrganizationDelegate.findAll();
 		
 		for(SupervisoryOrganization supervisoryOrganization :
 			supervisoryOrganizations){
@@ -366,7 +436,6 @@ public class ViolationEventServiceImpl implements ViolationEventService {
 		return facilitySupervisoryOrganizations;
 	}
 
-
 	/**{@inheritDoc} */
 	@Override
 	public ConditionViolation createConditionViolation(
@@ -374,7 +443,6 @@ public class ViolationEventServiceImpl implements ViolationEventService {
 			throws DuplicateEntityFoundException {
 		return this.conditionViolationDelegate.create(condition, violationEvent);
 	}
-
 
 	/**{@inheritDoc} */
 	@Override
@@ -386,14 +454,12 @@ public class ViolationEventServiceImpl implements ViolationEventService {
 				condition);
 	}
 
-
 	/**{@inheritDoc} */
 	@Override
 	public void removeConditionViolation(
 			final ConditionViolation conditionViolation) {
 		this.conditionViolationDelegate.remove(conditionViolation);
 	}
-
 
 	/**{@inheritDoc} */
 	@Override
@@ -403,7 +469,6 @@ public class ViolationEventServiceImpl implements ViolationEventService {
 				.findByOffenderAndEffectiveDate(offender, eventDate);
 	}
 
-
 	/**{@inheritDoc} */
 	@Override
 	public List<ConditionViolation> findConditionViolationsByViolationEvent(
@@ -411,7 +476,6 @@ public class ViolationEventServiceImpl implements ViolationEventService {
 		return this.conditionViolationDelegate
 				.findByViolationEvent(violationEvent);
 	}
-
 
 	/**{@inheritDoc} */
 	@Override
@@ -422,9 +486,9 @@ public class ViolationEventServiceImpl implements ViolationEventService {
 				new ArrayList<SupervisoryOrganization>();
 		
 		List<TreatmentCenter> treatmentCenters =
-				this.treatmentCenterDao.findAll();
+				this.treatmentCenterDelegate.findAll();
 		List<SupervisoryOrganization> supervisoryOrganizations =
-				this.supervisoryOrganizationDao.findAll();
+				this.supervisoryOrganizationDelegate.findAll();
 		
 		for(SupervisoryOrganization supervisoryOrganization :
 			supervisoryOrganizations){
@@ -440,7 +504,6 @@ public class ViolationEventServiceImpl implements ViolationEventService {
 		return treatmentCenterSupervisoryOrganizations;
 	}
 
-
 	/**{@inheritDoc} */
 	@Override
 	public List<SupervisoryOrganization>
@@ -449,9 +512,9 @@ public class ViolationEventServiceImpl implements ViolationEventService {
 				new ArrayList<SupervisoryOrganization>();
 		
 		List<PreReleaseCenter> preReleaseCenters =
-				this.preReleaseCenterDao.findAll();
+				this.preReleaseCenterDelegate.findAll();
 		List<SupervisoryOrganization> supervisoryOrganizations =
-				this.supervisoryOrganizationDao.findAll();
+				this.supervisoryOrganizationDelegate.findAll();
 		
 		for(SupervisoryOrganization supervisoryOrganization :
 			supervisoryOrganizations){
@@ -467,7 +530,6 @@ public class ViolationEventServiceImpl implements ViolationEventService {
 		return preReleaseCenterSupervisoryOrganizations;
 	}
 
-
 	/**{@inheritDoc} */
 	@Override
 	public List<SupervisoryOrganization> 
@@ -477,9 +539,9 @@ public class ViolationEventServiceImpl implements ViolationEventService {
 				new ArrayList<SupervisoryOrganization>();
 		
 		List<CommunitySupervisionOffice> communitySupervisionOffices =
-				this.communitySupervisionOfficeDao.findAll();
+				this.communitySupervisionOfficeDelegate.findAll();
 		List<SupervisoryOrganization> supervisoryOrganizations =
-				this.supervisoryOrganizationDao.findAll();
+				this.supervisoryOrganizationDelegate.findAll();
 		
 		for(SupervisoryOrganization supervisoryOrganization :
 			supervisoryOrganizations){
@@ -496,7 +558,6 @@ public class ViolationEventServiceImpl implements ViolationEventService {
 		return communitySupervisionOfficeSupervisoryOrganizations;
 	}
 
-
 	/**{@inheritDoc} */
 	@Override
 	public List<SupervisoryOrganization>
@@ -507,9 +568,9 @@ public class ViolationEventServiceImpl implements ViolationEventService {
 		
 		List<AssessmentSanctionRevocationCenter>
 				assessmentSanctionRevocationCenters =
-					this.assessmentSanctionRevocationCenterDao.findAll();
+					this.assessmentSanctionRevocationCenterDelegate.findAll();
 		List<SupervisoryOrganization> supervisoryOrganizations =
-				this.supervisoryOrganizationDao.findAll();
+				this.supervisoryOrganizationDelegate.findAll();
 		
 		for(SupervisoryOrganization supervisoryOrganization :
 			supervisoryOrganizations){
@@ -527,5 +588,88 @@ public class ViolationEventServiceImpl implements ViolationEventService {
 		return assessmentSanctionRevocationCenterSupervisoryOrganizations;
 	}
 
-	
+	/** {@inheritDoc} */
+	@Override
+	public List<HearingNote> findHearingNotesByHearing(final Hearing hearing) {
+		return this.hearingNoteDelegate.findAllByHearing(hearing);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public List<HearingStatus> findHearingStatusesByHearing(
+			final Hearing hearing) {
+		return this.hearingStatusDelegate.findByHearing(hearing);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public List<Hearing> findHearingsByViolationEvent(
+			final ViolationEvent violationEvent) {
+		return this.hearingDelegate.findByViolationEvent(violationEvent);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public ImposedSanction findImposedSanctionByInfraction(
+			final Infraction infraction) {
+		return this.imposedSanctionDelegate.findByInfraction(infraction);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public List<Infraction> findInfractionsByHearing(final Hearing hearing) {
+		return this.infractionDelegate.findByHearing(hearing);
+	}
+
+
+	/** {@inheritDoc} */
+	@Override
+	public List<UserAttendance> findUserAttendedByHearing(
+			final Hearing hearing) {
+		return this.userAttendanceDelegate.findAllByHearing(hearing);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void removeHearing(final Hearing hearing) {
+		this.hearingDelegate.remove(hearing);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void removeHearingNote(final HearingNote hearingNote) {
+		this.hearingNoteDelegate.remove(hearingNote);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void removeHearingStatus(final HearingStatus hearingStatus) {
+		this.hearingStatusDelegate.remove(hearingStatus);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void removeImposedSanction(final ImposedSanction imposedSanction) {
+		this.imposedSanctionDelegate.remove(imposedSanction);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void removeInfraction(final Infraction infraction) {
+		this.infractionDelegate.remove(infraction);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void removeUserAttended(final UserAttendance userAttendance) {
+		this.userAttendanceDelegate.remove(userAttendance);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public List<Unit> findUnitsBySupervisoryOrganization(
+			final SupervisoryOrganization supervisoryOrganization) {
+		return this.unitDelegate.findBySupervisoryOrganization(
+				supervisoryOrganization);
+	}
 }

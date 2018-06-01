@@ -51,6 +51,7 @@
 		var createVictimStatus= ${createVictimStatus};
 		var createVisitorStatus= ${createVisitorStatus};
 		var newRelation = ${newRelation};
+		var spauseStatus = ${spauseStatus};
 	</script>
 </head>
 <body>

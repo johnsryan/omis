@@ -26,10 +26,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.testng.annotations.Test;
 
 import omis.country.domain.Country;
+import omis.country.exception.CountryExistsException;
 import omis.country.service.delegate.CountryDelegate;
 import omis.datatype.DateRange;
 import omis.demographics.domain.Sex;
-import omis.exception.DuplicateEntityFoundException;
 import omis.offender.domain.Offender;
 import omis.offender.service.AlternativeOffenderIdentityService;
 import omis.offender.service.delegate.OffenderDelegate;
@@ -38,12 +38,18 @@ import omis.person.domain.AlternativeIdentityCategory;
 import omis.person.domain.AlternativeNameAssociation;
 import omis.person.domain.AlternativeNameCategory;
 import omis.person.domain.PersonName;
+import omis.person.exception.AlternativeIdentityAssociationExistsException;
+import omis.person.exception.AlternativeNameAssociationExistsException;
+import omis.person.exception.PersonIdentityExistsException;
+import omis.person.exception.PersonNameExistsException;
 import omis.person.service.delegate.AlternativeIdentityCategoryDelegate;
 import omis.person.service.delegate.AlternativeNameAssociationDelegate;
 import omis.person.service.delegate.AlternativeNameCategoryDelegate;
 import omis.person.service.delegate.PersonNameDelegate;
 import omis.region.domain.City;
 import omis.region.domain.State;
+import omis.region.exception.CityExistsException;
+import omis.region.exception.StateExistsException;
 import omis.region.service.delegate.CityDelegate;
 import omis.region.service.delegate.StateDelegate;
 import omis.testng.AbstractHibernateTransactionalTestNGSpringContextTests;
@@ -53,12 +59,13 @@ import omis.util.PropertyValueAsserter;
  * Tests method to associate alternative offender identity.
  *
  * @author Sheronda Vaughn
+ * @author Stephen Abson
  * @version 0.0.1 (Feb 22, 2018)
  * @since OMIS 3.0
  */
-@Test
+@Test(groups = {"alternativeIdentity", "service"})
 public class AlternativeOffenderIdentityServiceAssociateTests
-	extends AbstractHibernateTransactionalTestNGSpringContextTests {
+		extends AbstractHibernateTransactionalTestNGSpringContextTests {
 
 	/* Delegates. */
 	
@@ -104,8 +111,28 @@ public class AlternativeOffenderIdentityServiceAssociateTests
 
 	/* Test methods. */
 
-	@Test
-	public void testAssociate() throws DuplicateEntityFoundException {
+	/**
+	 * Tests association of alternative identity.
+	 * 
+	 * @throws CountryExistsException if country exists
+	 * @throws StateExistsException if State exists
+	 * @throws CityExistsException if city exists
+	 * @throws PersonNameExistsException if person name exists
+	 * @throws AlternativeNameAssociationExistsException if alternative name
+	 * association exists
+	 * @throws AlternativeIdentityAssociationExistsException if alternative
+	 * identity association exists 
+	 * @throws PersonIdentityExistsException if person identity exists
+	 */
+	public void testAssociate()
+			throws CountryExistsException,
+				StateExistsException,
+				CityExistsException,
+				PersonNameExistsException,
+				AlternativeNameAssociationExistsException,
+				AlternativeIdentityAssociationExistsException,
+				PersonIdentityExistsException {
+		
 		// Arrangements
 		final String lastName =  "LastName";
 		final String firstName = "FirstName";
@@ -168,9 +195,30 @@ public class AlternativeOffenderIdentityServiceAssociateTests
 			.performAssertions(alternativeIdentityAssociation);
 	}
 
-	@Test(expectedExceptions = {DuplicateEntityFoundException.class})
+	/**
+	 * Tests that duplicate person identities are prevented on association.
+	 * 
+	 * @throws PersonIdentityExistsException if person identity exists
+	 * - asserted
+	 * @throws AlternativeIdentityAssociationExistsException if alternative
+	 * identity association exists
+	 * @throws AlternativeNameAssociationExistsException if alternative name
+	 * association exists
+	 * @throws PersonNameExistsException if person name exists
+	 * @throws CityExistsException if city exists
+	 * @throws StateExistsException if State exists
+	 * @throws CountryExistsException if country exists
+	 */
+	@Test(expectedExceptions = {PersonIdentityExistsException.class})
 	public void testDuplicateEntityFoundException() 
-			throws DuplicateEntityFoundException {
+			throws PersonIdentityExistsException,
+				AlternativeIdentityAssociationExistsException,
+				AlternativeNameAssociationExistsException,
+				PersonNameExistsException,
+				CityExistsException,
+				StateExistsException,
+				CountryExistsException {
+		
 		// Arrangements
 		final String lastName =  "LastName";
 		final String firstName = "FirstName";

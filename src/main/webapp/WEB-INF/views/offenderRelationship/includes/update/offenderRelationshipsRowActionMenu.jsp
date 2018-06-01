@@ -29,18 +29,18 @@
 		<sec:authorize access="hasRole('OFFENDER_RELATIONSHIP_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty familyAssociation}">
 				<li>
-					<a href="${pageContext.request.contextPath}/offenderRelationship/update/familyAssociationDetailsReport.html?offender=${relationship.firstPerson.id}&reportFormat=PDF&familyAssociation=${familyAssociation.id}" class="newTab reportLink"><fmt:message key="printFamilyAssociationDetails"/></a>
+					<a href="${pageContext.request.contextPath}/offenderRelationship/update/familyAssociationDetailsReport.html?offender=${relationship.firstPerson.id}&reportFormat=PDF&familyAssociation=${familyAssociation.id}" class="newTab printLink"><fmt:message key="printFamilyAssociationDetails"/></a>
 				</li>
 			</c:if>
 		</sec:authorize>
 		<sec:authorize access="(hasRole('OFFENDER_RELATIONSHIP_VIEW') and hasRole('OFFENDER_SSN_VIEW')) or hasRole('ADMIN')">
 				<li>
-					<a href="${pageContext.request.contextPath}/offenderRelationship/personDetailsReport.html?person=${relationship.secondPerson.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="personDetailsReportLink"/></a>
+					<a href="${pageContext.request.contextPath}/offenderRelationship/personDetailsReport.html?person=${relationship.secondPerson.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="personDetailsReportLink"/></a>
 				</li>
 		</sec:authorize>
 		<sec:authorize access="hasRole('OFFENDER_RELATIONSHIP_VIEW')  or hasRole('ADMIN')">
 				<li>
-					<a href="${pageContext.request.contextPath}/offenderRelationship/personDetailsRedactedReport.html?person=${relationship.secondPerson.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="personDetailsRedactedReportLink"/></a>
+					<a href="${pageContext.request.contextPath}/offenderRelationship/personDetailsRedactedReport.html?person=${relationship.secondPerson.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="personDetailsRedactedReportLink"/></a>
 				</li>
 		</sec:authorize>		
 	</ul>

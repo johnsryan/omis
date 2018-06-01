@@ -61,6 +61,7 @@ import omis.presentenceinvestigation.web.form.PresentenceInvestigationRequestFor
 import omis.presentenceinvestigation.web.form.PresentenceInvestigationRequestNoteItem;
 import omis.presentenceinvestigation.web.validator.PresentenceInvestigationRequestFormValidator;
 import omis.user.domain.UserAccount;
+import omis.util.DateManipulator;
 import omis.web.controller.delegate.BusinessExceptionHandlerDelegate;
 
 /** 
@@ -70,7 +71,7 @@ import omis.web.controller.delegate.BusinessExceptionHandlerDelegate;
  * @author Joel Norris
  * @author Annie Wahl
  * @author Josh Divine
- * @version 0.1.5 (Apr 23, 2018)
+ * @version 0.1.6 (May 9, 2018)
  * @since OMIS 3.0
  */
 @Controller
@@ -322,13 +323,15 @@ public class PresentenceInvestigationRequestController {
 			Docket docket = this.presentenceInvestigationRequestService
 					.createDocket(person, form.getCourt(),
 							form.getDocketValue());
+			DateManipulator dateManipulator = new DateManipulator(
+					form.getRequestDate());
+			dateManipulator.changeDate(30);
 			PresentenceInvestigationRequest presentenceInvestigationRequest 
 							= this.presentenceInvestigationRequestService
 								.create(form.getAssignedUserAccount(),
 								form.getRequestDate(),
-								form.getExpectedCompletionDate(), docket, null,
+								dateManipulator.getDate(), docket, 
 								form.getSentenceDate(), 
-								form.getActualSentenceDate(), 
 								form.getCategory(), form.getSubmissionDate());
 			this.processItems(form.getPresentenceInvestigationRequestNoteItems(),
 					presentenceInvestigationRequest);
@@ -368,8 +371,6 @@ public class PresentenceInvestigationRequestController {
 				presentenceInvestigationRequest.getDocket().getValue());
 		form.setCourt(
 				presentenceInvestigationRequest.getDocket().getCourt());
-		form.setExpectedCompletionDate(
-				presentenceInvestigationRequest.getExpectedCompletionDate());
 		form.setRequestDate(
 				presentenceInvestigationRequest.getRequestDate());
 		form.setAssignedUserAccount(
@@ -459,14 +460,15 @@ public class PresentenceInvestigationRequestController {
 					.updateDocket(presentenceInvestigationRequest.getDocket(),
 							form.getCourt(),
 							form.getDocketValue());
-			
+			DateManipulator dateManipulator = new DateManipulator(
+					form.getRequestDate());
+			dateManipulator.changeDate(30);
 			this.presentenceInvestigationRequestService.update(
 							presentenceInvestigationRequest,
 							form.getAssignedUserAccount(),
 							form.getRequestDate(),
-							presentenceInvestigationRequest.getCompletionDate(),
-							form.getExpectedCompletionDate(), docket,
-							form.getSentenceDate(), form.getActualSentenceDate(),
+							dateManipulator.getDate(), docket,
+							form.getSentenceDate(), 
 							presentenceInvestigationRequest.getCategory(),
 							form.getSubmissionDate());
 			this.processItems(form.getPresentenceInvestigationRequestNoteItems(),

@@ -17,7 +17,7 @@
 		<sec:authorize access="hasRole('WORK_ASSIGNMENT_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty workAssignment}">
 			<li>
-				<a href="${pageContext.request.contextPath}/workAssignment/workAssignmentsDetailsReport.html?workAssignment=${workAssignment.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="workAssignmentsDetailsReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/workAssignment/workAssignmentsDetailsReport.html?workAssignment=${workAssignment.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="workAssignmentsDetailsReportLinkLabel"/></a>
 			</li>
 			</c:if>
 	</sec:authorize>

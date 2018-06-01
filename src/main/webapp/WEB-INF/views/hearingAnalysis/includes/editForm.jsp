@@ -18,7 +18,8 @@
 
 <%--
  - Author: Josh Divine
- - Version: 0.1.2 (Apr 18, 2018)
+ - @author Annie Wahl
+ - @version 0.1.3 (May 29, 2018)
  - Since: OMIS 3.0
  --%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
@@ -30,15 +31,39 @@
 <fieldset>
 	<legend><fmt:message key="eligibilityDetailsTitle"/></legend>
 	<span class="fieldGroup">
-		<label class="fieldLabel"><fmt:message key="hearingEligibleDateLabel"/></label>
+		<label class="fieldLabel"><fmt:message key="paroleEligibleDateLabel"/></label>
 		<span id="hearingEligibilityDate">
-			<fmt:formatDate value="${eligibility.hearingEligibilityDate}" pattern="MM/dd/yyyy"/>
+			<fmt:formatDate value="${eligibilitySummary.hearingEligibilityDate}" pattern="MM/dd/yyyy"/>
 		</span>
 	</span>
 	<span class="fieldGroup">
 		<label class="fieldLabel"><fmt:message key="nextReviewDateLabel"/></label>
 		<span id="nextReviewDate">
-			<fmt:formatDate value="${eligibility.reviewDate}" pattern="MM/dd/yyyy"/>
+			<fmt:formatDate value="${eligibilitySummary.reviewDate}" pattern="MM/dd/yyyy"/>
+		</span>
+	</span>
+	<span class="fieldGroup">
+		<label class="fieldLabel"><fmt:message key="appearanceTypeLabel"/></label>
+		<span id="nextReviewDate">
+			<c:out value="${eligibilitySummary.appearanceCategoryName}" />
+		</span>
+	</span>
+	<span class="fieldGroup">
+		<label class="fieldLabel"><fmt:message key="dueDateLabel"/></label>
+		<span id="nextReviewDate">
+			<fmt:formatDate value="${eligibilitySummary.hearingAnalysisExpectedCompletionDate}" pattern="MM/dd/yyyy"/>
+		</span>
+	</span>
+	<span class="fieldGroup">
+		<label class="fieldLabel"><fmt:message key="scheduledHearingDateLabel"/></label>
+		<span id="nextReviewDate">
+			<fmt:formatDate value="${eligibilitySummary.hearingDate}" pattern="MM/dd/yyyy"/>
+		</span>
+	</span>
+	<span class="fieldGroup">
+		<label class="fieldLabel"><fmt:message key="scheduledHearingLocationLabel"/></label>
+		<span id="nextReviewDate">
+			<c:out value="${eligibilitySummary.boardHearingItineraryLocationName}" />
 		</span>
 	</span>
 </fieldset>
@@ -106,6 +131,13 @@
 		</form:select>
 		<form:errors path="analyst" cssClass="error"/>
 	</span>
+	<span class="fieldGroup">
+			<form:label path="dueDate" class="fieldLabel">
+				<fmt:message key="dueDateLabel"/>
+			</form:label>
+			<form:input path="dueDate" class="date"/>
+			<form:errors path="dueDate" cssClass="error"/>
+		</span>
 </fieldset>
 <fieldset id="hearingAnalysisNotesHolder">
 	<legend><fmt:message key="hearingAnalysisNotesTitle"/></legend>

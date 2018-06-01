@@ -208,7 +208,7 @@ public class UpdateOffenderRelationController {
 	private static final String VISITATION_EXISTS_EXCEPTION_MESSAGE_KEY
 		= "visitation.Conflicts";
 	private static final String ZIPCODE_EXISTS_EXCEPTION_MESSAGE_KEY
-		= "zipcode.Conflicts";
+		= "zipCode.exists";
 	private static final String CONTACT_EXISTS_EXCEPTION_MESSAGE_KEY
 		= "contact.Conflicts";
 	private static final String PERSON_EXISTS_EXCEPTION_MESSAGE_KEY

@@ -186,13 +186,6 @@
 				</span>
 			</c:when>
 		</c:choose>
-		<span class="fieldGroup">
-			<form:label path="violationItems[${i}].reason" class="fieldLabel">
-				<fmt:message key="reasonLabel"/>
-			</form:label>
-			<form:textarea path="violationItems[${i}].reason"/>
-			<form:errors path="violationItems[${i}].reason" cssClass="error"/>
-		</span>
 		<c:choose>
 			<c:when test="${resolutionCategory eq 'INFORMAL'
 							or resolutionCategory eq 'FORMAL'}">
@@ -238,6 +231,13 @@
 					</span>
 			</c:when>
 		</c:choose>
+		<span class="fieldGroup">
+			<form:label path="violationItems[${i}].reason" class="fieldLabel">
+				<fmt:message key="reasonForDecisionLabel"/>
+			</form:label>
+			<form:textarea path="violationItems[${i}].reason"/>
+			<form:errors path="violationItems[${i}].reason" cssClass="error"/>
+		</span>
 		<span class="fieldGroup">
 			<form:label path="violationItems[${i}].appealDate" class="fieldLabel">
 				<fmt:message key="appealDateLabel"/>

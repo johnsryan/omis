@@ -13,6 +13,13 @@
 			</generator>
 		</id>
 		<property name="name" column="`NAME`" not-null="true" type="java.lang.String"/>
+		<property name="statusCategory" column="`STATUS_CATEGORY`" not-null="true" >
+				<type name="org.hibernate.type.EnumType">
+					<param name="enumClass">omis.paroleeligibility.domain.EligibilityStatusCategory</param>
+					<param name="useNamed">true</param>
+					<param name="type">12</param>
+				</type>
+			</property>
 		<property name="valid" column="`VALID`" not-null="true" type="yes_no"/>
 	</class>
 	<query name="findEligibilityStatusReason"><![CDATA[
@@ -21,6 +28,8 @@
 			omis.paroleeligibility.domain.EligibilityStatusReason statusReason
 		where
 			statusReason.name = :name
+		and
+			statusReason.statusCategory = :statusCategory
 	]]></query>
 	<query name="findEligibilityStatusReasons"><![CDATA[
 		select statusReason
@@ -36,6 +45,17 @@
 		where
 			statusReason.name = :name
 		and
+			statusReason.statusCategory = :statusCategory
+		and
 			statusReason <> :excludedReason
+	]]></query>
+	<query name="findEligibilityStatusReasonsByStatusCategory"><![CDATA[
+		select statusReason
+		from
+			omis.paroleeligibility.domain.EligibilityStatusReason statusReason
+		where
+			statusReason.statusCategory = :statusCategory
+		and
+			statusReason.valid = true
 	]]></query>
 </hibernate-mapping>

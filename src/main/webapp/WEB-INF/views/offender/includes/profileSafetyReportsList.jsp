@@ -5,7 +5,7 @@
 		<sec:authorize access="hasRole('OFFENDER_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty offender}">
 			<span>
-				<a href="${pageContext.request.contextPath}/offender/profileSafetyDetailsReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="safetyDetailsReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/offender/profileSafetyDetailsReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab adobeReportLink"><fmt:message key="safetyDetailsReportLinkLabel"/></a>
 			</span>
 			</c:if>
 		</sec:authorize>

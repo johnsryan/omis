@@ -21,7 +21,7 @@
 		</sec:authorize>
 		<sec:authorize access="hasRole('SPECIAL_NEED_LIST') or hasRole('ADMIN')">
 			<li>
-				<a href="${pageContext.request.contextPath}/specialNeed/specialNeedDetailsReport.html?specialNeed=${specialNeed.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="specialNeedDetailsReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/specialNeed/specialNeedDetailsReport.html?specialNeed=${specialNeed.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="specialNeedDetailsReportLinkLabel"/></a>
 			</li>
 		</sec:authorize>
 	</ul>

@@ -216,7 +216,7 @@ public class
 				EligibilityStatusCategory.APPEARING;
 		Date statusDate = this.parseDateText("01/01/2017");
 		EligibilityStatusReason statusReason = eligibilityStatusReasonDelegate
-				.create("Reason", true);
+				.create("Reason", statusCategory, true);
 		String statusComment = "Comment";
 		ParoleEligibilityStatus paroleEligibilityStatus = 
 				new ParoleEligibilityStatus(statusDate, statusComment, 
@@ -263,7 +263,7 @@ public class
 		HearingAnalysisCategory analysisCategory = this
 				.hearingAnalysisCategoryDelegate.create("Category", true);
 		HearingAnalysis hearingAnalysis = this.hearingAnalysisDelegate.create(
-				eligibility, boardItinerary, analysisCategory, analyst);
+				eligibility, boardItinerary, analysisCategory, analyst, null);
 
 		// Action
 		ParoleBoardAgreement paroleBoardAgreement = this
@@ -302,7 +302,7 @@ public class
 				EligibilityStatusCategory.APPEARING;
 		Date statusDate = this.parseDateText("01/01/2017");
 		EligibilityStatusReason statusReason = eligibilityStatusReasonDelegate
-				.create("Reason", true);
+				.create("Reason", statusCategory, true);
 		String statusComment = "Comment";
 		ParoleEligibilityStatus paroleEligibilityStatus = 
 				new ParoleEligibilityStatus(statusDate, statusComment, 
@@ -349,7 +349,7 @@ public class
 		HearingAnalysisCategory analysisCategory = this
 				.hearingAnalysisCategoryDelegate.create("Category", true);
 		HearingAnalysis hearingAnalysis = this.hearingAnalysisDelegate.create(
-				eligibility, boardItinerary, analysisCategory, analyst);
+				eligibility, boardItinerary, analysisCategory, analyst, null);
 		this.paroleBoardAgreementDelegate.create(agreement, null, 
 				hearingAnalysis, category);
 

@@ -30,6 +30,8 @@ public class EndPlacementTermForm implements Serializable {
 	
 	private Date endTime;
 
+	private boolean allowEndChangeReason;
+	
 	private PlacementTermChangeReason endChangeReason;
 
 	/** Instantiates a default form for ending placement terms. */
@@ -73,6 +75,24 @@ public class EndPlacementTermForm implements Serializable {
 		this.endTime = endTime;
 	}
 
+	/**
+	 * Returns whether end change reason is allowed.
+	 * 
+	 * @return whether end change reason is allowed
+	 */
+	public boolean getAllowEndChangeReason() {
+		return this.allowEndChangeReason;
+	}
+	
+	/**
+	 * Sets whether end change reason is allowed.
+	 * 
+	 * @param allowEndChangeReason whether end change reason is allowed
+	 */
+	public void setAllowEndChangeReason(final boolean allowEndChangeReason) {
+		this.allowEndChangeReason = allowEndChangeReason;
+	}
+	
 	/**
 	 * Returns the end change reason.
 	 * 

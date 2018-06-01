@@ -22,7 +22,7 @@
 		<sec:authorize access="hasRole('VEHICLE_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty vehicleAssociation}">
 			<li>
-				<a href="${pageContext.request.contextPath}/vehicle/vehicleDetailsReport.html?vehicleAssociation=${vehicleAssociation.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="vehicleDetailsReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/vehicle/vehicleDetailsReport.html?vehicleAssociation=${vehicleAssociation.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="vehicleDetailsReportLinkLabel"/></a>
 			</li>
 			</c:if>
 	</sec:authorize>

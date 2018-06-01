@@ -47,6 +47,7 @@ import omis.region.service.delegate.StateDelegate;
 import omis.residence.domain.ResidenceCategory;
 import omis.residence.domain.ResidenceStatus;
 import omis.residence.domain.ResidenceTerm;
+import omis.residence.exception.NonResidenceTermExistsException;
 import omis.residence.exception.PrimaryResidenceExistsException;
 import omis.residence.exception.ResidenceStatusConflictException;
 import omis.residence.exception.ResidenceTermExistsException;
@@ -143,12 +144,13 @@ public class ResidenceServiceUpdateResidenceTermTests
 	 * @throws PrimaryResidenceExistsException  if primary residence already 
 	 * exists
 	 * @throws ResidenceTermExistsException residence term exists exception
+	 * @throws NonResidenceTermExistsException nonResidence term exists
 	 */
 	@Test
 	public void testUpdateResidenceTermDateRange() 
 			throws DuplicateEntityFoundException, 
 			ResidenceStatusConflictException, PrimaryResidenceExistsException,
-			ResidenceTermExistsException {
+			ResidenceTermExistsException, NonResidenceTermExistsException {
 		// Arrangements
 		Person person = this.personDelegate.create("Smith", "John", "Jay", 
 				null);
@@ -206,12 +208,13 @@ public class ResidenceServiceUpdateResidenceTermTests
 	 * @throws PrimaryResidenceExistsException  if primary residence already 
 	 * exists
 	 * @throws ResidenceTermExistsException residence term exists exception
+	 * @throws NonResidenceTermExistsException nonResidence term exists
 	 */
 	@Test
 	public void testUpdateResidenceTermResidenceCategory() 
 			throws DuplicateEntityFoundException, 
 			ResidenceStatusConflictException, PrimaryResidenceExistsException,
-			ResidenceTermExistsException {
+			ResidenceTermExistsException, NonResidenceTermExistsException {
 		// Arrangements
 		Person person = this.personDelegate.create("Smith", "John", "Jay", 
 				null);
@@ -268,11 +271,13 @@ public class ResidenceServiceUpdateResidenceTermTests
 	 * @throws PrimaryResidenceExistsException  if primary residence already 
 	 * exists
 	 * @throws ResidenceTermExistsException residence term exists exception
+	 * @throws NonResidenceTermExistsException nonResidence term exists
 	 */
 	@Test
 	public void testUpdateResidenceTermAddress() 
 			throws DuplicateEntityFoundException, ResidenceTermExistsException,
-			ResidenceStatusConflictException, PrimaryResidenceExistsException {
+			ResidenceStatusConflictException, PrimaryResidenceExistsException, 
+			NonResidenceTermExistsException {
 		// Arrangements
 		Person person = this.personDelegate.create("Smith", "John", "Jay", 
 				null);
@@ -330,11 +335,13 @@ public class ResidenceServiceUpdateResidenceTermTests
 	 * @throws PrimaryResidenceExistsException  if primary residence already 
 	 * exists
 	 * @throws ResidenceTermExistsException residence term exists exception
+	 * @throws NonResidenceTermExistsException nonResidence term exists
 	 */
 	@Test
 	public void testUpdateResidenceTermResidenceStatus() 
 			throws DuplicateEntityFoundException, ResidenceTermExistsException,
-			ResidenceStatusConflictException, PrimaryResidenceExistsException {
+			ResidenceStatusConflictException, PrimaryResidenceExistsException, 
+			NonResidenceTermExistsException {
 		// Arrangements
 		Person person = this.personDelegate.create("Smith", "John", "Jay", 
 				null);
@@ -391,11 +398,13 @@ public class ResidenceServiceUpdateResidenceTermTests
 	 * @throws PrimaryResidenceExistsException  if primary residence already 
 	 * exists
 	 * @throws ResidenceTermExistsException residence term exists exception
+	 * @throws NonResidenceTermExistsException nonResidence term exists
 	 */
 	@Test
 	public void testUpdateResidenceTermConfirmed() 
 			throws DuplicateEntityFoundException, ResidenceTermExistsException,
-			ResidenceStatusConflictException, PrimaryResidenceExistsException {
+			ResidenceStatusConflictException, PrimaryResidenceExistsException, 
+			NonResidenceTermExistsException {
 		// Arrangements
 		Person person = this.personDelegate.create("Smith", "John", "Jay", 
 				null);
@@ -452,11 +461,13 @@ public class ResidenceServiceUpdateResidenceTermTests
 	 * @throws PrimaryResidenceExistsException  if primary residence already 
 	 * exists
 	 * @throws ResidenceTermExistsException residence term exists exception
+	 * @throws NonResidenceTermExistsException nonResidence term exists
 	 */
 	@Test
 	public void testUpdateResidenceTermNotes() 
 			throws DuplicateEntityFoundException, ResidenceTermExistsException,
-			ResidenceStatusConflictException, PrimaryResidenceExistsException {
+			ResidenceStatusConflictException, PrimaryResidenceExistsException, 
+			NonResidenceTermExistsException {
 		// Arrangements
 		Person person = this.personDelegate.create("Smith", "John", "Jay", 
 				null);
@@ -513,11 +524,13 @@ public class ResidenceServiceUpdateResidenceTermTests
 	 * @throws PrimaryResidenceExistsException  if primary residence already 
 	 * exists
 	 * @throws ResidenceTermExistsException residence term exists exception
+	 * @throws NonResidenceTermExistsException nonResidence terms exists
 	 */
 	@Test
 	public void testUpdateResidenceTermVerificationSignature() 
 			throws DuplicateEntityFoundException, ResidenceTermExistsException,
-			ResidenceStatusConflictException, PrimaryResidenceExistsException {
+			ResidenceStatusConflictException, PrimaryResidenceExistsException, 
+			NonResidenceTermExistsException {
 		// Arrangements
 		Person person = this.personDelegate.create("Smith", "John", "Jay", 
 				null);
@@ -577,11 +590,13 @@ public class ResidenceServiceUpdateResidenceTermTests
 	 * @throws PrimaryResidenceExistsException if primary residence already 
 	 * exists
 	 * @throws ResidenceTermExistsException residence term exists exception
+	 * @throws NonResidenceTermExistsException nonResidence term exists
 	 */
 	@Test(expectedExceptions = {ResidenceTermExistsException.class})
 	public void testDuplicateEntityFoundException() 
 			throws DuplicateEntityFoundException, ResidenceTermExistsException,
-			ResidenceStatusConflictException, PrimaryResidenceExistsException {
+			ResidenceStatusConflictException, PrimaryResidenceExistsException, 
+			NonResidenceTermExistsException {
 		// Arrangements
 		Person person = this.personDelegate.create("Smith", "John", "Jay", 
 				null);
@@ -634,11 +649,13 @@ public class ResidenceServiceUpdateResidenceTermTests
 	 * @throws PrimaryResidenceExistsException if primary residence already 
 	 * exists
 	 * @throws ResidenceTermExistsException residence term exists exception
+	 * @throws NonResidenceTermExistsException nonResidence term exists
 	 */
 	@Test(expectedExceptions = {PrimaryResidenceExistsException.class})
 	public void testPrimaryResidenceExistsException() 
 			throws DuplicateEntityFoundException, ResidenceTermExistsException,
-			ResidenceStatusConflictException, PrimaryResidenceExistsException {
+			ResidenceStatusConflictException, PrimaryResidenceExistsException, 
+			NonResidenceTermExistsException {
 		// Arrangements
 		Person person = this.personDelegate.create("Smith", "John", "Jay", 
 				null);

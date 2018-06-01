@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <!--
+ - Mapping and queries for alternative person identities.
+ - 
  - Author: Stephen Abson
- - Version: 0.1.0 (Nov 21, 2013)
- - Since: OMIS 3.0 
  -->
 <!DOCTYPE hibernate-mapping PUBLIC
 	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
@@ -48,6 +49,7 @@
 		where person = :person
 	]]></query>
 	<query name="findAlternativeIdentityAssociation"><![CDATA[
+		select association
 		from
 			omis.person.domain.AlternativeIdentityAssociation association
 		where
@@ -55,9 +57,14 @@
 		and
 			association.category = :category
 		and
-			association.dateRange = :dateRange
+			(association.dateRange.startDate = :startDate
+				or (association.dateRange.startDate is null and :startDate is null))
+		and
+			(association.dateRange.endDate = :endDate
+				or (association.dateRange.endDate is null and :endDate is null))
 	]]></query>
 	<query name="findAlternativeIdentityAssociationExcluding"><![CDATA[
+		select association
 		from
 			omis.person.domain.AlternativeIdentityAssociation association
 		where
@@ -65,14 +72,18 @@
 		and
 			association.category = :category
 		and
-			association.dateRange = :dateRange
+			(association.dateRange.startDate = :startDate
+				or (association.dateRange.startDate is null and :startDate is null))
+		and
+			(association.dateRange.endDate = :endDate
+				or (association.dateRange.endDate is null and :endDate is null))
 		and
 			association <> :association
 	]]></query>
 	<query name="findAlternativeOffenderIdentityCountByOffenderAndDate"><![CDATA[
 		 select count(association.id)
-		   from omis.person.domain.AlternativeIdentityAssociation association
-left outer join association.identity identity
+		  	from omis.person.domain.AlternativeIdentityAssociation association
+			left outer join association.identity identity
 		  where identity.person = :offender
 		    and ((association.dateRange.startDate <= :effectiveDate
 		     or association.dateRange.startDate is null)

@@ -44,7 +44,7 @@
 	<sec:authorize access="hasRole('GRIEVANCE_VIEW') or hasRole('ADMIN')">
 		<c:if test="${not empty offender}">
 		<li>
-			<a href="${pageContext.request.contextPath}/grievance/grievanceListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="grievanceListingReportLinkLabel" bundle="${grievanceBundle}"/></a>
+			<a href="${pageContext.request.contextPath}/grievance/grievanceListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="grievanceListingReportLinkLabel" bundle="${grievanceBundle}"/></a>
 		</li>
 		</c:if>
 	</sec:authorize>
@@ -65,15 +65,15 @@
 	<sec:authorize access="hasRole('GRIEVANCE_VIEW') or hasRole('ADMIN')">
 		<c:if test="${not empty grievance}">
 		<li>
-			<a href="${pageContext.request.contextPath}/grievance/grievanceDetailsReport.html?grievance=${grievance.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="grievanceDetailsReportLinkLabel" bundle="${grievanceBundle}"/></a>
+			<a href="${pageContext.request.contextPath}/grievance/grievanceDetailHistoryReport.html?grievance=${grievance.id}&reportFormat=PDF" class="newTab adobeReportLink"><fmt:message key="grievanceDetailHistoryReportLinkLabel" bundle="${grievanceBundle}"/></a>
 		</li>
 		</c:if>
 	</sec:authorize>
 	<sec:authorize access="hasRole('GRIEVANCE_VIEW') or hasRole('ADMIN')">
 		<c:if test="${not empty grievance}">
 		<li>
-			<a href="${pageContext.request.contextPath}/grievance/grievanceDetailHistoryReport.html?grievance=${grievance.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="grievanceDetailHistoryReportLinkLabel" bundle="${grievanceBundle}"/></a>
+			<a href="${pageContext.request.contextPath}/grievance/grievanceDetailsReport.html?grievance=${grievance.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="grievanceDetailsReportLinkLabel" bundle="${grievanceBundle}"/></a>
 		</li>
 		</c:if>
-	</sec:authorize>
+	</sec:authorize>	
 </ul>

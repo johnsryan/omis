@@ -19,7 +19,7 @@
 		<sec:authorize access="hasRole('ALERT_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty offender}">
 			<li>
-				<a href="${pageContext.request.contextPath}/alert/alertListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="alertListingReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/alert/alertListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="alertListingReportLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>
@@ -40,7 +40,7 @@
 				<sec:authorize access="hasRole('ALERT_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty alert}">
 			<li>
-				<a href="${pageContext.request.contextPath}/alert/alertDetailsReport.html?alert=${alert.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="alertDetailsReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/alert/alertDetailsReport.html?alert=${alert.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="alertDetailsReportLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>

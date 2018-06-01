@@ -68,6 +68,7 @@ import omis.report.ReportFormat;
 import omis.report.ReportRunner;
 import omis.report.web.controller.delegate.ReportControllerDelegate;
 import omis.user.domain.UserAccount;
+import omis.util.DateManipulator;
 import omis.violationevent.domain.ConditionViolation;
 import omis.violationevent.domain.DisciplinaryCodeViolation;
 import omis.web.controller.delegate.BusinessExceptionHandlerDelegate;
@@ -77,7 +78,7 @@ import omis.web.controller.delegate.BusinessExceptionHandlerDelegate;
  * 
  * @author Annie Wahl
  * @author Josh Divine
- * @version 0.1.3 (May 3, 2018)
+ * @version 0.1.4 (May 15, 2018)
  * @since OMIS 3.0
  */
 @Controller
@@ -350,7 +351,8 @@ public class HearingController {
 		} else {
 			Hearing hearing = this.hearingService.createHearing(
 					form.getLocation(), offender, null,
-					form.getDate(), form.getCategory(),
+					DateManipulator.getDateAtTimeOfDay(form.getDate(), 
+							form.getTime()), form.getCategory(),
 					form.getOfficer());
 			this.hearingService.createHearingStatus(hearing, null,
 					new Date(), form.getStatus());
@@ -498,7 +500,8 @@ public class HearingController {
 			}
 			this.hearingService.updateHearing(hearing,
 					form.getLocation(), hearing.getSubject().getInAttendance(),
-					form.getDate(), form.getCategory(),
+					DateManipulator.getDateAtTimeOfDay(form.getDate(), 
+							form.getTime()), form.getCategory(),
 					form.getOfficer());
 			if (HearingStatusCategory.DISMISSED.equals(form.getStatus())) {
 				for (Infraction infraction : this.hearingService
@@ -867,6 +870,7 @@ public class HearingController {
 		form.setLocation(hearing.getLocation());
 		form.setCategory(hearing.getCategory());
 		form.setDate(hearing.getDate());
+		form.setTime(hearing.getDate());
 		form.setOfficer(hearing.getOfficer());
 		form.setStatus(status);
 		form.setInfractionItems(infractionItems);
@@ -976,5 +980,9 @@ public class HearingController {
 				UserAccount.class,
 				this.userAccountPropertyEditorFactory
 				.createPropertyEditor());
+		binder.registerCustomEditor(
+				Date.class, "time",
+				this.customDateEditorFactory
+				.createCustomTimeOnlyEditor(true));
 	}
 }

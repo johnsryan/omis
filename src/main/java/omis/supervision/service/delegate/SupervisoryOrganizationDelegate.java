@@ -31,7 +31,8 @@ import omis.supervision.domain.SupervisoryOrganization;
  * Delegate for supervisory organizations.
  *
  * @author Stephen Abson
- * @version 0.0.1 (May 23, 2016)
+ * @author Josh Divine
+ * @version 0.1.1 (May 17, 2018)
  * @since OMIS 3.0
  */
 public class SupervisoryOrganizationDelegate {
@@ -114,5 +115,14 @@ public class SupervisoryOrganizationDelegate {
 			final State state) {
 		return this.supervisoryOrganizationDao
 				.findAllowedForPlacementInState(state);
+	}
+	
+	/**
+	 * Returns a list of all supervisory organizations.
+	 * 
+	 * @return list of all supervisory organizations
+	 */
+	public List<SupervisoryOrganization> findAll() {
+		return this.supervisoryOrganizationDao.findAll();
 	}
 }

@@ -42,6 +42,7 @@ import omis.region.service.delegate.StateDelegate;
 import omis.residence.domain.NonResidenceTerm;
 import omis.residence.domain.ResidenceCategory;
 import omis.residence.domain.ResidenceStatus;
+import omis.residence.exception.NonResidenceTermExistsException;
 import omis.residence.exception.PrimaryResidenceExistsException;
 import omis.residence.exception.ResidenceStatusConflictException;
 import omis.residence.exception.ResidenceTermExistsException;
@@ -112,10 +113,11 @@ public class ResidenceServiceCreateHomelessTermTests
 	 * @throws DuplicateEntityFoundException if duplicate entity exists
 	 * @throws ResidenceStatusConflictException if residence term conflict 
 	 * exists
+	 * @throws NonResidenceTermExistsException nonResidence term exists
 	 */
 	@Test
 	public void testCreateHomelessTerm() throws DuplicateEntityFoundException, 
-			ResidenceStatusConflictException {
+			ResidenceStatusConflictException, NonResidenceTermExistsException {
 		// Arrangements
 		Person person = this.personDelegate.create("Smith", "John", "Jay", 
 				null);
@@ -154,12 +156,13 @@ public class ResidenceServiceCreateHomelessTermTests
 	 * exists
 	 * @throws PrimaryResidenceExistsException if primary residence exists 
 	 * @throws ResidenceTermExistsException residence term exists exception
+	 * @throws NonResidenceTermExistsException non residence term exists 
 	 */
 	@Test(expectedExceptions = {ResidenceStatusConflictException.class})
 	public void testResidenceStatusConflictException() 
 			throws DuplicateEntityFoundException, 
 			ResidenceStatusConflictException, PrimaryResidenceExistsException,
-			ResidenceTermExistsException {
+			ResidenceTermExistsException, NonResidenceTermExistsException {
 		// Arrangements
 		Person person = this.personDelegate.create("Smith", "John", "Jay", 
 				null);
@@ -181,16 +184,16 @@ public class ResidenceServiceCreateHomelessTermTests
 				null, notes, null);
 		
 		// Action
-		this.residenceService.createHomelessTerm(person, dateRange, city, state, 
-				notes, confirmed);
+		this.residenceService.createHomelessTerm(person, dateRange, city, 
+				state, notes, confirmed);
 	}
 	
 	// Parses date text
-		private Date parseDateText(final String text) {
-			try {
-				return new SimpleDateFormat("MM/dd/yyyy").parse(text);
-			} catch (ParseException e) {
-				throw new RuntimeException("Parse error", e);
-			}
+	private Date parseDateText(final String text) {
+		try {
+			return new SimpleDateFormat("MM/dd/yyyy").parse(text);
+		} catch (ParseException e) {
+			throw new RuntimeException("Parse error", e);
 		}
+	}
 }

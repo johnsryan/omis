@@ -11,8 +11,11 @@
 		<sec:authorize access="hasRole('OFFENDER_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty offender}">
 			<li>
-				<a href="${pageContext.request.contextPath}/offender/profileSafetyDetailsReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="safetyDetailsReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/offender/profilePREAAcknowledgementReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab adobeReportLink"><fmt:message key="safetyPREAAcknowledgementReportLinkLabel"/></a>
 			</li>
+			<li>
+				<a href="${pageContext.request.contextPath}/offender/profileSafetyDetailsReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab adobeReportLink"><fmt:message key="safetyDetailsReportLinkLabel"/></a>
+			</li>			
 			</c:if>
 		</sec:authorize>
 	</ul>

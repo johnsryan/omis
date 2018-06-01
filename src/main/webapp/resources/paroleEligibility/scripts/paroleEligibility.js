@@ -17,10 +17,11 @@
  */
 
 /**
- * Parole eligibility edit screen.
+ * Parole eligibility edit screen javascript.
  * 
  * Author: Trevor Isles
- * Version: 0.1.0 (Dec 21, 2017)
+ * Author: Annie Wahl
+ * Version: 0.1.1 (May 23, 2018)
  * Since: OMIS 3.0
  */
 window.onload = function() {
@@ -28,6 +29,7 @@ window.onload = function() {
 		var fields = document.getElementById("statusFields");
 		var showFields = document.getElementById("showStatusFields");
 		if(event.target.value == "WAIVED" || event.target.value == "INELIGIBLE"){
+			showStatusReasons(event.target.value);
 			if(fields.classList.contains("hidden")) {
 				fields.classList.remove("hidden");
 				showFields.value = "true";

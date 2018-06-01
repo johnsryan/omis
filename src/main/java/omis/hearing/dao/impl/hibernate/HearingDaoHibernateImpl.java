@@ -29,13 +29,14 @@ import omis.hearing.domain.HearingCategory;
 import omis.location.domain.Location;
 import omis.offender.domain.Offender;
 import omis.user.domain.UserAccount;
+import omis.violationevent.domain.ViolationEvent;
 
 /**
  * Implementation of data access object for hearing.
  * 
  * @author Annie Wahl 
  * @author Josh Divine
- * @version 0.1.2 (May 3, 2018)
+ * @version 0.1.3 (May 17, 2018)
  * @since OMIS 3.0
  */
 public class HearingDaoHibernateImpl
@@ -51,6 +52,9 @@ public class HearingDaoHibernateImpl
 	private static final String FIND_HEARINGS_BY_OFFENDER_QUERY_NAME =
 			"findHearingsByOffender";
 	
+	private static final String FIND_HEARINGS_BY_VIOLATION_EVENT_QUERY_NAME =
+			"findHearingsByViolationEvent";
+	
 	/* Param Names */
 	
 	private static final String LOCATION_PARAM_NAME = "location";
@@ -64,6 +68,8 @@ public class HearingDaoHibernateImpl
 	private static final String HEARING_PARAM_NAME = "hearing";
 	
 	private static final String CATEGORY_PARAM_NAME = "category";
+	
+	private static final String VIOLATION_EVENT_PARAM_NAME = "violationEvent";
 	
 	/**
 	 * @param sessionFactory
@@ -125,5 +131,15 @@ public class HearingDaoHibernateImpl
 		return hearings;
 	}
 
+	/** {@inheritDoc} */
+	@Override
+	public List<Hearing> findByViolationEvent(
+			final ViolationEvent violationEvent) {
+		@SuppressWarnings("unchecked")
+		List<Hearing> hearings = this.getSessionFactory().getCurrentSession()
+				.getNamedQuery(FIND_HEARINGS_BY_VIOLATION_EVENT_QUERY_NAME)
+				.setParameter(VIOLATION_EVENT_PARAM_NAME, violationEvent)
+				.list();
+		return hearings;
+	}
 }
-

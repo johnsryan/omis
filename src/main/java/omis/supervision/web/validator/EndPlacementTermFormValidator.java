@@ -53,7 +53,8 @@ public class EndPlacementTermFormValidator implements Validator {
 		if (endPlacementTermForm.getEndTime() == null) {
 			errors.rejectValue("endTime", "endPlacementTermForm.endTime.empty");
 		}
-		if (endPlacementTermForm.getEndChangeReason() == null) {
+		if (endPlacementTermForm.getAllowEndChangeReason()
+				&& endPlacementTermForm.getEndChangeReason() == null) {
 			errors.rejectValue("endChangeReason", 
 					"endPlacementTermForm.endChangeReason.empty");
 		}

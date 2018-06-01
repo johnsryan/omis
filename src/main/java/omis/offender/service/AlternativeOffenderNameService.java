@@ -1,14 +1,32 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.offender.service;
 
 import java.util.List;
 
 import omis.datatype.DateRange;
-import omis.exception.DuplicateEntityFoundException;
 import omis.offender.domain.Offender;
 import omis.person.domain.AlternativeNameAssociation;
 import omis.person.domain.AlternativeNameCategory;
 import omis.person.domain.PersonName;
 import omis.person.domain.Suffix;
+import omis.person.exception.AlternativeNameAssociationExistsException;
+import omis.person.exception.PersonNameExistsException;
 
 /**
  * Service for alternative offender names.
@@ -31,14 +49,15 @@ public interface AlternativeOffenderNameService {
 	 * @param dateRange date range
 	 * @param category category
 	 * @return new alternative name association
-	 * @throws DuplicateEntityFoundException thrown when an alternative name
-	 * association is found with the same name, category, and date range
-	 * as the ones specified.
+	 * @throws PersonNameExistsException if person name exists
+	 * @throws AlternativeNameAssociationExistsException if alternative name
+	 * association exists
 	 */
 	AlternativeNameAssociation associate(Offender offender, String lastName, 
 			String firstName, String middleName, String suffix, 
 			DateRange dateRange, AlternativeNameCategory category) 
-		throws DuplicateEntityFoundException;
+					throws PersonNameExistsException,
+						AlternativeNameAssociationExistsException;
 	
 	/**
 	 * Updates the specified alternative name association with the specified
@@ -52,15 +71,16 @@ public interface AlternativeOffenderNameService {
 	 * @param dateRange date range
 	 * @param category category
 	 * @return new alternative name association
-	 * @throws DuplicateEntityFoundException thrown when another alternative 
-	 * name association is found with the same name, category, and date range
-	 * as the ones specified.
+	 * @throws PersonNameExistsException if person name exists
+	 * @throws AlternativeNameAssociationExistsException if alternative name
+	 * association exists
 	 */
 	AlternativeNameAssociation updateAssociation(
 			AlternativeNameAssociation association, String lastName,
 			String firstName, String middleName, String suffix, 
 			DateRange dateRange, AlternativeNameCategory category)
-		throws DuplicateEntityFoundException;
+					throws PersonNameExistsException,
+						AlternativeNameAssociationExistsException;
 	
 	/**
 	 * Removes an alternative offender name.

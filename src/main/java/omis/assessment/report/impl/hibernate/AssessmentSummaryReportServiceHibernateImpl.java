@@ -18,10 +18,9 @@
 package omis.assessment.report.impl.hibernate;
 
 import java.util.List;
-
 import org.hibernate.SessionFactory;
-
 import omis.assessment.report.AssessmentCategoryScoreSummary;
+import omis.assessment.report.AssessmentRatingSummary;
 import omis.assessment.report.AssessmentSummary;
 import omis.assessment.report.AssessmentSummaryReportService;
 import omis.offender.domain.Offender;
@@ -32,7 +31,8 @@ import omis.questionnaire.domain.QuestionnaireCategory;
  * Assessment summary report service hibernate implementation.
  * 
  * @author Josh Divine
- * @version 0.1.0 (Mar 14, 2018)
+ * @author Annie Wahl
+ * @version 0.1.1 (Apr 18, 2018)
  * @since OMIS 3.0
  */
 public class AssessmentSummaryReportServiceHibernateImpl 
@@ -41,19 +41,23 @@ public class AssessmentSummaryReportServiceHibernateImpl
 	/* Queries. */
 	
 	private static final String 
-			FIND_ADMINISTERED_QUESTIONNAIRES_BY_OFFENDER_QUERY_NAME =
-				"findAssessmentQuestionnairesByOffender";
+		FIND_ADMINISTERED_QUESTIONNAIRES_BY_OFFENDER_QUERY_NAME =
+			"findAssessmentQuestionnairesByOffender";
 	
 	private static final String
-			SUMMARIZE_BY_ADMINISTERED_QUESTIONNAIRE_QUERY_NAME =
-				"findAssessmentSummaryByAdministeredQuestionnaire";
+		SUMMARIZE_BY_ADMINISTERED_QUESTIONNAIRE_QUERY_NAME =
+			"findAssessmentSummaryByAdministeredQuestionnaire";
 	
 	private static final String 
-			FIND_ASSESSMENT_CATEGORY_SCORE_SUMMARIES_BY_ADMINISTERED_QUESTIONNAIRE_QUERY_NAME =
-				"findAssessmentCategoryScoreSummariesByAdministeredQuestionnaire";
+		FIND_ASSESSMENT_CATEGORY_SCORE_SUMMARIES_BY_ADMINISTERED_QUESTIONNAIRE_QUERY_NAME =
+			"findAssessmentCategoryScoreSummariesByAdministeredQuestionnaire";
 	
 	private static final String FIND_ASSESSMENT_QUESTION_CATEGORIES_QUERY_NAME =
 		"findAssessmentQuestionCategories";
+	
+	private static final String
+		FIND_ASSESSMENT_RATING_SUMMARIES_BY_ADMINISTERED_QUESTIONNAIRE_QUERY_NAME =
+			"findAssessmentRatingSummariesByAdministeredQuestionnaire";
 	
 	/* Parameters. */
 	
@@ -112,9 +116,9 @@ public class AssessmentSummaryReportServiceHibernateImpl
 		List<AssessmentCategoryScoreSummary> summaries = this.sessionFactory
 				.getCurrentSession()
 				.getNamedQuery(
-						FIND_ASSESSMENT_CATEGORY_SCORE_SUMMARIES_BY_ADMINISTERED_QUESTIONNAIRE_QUERY_NAME)
-				.setParameter(ADMINISTERED_QUESTIONNAIRE_PARAM_NAME, 
-						administeredQuestionnaire)
+					FIND_ASSESSMENT_CATEGORY_SCORE_SUMMARIES_BY_ADMINISTERED_QUESTIONNAIRE_QUERY_NAME)
+				.setParameter(ADMINISTERED_QUESTIONNAIRE_PARAM_NAME,
+					administeredQuestionnaire)
 				.list();
 		return summaries;
 	}
@@ -128,5 +132,21 @@ public class AssessmentSummaryReportServiceHibernateImpl
 				.getNamedQuery(FIND_ASSESSMENT_QUESTION_CATEGORIES_QUERY_NAME)
 				.list();
 		return questionnaireCategories;
+	}
+
+	/**{@inheritDoc} */
+	@Override
+	public List<AssessmentRatingSummary>
+		findAssessmentRatingSummariesByAdministeredQuestionnaire(
+			final AdministeredQuestionnaire administeredQuestionnaire) {
+		@SuppressWarnings("unchecked")
+		List<AssessmentRatingSummary> summaries = this.sessionFactory
+				.getCurrentSession()
+				.getNamedQuery(
+					FIND_ASSESSMENT_RATING_SUMMARIES_BY_ADMINISTERED_QUESTIONNAIRE_QUERY_NAME)
+				.setParameter(ADMINISTERED_QUESTIONNAIRE_PARAM_NAME,
+					administeredQuestionnaire)
+				.list();
+		return summaries;
 	}
 }

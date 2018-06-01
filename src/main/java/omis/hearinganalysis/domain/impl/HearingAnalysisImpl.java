@@ -17,6 +17,8 @@
 */
 package omis.hearinganalysis.domain.impl;
 
+import java.util.Date;
+
 import omis.audit.domain.CreationSignature;
 import omis.audit.domain.UpdateSignature;
 import omis.hearinganalysis.domain.HearingAnalysis;
@@ -29,7 +31,8 @@ import omis.paroleeligibility.domain.ParoleEligibility;
  * Implementation of hearing analysis.
  * 
  * @author Josh Divine
- * @version 0.1.1 (Apr 18, 2018)
+ * @author Annie Wahl
+ * @version 0.1.2 (May 29, 2018)
  * @since OMIS 3.0
  */
 public class HearingAnalysisImpl implements HearingAnalysis {
@@ -49,6 +52,8 @@ public class HearingAnalysisImpl implements HearingAnalysis {
 	private BoardAttendee analyst;
 	
 	private ParoleBoardItinerary paroleBoardItinerary;
+	
+	private Date expectedCompletionDate;
 	
 	/** 
 	 * Instantiates an implementation of hearing analysis. 
@@ -140,6 +145,18 @@ public class HearingAnalysisImpl implements HearingAnalysis {
 	@Override
 	public ParoleBoardItinerary getParoleBoardItinerary() {
 		return paroleBoardItinerary;
+	}
+	
+	/**{@inheritDoc} */
+	@Override
+	public Date getExpectedCompletionDate() {
+		return this.expectedCompletionDate;
+	}
+	
+	/**{@inheritDoc} */
+	@Override
+	public void setExpectedCompletionDate(final Date expectedCompletionDate) {
+		this.expectedCompletionDate = expectedCompletionDate;
 	}
 	
 	/** {@inheritDoc} */

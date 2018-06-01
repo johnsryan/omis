@@ -28,7 +28,7 @@ public class UnitImpl implements Unit {
 	
 	private String abbreviation;
 	
-	private Boolean active;
+	private Boolean valid;
 	
 	/** Instantiates a default unit implementation. */
 	public UnitImpl() {
@@ -97,14 +97,14 @@ public class UnitImpl implements Unit {
 
 	/** {@inheritDoc} */
 	@Override
-	public Boolean getActive() {
-		return this.active;
+	public Boolean getValid() {
+		return this.valid;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void setActive(final Boolean active) {
-		this.active = active;
+	public void setValid(final Boolean valid) {
+		this.valid = valid;
 	}
 
 	/** {@inheritDoc} */

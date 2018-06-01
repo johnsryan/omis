@@ -6,6 +6,7 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib uri="/WEB-INF/tld/omis.tld" prefix="omis" %>
 <fmt:setBundle basename="omis.msgs.common" var="commonBundle" />
 <fmt:bundle basename="omis.paroleboardmember.msgs.paroleBoardMember">
 	<ul>
@@ -19,6 +20,13 @@
 				</li>
 			</c:if>
 		</sec:authorize>
+		<sec:authorize access="hasRole('PAROLE_BOARD_MEMBER_LIST') or hasRole('ADMIN')">
+			<c:if test="${empty paroleBoardMember}">
+				<li>
+					<omis:reportPro reportPath="/BOPP/Board_of_Pardons_and_Parole_Staff_Listing" decorate="no" title="" className="newTab reportLink"><fmt:message key="boardMemberListingReportLinkLabel"/></omis:reportPro>					
+				</li>
+			</c:if>
+		</sec:authorize>		
 		<sec:authorize access="hasRole('PAROLE_BOARD_MEMBER_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty paroleBoardMember}">
 				<li>
@@ -41,5 +49,12 @@
 				</li>
 			</c:if>
 		</sec:authorize>
+		<sec:authorize access="hasRole('PAROLE_BOARD_MEMBER_LIST') or hasRole('ADMIN')">
+			<c:if test="${not empty paroleBoardMember}">
+				<li>
+					<a href="${pageContext.request.contextPath}/paroleBoardMember/boardMemberDetailsReport.html?paroleBoardMember=${paroleBoardMember.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="boardMemberDetailsReportLinkLabel"/></a>
+				</li>
+			</c:if>
+		</sec:authorize>		
 	</ul>
 </fmt:bundle>

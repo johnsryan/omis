@@ -43,8 +43,13 @@ window.onload = function() {
 	var divorceDateContainer = document.getElementById("divorceDateContainer");
 	var relationship = document.getElementById("relationship");
 	
-	marriageDateContainer.style.visibility="hidden";
-	divorceDateContainer.style.visibility="hidden";
+	if(!spauseStatus){
+		marriageDateContainer.style.visibility="hidden";
+		divorceDateContainer.style.visibility="hidden";
+	} else {
+		marriageDateContainer.style.visibility="visible";
+		divorceDateContainer.style.visibility="visible";
+	}
 	
 	relationship.onchange = function() {
 		if($("#relationship").val()!=""){

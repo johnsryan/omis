@@ -120,8 +120,6 @@ public class EndPlacementTermServiceImpl implements EndPlacementTermService {
 								endDate), 
 						supervisoryOrganizationTerm
 								.getSupervisoryOrganization());
-		} else {
-			throw new RuntimeException("Supervisory organization term required.");
 		}
 		LocationReasonTerm locationReasonTerm 
 			= this.locationReasonTermDelegate.findForOffenderOnDate(

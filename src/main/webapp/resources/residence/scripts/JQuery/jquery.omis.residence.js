@@ -243,3 +243,73 @@ function createNewLocation() {
 		}
 	});	
 };
+
+
+/**
+ * Applies on click functionality for the new city radio button.
+ *
+ */
+function applyNewCityOnClick() {
+	var falseNewCity = $("#falseNewCity");
+	var trueNewCity = $("#trueNewCity");
+	if (trueNewCity != null) {
+		trueNewCity.click(function() {
+				if (!$("#existingCityGroup").hasClass("hidden")) {
+					$("#existingCityGroup").addClass("hidden");
+				}
+				if ($("#newCityGroup").hasClass("hidden")) {
+					$("#newCityGroup").removeClass("hidden");
+				}
+				newZipCodeDisplay();
+				$("#trueNewZipCode").attr('checked', 'checked');
+				$("#falseNewZipCode").prop("disabled", true);
+		});
+	}
+	if (falseNewCity != null) {
+		falseNewCity.click(function() {
+				if ($("#existingCityGroup").hasClass("hidden")) {
+					$("#existingCityGroup").removeClass("hidden");
+				}
+				if (!$("#newCityGroup").hasClass("hidden")) {
+					$("#newCityGroup").addClass("hidden");
+				}
+				$("#falseNewZipCode").prop("disabled", false);
+		});
+	}
+};
+
+/**
+ * Applies on click functionality for the new zip code radio button.
+ *  
+ */
+function applyNewZipCodeOnClick() {
+	var falseNewZipCode = $("#falseNewZipCode");
+	var trueNewZipCode = $("#trueNewZipCode");
+	trueNewZipCode.click(function() {
+		newZipCodeDisplay();
+		$("#newZipCode").val(true);
+	});
+	falseNewZipCode.click(function() {
+		if (!$("#newZipCodeGroup").hasClass("hidden")) {
+			$("#newZipCodeGroup").addClass("hidden");
+		}
+		if ($("#existingZipCodeGroup").hasClass("hidden")) {
+			$("#existingZipCodeGroup").removeClass("hidden");
+		}
+		$("#newZipCode").val(false);
+	});
+};
+
+/**
+ * Display new zip code fields with the specified name.
+ * 
+ *
+ */
+function newZipCodeDisplay() {
+	if ($("#newZipCodeGroup").hasClass("hidden")) {
+		$("#newZipCodeGroup").removeClass("hidden");
+	}
+	if (!$("#existingZipCodeGroup").hasClass("hidden")) {
+		$("#existingZipCodeGroup").addClass("hidden");
+	}
+};

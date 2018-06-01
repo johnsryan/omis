@@ -35,7 +35,8 @@ import omis.paroleeligibility.report.ParoleEligibilitySummary;
  *
  * @author Trevor Isles
  * @author Josh Divine
- * @version 0.1.3 (Apr 17, 2018)
+ * @author Annie Wahl
+ * @version 0.1.4 (May 29, 2018)
  * @since OMIS 3.0
  */
 public class ParoleEligibilityReportServiceHibernateImpl 
@@ -49,9 +50,15 @@ public class ParoleEligibilityReportServiceHibernateImpl
 	private static final String FIND_UNRESOLVED_PAROLE_ELIGIBILITIES_QUERY_NAME = 
 			"findUnresolvedParoleEligibilities";
 	
+	private static final String SUMMARIZE_PAROLE_ELIGIBILITY_QUERY_NAME =
+			"summarizeParoleEligibility";
+	
 	/* Parameters.*/ 
 	
 	private static final String OFFENDER_PARAM_NAME = "offender";
+	
+	private static final String PAROLE_ELIGIBILITY_PARAM_NAME =
+			"paroleEligibility";
 	
 	/* Members. */
 	
@@ -116,5 +123,18 @@ public class ParoleEligibilityReportServiceHibernateImpl
 	public BoardHearing findBoardHearingByParoleEligibility(
 			final ParoleEligibility eligibility) {
 		return this.boardHearingDelegate.findByParoleEligibility(eligibility);
+	}
+
+	/**{@inheritDoc} */
+	@Override
+	public ParoleEligibilitySummary summarizeParoleEligibility(
+			final ParoleEligibility paroleEligibility) {
+		ParoleEligibilitySummary summary = (ParoleEligibilitySummary)
+				this.sessionFactory.getCurrentSession().getNamedQuery(
+						SUMMARIZE_PAROLE_ELIGIBILITY_QUERY_NAME)
+				.setParameter(PAROLE_ELIGIBILITY_PARAM_NAME, paroleEligibility)
+				.setReadOnly(true)
+				.uniqueResult();
+		return summary;
 	}
 }

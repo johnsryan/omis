@@ -11,7 +11,7 @@
 		<sec:authorize access="hasRole('FINANCIAL_PROFILE_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty offender}">
 			<li>
-				<a href="${pageContext.request.contextPath}/financial/financialProfileReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="financialProfileReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/financial/financialProfileReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="financialProfileReportLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>

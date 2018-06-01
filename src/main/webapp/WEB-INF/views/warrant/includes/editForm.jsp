@@ -29,6 +29,7 @@
 			</form:label>
 			<input type="text" id="issuedByInput"/>
 			<form:hidden id="issuedBy" path="issuedBy"/>
+			<a id="currentIssuedBy" class="currentUserAccountLink"></a>
 			<a id="clearIssuedBy" class="clearLink"></a>
 			<span id="issuedByDisplay">
 				<c:if test="${not empty warrantForm.issuedBy}" >
@@ -93,7 +94,7 @@
 				</form:select>
 				<form:errors path="arrestJail" cssClass="error"/>
 			</span>
-			<span class="fieldGroup">
+			<span class="fieldGroup hidden">
 				<form:label path="determinationDeadline" class="fieldLabel">
 					<fmt:message key="determinationDeadlineLabel"/>
 				</form:label>

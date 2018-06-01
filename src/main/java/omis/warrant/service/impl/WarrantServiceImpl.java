@@ -20,18 +20,22 @@ import omis.offender.domain.Offender;
 import omis.person.domain.Person;
 import omis.warrant.domain.Warrant;
 import omis.warrant.domain.WarrantArrest;
+import omis.warrant.domain.WarrantCancellation;
 import omis.warrant.domain.WarrantCauseViolation;
 import omis.warrant.domain.WarrantNote;
 import omis.warrant.domain.WarrantReasonCategory;
+import omis.warrant.domain.WarrantRelease;
 import omis.warrant.exception.WarrantArrestExistsException;
 import omis.warrant.exception.WarrantCauseViolationExistsException;
 import omis.warrant.exception.WarrantExistsException;
 import omis.warrant.exception.WarrantNoteExistsException;
 import omis.warrant.service.WarrantService;
 import omis.warrant.service.delegate.WarrantArrestDelegate;
+import omis.warrant.service.delegate.WarrantCancellationDelegate;
 import omis.warrant.service.delegate.WarrantCauseViolationDelegate;
 import omis.warrant.service.delegate.WarrantDelegate;
 import omis.warrant.service.delegate.WarrantNoteDelegate;
+import omis.warrant.service.delegate.WarrantReleaseDelegate;
 
 /**
  * Warrant service implementation.
@@ -44,37 +48,39 @@ import omis.warrant.service.delegate.WarrantNoteDelegate;
  */
 public class WarrantServiceImpl implements WarrantService {
 	
-private final WarrantDelegate warrantDelegate;
-	
+	private final WarrantDelegate warrantDelegate;
 	private final WarrantCauseViolationDelegate warrantCauseViolationDelegate;
-	
 	private final WarrantNoteDelegate warrantNoteDelegate;
-	
 	private final WarrantArrestDelegate warrantArrestDelegate;
-	
+	private final WarrantCancellationDelegate warrantCancellationDelegate;
+	private final WarrantReleaseDelegate warrantReleaseDelegate;
 	private final JailDelegate jailDelegate;
-	
 	private final ConditionDelegate conditionDelegate;
-		
 	private final CourtCaseAgreementDelegate courtCaseAgreementDelegate;
 	
 	
 	/**
-	 * @param warrantDelegate
-	 * @param warrantCauseViolationDelegate
-	 * @param warrantViolationDelegate
-	 * @param warrantNoteDelegate
-	 * @param warrantArrestDelegate
-	 * @param warrantReasonCategoryDelegate
-	 * @param jailDelegate
-	 * @param conditionDelegate
-	 * @param agreementDelegate
-	 * @param courtCaseAgreementDelegate
+	 * Instantiates a warrant service with the specified delegates.
+	 * 
+	 * @param warrantDelegate warrant delegate
+	 * @param warrantCauseViolationDelegate warrant cause violation delegate
+	 * @param warrantViolationDelegate warrant violation delegate
+	 * @param warrantNoteDelegate warrant note delegate
+	 * @param warrantArrestDelegate warrant arrest delegate
+	 * @param warrantReasonCategoryDelegate warrant reason category delegate
+	 * @param warrantCancellationDelegate warrant cancellation delegate
+	 * @param warrantReleaseDelegate warrant release delegate
+	 * @param jailDelegate jail delegate
+	 * @param conditionDelegate condition delegate
+	 * @param agreementDelegate agreement delegate
+	 * @param courtCaseAgreementDelegate court case agreement delegate
 	 */
 	public WarrantServiceImpl(final WarrantDelegate warrantDelegate,
 			final WarrantCauseViolationDelegate warrantCauseViolationDelegate,
 			final WarrantNoteDelegate warrantNoteDelegate,
 			final WarrantArrestDelegate warrantArrestDelegate,
+			final WarrantCancellationDelegate warrantCancellationDelegate,
+			final WarrantReleaseDelegate warrantReleaseDelegate,
 			final JailDelegate jailDelegate,
 			final ConditionDelegate conditionDelegate,
 			final AgreementDelegate agreementDelegate,
@@ -83,6 +89,8 @@ private final WarrantDelegate warrantDelegate;
 		this.warrantCauseViolationDelegate = warrantCauseViolationDelegate;
 		this.warrantNoteDelegate = warrantNoteDelegate;
 		this.warrantArrestDelegate = warrantArrestDelegate;
+		this.warrantCancellationDelegate = warrantCancellationDelegate;
+		this.warrantReleaseDelegate = warrantReleaseDelegate;
 		this.jailDelegate = jailDelegate;
 		this.conditionDelegate = conditionDelegate;
 		this.courtCaseAgreementDelegate = courtCaseAgreementDelegate;
@@ -113,6 +121,22 @@ private final WarrantDelegate warrantDelegate;
 	/**{@inheritDoc} */
 	@Override
 	public void remove(final Warrant warrant) {
+		List<WarrantCauseViolation> violations = this.warrantCauseViolationDelegate.findByWarrant(warrant);
+		for (WarrantCauseViolation violation : violations) {
+			this.warrantCauseViolationDelegate.remove(violation);
+		}
+		WarrantArrest arrest = this.warrantArrestDelegate.findByWarrant(warrant);
+		if (arrest != null) {
+			this.warrantArrestDelegate.remove(arrest);
+		}
+		WarrantCancellation cancellation = this.warrantCancellationDelegate.findByWarrant(warrant);
+		if (cancellation != null) {
+			this.warrantCancellationDelegate.remove(cancellation);
+		}
+		WarrantRelease release = this.warrantReleaseDelegate.findByWarrant(warrant);
+		if (release != null) {
+			this.warrantReleaseDelegate.remove(release);
+		}
 		this.warrantDelegate.remove(warrant);
 	}
 

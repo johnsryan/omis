@@ -27,13 +27,13 @@
 		</sec:authorize>
 		<sec:authorize access="hasRole('PRESENTENCE_INVESTIGATION_REQUEST_LIST') or hasRole('ADMIN')">
 			<li>
-				<a href="${pageContext.request.contextPath}/presentenceInvestigation/request/investigationRequestDetailsReport.html?presentenceInvestigationRequest=${presentenceInvestigationRequest.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="investigationRequestDetailsReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/presentenceInvestigation/request/psiQuestionnaireReport.html?person=${presentenceInvestigationRequest.docket.person.id}&reportFormat=PDF" class="newTab adobeReportLink"><fmt:message key="pSIQuestionnaireReportLinkLabel"/></a>
 			</li>
 		</sec:authorize>
 		<sec:authorize access="hasRole('PRESENTENCE_INVESTIGATION_REQUEST_LIST') or hasRole('ADMIN')">
 			<li>
-				<a href="${pageContext.request.contextPath}/presentenceInvestigation/request/psiQuestionnaireReport.html?person=${presentenceInvestigationRequest.docket.person.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="pSIQuestionnaireReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/presentenceInvestigation/request/investigationRequestDetailsReport.html?presentenceInvestigationRequest=${presentenceInvestigationRequest.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="investigationRequestDetailsReportLinkLabel"/></a>
 			</li>
-		</sec:authorize>		
+		</sec:authorize>				
 	</ul>
 </fmt:bundle>

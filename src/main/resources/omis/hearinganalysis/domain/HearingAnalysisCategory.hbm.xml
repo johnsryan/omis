@@ -46,4 +46,10 @@
 		and
 			hearingAnalysisCategory <> :excludedHearingAnalysisCategory
 	]]></query>
+	<query name="findAllHearingAnalysisCategories"><![CDATA[
+		select hearingAnalysisCategory
+		from omis.hearinganalysis.domain.HearingAnalysisCategory hearingAnalysisCategory
+		where
+			hearingAnalysisCategory.valid = true
+	]]></query>
 </hibernate-mapping>

@@ -13,26 +13,26 @@
 				<a class="removeLink" href="${pageContext.request.contextPath}/education/remove.html?educationTerm=${educationTerm.id}&offender=${offender.id}"><span class="visibleLinkLabel"><fmt:message key="removeEducationTermLink"/></span></a>
 			</li>
 		</sec:authorize>
+		<sec:authorize access="hasRole('EDUCATION_VIEW') or hasRole('ADMIN')">
+			<c:if test="${not empty educationTerm}">
+			<li>
+				<a href="${pageContext.request.contextPath}/education/transcriptRequestReleaseForm.html?educationTerm=${educationTerm.id}&reportFormat=DOCX" class="msWordReportLink"><fmt:message key="transcriptRequestReleaseFormLinkLabel"/></a>
+			</li>
+			</c:if>
+		</sec:authorize>
+		<sec:authorize access="hasRole('EDUCATION_VIEW') or hasRole('ADMIN')">
+			<c:if test="${not empty educationTerm}">
+			<li>
+				<a href="${pageContext.request.contextPath}/education/transcriptRequestReleaseRedactedForm.html?educationTerm=${educationTerm.id}&reportFormat=DOCX" class="msWordReportLink"><fmt:message key="transcriptRequestReleaseRedactedFormLinkLabel"/></a>
+			</li>
+			</c:if>
+		</sec:authorize>
 		<sec:authorize access="(hasRole('EDUCATION_VIEW') AND hasRole('OFFENDER_SSN_VIEW')) or hasRole('ADMIN')">
 			<c:if test="${not empty educationTerm}">
 			<li>
-				<a href="${pageContext.request.contextPath}/education/educationDetailsReport.html?educationTerm=${educationTerm.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="educationDetailsReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/education/educationDetailsReport.html?educationTerm=${educationTerm.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="educationDetailsReportLinkLabel"/></a>
 			</li>
 			</c:if>
-		</sec:authorize>
-		<sec:authorize access="hasRole('EDUCATION_VIEW') or hasRole('ADMIN')">
-			<c:if test="${not empty educationTerm}">
-			<li>
-				<a href="${pageContext.request.contextPath}/education/transcriptRequestReleaseForm.html?educationTerm=${educationTerm.id}&reportFormat=DOCX" class="reportLink"><fmt:message key="transcriptRequestReleaseFormLinkLabel"/></a>
-			</li>
-			</c:if>
-		</sec:authorize>
-		<sec:authorize access="hasRole('EDUCATION_VIEW') or hasRole('ADMIN')">
-			<c:if test="${not empty educationTerm}">
-			<li>
-				<a href="${pageContext.request.contextPath}/education/transcriptRequestReleaseRedactedForm.html?educationTerm=${educationTerm.id}&reportFormat=DOCX" class="reportLink"><fmt:message key="transcriptRequestReleaseRedactedFormLinkLabel"/></a>
-			</li>
-			</c:if>
-		</sec:authorize>
+		</sec:authorize>		
 	</ul>
 </fmt:bundle>

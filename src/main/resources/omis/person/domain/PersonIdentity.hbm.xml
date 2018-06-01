@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <!--
+ - Mapping and queries for person identity.
+ -
  - Author: Stephen Abson
- - Version: 0.1.0 (Nov 21, 2013)
- - Since: OMIS 3.0 
+ - Author: Joel Norris
+ - Author: Yidong Li
  -->
 <!DOCTYPE hibernate-mapping PUBLIC
 	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
@@ -48,46 +51,60 @@
 		<property name="deathDate" column="`DEATH_DATE`" type="java.util.Date" not-null="false"/>
 	</class>
 	<query name="findPersonIdentity"><![CDATA[
+		select identity
 		from
 			omis.person.domain.PersonIdentity identity
 		where
 			identity.person = :person
 		and
-			identity.socialSecurityNumber = :socialSecurityNumber
+			(identity.socialSecurityNumber = :socialSecurityNumber
+				or (identity.socialSecurityNumber is null
+					and :socialSecurityNumber is null))
 		and
-			identity.birthDate = :birthDate
+			(identity.birthDate = :birthDate
+				or (identity.birthDate is null and :birthDate is null))
 		and
-			identity.birthPlace = :birthCity
+			(identity.birthPlace = :birthCity
+				or (identity.birthPlace is null and :birthCity is null))
 		and
-			identity.birthCountry = :birthCountry
+			(identity.birthCountry = :birthCountry
+				or (identity.birthCountry is null and :birthCountry is null))
 		and 
-			identity.sex = :sex
+			(identity.sex = :sex or (identity.sex is null and :sex is null))
 	]]></query>
 	<query name="findPersonIdentityExcluding"><![CDATA[
+		select identity
 		from
 			omis.person.domain.PersonIdentity identity
 		where
 			identity.person = :person
 		and
-			identity.socialSecurityNumber = :socialSecurityNumber
+			(identity.socialSecurityNumber = :socialSecurityNumber
+				or (identity.socialSecurityNumber is null
+					and :socialSecurityNumber is null))
 		and
-			identity.birthDate = :birthDate
+			(identity.birthDate = :birthDate
+				or (identity.birthDate is null and :birthDate is null))
 		and
-			identity.birthPlace = :birthCity
+			(identity.birthPlace = :birthCity
+				or (identity.birthPlace is null and :birthCity is null))
 		and
-			identity.birthCountry = :birthCountry
+			(identity.birthCountry = :birthCountry
+				or (identity.birthCountry is null and :birthCountry is null))
 		and 
-			identity.sex = :sex
+			(identity.sex = :sex or (identity.sex is null and :sex is null))
 		and
 			identity <> :personIdentity
 	]]></query>
 	<query name="findAlternativePersonIdentities"><![CDATA[
+		select identity
 		from
 			omis.person.domain.PersonIdentity identity
 		where
 			identity.person = :person
 	]]></query>
 	<query name="findPersonIdentityByPerson"><![CDATA[
+		select identity
 		from
 			omis.person.domain.PersonIdentity identity
 		where

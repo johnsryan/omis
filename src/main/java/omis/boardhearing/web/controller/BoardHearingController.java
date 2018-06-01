@@ -285,9 +285,9 @@ public class BoardHearingController {
 			return this.prepareEditMav(paroleEligibility, form, new ModelMap());
 		} else {
 			CancellationCategory reason = null;
-			if (form.getCancelled()) {
+			/*if (form.getCancelled()) {
 				reason = form.getReason();
-			}
+			}*/
 			BoardHearing boardHearing = this.boardHearingService
 					.createBoardHearing(form.getParoleBoardItinerary(),
 							form.getHearingDate(), paroleEligibility,
@@ -356,9 +356,9 @@ public class BoardHearingController {
 			return this.prepareEditMav(boardHearing, form, new ModelMap());
 		} else {
 			CancellationCategory reason = null;
-			if (form.getCancelled()) {
+			/*if (form.getCancelled()) {
 				reason = form.getReason();
-			}
+			}*/
 			this.boardHearingService
 					.updateBoardHearing(boardHearing,
 							form.getParoleBoardItinerary(),
@@ -723,10 +723,10 @@ public class BoardHearingController {
 		form.setVideoConference(boardHearing.getVideoConference());
 		form.setParoleBoardItinerary(boardHearing.getItinerary());
 		form.setHearingDate(boardHearing.getHearingDate());
-		if (boardHearing.getCancellation() != null) {
+		/*if (boardHearing.getCancellation() != null) {
 			form.setCancelled(true);
 			form.setReason(boardHearing.getCancellation());
-		}
+		}*/
 		return form;
 	}
 	

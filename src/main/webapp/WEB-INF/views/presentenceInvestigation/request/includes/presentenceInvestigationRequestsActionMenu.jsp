@@ -44,22 +44,22 @@
 		    	<omis:reportPro reportPath="/Legal/PSI/Overdue_PSI_Assignments_for_Supervising_Office" decorate="no" title="" className="newTab reportLink"><fmt:message key="overduePSIAssignmentsSupervisingOfficeReportLinkLabel"/></omis:reportPro>
 		    </li>
 			<li>
-				<a href="${pageContext.request.contextPath}/presentenceInvestigation/request/investigationAssignmentReport.html?reportFormat=PDF" class="newTab reportLink"><fmt:message key="investigationAssignmentReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/presentenceInvestigation/request/investigationAssignmentReport.html?reportFormat=PDF" class="newTab adobeReportLink"><fmt:message key="investigationAssignmentReportLinkLabel"/></a>
 			</li>
 		    <li>
 		    	<omis:reportPro reportPath="/Legal/PSI/PSI_Assignments_for_Supervising_Office" decorate="no" title="" className="newTab reportLink"><fmt:message key="psiAssignmentsSupervisingOfficeReportLinkLabel"/></omis:reportPro>
 		    </li>
 			<li>
-				<a href="${pageContext.request.contextPath}/presentenceInvestigation/request/investigationProgressReport.html?reportFormat=PDF" class="newTab reportLink"><fmt:message key="investigationProgressReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/presentenceInvestigation/request/investigationProgressReport.html?reportFormat=PDF" class="newTab adobeReportLink"><fmt:message key="investigationProgressReportLinkLabel"/></a>
 			</li>
 			<li>
-				<a href="${pageContext.request.contextPath}/presentenceInvestigation/request/investigationTaskReport.html?reportFormat=PDF" class="newTab reportLink"><fmt:message key="investigationTaskReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/presentenceInvestigation/request/investigationTaskReport.html?reportFormat=PDF" class="newTab adobeReportLink"><fmt:message key="investigationTaskReportLinkLabel"/></a>
 			</li>
 			<li>
-				<a href="${pageContext.request.contextPath}/presentenceInvestigation/request/victimImpactStatementReport.html?reportFormat=PDF" class="newTab reportLink"><fmt:message key="victimImpactReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/presentenceInvestigation/request/victimImpactStatementReport.html?reportFormat=PDF" class="newTab adobeReportLink"><fmt:message key="victimImpactReportLinkLabel"/></a>
 			</li>
 			<li>
-				<a href="${pageContext.request.contextPath}/presentenceInvestigation/request/victimImpactStatementKidReport.html?reportFormat=PDF" class="newTab reportLink"><fmt:message key="victimImpactKidReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/presentenceInvestigation/request/victimImpactStatementKidReport.html?reportFormat=PDF" class="newTab adobeReportLink"><fmt:message key="victimImpactKidReportLinkLabel"/></a>
 			</li>			
 		</sec:authorize>
 	</ul>

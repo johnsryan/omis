@@ -22,10 +22,8 @@ import java.util.List;
 
 import omis.dao.GenericDao;
 import omis.offender.domain.Offender;
-import omis.supervision.domain.CorrectionalStatus;
 import omis.supervision.domain.CorrectionalStatusTerm;
 import omis.supervision.domain.PlacementTerm;
-import omis.supervision.domain.SupervisoryOrganization;
 import omis.supervision.domain.SupervisoryOrganizationTerm;
 
 /**
@@ -63,14 +61,14 @@ public interface PlacementTermDao
 	 * @param offender offender offender
 	 * @param startDate start date
 	 * @param endDate end date
-	 * @param correctionalStatus correctional status
-	 * @param supervisoryOrganization supervisory organization
+	 * @param correctionalStatusTerm correctional status term
+	 * @param supervisoryOrganizationTerm supervisory organization term
 	 * @return placement term with specified property values or {@code null}
 	 * if no such placement term exists
 	 */
 	PlacementTerm find(Offender offender, Date startDate, Date endDate,
-			CorrectionalStatus correctionalStatus,
-			SupervisoryOrganization supervisoryOrganization);
+			CorrectionalStatusTerm correctionalStatusTerm,
+			SupervisoryOrganizationTerm supervisoryOrganizationTerm);
 	
 	/**
 	 * Returns placement term with specified property values.
@@ -81,16 +79,16 @@ public interface PlacementTermDao
 	 * @param offender offender
 	 * @param startDate start date
 	 * @param endDate end date
-	 * @param correctionalStatus correctional status
-	 * @param supervisoryOrganization supervisory organization
+	 * @param correctionalStatusTerm correctional status term
+	 * @param supervisoryOrganizationTerm supervisory organization term
 	 * @param excludedPlacementTerm placement term to exclude
 	 * @return placement term with specified property values or {@code null}
 	 * if no such placement term exists that is not
 	 * {@code excludedPlacementTerm}
 	 */
 	PlacementTerm findExcluding(Offender offender, Date startDate,
-			Date endDate, CorrectionalStatus correctionalStatus,
-			SupervisoryOrganization supervisoryOrganization,
+			Date endDate, CorrectionalStatusTerm correctionalStatusTerm,
+			SupervisoryOrganizationTerm supervisoryOrganizationTerm,
 			PlacementTerm excludedPlacementTerm);
 	
 	/**

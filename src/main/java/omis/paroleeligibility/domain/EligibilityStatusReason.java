@@ -23,7 +23,8 @@ import java.io.Serializable;
  * Eligibility status reason
  *
  * @author Trevor Isles
- * @version 0.1.0 (Nov 3, 2017)
+ * @author Annie Wahl
+ * @version 0.1.1 (May 23, 2018)
  * @since OMIS 3.0
  */
 public interface EligibilityStatusReason extends Serializable {
@@ -67,6 +68,18 @@ public interface EligibilityStatusReason extends Serializable {
 	 * @param valid
 	 */
 	void setValid(Boolean valid);
+	
+	/**
+	 * Returns the StatusCategory for the Eligibility Status Reason.
+	 * @return statusReason - EligibilityStatusCategory
+	 */
+	EligibilityStatusCategory getStatusCategory();
+	
+	/**
+	 * Sets the StatusCategory for the Eligibility Status Reason.
+	 * @param statusReason - EligibilityStatusCategory
+	 */
+	void setStatusCategory(EligibilityStatusCategory statusCategory);
 	
 	/**
 	 * Compares {@code this} and {@code obj} for equality.

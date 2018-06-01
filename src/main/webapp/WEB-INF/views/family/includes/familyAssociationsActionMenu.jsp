@@ -20,14 +20,14 @@
 		<sec:authorize access="hasRole('FAMILY_ASSOCIATION_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty offender}">
 			<li>
-				<a href="${pageContext.request.contextPath}/family/familyAssociationListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="familyAssociationListingReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/family/familyAssociationListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="familyAssociationListingReportLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>
 		<sec:authorize access="hasRole('FAMILY_ASSOCIATION_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty offender}">
 			<li>
-				<a href="${pageContext.request.contextPath}/family/familyAssociationListingLegacyReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="familyAssociationListingLegacyReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/family/familyAssociationListingLegacyReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab adobeReportLink"><fmt:message key="familyAssociationListingLegacyReportLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>

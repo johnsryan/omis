@@ -18,6 +18,7 @@
 window.onload = function() {
 	applyActionMenu(document.getElementById("actionMenuLink"));
 	applyDatePicker(document.getElementById("date"));
+	applyTimePicker(document.getElementById("time"));
 	applyOnClickToItems();
 	applyActionMenu(document.getElementById("hearingNoteItemsActionMenuLink"), hearingNoteItemsCreateOnClick);
 	applyLocationTypeOnClick();

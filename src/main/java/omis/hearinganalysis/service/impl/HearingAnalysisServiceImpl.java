@@ -40,7 +40,8 @@ import omis.paroleeligibility.domain.ParoleEligibility;
  * Implementation of service for hearing analysis.
  * 
  * @author Josh Divine
- * @version 0.1.2 (Apr 18, 2018)
+ * @author Annie Wahl
+ * @version 0.1.3 (May 29, 2018)
  * @since OMIS 3.0
  */
 public class HearingAnalysisServiceImpl implements HearingAnalysisService {
@@ -91,10 +92,12 @@ public class HearingAnalysisServiceImpl implements HearingAnalysisService {
 	public HearingAnalysis createHearingAnalysis(
 			final ParoleEligibility eligibility, 
 			final ParoleBoardItinerary paroleBoardItinerary, 
-			final BoardAttendee analyst, final HearingAnalysisCategory category) 
+			final BoardAttendee analyst, final HearingAnalysisCategory category,
+			final Date expectedCompletionDate)
 					throws DuplicateEntityFoundException {
-		return this.hearingAnalysisDelegate.create(eligibility, 
-				paroleBoardItinerary, category, analyst);
+		return this.hearingAnalysisDelegate.create(eligibility,
+				paroleBoardItinerary, category, analyst,
+				expectedCompletionDate);
 	}
 
 	/** {@inheritDoc} */
@@ -102,11 +105,12 @@ public class HearingAnalysisServiceImpl implements HearingAnalysisService {
 	public HearingAnalysis updateHearingAnalysis(
 			final HearingAnalysis hearingAnalysis, 
 			final ParoleBoardItinerary paroleBoardItinerary, 
-			final BoardAttendee analyst, final HearingAnalysisCategory category) 
+			final BoardAttendee analyst, final HearingAnalysisCategory category,
+			final Date expectedCompletionDate)
 					throws DuplicateEntityFoundException {
 		return this.hearingAnalysisDelegate.update(hearingAnalysis, 
 				hearingAnalysis.getEligibility(), paroleBoardItinerary, 
-				category, analyst);
+				category, analyst, expectedCompletionDate);
 	}
 
 	/** {@inheritDoc} */

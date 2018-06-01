@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="omis.travelpermit.domain">
+	<class entity-name="omis.travelpermit.domain.TravelMethod"
+		proxy="omis.travelpermit.domain.TravelMethod"
+		name="omis.travelpermit.domain.impl.TravelMethodImpl"
+		table="`TRAVEL_METHOD`">
+		<id name="id" column="`ID`" type="java.lang.Long">
+			<generator class="sequence">
+				<param name="sequence">`TRAVEL_METHOD_SEQ`</param>
+			</generator>
+		</id>
+		<property name="name" column="`NAME`" not-null="true" type="java.lang.String" unique="true"/>
+		<property name="descriptionRequired" type="yes_no" not-null="true" column="`DESCRIPTION_REQUIRED`"/>
+		<property name="descriptionName" type="java.lang.String" not-null="false" column="`DESCRIPTION_NAME`"/>
+		<property name="numberName" type="java.lang.String" not-null="false" column="`NUMBER_NAME`"/>
+		<property name="sortOrder" type="java.lang.Short" not-null="true" column="`SORT_ORDER`"/>
+	</class>
+	<query name="findExistingTravelMethods"><![CDATA[
+	select method
+	from 
+		omis.travelpermit.domain.TravelMethod method
+	order by method.sortOrder
+	]]></query>
+</hibernate-mapping>	

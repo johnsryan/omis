@@ -403,6 +403,13 @@
     		</a>
     	</li>
     </sec:authorize>
+     <sec:authorize access="hasRole('TRAVEL_PERMIT_LIST') or hasRole('ADMIN')">
+    	<li class="moduleLink">
+    		<a href="${pageContext.request.contextPath}/travelPermit/list.html?offender=${offenderSummary.id}">
+    			<fmt:message key="travelPermitLink"/>
+    		</a>
+    	</li>
+    </sec:authorize>
     <sec:authorize access="hasRole('USER_ACCOUNT_LIST') or hasRole('ADMIN')">
     	<li class="moduleLink">
     		<a href="${pageContext.request.contextPath}/user/admin/userAccount/list.html?user=${offenderSummary.id}">

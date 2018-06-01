@@ -140,7 +140,7 @@
 		<form:input path="boardHearingParticipant1" type="hidden" />
 		<form:input path="boardHearingParticipant2" type="hidden" />
 		<form:input path="boardHearingParticipant3" type="hidden" />
-		<span class="fieldGroup">
+		<%--<span class="fieldGroup">
 			<form:label path="cancelled" class="fieldLabel">
 				<fmt:message key="cancelLabel"/>
 			</form:label>
@@ -163,7 +163,7 @@
 				</c:forEach>
 			</form:select>
 			<form:errors path="reason" cssClass="error"/>
-		</span>
+		</span>  --%>
 	</fieldset>
 	<fieldset>
 		<legend>

@@ -14,7 +14,7 @@
 	<sec:authorize access="hasRole('COURT_CASE_DOCUMENT_VIEW') or hasRole('ADMIN')">
 	    <c:if test="${not empty offender}">
 	        <li>
-	            <a href="${pageContext.request.contextPath}/courtCase/document/courtDocumentListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="courtDocumentListingReportLinkLabel"/></a>
+	            <a href="${pageContext.request.contextPath}/courtCase/document/courtDocumentListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="courtDocumentListingReportLinkLabel"/></a>
 	        </li>
 	    </c:if>
 	</sec:authorize>

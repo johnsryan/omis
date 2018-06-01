@@ -30,7 +30,7 @@
 		<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/vehicle/style/vehicle.css"/>
 		<jsp:include page="/WEB-INF/views/common/includes/searchResources.jsp"/>
 		<jsp:include page="/WEB-INF/views/common/includes/toolsResources.jsp"/>
-    	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/vehicle/scripts/vehicleAssociations.js"></script>
+    	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/travelPermit/scripts/travelPermit.js"></script>
 		<script type="text/javascript" src="${pageContext.request.contextPath}/resources/common/scripts/SessionConfig.js"> </script>
 		
 	</head>

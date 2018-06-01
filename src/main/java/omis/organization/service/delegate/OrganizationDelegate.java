@@ -6,6 +6,7 @@ import omis.exception.DuplicateEntityFoundException;
 import omis.instance.factory.InstanceFactory;
 import omis.organization.dao.OrganizationDao;
 import omis.organization.domain.Organization;
+import omis.organization.exception.OrganizationExistsException;
 
 /**
  * Delegate for organizations.
@@ -48,12 +49,12 @@ public class OrganizationDelegate {
 	 * @param alias alias
 	 * @param parent parent
 	 * @return created organization
-	 * @throws DuplicateEntityFoundException if organization exists
+	 * @throws OrganizationExistsException if organization exists
 	 */
 	public Organization create(final String name, final String alias,
-			final Organization parent) throws DuplicateEntityFoundException {
+			final Organization parent) throws OrganizationExistsException {
 		if (this.organizationDao.find(name) != null) {
-			throw new DuplicateEntityFoundException("Organization exists");
+			throw new OrganizationExistsException("Organization exists");
 		}
 		Organization organization = this.organizationInstanceFactory
 				.createInstance();
@@ -69,13 +70,13 @@ public class OrganizationDelegate {
 	 * @param alias alias
 	 * @param parent parent
 	 * @return updated organization
-	 * @throws DuplicateEntityFoundException if organization exists
+	 * @throws OrganizationExistsException if organization exists
 	 */
 	public Organization update(final Organization organization,
 			final String name, final String alias, final Organization parent)
-				throws DuplicateEntityFoundException {
+				throws OrganizationExistsException {
 		if (this.organizationDao.findExcluding(name, organization) != null) {
-			throw new DuplicateEntityFoundException("Organization exists");
+			throw new OrganizationExistsException("Organization exists");
 		}
 		this.populateOrganization(organization, name, alias, parent);
 		return this.organizationDao.makePersistent(organization);

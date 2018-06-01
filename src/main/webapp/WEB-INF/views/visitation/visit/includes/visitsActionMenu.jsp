@@ -19,7 +19,7 @@
 		</sec:authorize>
 		<sec:authorize access="hasRole('VISIT_VIEW') or hasRole('ADMIN')">
 		<li>
-			 <a href="${pageContext.request.contextPath}/visitation/visitorLogLegacyReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="visitorLogLegacyReportLinkLabel"/></a>
+			 <a href="${pageContext.request.contextPath}/visitation/visitorLogLegacyReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab adobeReportLink"><fmt:message key="visitorLogLegacyReportLinkLabel"/></a>
 		</li>
 		</sec:authorize>
 	</ul>

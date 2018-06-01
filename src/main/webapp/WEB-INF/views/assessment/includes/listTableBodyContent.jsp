@@ -30,7 +30,7 @@
 <c:forEach var="assessment" items="${assessmentSummaries}" varStatus="status">
 	<tr>
 		<td>
-			<a class="actionMenuItem" id="rowActionMenuLink${status.index}" href="${pageContext.request.contextPath}/assessment/assessmentsActionMenu.html?assessment=${assessment.id}"></a>
+			<a class="actionMenuItem" id="rowActionMenuLink${status.index}" href="${pageContext.request.contextPath}/assessment/assessmentsActionMenu.html?assessment=${administeredQuestionnaire.id}"></a>
 		</td>
 		<td><c:out value="${assessment.key.questionnaireCategoryName}"/></td>
 		<td><c:out value="${assessment.key.questionnaireTypeName}"/></td>

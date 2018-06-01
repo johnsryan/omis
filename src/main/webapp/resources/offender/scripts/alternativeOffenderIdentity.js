@@ -27,7 +27,11 @@ $(document).ready(function() {
 		populateCitiesByCountry();
 	});
 	$("#birthState").change(function() {
-		populateCitiesByState();
+		if ($("#birthState").val() != null && $("#birthState").val() != '') {
+			populateCitiesByState();
+		} else {
+			populateCitiesByCountry();
+		}
 	});
 	$("#createNewBirthPlace").click(function() {
 		if ($("#createNewBirthPlace").is(':checked')) {

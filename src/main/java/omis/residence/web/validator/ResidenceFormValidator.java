@@ -51,43 +51,73 @@ public class ResidenceFormValidator implements Validator {
 				errors.rejectValue("value", 
 						"residenceTerm.address.value.empty");
 			}
-			if (residenceForm.getZipCode() == null) {
-				errors.rejectValue("zipCode", 
-						"residenceTerm.address.zipCode.empty");
+			if (residenceForm.getCreateNewZipCode() != null
+					&& residenceForm.getCreateNewZipCode()) {
+				if (residenceForm.getZipCodeValue() == null 
+						|| residenceForm.getZipCodeValue().isEmpty()) {
+					errors.rejectValue("zipCodeValue", "residenceTerm.address.zipCode.value.empty");
+				} 
+			} else {
+				if (residenceForm.getZipCode() == null) {
+					errors.rejectValue("zipCode", "residenceTerm.address.zipCode.empty");
+				}
 			}
-			if (residenceForm.getCity() == null) {
-				errors.rejectValue("city", "residenceTerm.address.city.empty");
+			if (residenceForm.getCreateNewCity()) {
+				if (residenceForm.getCityName().isEmpty()) {
+					errors.rejectValue("cityName", 
+							"residenceTerm.address.city.name.empty");
+				}
+			} else {
+				if (residenceForm.getCity() == null) {
+					errors.rejectValue("city", 
+							"residenceTerm.address.city.empty");
+				}
 			}
 			if (residenceForm.getState() == null) {
 				errors.rejectValue("state", 
 						"residenceTerm.address.state.empty");
 			}
 		} else if (ResidenceStatusOption.GROUP_HOME
-				.equals(residenceForm.getStatusOption()) 
-				|| ResidenceStatusOption.HOTEL
-				.equals(residenceForm.getStatusOption())) {
-		
-				if (residenceForm.getCreateNewLocation()) {
-					if (residenceForm.getCity() == null) {
-						errors.rejectValue("city", 
-								"residenceTerm.address.city.empty");
-					}
-					if (residenceForm.getState() == null) {
-						errors.rejectValue("state", 
-								"residenceTerm.address.state.empty");
-					}
-					if (residenceForm.getLocationName().isEmpty()) {
-						errors.rejectValue("locationName", 
-								"nonResidenceTerm.location.name.empty");
-					}
-				} else {
-					if (residenceForm.getLocation() == null) {
-						errors.rejectValue("location", 
-								"nonResidenceTerm.location.organization.name.empty");
-					} 
+			.equals(residenceForm.getStatusOption()) 
+			|| ResidenceStatusOption.HOTEL
+			.equals(residenceForm.getStatusOption())) {
+	
+			if (residenceForm.getCreateNewCity()) {
+				if (residenceForm.getCityName().isEmpty()) {
+					errors.rejectValue("cityName", 
+							"residenceTerm.address.city.name.empty");
 				}
-							
-			
+			} else {
+				if (residenceForm.getCity() == null) {
+					errors.rejectValue("city", 
+							"residenceTerm.address.city.empty");
+				}
+			}
+			if (residenceForm.getState() == null) {
+				errors.rejectValue("state", 
+						"residenceTerm.address.state.empty");
+			}
+			if (residenceForm.getLocationName().isEmpty()) {
+				errors.rejectValue("locationName", 
+						"nonResidenceTerm.location.name.empty");
+			}
+		} else if (ResidenceStatusOption.HOMELESS
+			.equals(residenceForm.getStatusOption())) {
+			if(residenceForm.getCreateNewCity()){
+				if (residenceForm.getCityName().isEmpty()) {
+						errors.rejectValue("cityName", 
+								"residenceTerm.address.city.name.empty");
+				}
+			} else {
+				if (residenceForm.getCityName() == null) {
+				errors.rejectValue("city", 
+						"residenceTerm.address.city.name.empty");
+				}
+			}
+			if (residenceForm.getState() == null) {
+				errors.rejectValue("state", 
+						"residenceTerm.address.state.empty");
+			}
 		} else {
 			if (residenceForm.getStatusOption() == null) {
 				errors.rejectValue("statusOption", 
@@ -118,8 +148,16 @@ public class ResidenceFormValidator implements Validator {
 			if (residenceForm.getValue() == null || residenceForm.getValue().isEmpty()) {
 				errors.rejectValue("value", "residenceTerm.address.value.empty");
 			}
-			if (residenceForm.getZipCode() == null) {
-				errors.rejectValue("zipCode", "residenceTerm.address.zipCode.empty");
+			if (residenceForm.getCreateNewZipCode() != null
+					&& residenceForm.getCreateNewZipCode()) {
+				if (residenceForm.getZipCodeValue() == null 
+						|| residenceForm.getZipCodeValue().isEmpty()) {
+					errors.rejectValue("zipCodeValue", "residenceTerm.address.zipCode.value.empty");
+				} 
+			} else {
+				if (residenceForm.getZipCode() == null) {
+					errors.rejectValue("zipCode", "residenceTerm.address.zipCode.empty");
+				}
 			}
 		}
 	}

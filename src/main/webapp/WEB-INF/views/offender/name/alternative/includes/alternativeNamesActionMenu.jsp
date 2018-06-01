@@ -15,7 +15,7 @@
 	<sec:authorize access="hasRole('OFFENDER_ALT_NAME_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty offender}">
 			<li>
-				<a href="${pageContext.request.contextPath}/offender/name/alternative/altNameListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="altNameListingReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/offender/name/alternative/altNameListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="altNameListingReportLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>	

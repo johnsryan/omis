@@ -210,8 +210,17 @@ public class WarrantController {
 	private static final String WARRANT_DETAILS_REPORT_NAME =
 			"/Compliance/Warrants/Warrant_Details";		
 	
+	private static final String AUTHORIZATION_TO_CANCEL_REPORT_NAME =
+			"/Compliance/Warrants/Authorization_to_Cancel_Warrant_Pick_Up_Hold";	
+	
+	private static final String AUTHORIZATION_TO_CANCEL_ISC_REPORT_NAME =
+			"/Compliance/Warrants/Authorization_to_Cancel_Warrant_Interstate_Offender";	
+	
 	private static final String AUTHORIZATION_TO_PICK_UP_AND_HOLD_REPORT_NAME =
 			"/Compliance/Warrants/Authorization_to_Pick_Up_and_Hold";	
+	
+	private static final String AUTHORIZATION_TO_RELEASE_OFFENDER_REPORT_NAME =
+			"/Compliance/Warrants/Authorization_to_Release_Offender";	
 	
 	private static final String WARRANT_TO_ARREST_ISC_REPORT_NAME =
 			"/Compliance/Warrants/Warrant_to_Arrest_Interstate_Offender";
@@ -469,7 +478,8 @@ public class WarrantController {
 			@RequestParam(value = "warrant", required = true)
 				final Warrant warrant,
 			final WarrantForm form, final BindingResult bindingResult)
-						throws WarrantExistsException, WarrantNoteExistsException, WarrantCauseViolationExistsException, WarrantArrestExistsException{
+						throws WarrantExistsException, WarrantNoteExistsException,
+						WarrantCauseViolationExistsException, WarrantArrestExistsException{
 		this.warrantFormValidator.validate(form, bindingResult);
 		if(bindingResult.hasErrors()){
 			ModelMap map = new ModelMap();
@@ -508,6 +518,25 @@ public class WarrantController {
 		this.processWarrantItems(warrant,
 				form.getWarrantNoteItems(),
 				form.getWarrantCauseViolationItems());
+		return new ModelAndView(String.format(LIST_REDIRECT,
+				warrant.getOffender().getId()));
+	}
+	
+	/**
+	 * Removes the specified warrant, and any related warrant specific objects.
+	 * 
+	 * @param warrant warrant
+	 * @return model and view for warrants listing screen
+	 */
+	@RequestMapping(value = "/remove.html", method = RequestMethod.GET)
+	@PreAuthorize("hasRole('WARRANT_REMOVE') or hasRole('ADMIN')")
+	public ModelAndView removeWarrant(@RequestParam(value = "warrant", required = true)
+			final Warrant warrant) {
+		List<WarrantNote> notes = this.warrantService.findWarrantNotesByWarrant(warrant);
+		for (WarrantNote note : notes) {
+			this.warrantService.removeWarrantNote(note);
+		}
+		this.warrantService.remove(warrant);
 		return new ModelAndView(String.format(LIST_REDIRECT,
 				warrant.getOffender().getId()));
 	}
@@ -562,125 +591,320 @@ public class WarrantController {
 	/* Warrant Release */
 	
 	/**
-	 * Displays the WarrantRelease edit screen
-	 * @param warrant - Warrant the WarrantRelease is for
-	 * @return ModelAndView - WarrantRelease edit screen
+	 * Creates a model and view to create a release for the specified warrant.
+	 * 
+	 * @param warrant warrant
+	 * @return model and view to create warrant release
 	 */
-	@RequestMapping(value = "/release.html", method = RequestMethod.GET)
-	@PreAuthorize("hasRole('WARRANT_CREATE') or hasRole('ADMIN')")
-	public ModelAndView editWarrantRelease(
+	@RequestMapping(value = "/createWarrantRelease.html", method = RequestMethod.GET)
+	@PreAuthorize("hasRole('WARRANT_RELEASE_CREATE') or hasRole('ADMIN')")
+	public ModelAndView createWarrantRelease(
 			@RequestParam(value = "warrant", required = true)
-				final Warrant warrant){
-		return this.prepareWarrantReleaseMav(warrant,
-				this.prepareWarrantReleaseForm(warrant));
+			final Warrant warrant) {
+		ModelMap map = new ModelMap();
+		return this.prepareWarrantReleaseMav(map, warrant,
+				new WarrantReleaseForm());
 	}
 	
 	/**
-	 * Creates or Updates a WarrantRelease and returns to the Warrant list screen
-	 * @param warrant - Warrant
-	 * @param form - WarrantReleaseForm
-	 * @param bindingResult - BindingResult
-	 * @return ModelAndView - Back to the WarrantRelease edit screen on form
-	 * error, or to the Warrant list screen on successful save/update
-	 * @throws DuplicateEntityFoundException - When another WarrantRelease
-	 * already exists for the specified Warrant (shouldn't happen from this spot)
+	 * Creates a warrant release for the specified warrant with values from the
+	 * specified warrant release form.
+	 * 
+	 * @param warrant warrant
+	 * @param form warrant release form
+	 * @param result binding result
+	 * @return model and view for warrant list redirect
+	 * @throws WarrantReleaseExistsException thrown when a warrant release already exists
 	 */
-	@RequestMapping(value = "/release.html", method = RequestMethod.POST)
-	@PreAuthorize("hasRole('WARRANT_CREATE') or hasRole('ADMIN')")
-	public ModelAndView updateWarrantRelease(
+	@RequestMapping(value = "/createWarrantRelease.html", method = RequestMethod.POST)
+	@PreAuthorize("hasRole('WARRANT_RELEASE_CREATE') or hasRole('ADMIN')")
+	public ModelAndView saveWarrantRelease(
 			@RequestParam(value = "warrant", required = true)
-				final Warrant warrant,
-			final WarrantReleaseForm form, final BindingResult bindingResult)
-					throws WarrantReleaseExistsException {
-		
-		this.warrantReleaseFormValidator.validate(form, bindingResult);
-		
-		if(bindingResult.hasErrors()){
-			return this.prepareWarrantReleaseMav(warrant, form);
+			final Warrant warrant, WarrantReleaseForm form,
+			BindingResult result) throws WarrantReleaseExistsException { 
+		this.warrantReleaseFormValidator.validate(form, result); 
+		if(result.hasErrors()){
+			ModelMap map = new ModelMap();
+			map.addAttribute(BindingResult.MODEL_KEY_PREFIX
+					+ WARRANT_RELEASE_FORM_MODEL_KEY, result);
+			return this.prepareWarrantReleaseMav(map, warrant, form);
 		}
-		else{
-			WarrantRelease warrantRelease = this.warrantReleaseService
-					.findByWarrant(warrant);
-			
-			if(warrantRelease == null){
-				this.warrantReleaseService.create(warrant,
-						form.getInstructions(), form.getReleaseDate(),
-						form.getAddressee(), form.getClearedBy(),
-						form.getClearedByDate());
-			}
-			else{
-				this.warrantReleaseService.update(warrantRelease,
-						form.getInstructions(),form.getReleaseDate(),
-						form.getAddressee(), form.getClearedBy(),
-						form.getClearedByDate());
-			}
-			
-			return new ModelAndView(String.format(LIST_REDIRECT,
-					warrant.getOffender().getId()));
-		}
+		this.warrantReleaseService.create(warrant, form.getInstructions(),
+				form.getReleaseDate(), form.getAddressee(), form.getClearedBy(),
+				form.getClearedByDate());
+		return new ModelAndView(String.format(LIST_REDIRECT,
+				warrant.getOffender().getId()));
 	}
+	
+	/**
+	 * Prepares model and view for viewing/editing the specified warrant release.
+	 * 
+	 * @param release warrant release
+	 * @return model and view to view/edit warrant release
+	 */
+	@RequestMapping(value = "/editWarrantRelease.html", method = RequestMethod.GET)
+	@PreAuthorize("hasRole('WARRANT_RELEASE_VIEW') or hasRole('ADMIN')")
+	public ModelAndView editWarrantRelease(@RequestParam(value = "warrantRelease", required = true)
+			final WarrantRelease release) {
+		ModelMap map = new ModelMap();
+		WarrantReleaseForm form = new WarrantReleaseForm();
+		form.setAddressee(release.getAddressee());
+		if (release.getClearSignature() != null) {
+			form.setClearedBy(release.getClearSignature().getPerson());
+			form.setClearedByDate(release.getClearSignature().getDate());
+		}
+		form.setInstructions(release.getInstructions());
+		form.setReleaseDate(release.getReleaseTimestamp());
+		map.addAttribute(WARRANT_RELEASE_MODEL_KEY, release);
+		return this.prepareWarrantReleaseMav(map, release.getWarrant(),
+				form);
+	}
+	
+	/**
+	 * Updates the specified warrant release with values from the specified
+	 * warrant release form.
+	 * 
+	 * @param release warrant release
+	 * @param form warrant release form
+	 * @param result binding result
+	 * @return
+	 * @throws WarrantReleaseExistsException
+	 */
+	@RequestMapping(value = "/editWarrantRelease.html", method = RequestMethod.POST)
+	@PreAuthorize("hasRole('WARRANT_RELEASE_EDIT') or hasRole('ADMIN')")
+	public ModelAndView updateWarrantRelease(@RequestParam(value = "warrantRelease", required = true)
+			final WarrantRelease release, final WarrantReleaseForm form,
+			final BindingResult result) throws WarrantReleaseExistsException {
+		this.warrantReleaseFormValidator.validate(form, result); 
+		if(result.hasErrors()){
+			ModelMap map = new ModelMap();
+			map.addAttribute(BindingResult.MODEL_KEY_PREFIX
+					+ WARRANT_RELEASE_FORM_MODEL_KEY, result);
+			map.addAttribute(WARRANT_RELEASE_MODEL_KEY, release);
+			return this.prepareWarrantReleaseMav(map, release.getWarrant(), form);
+		}
+		this.warrantReleaseService.update(release, form.getInstructions(), form.getReleaseDate(),
+				form.getAddressee(), form.getClearedBy(), form.getClearedByDate());
+		return new ModelAndView(String.format(LIST_REDIRECT,
+				release.getWarrant().getOffender().getId()));
+	}
+	
+//	/**
+//	 * Displays the WarrantRelease edit screen
+//	 * @param warrant - Warrant the WarrantRelease is for
+//	 * @return ModelAndView - WarrantRelease edit screen
+//	 */
+//	@RequestMapping(value = "/release.html", method = RequestMethod.GET)
+//	@PreAuthorize("hasRole('WARRANT_CREATE') or hasRole('ADMIN')")
+//	public ModelAndView editWarrantRelease(
+//			@RequestParam(value = "warrant", required = true)
+//				final Warrant warrant){
+//		return this.prepareWarrantReleaseMav(warrant,
+//				this.prepareWarrantReleaseForm(warrant));
+//	}
+//	
+//	/**
+//	 * Creates or Updates a WarrantRelease and returns to the Warrant list screen
+//	 * @param warrant - Warrant
+//	 * @param form - WarrantReleaseForm
+//	 * @param bindingResult - BindingResult
+//	 * @return ModelAndView - Back to the WarrantRelease edit screen on form
+//	 * error, or to the Warrant list screen on successful save/update
+//	 * @throws DuplicateEntityFoundException - When another WarrantRelease
+//	 * already exists for the specified Warrant (shouldn't happen from this spot)
+//	 */
+//	@RequestMapping(value = "/release.html", method = RequestMethod.POST)
+//	@PreAuthorize("hasRole('WARRANT_CREATE') or hasRole('ADMIN')")
+//	public ModelAndView updateWarrantRelease(
+//			@RequestParam(value = "warrant", required = true)
+//				final Warrant warrant,
+//			final WarrantReleaseForm form, final BindingResult bindingResult)
+//					throws WarrantReleaseExistsException {
+//		
+//		this.warrantReleaseFormValidator.validate(form, bindingResult);
+//		
+//		if(bindingResult.hasErrors()){
+//			return this.prepareWarrantReleaseMav(warrant, form);
+//		}
+//		else{
+//			WarrantRelease warrantRelease = this.warrantReleaseService
+//					.findByWarrant(warrant);
+//			
+//			if(warrantRelease == null){
+//				this.warrantReleaseService.create(warrant,
+//						form.getInstructions(), form.getReleaseDate(),
+//						form.getAddressee(), form.getClearedBy(),
+//						form.getClearedByDate());
+//			}
+//			else{
+//				this.warrantReleaseService.update(warrantRelease,
+//						form.getInstructions(),form.getReleaseDate(),
+//						form.getAddressee(), form.getClearedBy(),
+//						form.getClearedByDate());
+//			}
+//			
+//			return new ModelAndView(String.format(LIST_REDIRECT,
+//					warrant.getOffender().getId()));
+//		}
+//	}
 	
 	
 	/* Warrant Cancellation */
 	
+	
 	/**
-	 * Displays the WarrantCancellation edit screen
-	 * @param warrant - Warrant the WarrantCancellation is for
-	 * @return ModelAndView - WarrantCancellation edit screen
+	 * Creates a view to cancel the specified warrant.
+	 * 
+	 * @param warrant warrant
+	 * @return model and view for creating a warrant cancellation
 	 */
-	@RequestMapping(value = "/cancel.html", method = RequestMethod.GET)
-	@PreAuthorize("hasRole('WARRANT_CREATE') or hasRole('ADMIN')")
-	public ModelAndView editWarrantCancellation(
+	@RequestMapping(value = "/createWarrantCancellation", method = RequestMethod.GET)
+	@PreAuthorize("hasRole('WARRANT_CANCELLATION_CREATE') or hasRole('ADMIN')")
+	public ModelAndView createWarrantCancellation(
 			@RequestParam(value = "warrant", required = true)
-				final Warrant warrant){
-		return this.prepareWarrantCancellationMav(warrant,
-				this.prepareWarrantCancellationForm(warrant));
+				final Warrant warrant) {
+		return this.prepareWarrantCancellationMav(new ModelMap(), warrant,
+				new WarrantCancellationForm());
 	}
 	
 	/**
-	 * Creates or Updates a WarrantCancellation and returns to the Warrant list
-	 * screen
-	 * @param warrant - Warrant
-	 * @param form - WarrantCancellationForm
-	 * @param bindingResult - BindingResult
-	 * @return ModelAndView - back to the WarrantCancellation edit screen on
-	 * form error, or to the Warrant list screen on successful save/update
-	 * @throws DuplicateEntityFoundException - When another WarrantCancellation 
-	 * already exists for the specified Warrant (shouldn't happen from this spot)
+	 * Creates a warrant cancellation for the specified warrant with values from
+	 * the specified warrant cancellation form.
+	 * 
+	 * @param warrant warrant
+	 * @param form warrant cancellation form
+	 * @param result binding result
+	 * @return model and view for list redirect, or return to warrant cancellation form
+	 * 
+	 * @throws DuplicateEntityFoundException Thrown when a duplicate warrant cancellation is found for the specified warrant.
 	 */
-	@RequestMapping(value = "/cancel.html", method = RequestMethod.POST)
-	@PreAuthorize("hasRole('WARRANT_CREATE') or hasRole('ADMIN')")
-	public ModelAndView updateWarrantCancellation(
+	@RequestMapping(value = "/createWarrantCancellation", method = RequestMethod.POST)
+	@PreAuthorize("hasRole('WARRANT_CANCELLATION_CREATE') or hasRole('ADMIN')")
+	public ModelAndView saveWarrantCancellation(
 			@RequestParam(value = "warrant", required = true)
-				final Warrant warrant,
-			final WarrantCancellationForm form,
-			final BindingResult bindingResult)
-					throws DuplicateEntityFoundException{
-		
-		this.warrantCancellationFormValidator.validate(form, bindingResult);
-		
-		if(bindingResult.hasErrors()){
-			return this.prepareWarrantCancellationMav(warrant, form);
+			final Warrant warrant, final WarrantCancellationForm form,
+			final BindingResult result) throws DuplicateEntityFoundException {
+		this.warrantCancellationFormValidator.validate(form, result);
+		if(result.hasErrors()){
+			ModelMap map = new ModelMap();
+			map.addAttribute(BindingResult.MODEL_KEY_PREFIX
+					+ WARRANT_CANCELLATION_FORM_MODEL_KEY, result);
+			return this.prepareWarrantCancellationMav(map, warrant, form);
 		}
-		else{
-			WarrantCancellation warrantCancellation =
-					this.warrantCancellationService.findByWarrant(warrant);
-			
-			if(warrantCancellation == null){
-				this.warrantCancellationService.create(warrant, form.getDate(),
-						form.getComment(), form.getClearedBy(),
-						form.getClearedByDate());
-			}
-			else{
-				this.warrantCancellationService.update(warrantCancellation,
-						form.getDate(), form.getComment(), form.getClearedBy(),
-						form.getClearedByDate());
-			}
-			
-			return new ModelAndView(String.format(LIST_REDIRECT,
-					warrant.getOffender().getId()));
-		}
+		this.warrantCancellationService.create(warrant, form.getDate(), form.getComment(), form.getClearedBy(), form.getClearedByDate());
+		return new ModelAndView(String.format(LIST_REDIRECT,
+				warrant.getOffender().getId()));
 	}
+	
+	/**
+	 * Prepares the edit warrant cancellation view with information from the specified warrant cancellation.
+	 * 
+	 * @param cancellation warrant cancellation
+	 * @return model and view to edit warrant cancellation
+	 */
+	@RequestMapping(value = "/editWarrantCancellation", method = RequestMethod.GET)
+	@PreAuthorize("hasRole('WARRANT_CANCELLATION_VIEW') or hasRole('ADMIN')")
+	public ModelAndView editWarrantCancellation(
+			@RequestParam(value = "warrantCancellation", required = true)
+				final WarrantCancellation cancellation) {
+		ModelMap map = new ModelMap();
+		WarrantCancellationForm form = new WarrantCancellationForm();
+		form.setDate(cancellation.getDate());
+		form.setComment(cancellation.getComment());
+		form.setClearedBy(cancellation.getClearSignature()
+				.getPerson());
+		form.setClearedByDate(cancellation.getClearSignature()
+				.getDate());
+		map.addAttribute(WARRANT_CANCELLATION_MODEL_KEY, cancellation);
+		return this.prepareWarrantCancellationMav(map,
+				cancellation.getWarrant(), form);
+	}
+	
+	/**
+	 * Updates the specified warrant cancellation with values from the specified warrant cancellation form.
+	 * 
+	 * @param cancellation warrant cancellation
+	 * @param form warrant cancellation form
+	 * @param result binding result
+	 * @return model and view for list redirect, or return to warrant cancellation form
+	 * @throws DuplicateEntityFoundException thrown when a duplicate warrant cancellation is found
+	 */
+	public ModelAndView updateWarrantCancellation(
+			@RequestParam(value = "warrantCancellation", required = true)
+				final WarrantCancellation cancellation, final WarrantCancellationForm form,
+				final BindingResult result) throws DuplicateEntityFoundException {
+		this.warrantCancellationFormValidator.validate(form, result);
+		if(result.hasErrors()){
+			ModelMap map = new ModelMap();
+			map.addAttribute(BindingResult.MODEL_KEY_PREFIX
+					+ WARRANT_FORM_MODEL_KEY, result);
+			return this.prepareWarrantCancellationMav(map, cancellation.getWarrant(), form);
+		}
+		this.warrantCancellationService.update(cancellation, form.getDate(), form.getComment(),
+				form.getClearedBy(), form.getClearedByDate());
+		return new ModelAndView(String.format(LIST_REDIRECT,
+				cancellation.getWarrant().getOffender().getId()));
+	}
+
+//	/**
+//	 * Displays the WarrantCancellation edit screen
+//	 * @param warrant - Warrant the WarrantCancellation is for
+//	 * @return ModelAndView - WarrantCancellation edit screen
+//	 */
+//	@RequestMapping(value = "/cancel.html", method = RequestMethod.GET)
+//	@PreAuthorize("hasRole('WARRANT_CREATE') or hasRole('ADMIN')")
+//	public ModelAndView editWarrantCancellation(
+//			@RequestParam(value = "warrant", required = true)
+//				final Warrant warrant){
+//		
+//		return this.prepareWarrantCancellationMav(warrant,
+//				this.prepareWarrantCancellationForm(warrant));
+//	}
+//	
+//	/**
+//	 * Creates or Updates a WarrantCancellation and returns to the Warrant list
+//	 * screen
+//	 * @param warrant - Warrant
+//	 * @param form - WarrantCancellationForm
+//	 * @param bindingResult - BindingResult
+//	 * @return ModelAndView - back to the WarrantCancellation edit screen on
+//	 * form error, or to the Warrant list screen on successful save/update
+//	 * @throws DuplicateEntityFoundException - When another WarrantCancellation 
+//	 * already exists for the specified Warrant (shouldn't happen from this spot)
+//	 */
+//	@RequestMapping(value = "/cancel.html", method = RequestMethod.POST)
+//	@PreAuthorize("hasRole('WARRANT_CREATE') or hasRole('ADMIN')")
+//	public ModelAndView updateWarrantCancellation(
+//			@RequestParam(value = "warrant", required = true)
+//				final Warrant warrant,
+//			final WarrantCancellationForm form,
+//			final BindingResult bindingResult)
+//					throws DuplicateEntityFoundException{
+//		
+//		this.warrantCancellationFormValidator.validate(form, bindingResult);
+//		
+//		if(bindingResult.hasErrors()){
+//			return this.prepareWarrantCancellationMav(warrant, form);
+//		}
+//		else{
+//			WarrantCancellation warrantCancellation =
+//					this.warrantCancellationService.findByWarrant(warrant);
+//			
+//			if(warrantCancellation == null){
+//				this.warrantCancellationService.create(warrant, form.getDate(),
+//						form.getComment(), form.getClearedBy(),
+//						form.getClearedByDate());
+//			}
+//			else{
+//				this.warrantCancellationService.update(warrantCancellation,
+//						form.getDate(), form.getComment(), form.getClearedBy(),
+//						form.getClearedByDate());
+//			}
+//			
+//			return new ModelAndView(String.format(LIST_REDIRECT,
+//					warrant.getOffender().getId()));
+//		}
+//	}
 	
 	/* Action Menus */
 	
@@ -919,19 +1143,19 @@ public class WarrantController {
 		return form;
 	}
 	
-	/**
-	 * Prepares a ModelAndView for the WarrantRelease edit screen
-	 * @param warrant - Warrant the WarrantRelease is for
-	 * @param form - WarrantRelease
-	 * @return ModelAndView for the WarrantRelease edit screen
+	/*
+	 * Prepares model and view for editing a warrant release.
+	 * 
+	 * @param map model map
+	 * @param warrant warrant
+	 * @param form warrant release form
+	 * @return populate model and view
 	 */
-	private ModelAndView prepareWarrantReleaseMav(final Warrant warrant,
+	private ModelAndView prepareWarrantReleaseMav(final ModelMap map,
+			final Warrant warrant,
 			final WarrantReleaseForm form){
-		ModelMap map = new ModelMap();
-		
 		map.addAttribute(WARRANT_RELEASE_FORM_MODEL_KEY, form);
-		map.addAttribute(WARRANT_RELEASE_MODEL_KEY,
-				this.warrantReleaseService.findByWarrant(warrant));
+		
 		map.addAttribute(WARRANT_REASON_CATEGORY_MODEL_KEY,
 				warrant.getWarrantReason());
 		map.addAttribute(OFFENDER_MODEL_KEY, warrant.getOffender());
@@ -940,71 +1164,23 @@ public class WarrantController {
 		return new ModelAndView(RELEASE_VIEW_NAME, map);
 	}
 	
-	/**
-	 * Populates a WarrantReleaseForm with the properties of a WarrantRelease
-	 * found with the specified Warrant
-	 * @param warrant - Warrant the WarrantRelease is for
-	 * @return Prepared WarrantReleaseForm
+	/*
+	 * Prepares a model and view for the warrant cancellation edit screen.
+	 *  
+	 * @param map model map
+	 * @param warrant warrant
+	 * @param form warrant cancellation form
+	 * @return model and view for editing or creating a warrant cancellation
 	 */
-	private WarrantReleaseForm prepareWarrantReleaseForm(final Warrant warrant){
-		WarrantRelease warrantRelease = this.warrantReleaseService
-				.findByWarrant(warrant);
-		WarrantReleaseForm form = new WarrantReleaseForm();
-		
-		if(warrantRelease != null){
-			form.setAddressee(warrantRelease.getAddressee());
-			form.setReleaseDate(warrantRelease.getReleaseTimestamp());
-			form.setInstructions(warrantRelease.getInstructions());
-			form.setClearedBy(warrantRelease.getClearSignature().getPerson());
-			form.setClearedByDate(warrantRelease.getClearSignature().getDate());
-		}
-		
-		return form;
-	}
-	
-	/**
-	 * Prepares a ModelAndView for the WarrantCancellation edit screen
-	 * @param warrant - Warrant the WarrantCancellation is for
-	 * @param form - WarrantCancellationForm
-	 * @return ModelAndView for the WarrantCancellation edit screen
-	 */
-	private ModelAndView prepareWarrantCancellationMav(final Warrant warrant,
+	private ModelAndView prepareWarrantCancellationMav(final ModelMap map,
+			final Warrant warrant,
 			final WarrantCancellationForm form){
-		ModelMap map = new ModelMap();
-		
 		map.addAttribute(WARRANT_CANCELLATION_FORM_MODEL_KEY, form);
-		map.addAttribute(WARRANT_CANCELLATION_MODEL_KEY,
-				this.warrantCancellationService.findByWarrant(warrant));
 		map.addAttribute(WARRANT_REASON_CATEGORY_MODEL_KEY,
 				warrant.getWarrantReason());
 		map.addAttribute(OFFENDER_MODEL_KEY, warrant.getOffender());
 		this.offenderSummaryModelDelegate.add(map, warrant.getOffender());
-		
 		return new ModelAndView(CANCEL_VIEW_NAME, map);
-	}
-	
-	/**
-	 * Populates a WarrantCancellationForm with the properties of the
-	 * WarrantCancellation found with the specified Warrant
-	 * @param warrant - Warrant the WarrantCancellation is for
-	 * @return Prepared WarrantCancellationForm
-	 */
-	private WarrantCancellationForm prepareWarrantCancellationForm(
-			final Warrant warrant){
-		WarrantCancellation warrantCancellation =
-				this.warrantCancellationService.findByWarrant(warrant);
-		WarrantCancellationForm form = new WarrantCancellationForm();
-		
-		if(warrantCancellation != null){
-			form.setDate(warrantCancellation.getDate());
-			form.setComment(warrantCancellation.getComment());
-			form.setClearedBy(warrantCancellation.getClearSignature()
-					.getPerson());
-			form.setClearedByDate(warrantCancellation.getClearSignature()
-					.getDate());
-		}
-		
-		return form;
 	}
 	
 	/**
@@ -1178,6 +1354,33 @@ public class WarrantController {
 				doc, reportFormat);
 	}
 	
+	
+	/**
+	 * Returns the authorization to release offender report for the specified warrant.
+	 * 
+	 * @param Warrant warrant
+	 * @param reportFormat report format
+	 * @return response entity with report
+	 */
+	@RequestMapping(value = "/authReleaseOffenderReport.html",
+			method = RequestMethod.GET)
+	@PreAuthorize("hasRole('WARRANT_VIEW') "
+			+ "or hasRole('ADMIN')")
+	public ResponseEntity<byte []> reportAuthRelease(@RequestParam(
+			value = "offender", required = true)
+			final Warrant warrant,
+			@RequestParam(value = "reportFormat", required = true)
+			final ReportFormat reportFormat) {
+		Map<String, String> reportParamMap = new HashMap<String, String>();
+		reportParamMap.put(WARRANT_ID_REPORT_PARAM_NAME,
+				Long.toString(warrant.getId()));
+		byte[] doc = this.reportRunner.runReport(
+				AUTHORIZATION_TO_RELEASE_OFFENDER_REPORT_NAME,
+				reportParamMap, reportFormat);
+		return this.reportControllerDelegate.constructReportResponseEntity(
+				doc, reportFormat);
+	}
+	
 	/**
 	 * Returns the warrant to arrest report for the specified warrant.
 	 * 
@@ -1225,6 +1428,60 @@ public class WarrantController {
 				Long.toString(warrant.getId()));
 		byte[] doc = this.reportRunner.runReport(
 				WARRANT_TO_ARREST_ISC_REPORT_NAME,
+				reportParamMap, reportFormat);
+		return this.reportControllerDelegate.constructReportResponseEntity(
+				doc, reportFormat);
+	}
+
+	
+	/**
+	 * Returns the warrant cancellation authorization form for the specified warrant.
+	 * 
+	 * @param Warrant warrant
+	 * @param reportFormat report format
+	 * @return response entity with report
+	 */
+	@RequestMapping(value = "/authCancelWarrantReport.html",
+			method = RequestMethod.GET)
+	@PreAuthorize("hasRole('WARRANT_VIEW') "
+			+ "or hasRole('ADMIN')")
+	public ResponseEntity<byte []> reportAuthCancellation(@RequestParam(
+			value = "offender", required = true)
+			final Warrant warrant,
+			@RequestParam(value = "reportFormat", required = true)
+			final ReportFormat reportFormat) {
+		Map<String, String> reportParamMap = new HashMap<String, String>();
+		reportParamMap.put(WARRANT_ID_REPORT_PARAM_NAME,
+				Long.toString(warrant.getId()));
+		byte[] doc = this.reportRunner.runReport(
+				AUTHORIZATION_TO_CANCEL_REPORT_NAME,
+				reportParamMap, reportFormat);
+		return this.reportControllerDelegate.constructReportResponseEntity(
+				doc, reportFormat);
+	}
+
+	
+	/**
+	 * Returns the warrant cancellation authorization form for the specified isc warrant.
+	 * 
+	 * @param Warrant warrant
+	 * @param reportFormat report format
+	 * @return response entity with report
+	 */
+	@RequestMapping(value = "/authCancelISCWarrantReport.html",
+			method = RequestMethod.GET)
+	@PreAuthorize("hasRole('WARRANT_VIEW') "
+			+ "or hasRole('ADMIN')")
+	public ResponseEntity<byte []> reportAuthCancellationISC(@RequestParam(
+			value = "offender", required = true)
+			final Warrant warrant,
+			@RequestParam(value = "reportFormat", required = true)
+			final ReportFormat reportFormat) {
+		Map<String, String> reportParamMap = new HashMap<String, String>();
+		reportParamMap.put(WARRANT_ID_REPORT_PARAM_NAME,
+				Long.toString(warrant.getId()));
+		byte[] doc = this.reportRunner.runReport(
+				AUTHORIZATION_TO_CANCEL_ISC_REPORT_NAME,
 				reportParamMap, reportFormat);
 		return this.reportControllerDelegate.constructReportResponseEntity(
 				doc, reportFormat);

@@ -18,6 +18,7 @@
 package omis.paroleeligibility.dao.impl.hibernate;
 
 import java.util.Date;
+import java.util.List;
 
 import org.hibernate.SessionFactory;
 
@@ -30,7 +31,8 @@ import omis.paroleeligibility.domain.ParoleEligibility;
  * Parole eligibility hibernate implementation.
  *
  * @author Trevor Isles
- * @version 0.1.0 (Nov 8, 2017)
+ * @author Annie Wahl
+ * @version 0.1.1 (May 24, 2018)
  * @since OMIS 3.0
  */
 public class ParoleEligibilityDaoHibernateImpl 
@@ -45,6 +47,9 @@ public class ParoleEligibilityDaoHibernateImpl
 	private static final String FIND_PAROLE_ELIGIBILITY_EXCLUDING_QUERY_NAME
 		= "findParoleEligibilityExcluding";
 	
+	private static final String FINE_BY_OFFENDER_AFTER_DATE_QUERY_NAME =
+			"findParoleEligibilitiesByOffenderAfterDate";
+	
 	/* Parameter names. */
 	
 	private static final String OFFENDER_PARAM_NAME = "offender";
@@ -54,6 +59,8 @@ public class ParoleEligibilityDaoHibernateImpl
 	
 	private static final String EXCLUDED_PAROLE_ELIGIBILITY_PARAM_NAME 
 		= "excludedEligibility";
+	
+	private static final String DATE_PARAM_NAME = "date";
 	
 	/* Constructor */
 	
@@ -100,6 +107,20 @@ public class ParoleEligibilityDaoHibernateImpl
 					hearingEligibilityDate)
 			.uniqueResult();
 		return eligibility;
+	}
+
+	/**{@inheritDoc} */
+	@Override
+	public List<ParoleEligibility> findByOffenderAfterDate(
+			final Offender offender, final Date date) {
+		@SuppressWarnings("unchecked")
+		List<ParoleEligibility> paroleEligibilities =
+				this.getSessionFactory().getCurrentSession()
+				.getNamedQuery(FINE_BY_OFFENDER_AFTER_DATE_QUERY_NAME)
+				.setParameter(OFFENDER_PARAM_NAME, offender)
+				.setTimestamp(DATE_PARAM_NAME, date)
+				.list();
+		return paroleEligibilities;
 	}
 
 }

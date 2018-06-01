@@ -17,7 +17,7 @@
 		<sec:authorize access="hasRole('NON_RESIDENCE_TERM_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty nonResidenceTerm}">
 			<li>
-				<a href="${pageContext.request.contextPath}/residence/nonResidenceDetailsReport.html?nonResidenceTerm=${nonResidenceTerm.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="residenceDetailsReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/residence/nonResidenceDetailsReport.html?nonResidenceTerm=${nonResidenceTerm.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="residenceDetailsReportLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>

@@ -50,10 +50,12 @@ public class AlternativeIdentityAssociationDaoHibernateImpl
 	
 	private static final String ALTERNATIVE_IDENTITY_CATEGORY_PARAM_NAME
 		= "category";
-
-	private static final String DATE_RANGE_PARAM_NAME = "dateRange";
 	
 	private static final String ASSOCIATION_PARAM_NAME = "association";
+	
+	private static final String START_DATE_PARAM_NAME = "startDate";
+	
+	private static final String END_DATE_PARAM_NAME = "endDate";
 	
 	/**
 	 * Instantiates an Hibernate implementation of data access object for
@@ -107,7 +109,10 @@ public class AlternativeIdentityAssociationDaoHibernateImpl
 				.setParameter(IDENTITY_PARAM_NAME, identity)
 				.setParameter(ALTERNATIVE_IDENTITY_CATEGORY_PARAM_NAME, 
 						category)
-				.setParameter(DATE_RANGE_PARAM_NAME, dateRange)
+				.setTimestamp(START_DATE_PARAM_NAME,
+						DateRange.getStartDate(dateRange))
+				.setTimestamp(END_DATE_PARAM_NAME,
+						DateRange.getEndDate(dateRange))
 				.uniqueResult();
 		return association;
 	}
@@ -128,7 +133,10 @@ public class AlternativeIdentityAssociationDaoHibernateImpl
 				.setParameter(IDENTITY_PARAM_NAME, identity)
 				.setParameter(ALTERNATIVE_IDENTITY_CATEGORY_PARAM_NAME, 
 						category)
-				.setParameter(DATE_RANGE_PARAM_NAME, dateRange)
+				.setTimestamp(START_DATE_PARAM_NAME,
+						DateRange.getStartDate(dateRange))
+				.setTimestamp(END_DATE_PARAM_NAME,
+						DateRange.getEndDate(dateRange))
 				.uniqueResult();
 		return resultAssociation;
 	}

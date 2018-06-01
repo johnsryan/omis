@@ -18,7 +18,7 @@
 		<sec:authorize access="hasRole('SUBSTANCE_TEST_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty offender}">
 			<li>
-				<a href="${pageContext.request.contextPath}/substanceTest/sample/substanceTestListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="substanceTestListingReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/substanceTest/sample/substanceTestListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="substanceTestListingReportLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>

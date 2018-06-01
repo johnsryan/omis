@@ -17,7 +17,7 @@
 		<sec:authorize access="hasRole('MILITARY_LIST') or hasRole('ADMIN')">
 			<c:if test="${not empty offender}">
 			<li>
-				<a href="${pageContext.request.contextPath}/military/militaryServiceTermListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="militaryListingReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/military/militaryServiceTermListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="militaryListingReportLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>

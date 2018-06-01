@@ -52,12 +52,12 @@
 	  from omis.supervision.domain.PlacementTerm placementTerm
 	    inner join placementTerm.offender offender
 	    inner join offender.name offenderName
-	    inner join placementTerm.supervisoryOrganizationTerm supervisoryOrganizationTerm
-	    inner join supervisoryOrganizationTerm.supervisoryOrganization supervisoryOrganization
 	    inner join placementTerm.correctionalStatusTerm correctionalStatusTerm
 	    inner join correctionalStatusTerm.correctionalStatus correctionalStatus
 	    left outer join placementTerm.startChangeReason startChangeReason
 	    left outer join placementTerm.endChangeReason endChangeReason
+	    left outer join placementTerm.supervisoryOrganizationTerm supervisoryOrganizationTerm
+	    left outer join supervisoryOrganizationTerm.supervisoryOrganization supervisoryOrganization
 	  where offender = :offender
 	  order by placementTerm.dateRange.startDate desc
 	]]></query>

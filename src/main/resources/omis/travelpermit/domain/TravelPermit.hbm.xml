@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="omis.travelpermit.domain">
+	<class entity-name="omis.travelpermit.domain.TravelPermit"
+		proxy="omis.travelpermit.domain.TravelPermit"
+		name="omis.travelpermit.domain.impl.TravelPermitImpl"
+		table="`TRAVEL_PERMIT`">
+		<id name="id" column="`ID`" type="java.lang.Long">
+			<generator class="sequence">
+				<param name="sequence">`TRAVEL_PERMIT_SEQ`</param>
+			</generator>
+		</id>
+		<many-to-one name="offender" column="`OFFENDER_ID`" not-null="true" entity-name="omis.offender.domain.Offender" unique="false"/>
+		<component name="dateRange">
+				<property name="startDate" column="`START_DATE`" not-null="true" type="java.util.Date"/>
+				<property name="endDate" column="`END_DATE`" not-null="false" type="java.util.Date"/>
+		</component>
+		<property name="purpose" column="`PURPOSE`" not-null="true" type="text"/>
+		<component name="otherTravellers">
+				<property name="persons" column="`OTHER_PERSONS`" not-null="false" type="text" unique="false"/>
+				<property name="relationships" column="`OTHER_RELATIONSHIPS`" not-null="false" type="text" unique="false"/>
+		</component>
+		<component name="destination">
+			<property name="name" column="`DESTINATION_NAME`" not-null="true" type="java.lang.String"/>
+			<property name="telephoneNumber" type="java.lang.Long" not-null="false" column="`DESTINATION_TELEPHONE_NUMBER`"/>
+			<many-to-one name="address" entity-name="omis.address.domain.Address" not-null="false" column="`DESTINATION_ADDRESS_ID`"/>
+			<many-to-one name="state" entity-name="omis.region.domain.State" not-null="false" column="`DESTINATION_STATE_ID`"/>
+			<many-to-one name="city" entity-name="omis.region.domain.City" not-null="false" column="`DESTINATION_CITY_ID`"/>
+			<many-to-one name="zipCode" entity-name="omis.address.domain.ZipCode" not-null="false" column="`DESTINATION_ZIPCODE_ID`"/>
+		</component>
+		<many-to-one name="periodicity" column="`PERIODICITY_ID`" not-null="true" entity-name="omis.travelpermit.domain.TravelPermitPeriodicity" unique="false"/>
+		<component name="issuance">
+			<property name="date" type="java.util.Date" not-null="false" column="`ISSUANCE_DATE`"/>
+			<many-to-one name="issuer" entity-name="omis.user.domain.UserAccount" not-null="true" column="`ISSUANCE_ISSUER_ID`"/>
+		</component>
+		<component name="transportation">
+			<property name="number" type="java.lang.String" not-null="false" column="`TRANSPORTATION_NUMBER`"/>
+			<property name="description" type="java.lang.String" not-null="false" column="`TRANSPORTATION_DESCRIPTION`"/>
+			<many-to-one name="method" entity-name="omis.travelpermit.domain.TravelMethod" not-null="false" column="`TRANSPORTATION_METHOD_ID`"/>
+		</component>
+		<component name="creationSignature">
+			<many-to-one name="userAccount" column="`CREATE_ACCOUNT_ID`"
+				not-null="true" />
+			<property name="date" column="`CREATE_DATE`" not-null="true" />
+		</component>
+		<component name="updateSignature">
+			<many-to-one name="userAccount" column="`UPDATE_ACCOUNT_ID`"
+				not-null="true" />
+			<property name="date" column="`UPDATE_DATE`" not-null="true" />
+		</component>
+	</class>
+	<query name="findExistingTravelPermit"><![CDATA[
+	select travelpermit
+	from 
+		omis.travelpermit.domain.TravelPermit travelpermit	
+	where 
+		travelpermit.offender = :offender
+		and travelpermit.dateRange.startDate = :startDate
+	]]></query>
+	
+	<query name="findExcludedExistingTravelPermit"><![CDATA[
+	select travelpermit
+	from 
+		omis.travelpermit.domain.TravelPermit travelpermit	
+	where 
+		travelpermit.offender = :offender
+		and travelpermit.dateRange.startDate = :startDate
+		and travelpermit!=:permit
+	]]></query>
+	
+	<query name="findExistingTravelPermitByOffender"><![CDATA[
+	select travelpermit
+	from 
+		omis.travelpermit.domain.TravelPermit travelpermit	
+	where 
+		travelpermit.offender = :offender
+		order by travelpermit.dateRange.startDate
+	]]></query>
+</hibernate-mapping>	

@@ -19,7 +19,7 @@
   - Author: Ryan Johns
   - Author: Annie Wahl
   - Author: Josh Divine
-  - Version: 0.1.8 (May 2, 2018)
+  - Version: 0.1.9 (May 15, 2018)
   - Since: OMIS 3.0 
   --%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
@@ -40,7 +40,7 @@
 			<th><fmt:message key="docketLabel"/></th>
 			<th><fmt:message key="statusLabel"/></th>
 			<th><fmt:message key="requestDateLabel"/></th>
-			<th><fmt:message key="expectedCompletionDateLabel"/></th>
+			<th><fmt:message key="dueDateLabel"/></th>
 			<th><fmt:message key="sentenceDateLabel"/></th>
 			<th><fmt:message key="categoryLabel"/></th>
 		</tr>

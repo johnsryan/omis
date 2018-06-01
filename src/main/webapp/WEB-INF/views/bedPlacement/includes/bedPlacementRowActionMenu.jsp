@@ -28,7 +28,7 @@
 		<sec:authorize access="hasRole('BED_PLACEMENT_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty bedPlacement}">
 			<li>
-				<a href="${pageContext.request.contextPath}/bedPlacement/bedPlacementDetailsReport.html?bedPlacement=${bedPlacement.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="bedPlacementDetailsReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/bedPlacement/bedPlacementDetailsReport.html?bedPlacement=${bedPlacement.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="bedPlacementDetailsReportLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>

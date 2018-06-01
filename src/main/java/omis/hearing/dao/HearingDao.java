@@ -26,13 +26,14 @@ import omis.hearing.domain.HearingCategory;
 import omis.location.domain.Location;
 import omis.offender.domain.Offender;
 import omis.user.domain.UserAccount;
+import omis.violationevent.domain.ViolationEvent;
 
 /**
  * Data access object for hearing.
  * 
  * @author Annie Wahl 
  * @author Josh Divine
- * @version 0.1.2 (May 3, 2018)
+ * @version 0.1.3 (May 17, 2018)
  * @since OMIS 3.0
  */
 public interface HearingDao extends GenericDao<Hearing> {
@@ -68,5 +69,12 @@ public interface HearingDao extends GenericDao<Hearing> {
 	 * @return List of Hearings with specified offender
 	 */
 	List<Hearing> findByOffender(Offender offender);
-	
+
+	/**
+	 * Returns a list of hearings for the specified violation event.
+	 * 
+	 * @param violationEvent violation event
+	 * @return list of hearings
+	 */
+	List<Hearing> findByViolationEvent(ViolationEvent violationEvent);
 }

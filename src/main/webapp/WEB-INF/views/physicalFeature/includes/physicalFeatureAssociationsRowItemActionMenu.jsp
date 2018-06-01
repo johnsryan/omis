@@ -19,7 +19,7 @@
 		<sec:authorize access="hasRole('PHYSICAL_FEATURE_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty physicalFeatureAssociation}">
 			<li>
-				<a href="${pageContext.request.contextPath}/physicalFeature/physicalFeatureDetailsReport.html?physicalFeatureAssociation=${physicalFeatureAssociation.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="physicalFeatureDetailsReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/physicalFeature/physicalFeatureDetailsReport.html?physicalFeatureAssociation=${physicalFeatureAssociation.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="physicalFeatureDetailsReportLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>

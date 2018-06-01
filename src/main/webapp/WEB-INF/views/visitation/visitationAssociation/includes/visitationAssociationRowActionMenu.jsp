@@ -25,10 +25,10 @@
 		<li><a class="unlinkLink" id="visitorSummary${visitationAssociation.id}DissociateLink" href="${pageContext.request.contextPath}/visitation/dissociateVisitationAssociation.html?visitationAssociation=${visitationAssociation.id}"><fmt:message key="dissociateLabel"/></a></li>
 		<li><a class="removeLink visitationAssociationRemoveLink" id="visitorSummary${visitationAssociation.id}RemoveLink" href="${pageContext.request.contextPath}/visitation/remove.html?visitationAssociation=${visitationAssociation.id}"><fmt:message key="removeVisitorLabel"/></a></li>
 		<sec:authorize access="(hasRole('VISITATION_ASSOCIATION_VIEW') and hasRole('OFFENDER_SSN_VIEW')) or hasRole('ADMIN')">
-			<li><a href="${pageContext.request.contextPath}/visitation/visitationDetailsReport.html?visitationAssociation=${visitationAssociation.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="visitationAssociationDetailReportLinkLabel"/></a></li>
+			<li><a href="${pageContext.request.contextPath}/visitation/visitationDetailsReport.html?visitationAssociation=${visitationAssociation.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="visitationAssociationDetailReportLinkLabel"/></a></li>
 		</sec:authorize>
 	    <sec:authorize access="hasRole('VISITATION_ASSOCIATION_VIEW') or hasRole('ADMIN')">
-			<li><a href="${pageContext.request.contextPath}/visitation/visitationDetailsRedactedReport.html?visitationAssociation=${visitationAssociation.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="visitationAssociationDetailRedactedReportLinkLabel"/></a></li>
+			<li><a href="${pageContext.request.contextPath}/visitation/visitationDetailsRedactedReport.html?visitationAssociation=${visitationAssociation.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="visitationAssociationDetailRedactedReportLinkLabel"/></a></li>
 		</sec:authorize>
 	</ul>
 </fmt:bundle>

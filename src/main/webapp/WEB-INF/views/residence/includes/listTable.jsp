@@ -3,15 +3,14 @@
 <table id="residenceListTable" class="listTable">
 	<thead>
 		<tr>
-			<th class="operations"/>
+			<th class="operations"></th>
 			<th></th>
 			<th></th>
 			<th class="date"><fmt:message key="startDateLabel"/></th>
 			<th class="date"><fmt:message key="endDateLabel"/></th>
 			<th><fmt:message key="addressLabel"/></th>			
 			<th><fmt:message key="residenceCategoryLabel"/></th>
-			<th><fmt:message key="residenceStatusLabel"/></th>			
-<%-- 			<th><fmt:message key="commentLabel"/></th> --%>
+			<th><fmt:message key="residenceStatusLabel"/></th>
 		</tr>		
 	</thead>
 	<tbody>

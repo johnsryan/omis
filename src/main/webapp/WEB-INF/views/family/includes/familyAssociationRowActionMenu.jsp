@@ -35,14 +35,14 @@
 		<sec:authorize access="hasRole('FAMILY_ASSOCIATION_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty familyAssociation}">
 			<li>
-				<a href="${pageContext.request.contextPath}/family/familyAssociationDetailsReport.html?familyAssociation=${familyAssociation.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="familyAssociationDetailsReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/family/familyAssociationDetailsReport.html?familyAssociation=${familyAssociation.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="familyAssociationDetailsReportLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>	
 		<sec:authorize access="hasRole('FAMILY_ASSOCIATION_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty familyAssociation}">
 			<li>
-				<a href="${pageContext.request.contextPath}/family/familyAssociationDetailsReportRedacted.html?familyAssociation=${familyAssociation.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="familyAssociationDetailsReportRedactedLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/family/familyAssociationDetailsReportRedacted.html?familyAssociation=${familyAssociation.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="familyAssociationDetailsReportRedactedLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>

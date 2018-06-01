@@ -18,14 +18,14 @@
 		<sec:authorize access="hasRole('COURT_CASE_CONDITION_LIST') or hasRole('ADMIN')">
 			<c:if test="${not empty offender}">
 			<li>
-				<a href="${pageContext.request.contextPath}/courtCaseCondition/condition/probationParoleConditionsReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="probationParoleConditionsReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/courtCaseCondition/condition/probationParoleConditionsReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab adobeReportLink"><fmt:message key="probationParoleConditionsReportLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>
 		<sec:authorize access="hasRole('COURT_CASE_CONDITION_LIST') or hasRole('ADMIN')">
 			<c:if test="${not empty offender}">
 			<li>
-				<a href="${pageContext.request.contextPath}/courtCaseCondition/condition/sentencingConditionsListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="sentencingConditionsListReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/courtCaseCondition/condition/sentencingConditionsListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="sentencingConditionsListReportLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>

@@ -85,6 +85,7 @@ import omis.person.web.delegate.PersonFieldsControllerDelegate;
 import omis.person.web.form.PersonFields;
 import omis.region.domain.City;
 import omis.region.domain.State;
+import omis.region.exception.CityExistsException;
 import omis.relationship.domain.Relationship;
 import omis.relationship.domain.RelationshipNote;
 import omis.relationship.domain.RelationshipNoteCategory;
@@ -99,6 +100,8 @@ import omis.residence.exception.ResidenceTermExistsException;
 import omis.user.domain.UserAccount;
 import omis.util.StringUtility;
 import omis.web.controller.delegate.BusinessExceptionHandlerDelegate;
+
+
 
 
 
@@ -249,6 +252,8 @@ public class ManageFamilyAssociationController {
 		= "omis.offenderrelationship.msgs.form";
 	private static final String FAMILY_ERROR_BUNDLE_NAME
 		= "omis.family.msgs.form";
+	private static final String CITY_EXISTS_EXCEPTION_MESSAGE_KEY
+	= "city.exists";
 	
 	// Field name of note items
 	private static final String
@@ -673,7 +678,7 @@ public class ManageFamilyAssociationController {
 			ResidenceStatusConflictException,
 			FamilyAssociationConflictException,
 			FamilyAssociationExistsException,
-			FamilyAssociationNoteExistsException,
+			FamilyAssociationNoteExistsException, CityExistsException,
 			ResidenceTermExistsException, ContactExistsException {
 		if (associatedPerson == null) {
 			// Create new
@@ -3177,5 +3182,19 @@ public class ManageFamilyAssociationController {
 		return this.businessExceptionHandlerDelegate.prepareModelAndView(
 				REFLEXIVE_RELATIONSHIP_EXCEPTION_MESSAGE_KEY,
 			FAMILY_ERROR_BUNDLE_NAME, exception);
+	}
+	
+	/**
+	 * Handles {@code CityExistsException}.
+	 * 
+	 * @param cityExistsException city exists exception
+	 * @return screen to handle {@code CityExistsException}
+	 */
+	@ExceptionHandler(CityExistsException.class)
+	public ModelAndView handleCityExistsException(
+		final CityExistsException cityExistsException) {
+		return this.businessExceptionHandlerDelegate.prepareModelAndView(
+			CITY_EXISTS_EXCEPTION_MESSAGE_KEY,
+			ERROR_BUNDLE_NAME, cityExistsException);
 	}
 }

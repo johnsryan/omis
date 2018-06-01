@@ -10,6 +10,7 @@ import omis.address.domain.Address;
 import omis.address.domain.BuildingCategory;
 import omis.address.domain.StreetSuffix;
 import omis.address.domain.ZipCode;
+import omis.address.exception.AddressExistsException;
 import omis.address.util.AddressMatcher;
 import omis.audit.AuditComponentRetriever;
 import omis.audit.domain.CreationSignature;
@@ -101,9 +102,9 @@ public class AddressDelegate {
 	public Address update(final Address address, final String value,
 		final String designator, final String coordinates,
 		final BuildingCategory buildingCategory, final ZipCode zipCode)
-		throws DuplicateEntityFoundException {
+		throws AddressExistsException {
 		if (this.addressDao.findExcluding(value, zipCode, address)!=null) {
-			throw new DuplicateEntityFoundException(
+			throw new AddressExistsException(
 					"Duplicate address found");
 		}
 		this.populateAddress(address, value, designator, coordinates,

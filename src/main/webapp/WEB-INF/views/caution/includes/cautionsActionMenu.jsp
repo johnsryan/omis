@@ -37,7 +37,7 @@
 		<sec:authorize access="hasRole('CAUTION_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty offender}">
 			<li>
-				<a href="${pageContext.request.contextPath}/caution/cautionListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="cautionListingReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/caution/cautionListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="cautionListingReportLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>
@@ -58,7 +58,7 @@
 		<sec:authorize access="hasRole('CAUTION_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty caution}">
 			<li>
-				<a href="${pageContext.request.contextPath}/caution/cautionDetailsReport.html?caution=${caution.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="cautionDetailsReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/caution/cautionDetailsReport.html?caution=${caution.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="cautionDetailsReportLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>

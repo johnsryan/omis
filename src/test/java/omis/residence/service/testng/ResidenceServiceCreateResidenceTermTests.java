@@ -49,6 +49,7 @@ import omis.region.service.delegate.StateDelegate;
 import omis.residence.domain.ResidenceCategory;
 import omis.residence.domain.ResidenceStatus;
 import omis.residence.domain.ResidenceTerm;
+import omis.residence.exception.NonResidenceTermExistsException;
 import omis.residence.exception.PrimaryResidenceExistsException;
 import omis.residence.exception.ResidenceStatusConflictException;
 import omis.residence.exception.ResidenceTermExistsException;
@@ -143,12 +144,14 @@ public class ResidenceServiceCreateResidenceTermTests
 	 * exists
 	 * @throws PrimaryResidenceExistsException  if primary residence already 
 	 * exists
+	 * @throws ResidenceTermExistsException residence term exists
+	 * @throws NonResidenceTermExistsException nonResidence term exists
 	 */
 	@Test
 	public void testCreateResidenceTerm() 
 			throws DuplicateEntityFoundException, 
 			ResidenceStatusConflictException, PrimaryResidenceExistsException,
-			ResidenceTermExistsException {
+			ResidenceTermExistsException, NonResidenceTermExistsException {
 		// Arrangements
 		Person person = this.personDelegate.create("Smith", "John", "Jay", 
 				null);
@@ -199,12 +202,13 @@ public class ResidenceServiceCreateResidenceTermTests
 	 * @throws PrimaryResidenceExistsException if primary residence already 
 	 * @throws ResidenceTermExistsException residence term exists exception
 	 * exists
+	 * @throws NonResidenceTermExistsException nonResidence term exists
 	 */
 	@Test(expectedExceptions = {ResidenceTermExistsException.class})
 	public void testDuplicateEntityFoundException() 
 			throws DuplicateEntityFoundException, 
 			ResidenceStatusConflictException, PrimaryResidenceExistsException,
-			ResidenceTermExistsException {
+			ResidenceTermExistsException, NonResidenceTermExistsException {
 		// Arrangements
 		Person person = this.personDelegate.create("Smith", "John", "Jay", 
 				null);
@@ -254,7 +258,8 @@ public class ResidenceServiceCreateResidenceTermTests
 	 * exists
 	 * @throws PrimaryResidenceExistsException if primary residence exists 
 	 * @throws LocationNotAllowedException if location is not allowed
-	 *//*
+	 */
+	/*
 	@Test(expectedExceptions = {ResidenceStatusConflictException.class})
 	public void testResidenceStatusConflictException() 
 			throws DuplicateEntityFoundException, 
@@ -302,12 +307,13 @@ public class ResidenceServiceCreateResidenceTermTests
 	 * @throws PrimaryResidenceExistsException if primary residence already 
 	 * @throws ResidenceTermExistsException residence term exists exception
 	 * exists
+	 * @throws NonResidenceTermExistsException nonResidence term exists
 	 */
 	@Test(expectedExceptions = {PrimaryResidenceExistsException.class})
 	public void testPrimaryResidenceExistsException() 
 			throws DuplicateEntityFoundException, 
 			ResidenceStatusConflictException, PrimaryResidenceExistsException,
-			ResidenceTermExistsException {
+			ResidenceTermExistsException, NonResidenceTermExistsException {
 		// Arrangements
 		Person person = this.personDelegate.create("Smith", "John", "Jay", 
 				null);
@@ -331,7 +337,7 @@ public class ResidenceServiceCreateResidenceTermTests
 				this.accountDelegate.findByUsername("AUDIT"), 
 				this.parseDateText("02/01/2017"), true, method);
 		this.residenceTermDelegate.createResidenceTerm(person, dateRange, 
-				ResidenceCategory.PRIMARY, address, ResidenceStatus.FOSTER_CARE, 
+				ResidenceCategory.PRIMARY, address, ResidenceStatus.FOSTER_CARE,
 				confirmed, notes, verificationSignature);
 		
 		// Action
@@ -340,11 +346,11 @@ public class ResidenceServiceCreateResidenceTermTests
 	}
 	
 	// Parses date text
-		private Date parseDateText(final String text) {
-			try {
-				return new SimpleDateFormat("MM/dd/yyyy").parse(text);
-			} catch (ParseException e) {
-				throw new RuntimeException("Parse error", e);
-			}
+	private Date parseDateText(final String text) {
+		try {
+			return new SimpleDateFormat("MM/dd/yyyy").parse(text);
+		} catch (ParseException e) {
+			throw new RuntimeException("Parse error", e);
 		}
+	}
 }

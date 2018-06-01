@@ -18,7 +18,7 @@
 		<sec:authorize access="hasRole('OFFENDER_ALT_NAME_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty alternativeNameAssociation}">
 			<li>
-				<a href="${pageContext.request.contextPath}/offender/name/alternative/altNameDetailsReport.html?alternativeNameAssociation=${alternativeNameAssociation.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="altNameDetailsReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/offender/name/alternative/altNameDetailsReport.html?alternativeNameAssociation=${alternativeNameAssociation.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="altNameDetailsReportLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>

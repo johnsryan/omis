@@ -40,14 +40,14 @@
 		<sec:authorize access="hasRole('COURT_CASE_CONDITION_LIST') or hasRole('ADMIN')">
 			<c:if test="${not empty courtCaseAgreement}">
 			    <li>
-				    <a href="${pageContext.request.contextPath}/courtCaseCondition/condition/conditionsPNPReport.html?courtCaseAgreement=${courtCaseAgreement.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="conditionsPNPDocketReportLinkLabel"/></a>
+				    <a href="${pageContext.request.contextPath}/courtCaseCondition/condition/conditionsPNPReport.html?courtCaseAgreement=${courtCaseAgreement.id}&reportFormat=PDF" class="newTab adobeReportLink"><fmt:message key="conditionsPNPDocketReportLinkLabel"/></a>
 			    </li>
 			</c:if>
 		</sec:authorize>
 		<sec:authorize access="hasRole('COURT_CASE_CONDITION_LIST') or hasRole('ADMIN')">
 			<c:if test="${not empty courtCaseAgreement}">
 			    <li>
-				    <a href="${pageContext.request.contextPath}/courtCaseCondition/condition/sentencingConditionDetailsReport.html?courtCaseAgreement=${courtCaseAgreement.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="sentencingConditionDetailsReportLinkLabel"/></a>
+				    <a href="${pageContext.request.contextPath}/courtCaseCondition/condition/sentencingConditionDetailsReport.html?courtCaseAgreement=${courtCaseAgreement.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="sentencingConditionDetailsReportLinkLabel"/></a>
 			    </li>
 			</c:if>
 		</sec:authorize>		

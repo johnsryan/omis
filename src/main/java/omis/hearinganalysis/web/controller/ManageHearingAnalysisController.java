@@ -54,6 +54,7 @@ import omis.offender.web.controller.delegate.OffenderSummaryModelDelegate;
 import omis.paroleboarditinerary.domain.BoardAttendee;
 import omis.paroleboarditinerary.domain.ParoleBoardItinerary;
 import omis.paroleeligibility.domain.ParoleEligibility;
+import omis.paroleeligibility.report.ParoleEligibilityReportService;
 import omis.util.DateManipulator;
 import omis.web.controller.delegate.BusinessExceptionHandlerDelegate;
 
@@ -62,7 +63,7 @@ import omis.web.controller.delegate.BusinessExceptionHandlerDelegate;
  *
  * @author Josh Divine
  * @author Annie Wahl
- * @version 0.1.3 (Apr 18, 2018)
+ * @version 0.1.3 (May 29, 2018)
  * @since OMIS 3.0
  */
 @Controller
@@ -122,6 +123,9 @@ public class ManageHearingAnalysisController {
 	private static final String BOARD_HEARING_MODEL_KEY = "boardHearing";
 	
 	private static final String OFFENDER_MODEL_KEY = "offender";
+	
+	private static final String PAROLE_ELIGIBILITY_SUMMARY_MODEL_KEY =
+			"eligibilitySummary";
 
 	/* Message keys. */
 
@@ -143,6 +147,10 @@ public class ManageHearingAnalysisController {
 	@Autowired
 	@Qualifier("boardHearingService")
 	private BoardHearingService boardHearingService;
+	
+	@Autowired
+	@Qualifier("paroleEligibilityReportService")
+	private ParoleEligibilityReportService paroleEligibilityReportService;
 	
 	/* Property editor factories. */
 	
@@ -222,6 +230,8 @@ public class ManageHearingAnalysisController {
 			hearingAnalysisForm.setAnalyst(hearingAnalysis.getAnalyst());
 			hearingAnalysisForm.setBoardItinerary(hearingAnalysis
 					.getParoleBoardItinerary());
+			hearingAnalysisForm.setDueDate(hearingAnalysis
+					.getExpectedCompletionDate());
 			List<HearingAnalysisNote> notes = this.hearingAnalysisService
 					.findHearingAnalysisNotesByHearingAnalysis(hearingAnalysis);
 			List<HearingAnalysisNoteItem> noteItems = 
@@ -270,13 +280,15 @@ public class ManageHearingAnalysisController {
 		if (hearingAnalysis == null) {
 			hearingAnalysis = this.hearingAnalysisService.createHearingAnalysis(
 					eligibility, hearingAnalysisForm.getBoardItinerary(),
-					hearingAnalysisForm.getAnalyst(), 
-					hearingAnalysisForm.getCategory());
+					hearingAnalysisForm.getAnalyst(),
+					hearingAnalysisForm.getCategory(),
+					hearingAnalysisForm.getDueDate());
 		} else {
 			hearingAnalysis = this.hearingAnalysisService.updateHearingAnalysis(
 					hearingAnalysis, hearingAnalysisForm.getBoardItinerary(),
-					hearingAnalysisForm.getAnalyst(), 
-					hearingAnalysisForm.getCategory());
+					hearingAnalysisForm.getAnalyst(),
+					hearingAnalysisForm.getCategory(),
+					hearingAnalysisForm.getDueDate());
 		}
 		processHearingAnalysisNoteItems(hearingAnalysis,
 				hearingAnalysisForm.getHearingAnalysisNoteItems());
@@ -431,6 +443,9 @@ public class ManageHearingAnalysisController {
 				eligibility.getOffender());
 		mav.addObject(HEARING_ANALYSIS_CATEGORIES_MODEL_KEY, 
 				this.hearingAnalysisService.findHearingAnalysisCategories());
+		mav.addObject(PAROLE_ELIGIBILITY_SUMMARY_MODEL_KEY,
+				this.paroleEligibilityReportService.summarizeParoleEligibility(
+						eligibility));
 		return mav;
 	}
 	

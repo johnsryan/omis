@@ -28,13 +28,13 @@
 	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="omis.presentenceinvestigation.domain">
-<query name="findPresentenceInvestigationRequestSummariesByUser"><![CDATA[
+<query name="findSubmittedPresentenceInvestigationRequestSummariesByUser"><![CDATA[
 	select new omis.presentenceinvestigation.report.PresentenceInvestigationRequestSummary(
 		   psir.id,
 		   offender.id,
 			docket.value,
 		   psir.requestDate, personName.firstName, personName.lastName, userAccount.username,
-		   psir.expectedCompletionDate, psir.completionDate,
+		   psir.expectedCompletionDate, 
 		   offenderName.firstName, offenderName.lastName, offenderName.middleName, offender.offenderNumber,
 		   psir.sentenceDate, category.name,
 		   (select count(*)
@@ -62,7 +62,7 @@
 		left outer join docket.person offender
 		left outer join offender.name offenderName
 		where userAccount = :assignedUser
-	 
+	 	and psir.submissionDate is not null
 ]]></query>
 <query name="findPresentenceInvestigationRequestSummariesByOffender"><![CDATA[
 	select new omis.presentenceinvestigation.report.PresentenceInvestigationRequestSummary(
@@ -70,7 +70,7 @@
 		   offender.id,
 			docket.value,
 		   psir.requestDate, personName.firstName, personName.lastName, userAccount.username,
-		   psir.expectedCompletionDate, psir.completionDate,
+		   psir.expectedCompletionDate, 
 		   offenderName.firstName, offenderName.lastName, offenderName.middleName, offender.offenderNumber,
 		   psir.sentenceDate, category.name,
 		   (select count(*)
@@ -104,7 +104,7 @@
 			offender.id,
 			docket.value,
 			psir.requestDate,  personName.firstName, personName.lastName, userAccount.username,
-			psir.expectedCompletionDate, psir.completionDate,
+			psir.expectedCompletionDate, 
 			offenderName.firstName, offenderName.lastName, offenderName.middleName, offender.offenderNumber,
 		   psir.sentenceDate, category.name, 
 		   (select count(*)
@@ -139,7 +139,7 @@
 		   offender.id,
 			docket.value,
 		   psir.requestDate, personName.firstName, personName.lastName, userAccount.username,
-		   psir.expectedCompletionDate, psir.completionDate,
+		   psir.expectedCompletionDate, 
 		   offenderName.firstName, offenderName.lastName, offenderName.middleName, offender.offenderNumber,
 		   psir.sentenceDate, category.name,
 		   (select count(*)

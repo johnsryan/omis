@@ -5,11 +5,13 @@ import java.util.List;
 import omis.exception.DuplicateEntityFoundException;
 import omis.instance.factory.InstanceFactory;
 import omis.location.domain.Location;
+import omis.location.exception.LocationExistsException;
 import omis.region.domain.City;
 import omis.region.domain.State;
 import omis.residence.dao.AllowedResidentialLocationRuleDao;
 import omis.residence.domain.AllowedResidentialLocationRule;
 import omis.residence.domain.ResidenceStatus;
+import omis.residence.exception.AllowedResidentialLocationRuleExistsException;
 
 /**
  * Allowed residential location rule delegate.
@@ -62,13 +64,14 @@ public class AllowedResidentialLocationRuleDelegate {
 	 * @param location location
 	 * @param status residence status
 	 * @return allowed residential location rule
-	 * @throws DuplicateEntityFoundException if duplicate entity exists
+	 * @throws AllowedResidentialLocationRuleExistsException if duplicate entity exists
 	 */
 	public AllowedResidentialLocationRule create(final Location location, 
-			final ResidenceStatus status) throws DuplicateEntityFoundException {
-		if (this.allowedResidentialLocationRuleDao.find(location, status) != 
-				null) {
-			throw new DuplicateEntityFoundException();
+			final ResidenceStatus status) throws LocationExistsException, 
+	AllowedResidentialLocationRuleExistsException {
+		if (this.allowedResidentialLocationRuleDao.find(location, status) 
+				!= null) {
+			throw new AllowedResidentialLocationRuleExistsException();
 		}
 		AllowedResidentialLocationRule allowedResidentialLocationRule = 
 				this.allowedResidentialLocationRuleInstanceFactory
@@ -86,15 +89,15 @@ public class AllowedResidentialLocationRuleDelegate {
 	 * @param location location
 	 * @param status residence status
 	 * @return allowed residential location rule
-	 * @throws DuplicateEntityFoundException if duplicate entity exists
+	 * @throws AllowedResidentialLocationRuleExistsException if duplicate entity exists
 	 */
 	public AllowedResidentialLocationRule update(
 			final AllowedResidentialLocationRule allowedResidentialLocationRule,
 			final Location location, final ResidenceStatus status) 
-					throws DuplicateEntityFoundException {
+					throws AllowedResidentialLocationRuleExistsException {
 		if (this.allowedResidentialLocationRuleDao.findExcluding(location, 
 				status, allowedResidentialLocationRule) != null) {
-			throw new DuplicateEntityFoundException();
+			throw new AllowedResidentialLocationRuleExistsException();
 		}
 		populateAllowedResidentialLocationRule(allowedResidentialLocationRule, 
 				location, status);

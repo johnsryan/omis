@@ -28,7 +28,8 @@ import omis.instance.factory.InstanceFactory;
  * Hearing analysis category delegate.
  *
  * @author Josh Divine
- * @version 0.1.0 (Jan 9, 2018)
+ * @author Annie Wahl
+ * @version 0.1.1 (May 29, 2018)
  * @since OMIS 3.0
  */
 public class HearingAnalysisCategoryDelegate {
@@ -119,7 +120,8 @@ public class HearingAnalysisCategoryDelegate {
 	 * @return list of all hearing analysis categories
 	 */
 	public List<HearingAnalysisCategory> findAll() {
-		return this.hearingAnalysisCategoryDao.findAll();
+		return this.hearingAnalysisCategoryDao
+				.findAllHearingAnalysisCategories();
 	}
 
 	// Populates a hearing analysis category

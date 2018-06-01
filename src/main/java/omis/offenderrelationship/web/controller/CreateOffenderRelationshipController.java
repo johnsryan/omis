@@ -60,7 +60,6 @@ import omis.contact.exception.OnlineAccountExistsException;
 import omis.contact.exception.TelephoneNumberExistsException;
 import omis.contact.report.ContactReportService;
 import omis.contact.report.ContactSummary;
-import omis.contact.web.controller.delegate.ContactSummaryModelDelegate;
 import omis.contact.web.controller.delegate.OnlineAccountFieldsControllerDelegate;
 import omis.contact.web.controller.delegate.PoBoxFieldsControllerDelegate;
 import omis.contact.web.controller.delegate.TelephoneNumberFieldsControllerDelegate;
@@ -211,6 +210,8 @@ public class CreateOffenderRelationshipController {
 		= "offenderRelationshipNoteCategories";
 	private static final String OFFENDER_RELATIONSHIP_NOTE_ITEM_MODEL_KEY
 		= "offenderRelationshipNoteItem";
+	private static final String SPAUSE_STATUS 
+	= "spauseStatus";
 	
 	// Used to add base URL to views
 	private static final String BASE_URL_MODEL_KEY = "baseUrl";
@@ -231,7 +232,7 @@ public class CreateOffenderRelationshipController {
 	private static final String VISITATION_EXISTS_EXCEPTION_MESSAGE_KEY
 		= "visitation.Conflicts";
 	private static final String ZIPCODE_EXISTS_EXCEPTION_MESSAGE_KEY
-		= "zipcode.Conflicts";
+		= "zipCode.exists";
 	private static final String CONTACT_EXISTS_EXCEPTION_MESSAGE_KEY
 		= "contact.Conflicts";
 	private static final String PERSON_EXISTS_EXCEPTION_MESSAGE_KEY
@@ -1819,7 +1820,20 @@ public class CreateOffenderRelationshipController {
 	private ModelAndView prepareCreateMav(final CreateRelationshipsForm form, 
 			final Offender offender, final Person relation) {
 		ModelAndView mav = new ModelAndView(CREATE_VIEW_NAME);
-		
+		if(form.getFamilyAssociationFields()!=null){
+			if(form.getFamilyAssociationFields().getCategory()!=null){
+				if(FamilyAssociationCategoryClassification.SPOUSE.equals(form
+					.getFamilyAssociationFields().getCategory().getClassification())){
+					mav.addObject(SPAUSE_STATUS, true);
+				} else {
+					mav.addObject(SPAUSE_STATUS, false);
+				}
+			} else {
+				mav.addObject(SPAUSE_STATUS, false);
+			}
+		}else {
+			mav.addObject(SPAUSE_STATUS, false);
+		}
 		if (form.getCreateFamilyMember() == null) {
 			mav.addObject(CREATE_FAMILY_MEMBER_STATUS, false);
 		} else {
@@ -2699,7 +2713,7 @@ public class CreateOffenderRelationshipController {
 	 * Handles {@code CityExistsException}.
 	 * 
 	 * @param cityExistsException city exists exception
-	 * @return screen to handle {@code AddressExistsException}
+	 * @return screen to handle {@code CityExistsException}
 	 */
 	@ExceptionHandler(CityExistsException.class)
 	public ModelAndView handleCityExistsException(

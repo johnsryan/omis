@@ -15,45 +15,11 @@
  - You should have received a copy of the GNU General Public License
  - along with this program.  If not, see <http://www.gnu.org/licenses/>.
  --%>
-
-<%--
- - Author: Josh Divine
- - Date: Apr 17, 2018
- - Since: OMIS 3.0
- --%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <fmt:setBundle basename="omis.msgs.common" var="commonBundle" />
 <fmt:bundle basename="omis.paroleeligibility.msgs.paroleEligibility">
 <ul>
-	<sec:authorize access="hasRole('PAROLE_ELIGIBILITY_VIEW') or hasRole('ADMIN')">
-		<c:if test="${not empty eligibility}">
-			<li>
-				<a class="viewEditLink" href="${pageContext.request.contextPath}/paroleEligibility/edit.html?eligibility=${eligibility.id}"><span class="visibleLinkLabel"><fmt:message key="viewParoleEligibilityEditLink"/></span></a>
-			</li>
-		</c:if>
-	</sec:authorize>
-	<sec:authorize access="hasRole('HEARING_ANALYSIS_VIEW') or hasRole('ADMIN')">
-		<c:if test="${not empty eligibility}">
-			<li>
-				<a class="viewEditLink" href="${pageContext.request.contextPath}/hearingAnalysis/edit.html?eligibility=${eligibility.id}"><span class="visibleLinkLabel"><fmt:message key="viewHearingAnalysisLink"/></span></a>
-			</li>
-		</c:if>
-	</sec:authorize>
-	<sec:authorize access="hasRole('HEARING_ANALYSIS_VIEW') or hasRole('ADMIN')">
-		<c:if test="${not empty hearingAnalysis}">
-			<li>
-				<a class="viewEditLink" href="${pageContext.request.contextPath}/hearingAnalysis/home.html?hearingAnalysis=${hearingAnalysis.id}"><span class="visibleLinkLabel"><fmt:message key="workHearingAnalysisLink"/></span></a>
-			</li>
-		</c:if>
-	</sec:authorize>
-	<sec:authorize access="hasRole('BOARD_HEARING_VIEW') or hasRole('ADMIN')">
-		<c:if test="${not empty boardHearing}">
-			<li>
-				<a class="viewEditLink" href="${pageContext.request.contextPath}/boardHearing/edit.html?boardHearing=${boardHearing.id}"><span class="visibleLinkLabel"><fmt:message key="viewBoardHearingLink"/></span></a>
-			</li>
-		</c:if>
-	</sec:authorize>
 </ul>
 </fmt:bundle>

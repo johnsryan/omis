@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.facility.service.delegate;
 
 import java.util.List;
@@ -8,13 +25,14 @@ import omis.facility.domain.Complex;
 import omis.facility.domain.Facility;
 import omis.facility.domain.Unit;
 import omis.instance.factory.InstanceFactory;
+import omis.supervision.domain.SupervisoryOrganization;
 
 /**
  * Unit delegate.
  * 
  * @author Joel Norris
  * @author Josh Divine
- * @version 0.1.2 (Apr 10, 2018)
+ * @version 0.1.3 (May 23, 2018)
  * @since OMIS 3.0
  */
 public class UnitDelegate {
@@ -52,7 +70,7 @@ public class UnitDelegate {
 	 * 
 	 * @param name name
 	 * @param abbreviation abbreviation
-	 * @param active whether active applies
+	 * @param valid whether valid applies
 	 * @param faciilty facility
 	 * @param complex complex
 	 * @return newly created unit
@@ -60,7 +78,7 @@ public class UnitDelegate {
 	 * complex is found
 	 */
 	public Unit create(final String name, final String abbreviation,
-			final Boolean active, final Facility facility,
+			final Boolean valid, final Facility facility,
 			final Complex complex) throws DuplicateEntityFoundException {
 		if (this.unitDao.find(name, facility) != null) {
 			throw new DuplicateEntityFoundException(
@@ -69,7 +87,7 @@ public class UnitDelegate {
 		Unit unit = this.unitInstanceFactory.createInstance();
 		unit.setName(name);
 		unit.setAbbreviation(abbreviation);
-		unit.setActive(active);
+		unit.setValid(valid);
 		unit.setComplex(complex);
 		unit.setFacility(facility);
 		return this.unitDao.makePersistent(unit);
@@ -80,7 +98,7 @@ public class UnitDelegate {
 	 * 
 	 * @param name name
 	 * @param abbreviation abbreviation
-	 * @param active active
+	 * @param valid valid
 	 * @param complex complex
 	 * @param unit unit to update
 	 * @return updated unit
@@ -88,7 +106,7 @@ public class UnitDelegate {
 	 * found, except for the unit being updated 
 	 */
 	public Unit update(final String name, final String abbreviation,
-			final Boolean active, final Complex complex, final Unit unit)
+			final Boolean valid, final Complex complex, final Unit unit)
 		throws DuplicateEntityFoundException {
 		if (this.unitDao.findExcluding(name, unit.getFacility(), unit) != null) {
 			throw new DuplicateEntityFoundException(
@@ -96,7 +114,7 @@ public class UnitDelegate {
 		}
 		unit.setName(name);
 		unit.setAbbreviation(abbreviation);
-		unit.setActive(active);
+		unit.setValid(valid);
 		unit.setComplex(complex);
 		return this.unitDao.makePersistent(unit);
 	}
@@ -129,5 +147,17 @@ public class UnitDelegate {
 	 */
 	public List<Unit> findByFacility(final Facility facility) {
 		return this.unitDao.findByFacility(facility);
+	}
+
+	/**
+	 * Returns a list of units for the specified supervisory organization.
+	 * 
+	 * @param supervisoryOrganization supervisory organization
+	 * @return list of units
+	 */
+	public List<Unit> findBySupervisoryOrganization(
+			final SupervisoryOrganization supervisoryOrganization) {
+		return this.unitDao.findBySupervisoryOrganization(
+				supervisoryOrganization);
 	}
 }

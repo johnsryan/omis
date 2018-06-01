@@ -77,7 +77,7 @@ public class ParoleEligibilityServiceCreateTests
 			= EligibilityStatusCategory.APPEARING;
 		Date statusDate = this.parseDateText("01/01/2017");
 		EligibilityStatusReason statusReason = eligibilityStatusReasonDelegate
-				.create("Programming incomplete", true);
+				.create("Programming incomplete", statusCategory, true);
 		String statusComment = "Programming complete next month.";
 		Date reviewDate = this.parseDateText("02/01/2017");
 
@@ -119,7 +119,7 @@ public class ParoleEligibilityServiceCreateTests
 			= EligibilityStatusCategory.APPEARING;
 		Date statusDate = this.parseDateText("01/01/2017");
 		EligibilityStatusReason statusReason = eligibilityStatusReasonDelegate
-				.create("Programming incomplete", true);
+				.create("Programming incomplete", statusCategory, true);
 		String statusComment = "Programming complete next month.";
 		Date reviewDate = this.parseDateText("02/01/2017");
 		

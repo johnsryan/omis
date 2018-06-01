@@ -12,7 +12,7 @@
 		<li><a class="removeLink" href="${pageContext.request.contextPath}/visitation/visit/remove.html?visit=${visit.id}"><fmt:message key="removeLabel"/></a></li>
 		<sec:authorize access="hasRole('VISIT_VIEW') or hasRole('ADMIN')">
 		<li>
-			 <a href="${pageContext.request.contextPath}/visitation/visit/visitDetailsReport.html?visit=${visit.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="visitDetailsReportLinkLabel"/></a>
+			 <a href="${pageContext.request.contextPath}/visitation/visit/visitDetailsReport.html?visit=${visit.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="visitDetailsReportLinkLabel"/></a>
 		</li>
 		</sec:authorize>
 	</ul>

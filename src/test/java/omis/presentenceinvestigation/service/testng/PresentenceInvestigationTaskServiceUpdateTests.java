@@ -77,9 +77,9 @@ import omis.util.PropertyValueAsserter;
 /**
  * PresentenceInvestigationTaskServiceUpdateTests.java
  * 
- * @author Annie Jacques
+ * @author Annie Wahl
  * @author Josh Divine 
- * @version 0.1.1 (Jan 3, 2018)
+ * @version 0.1.2 (May 9, 2018)
  * @since OMIS 3.0
  *
  */
@@ -195,7 +195,7 @@ public class PresentenceInvestigationTaskServiceUpdateTests
 				this.presentenceInvestigationRequestDelegate.create(
 						userAccount, this.parseDateText("01/01/2016"),
 						this.parseDateText("12/31/2017"),
-						docket2, null, this.parseDateText("03/25/2015"), null, 
+						docket2, this.parseDateText("03/25/2015"),  
 						category, this.parseDateText("04/01/2017"));
 		final TaskTemplateGroup group = this.taskTemplateGroupDelegate.create(
 				"TaskTemplateGroup");
@@ -222,8 +222,7 @@ public class PresentenceInvestigationTaskServiceUpdateTests
 				this.presentenceInvestigationRequestDelegate.create(
 						userAccount, this.parseDateText("02/28/2010"),
 						this.parseDateText("10/15/2015"),
-						docket, this.parseDateText("05/15/2029"),
-						this.parseDateText("05/15/2019"), null, category,
+						docket, this.parseDateText("05/15/2019"), category,
 						this.parseDateText("04/01/2017"));
 		final PresentenceInvestigationTaskSource taskSource =
 				this.presentenceInvestigationTaskSourceDelegate.create(

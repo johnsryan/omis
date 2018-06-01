@@ -293,7 +293,7 @@ function applyModuleGroup(elt, nextElt) {
 	for (var i = 0; i < links.length; i++) {
 		iframes[i] = document.createElement('iframe');
 		iframes[i].setAttribute("frameborder", 0);
-		iframes[i].classList.add("hidden");
+		iframes[i].classList.add("hiddenModuleGroupDisplay");
 		iframes[i].classList.add("moduleGroupDisplayContent");
 		iframes[i].setAttribute("src", links[i].getAttribute("href"));
 		nextElt.appendChild(iframes[i]);
@@ -301,9 +301,9 @@ function applyModuleGroup(elt, nextElt) {
 			for (var j = 0; j < iframes.length; j++) {
 				if (iframes[j].getAttribute("src") == e.target
 						.getAttribute("href")) {
-					iframes[j].classList.remove("hidden");
+					iframes[j].classList.remove("hiddenModuleGroupDisplay");
 				} else {
-					iframes[j].classList.add("hidden");
+					iframes[j].classList.add("hiddenModuleGroupDisplay");
 				}
 			}
 			for (var j = 0; j < links.length; j++) {
@@ -314,7 +314,7 @@ function applyModuleGroup(elt, nextElt) {
 		};
 	}
 	if(iframes[0]) {
-		iframes[0].classList.remove("hidden");
+		iframes[0].classList.remove("hiddenModuleGroupDisplay");
 		links[0].classList.add("activeModuleGroupLink");
 	}
 	refresh.onclick = function(e) {

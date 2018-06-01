@@ -33,6 +33,7 @@
 		<many-to-one name="paroleBoardItinerary" entity-name="omis.paroleboarditinerary.domain.ParoleBoardItinerary" not-null="true" column="`PAROLE_BOARD_ITINERARY_ID`"/>
 		<many-to-one name="category" entity-name="omis.hearinganalysis.domain.HearingAnalysisCategory" not-null="true" column="`HEARING_ANALYSIS_CATEGORY_ID`"/>
 		<many-to-one name="analyst" entity-name="omis.paroleboarditinerary.domain.BoardAttendee" not-null="false" column="`BOARD_ATTENDEE_ID`"/>
+		<property name="expectedCompletionDate" column="`EXPECTED_COMPLETION_DATE`" type="java.util.Date" not-null="false" />
 		<component name="creationSignature">
 			<many-to-one name="userAccount" column="`CREATE_ACCOUNT_ID`"
 			             not-null="true"/>

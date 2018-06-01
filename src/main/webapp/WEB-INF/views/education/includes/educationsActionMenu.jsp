@@ -12,7 +12,7 @@
 		<sec:authorize access="hasRole('EDUCATION_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty offender}">
 				<li>
-					<a href="${pageContext.request.contextPath}/education/educationListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="educationListingReportLinkLabel"/></a>
+					<a href="${pageContext.request.contextPath}/education/educationListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="educationListingReportLinkLabel"/></a>
 				</li>
 			</c:if>
 		</sec:authorize>

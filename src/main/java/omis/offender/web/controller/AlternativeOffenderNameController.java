@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.offender.web.controller;
 
 import java.util.Date;
@@ -13,6 +30,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,7 +40,6 @@ import org.springframework.web.servlet.ModelAndView;
 import omis.beans.factory.PropertyEditorFactory;
 import omis.beans.factory.spring.CustomDateEditorFactory;
 import omis.datatype.DateRange;
-import omis.exception.DuplicateEntityFoundException;
 import omis.offender.beans.factory.OffenderPropertyEditorFactory;
 import omis.offender.domain.Offender;
 import omis.offender.service.AlternativeOffenderNameService;
@@ -32,9 +49,12 @@ import omis.offender.web.validator.AlternativeOffenderNameFormValidator;
 import omis.person.domain.AlternativeNameAssociation;
 import omis.person.domain.AlternativeNameCategory;
 import omis.person.domain.Suffix;
+import omis.person.exception.AlternativeNameAssociationExistsException;
+import omis.person.exception.PersonNameExistsException;
 import omis.report.ReportFormat;
 import omis.report.ReportRunner;
 import omis.report.web.controller.delegate.ReportControllerDelegate;
+import omis.web.controller.delegate.BusinessExceptionHandlerDelegate;
 
 /**
  * Controller for alternative offender names.
@@ -93,6 +113,34 @@ public class AlternativeOffenderNameController {
 	
 	private static final String CURRENT_DATE_MODEL_KEY = "currentDate";
 	
+	/* Bundles. */
+	
+	private static final String ERROR_BUNDLE_NAME = "omis.offender.msgs.form";
+	
+	/* Message keys. */
+	
+	private static final String PERSON_NAME_EXISTS_MESSAGE_KEY
+		= "personName.exists";
+	
+	private static final String ALTERNATIVE_NAME_ASSOCIATION_EXISTS_MESSAGE_KEY
+		= "alternativeNameAssociation.exists";
+	
+	/* Report names. */
+	
+	private static final String ALT_NAME_LISTING_REPORT_NAME 
+		= "/BasicInformation/AlternativeNames/Alternative_Names_Listing";
+
+	private static final String ALT_NAME_DETAILS_REPORT_NAME 
+		= "/BasicInformation/AlternativeNames/Alternative_Name_Details";
+
+	/* Report parameter names. */
+	
+	private static final String ALT_NAME_LISTING_ID_REPORT_PARAM_NAME 
+		= "DOC_ID";
+
+	private static final String ALT_NAME_DETAILS_ID_REPORT_PARAM_NAME 
+		= "ALT_NAME_ID";
+	
 	/* Services. */
 	
 	@Autowired
@@ -133,21 +181,9 @@ public class AlternativeOffenderNameController {
 	@Qualifier("offenderSummaryModelDelegate")
 	private OffenderSummaryModelDelegate offenderSummaryModelDelegate;
 	
-	/* Report names. */
-	
-	private static final String ALT_NAME_LISTING_REPORT_NAME 
-		= "/BasicInformation/AlternativeNames/Alternative_Names_Listing";
-
-	private static final String ALT_NAME_DETAILS_REPORT_NAME 
-		= "/BasicInformation/AlternativeNames/Alternative_Name_Details";
-
-	/* Report parameter names. */
-	
-	private static final String ALT_NAME_LISTING_ID_REPORT_PARAM_NAME 
-		= "DOC_ID";
-
-	private static final String ALT_NAME_DETAILS_ID_REPORT_PARAM_NAME 
-		= "ALT_NAME_ID";
+	@Autowired
+	@Qualifier("businessExceptionHandlerDelegate")
+	private BusinessExceptionHandlerDelegate businessExceptionHandlerDelegate;
 	
 	/* Report runners. */
 	
@@ -251,8 +287,9 @@ public class AlternativeOffenderNameController {
 	 * @param alternativeOffenderNameForm alternative offender name form
 	 * @param result binding result
 	 * @return redirect to list alternative names
-	 * @throws DuplicateEntityFoundException thrown when a duplicate alternative
-	 * name association is found
+	 * @throws AlternativeNameAssociationExistsException if alternative name
+	 * association exists 
+	 * @throws PersonNameExistsException if person name exists
 	 */
 	@PreAuthorize("hasRole('OFFENDER_ALT_NAME_CREATE') or hasRole('ADMIN')")
 	@RequestMapping(value = "/create.html", method = RequestMethod.POST)
@@ -260,7 +297,9 @@ public class AlternativeOffenderNameController {
 			@RequestParam(value = "offender", required = true)
 				final Offender offender,
 			final AlternativeOffenderNameForm alternativeOffenderNameForm,
-			final BindingResult result) throws DuplicateEntityFoundException {
+			final BindingResult result)
+					throws PersonNameExistsException,
+						AlternativeNameAssociationExistsException {
 		this.alternativeOffenderNameFormValidator
 			.validate(alternativeOffenderNameForm, result);
 		if (result.hasErrors()) {
@@ -288,8 +327,9 @@ public class AlternativeOffenderNameController {
 	 * @param alternativePersonNameForm alternative person name form
 	 * @param result binding result
 	 * @return redirect to list alternative names
-	 * @throws DuplicateEntityFoundException thrown when a duplicate alternative
-	 * name association is found, other than the one specified
+	 * @throws AlternativeNameAssociationExistsException if alternative name
+	 * association exists 
+	 * @throws PersonNameExistsException if person name exists
 	 */
 	@PreAuthorize("hasRole('OFFENDER_ALT_NAME_EDIT') or hasRole('ADMIN')")
 	@RequestMapping(value = "/edit.html", method = RequestMethod.POST)
@@ -298,7 +338,9 @@ public class AlternativeOffenderNameController {
 					required = true)
 				final AlternativeNameAssociation alternativeNameAssociation,
 			final AlternativeOffenderNameForm alternativePersonNameForm,
-			final BindingResult result) throws DuplicateEntityFoundException {
+			final BindingResult result)
+					throws PersonNameExistsException,
+						AlternativeNameAssociationExistsException {
 		this.alternativeOffenderNameFormValidator
 				.validate(alternativePersonNameForm, result);
 		if (result.hasErrors()) {
@@ -391,6 +433,41 @@ public class AlternativeOffenderNameController {
 		map.addAttribute(ALTERNATIVE_NAME_ASSOCIATION_MODEL_KEY, association);
 		return new ModelAndView(ALTERNATIVE_NAMES_ROW_ACTION_MENU_VIEW_NAME,
 				map);
+	}
+	
+	/* Exception handlers. */
+	
+	/**
+	 * Returns screen to handle {@code PersonNameExistsException}.
+	 * 
+	 * @param personNameExistsException exception thrown
+	 * @return screen to handle {@code PersonNameExistsException}
+	 */
+	@ExceptionHandler(PersonNameExistsException.class)
+	public ModelAndView handlePersonNameExistsException(
+			final PersonNameExistsException personNameExistsException) {
+		return this.businessExceptionHandlerDelegate
+				.prepareModelAndView(PERSON_NAME_EXISTS_MESSAGE_KEY,
+						ERROR_BUNDLE_NAME, personNameExistsException);
+	}
+	
+	/**
+	 * Returns screen to handle
+	 * {@code AlternativeNameAssociationExistsException}.
+	 * 
+	 * @param alternativeNameAssociationExistsException exception thrown
+	 * @return screen to handle
+	 * {@code AlternativeNameAssociationExistsException}
+	 */
+	@ExceptionHandler(AlternativeNameAssociationExistsException.class)
+	public ModelAndView handleAlternativeNameAssociationExistsException(
+			final AlternativeNameAssociationExistsException
+				alternativeNameAssociationExistsException) {
+		return this.businessExceptionHandlerDelegate
+				.prepareModelAndView(
+						ALTERNATIVE_NAME_ASSOCIATION_EXISTS_MESSAGE_KEY,
+						ERROR_BUNDLE_NAME,
+						alternativeNameAssociationExistsException);
 	}
 	
 	/* Helper methods. */

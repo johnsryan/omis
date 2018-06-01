@@ -169,17 +169,11 @@ div.profileDetailsItem label::after{
 		width: calc(40% - 10px);
 		margin-left: 10%;
 	}
-	div.profileItem, div.profileDetailsWrapper span{
-		font-size: 1vw;
-	}4
 }
 
 @media only screen and (min-width:1200px ) {
 	div.profileItemContainer {
 		width: 30%;
-	}
-	div.profileItem, div.profileDetailsWrapper span{
-		font-size: .75vw;
 	}
 }
 
@@ -190,9 +184,6 @@ div.profileDetailsItem label::after{
 	div.profileDetailsWrapper{
 		margin-left: 35%;
 	}
-	div.profileItem, div.profileDetailsWrapper span{
-		font-size: .55vw;
-	}
 	div.profileDetailsWrapper {
 		width: 35%;
 	}
@@ -201,11 +192,5 @@ div.profileDetailsItem label::after{
 	}
 	div.profileItems:nth-child(3n+1) {
 		clear: left;
-	}
-}
-
-@media only screen and (min-width:2100px ) {
-	div.profileItem, div.profileDetailsWrapper span{
-		font-size: small;
 	}
 }

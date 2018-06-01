@@ -64,7 +64,8 @@ public class ParoleEligibilityServiceCreateNoteTests
 		AppearanceCategory appearanceCategory = this.appearanceCategoryDelegate
 				.create("Initial", true);
 		EligibilityStatusReason statusReason = eligibilityStatusReasonDelegate
-				.create("Programming incomplete", true);
+				.create("Programming incomplete",
+						EligibilityStatusCategory.APPEARING, true);
 		Date reviewDate = this.parseDateText("02/01/2017");
 		Date statusDate = this.parseDateText("01/01/2017");
 		String statusComment = "Programming complete next month.";
@@ -99,7 +100,8 @@ public class ParoleEligibilityServiceCreateNoteTests
 		AppearanceCategory appearanceCategory = this.appearanceCategoryDelegate
 				.create("Initial", true);
 		EligibilityStatusReason statusReason = eligibilityStatusReasonDelegate
-				.create("Programming incomplete", true);
+				.create("Programming incomplete",
+						EligibilityStatusCategory.APPEARING, true);
 		Date reviewDate = this.parseDateText("02/01/2017");
 		Date statusDate = this.parseDateText("01/01/2017");
 		String statusComment = "Programming complete next month.";

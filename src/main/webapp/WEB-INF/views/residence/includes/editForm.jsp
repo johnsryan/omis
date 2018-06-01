@@ -3,6 +3,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <fmt:setBundle basename="omis.msgs.common" var="commonBundle"/>
+<fmt:setBundle basename="omis.address.msgs.address" var="addressBundle"/>
 <fmt:bundle basename="omis.residence.msgs.residence">
 <sec:authorize var="editResidence" access="hasRole('RESIDENCE_TERM_EDIT') or hasRole('NON_RESIDENCE_TERM_EDIT') or (hasRole('RESIDENCE_TERM_CREATE') and hasRole('NON_RESIDENCE_TERM_CREATE')) or hasRole('ADMIN')"/>
 <form:form commandName="residenceForm" class="editForm">	
@@ -55,22 +56,105 @@
 	</form:select>	
 	<form:errors path="state" cssClass="error"/>
 </span>	
-<span class="fieldGroup" id="cityGroup">
-	<form:label path="city" class="fieldLabel">
-		<fmt:message key="cityLabel"/></form:label>
-	<form:select path="city" id="city">
-				<jsp:include page="cityOptions.jsp"/>
-	</form:select>			
-	<form:errors path="city" cssClass="error"/>
+	<c:choose>
+		<c:when	test="${residenceForm.createNewCity}">
+			<c:set var="newCityClass" value=""/>
+			<c:set var="existingCityClass" value="hidden"/>
+		</c:when>
+		<c:otherwise>
+			<c:set var="newCityClass" value="hidden"/>
+			<c:set var="existingCityClass" value=""/>
+		</c:otherwise>
+	</c:choose>
+<span class="fieldGroup">
+	<span class="fieldGroup" id="newCitySelectionGroup">
+			<c:choose>
+				<c:when test="${residenceForm.createNewCity}">
+					<label class="fieldLabel" for="cityName"><fmt:message key="cityLabel" bundle="${addressBundle}"/></label>
+					<form:radiobutton id="falseNewCity" class="fieldValue" path="createNewCity" value="false" />
+					<label for="falseNewCity"><fmt:message key="falseNewCityLabel" bundle="${addressBundle}"/></label>
+					<form:radiobutton id="trueNewCity" class="fieldValue" path="createNewCity"  value="true" checked ="checked"/>
+					<label for="trueNewCity" class="fieldValueLabel"><fmt:message key="trueNewCityLabel" bundle="${addressBundle}"/></label>
+				</c:when>
+				<c:otherwise>
+					<label class="fieldLabel" for="city"><fmt:message key="cityLabel"/></label>
+					<form:radiobutton id="falseNewCity" class="fieldValue" path="createNewCity" value="false" checked ="checked"/>
+					<label for="falseNewCity" class="fieldValueLabel"><fmt:message key="falseNewCityLabel" bundle="${addressBundle}"/></label>
+					<form:radiobutton id="trueNewCity" class="fieldValue" path="createNewCity"  value="true"/>
+					<label for="trueNewCity" class="fieldValueLabel"><fmt:message key="trueNewCityLabel" bundle="${addressBundle}"/></label>
+				</c:otherwise>
+			</c:choose>
+			<form:errors cssClass="error" path="createNewCity"/>	
+	<span class="${existingCityClass}" id="existingCityGroup">
+		<form:select path="city" id="city">
+					<jsp:include page="cityOptions.jsp"/>
+		</form:select>			
+		<form:errors path="city" cssClass="error"/>	
+	</span>
+	<span class="${newCityClass}" id="newCityGroup">	
+	<form:input path="cityName" id="cityName"/>		
+		<form:errors path="cityName" cssClass="error"/>	
+	</span>
+	</span>		
 </span>
-<span class="${displayClass} ${newLocationClass}" id="zipCodeGroup">
-	<form:label path="zipCode" class="fieldLabel">
-		<fmt:message key="zipCodeLabel"/></form:label>	
-	<form:select path="zipCode">
-			<jsp:include page="zipCodeOptions.jsp"/>
-	</form:select>
-	<form:errors path="zipCode" cssClass="error"/>
-</span>
+
+<c:choose>
+	<c:when test="${residenceForm.createNewCity or residenceForm.createNewZipCode}">
+			<c:set value="" var="newZipCodeClass"/>
+			<c:set value="hidden" var="existingZipCodeClass"/>
+	</c:when>
+	<c:otherwise>
+		<c:set value="hidden" var="newZipCodeClass"/>
+		<c:set value="" var="existingZipCodeClass"/>
+	</c:otherwise>
+</c:choose>
+<c:if test="${residenceForm.statusOption.name ne 'HOMELESS'}">
+	<span class="${displayClass} ${newLocationClass}" id="zipCodeGroup">
+		<span id="newZipCodeSelectionGroup">
+			<c:choose>
+			<c:when test="${residenceForm.createNewZipCode}">
+				<label class="fieldLabel" for="zipCodeValue"><fmt:message key="addressFieldsZipCodeLabel" bundle="${addressBundle}"/></label>
+				<c:if test="${residenceForm.createNewCity}">
+					<form:radiobutton id="falseNewZipCode" class="fieldValue" path="createNewZipCode" value="false" disabled="true"/>
+				</c:if>
+				<c:if test="${not residenceForm.createNewCity}">
+					<form:radiobutton id="falseNewZipCode" class="fieldValue" path="createNewZipCode" value="false" disabled="false"/>
+				</c:if>
+				<label for="falseNewZipCode" class="fieldValueLabel"><fmt:message key="falseNewZipCodeLabel" bundle="${addressBundle}"/></label>
+				<form:radiobutton id="trueNewZipCode" class="fieldValue" path="createNewZipCode"  value="true" checked ="checked"/>
+				<label for="trueNewZipCode" class="fieldValueLabel"><fmt:message key="trueNewZipCodeLabel" bundle="${addressBundle}"/></label>
+			</c:when>
+			<c:otherwise>
+				<label class="fieldLabel" for="zipCode"><fmt:message key="addressFieldsZipCodeLabel" bundle="${addressBundle}"/></label>
+				<c:if test="${residenceForm.createNewCity}">
+					<form:radiobutton id="falseNewZipCode" class="fieldValue" path="createNewZipCode" value="false" disabled="true" checked ="checked"/>
+				</c:if>
+				<c:if test="${not residenceForm.createNewCity}">
+					<form:radiobutton id="falseNewZipCode" class="fieldValue" path="createNewZipCode" value="false" disabled="false" checked ="checked"/>
+				</c:if>
+				<label for="falseNewZipCode" class="fieldValueLabel"><fmt:message key="falseNewZipCodeLabel" bundle="${addressBundle}"/></label>
+				<form:radiobutton id="trueNewZipCode" class="fieldValue" path="createNewZipCode"  value="true"/>
+				<label for="trueNewZipCode" class="fieldValueLabel"><fmt:message key="trueNewZipCodeLabel" bundle="${addressBundle}"/></label>
+			</c:otherwise>
+		</c:choose>
+		<form:errors cssClass="error" path="createNewZipCode"/>
+		</span>				
+		<span class="${existingZipCodeClass}" id="existingZipCodeGroup">
+			<form:select path="zipCode" id="zipCode">
+					<jsp:include page="zipCodeOptions.jsp"/>
+			</form:select>
+			<form:errors path="zipCode" cssClass="error"/>
+		</span>
+		<span class="${newZipCodeClass}" id="newZipCodeGroup">	
+			<form:input path="zipCodeValue" id="zipCodeValue"/>		
+			<form:errors path="zipCodeValue" cssClass="error"/>	
+			<form:label path="zipCodeExtension" class="fieldValueLabel"><fmt:message key="addressFieldsZipCodeExtensionLabel" bundle="${addressBundle}"/></form:label>
+			<form:input path="zipCodeExtension" id="zipCodeExtension"/>
+			<form:errors path="zipCodeExtension" cssClass="error"/>	
+		</span>
+	</span>
+</c:if>
+
 <c:choose>
 	<c:when test="${residenceForm.statusOption.name == 'GROUP_HOME' || residenceForm.statusOption.name == 'HOTEL'}">
 		<c:set var="displayClass" value=""/>

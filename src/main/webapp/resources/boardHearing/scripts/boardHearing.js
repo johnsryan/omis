@@ -7,13 +7,13 @@ window.onload = function() {
 		boardHearingNoteItemRowOnClick(index);
 	}
 	
-	document.getElementById("cancelled1").onclick = function(event) {
+	/*document.getElementById("cancelled1").onclick = function(event) {
 		if (event.target.checked) {
 			document.getElementById("reasonFields").classList.remove("hidden");
 		} else {
 			document.getElementById("reasonFields").classList.add("hidden");
 		}
-	};
+	};*/
 	
 	document.getElementById("paroleBoardItinerary").onchange = function(event) {
 		if (document.getElementById("videoConference" + event.target.value)) {

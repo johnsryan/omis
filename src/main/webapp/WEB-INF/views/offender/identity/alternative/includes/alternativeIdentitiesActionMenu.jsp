@@ -15,14 +15,14 @@
 		<sec:authorize access="(hasRole('OFFENDER_ALT_IDENTITY_VIEW') and hasRole('OFFENDER_SSN_VIEW')) or hasRole('ADMIN')">
 			<c:if test="${not empty offender}">
 			<li>
-				<a href="${pageContext.request.contextPath}/offender/identity/alternative/altIdentityListingFullReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="altIdentityListingFullReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/offender/identity/alternative/altIdentityListingFullReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="altIdentityListingFullReportLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>
 		<sec:authorize access="hasRole('OFFENDER_ALT_IDENTITY_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty offender}">
 			<li>
-				<a href="${pageContext.request.contextPath}/offender/identity/alternative/altIdentityListingRedactedReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="altIdentityListingRedactedReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/offender/identity/alternative/altIdentityListingRedactedReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="altIdentityListingRedactedReportLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>

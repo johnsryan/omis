@@ -14,6 +14,8 @@
 			<constructor-arg name="warrantCauseViolationDelegate" ref="warrantCauseViolationDelegate" />
 			<constructor-arg name="warrantNoteDelegate" ref="warrantNoteDelegate" />
 			<constructor-arg name="warrantArrestDelegate" ref="warrantArrestDelegate" />
+			<constructor-arg name="warrantCancellationDelegate" ref="warrantCancellationDelegate" />
+			<constructor-arg name="warrantReleaseDelegate" ref="warrantReleaseDelegate" />
 			<constructor-arg name="jailDelegate" ref="jailDelegate" />
 			<constructor-arg name="conditionDelegate" ref="conditionDelegate" />
 			<constructor-arg name="agreementDelegate" ref="agreementDelegate" />

@@ -29,17 +29,17 @@
 <c:forEach var="placementTermSummary" items="${placementTermSummaries}">
 	<tr>
 		<td><a class="actionMenuItem" href="${pageContext.request.contextPath}/supervision/placementTerm/placementTermTableRowActionMenu.html?placementTerm=${placementTermSummary.id}"></a></td>
-		<td><c:out value="${placementTermSummary.supervisoryOrganizationName}"/></td>
+		<td hidden="hidden"><c:out value="${placementTermSummary.supervisoryOrganizationName}"/></td>
 		<td><c:out value="${placementTermSummary.correctionalStatusName}"/></td>
 		<td><fmt:formatDate value="${placementTermSummary.startDate}" pattern="MM/dd/yyyy h:mm a"/></td>
 		<td><fmt:formatDate value="${placementTermSummary.endDate}" pattern="MM/dd/yyyy h:mm a"/></td>
 		<td><c:if test="${not empty placementTermSummary.dayCount}"><c:out value="${placementTermSummary.dayCount}"/></c:if></td>
 		<td><c:out value="${placementTermSummary.startChangeReasonName}"/></td>
-		<td><c:out value="${placementTermSummary.endChangeReasonName}"/></td>
-		<td><fmt:message key="placementStatusLabel.${placementTermSummary.status.name}" bundle="${placementTermBundle}"/></td>
-		<td><fmt:formatDate value="${placementTermSummary.statusStartDate}" pattern="MM/dd/yyyy h:mm a"/></td>
-		<td><fmt:formatDate value="${placementTermSummary.statusEndDate}" pattern="MM/dd/yyyy h:mm a"/></td>
-		<td><c:if test="${not empty placementTermSummary.status and placementTermSummary.status.name ne 'PLACED' and not empty placementTermSummary.statusDayCount}"><c:out value="${placementTermSummary.statusDayCount}"/></c:if></td>
+		<td hidden="hidden"><c:out value="${placementTermSummary.endChangeReasonName}"/></td>
+		<td hidden="hidden"><fmt:message key="placementStatusLabel.${placementTermSummary.status.name}" bundle="${placementTermBundle}"/></td>
+		<td hidden="hidden"><fmt:formatDate value="${placementTermSummary.statusStartDate}" pattern="MM/dd/yyyy h:mm a"/></td>
+		<td hidden="hidden"><fmt:formatDate value="${placementTermSummary.statusEndDate}" pattern="MM/dd/yyyy h:mm a"/></td>
+		<td hidden="hidden"><c:if test="${not empty placementTermSummary.status and placementTermSummary.status.name ne 'PLACED' and not empty placementTermSummary.statusDayCount}"><c:out value="${placementTermSummary.statusDayCount}"/></c:if></td>
 	</tr>
 </c:forEach>
 </fmt:bundle>

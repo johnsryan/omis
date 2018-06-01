@@ -42,6 +42,7 @@
 <body>
 	<sec:authorize access="hasRole('PAROLE_ELIGIBILITY_VIEW') or hasRole('ADMIN')">
 	<h1>
+		<a class="actionMenuItem" id="actionMenuLink" href="${pageContext.request.contextPath}/paroleEligibility/unresolvedEligibilitiesActionMenu.html"></a>
 		<fmt:message key="unresolvedEligibilityTitle"/>
 	</h1>
 	

@@ -28,8 +28,9 @@
 			</form:label>
 			<input id="clearedByInput"/>
 				<form:hidden id="clearedBy" path="clearedBy"/>
+				<a id="currentClearedBy" class="currentUserAccountLink"></a>
 				<a id="clearClearedBy" class="clearLink"></a>
-			<span id="clearedByDisplay">
+				<span id="clearedByDisplay">
 				<c:if test="${not empty warrantCancellationForm.clearedBy}" >
 					<c:out value="${warrantCancellationForm.clearedBy.name.lastName}, ${warrantCancellationForm.clearedBy.name.firstName}"/>
 				</c:if>

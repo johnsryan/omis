@@ -26,16 +26,16 @@
 		<sec:authorize access="hasRole('RESIDENCE_TERM_LIST') or hasRole('ADMIN')">
 			<c:if test="${not empty offender}">
 			<li>
-				<a href="${pageContext.request.contextPath}/residence/residenceListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="residenceListingReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/residence/residenceListingLegacyReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab adobeReportLink"><fmt:message key="residenceListingLegacyReportLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>
 		<sec:authorize access="hasRole('RESIDENCE_TERM_LIST') or hasRole('ADMIN')">
 			<c:if test="${not empty offender}">
 			<li>
-				<a href="${pageContext.request.contextPath}/residence/residenceListingLegacyReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="residenceListingLegacyReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/residence/residenceListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="residenceListingReportLinkLabel"/></a>
 			</li>
 			</c:if>
-		</sec:authorize>
+		</sec:authorize>		
 	</ul>
 </fmt:bundle>

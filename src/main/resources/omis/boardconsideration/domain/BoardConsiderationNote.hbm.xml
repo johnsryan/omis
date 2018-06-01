@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ - OMIS - Offender Management Information System
+ - Copyright (C) 2011 - 2017 State of Montana
+ -
+ - This program is free software: you can redistribute it and/or modify
+ - it under the terms of the GNU General Public License as published by
+ - the Free Software Foundation, either version 3 of the License, or
+ - (at your option) any later version.
+ -
+ - This program is distributed in the hope that it will be useful,
+ - but WITHOUT ANY WARRANTY; without even the implied warranty of
+ - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ - GNU General Public License for more details.
+ -
+ - You should have received a copy of the GNU General Public License
+ - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="omis.boardconsideration.domain">
+	<class	entity-name="omis.boardconsideration.domain.BoardConsiderationNote"
+			proxy="omis.boardconsideration.domain.BoardConsiderationNote"
+			name="omis.boardconsideration.domain.impl.BoardConsiderationNoteImpl"
+			table="`BOARD_CONSIDERATION_NOTE`">
+		<id name="id" type="java.lang.Long" column="`ID`">
+			<generator class="sequence">
+				<param name="sequence">`BOARD_CONSIDERATION_NOTE_SEQ`</param>
+			</generator>
+		</id>
+		<many-to-one name="hearingAnalysis" entity-name="omis.hearinganalysis.domain.HearingAnalysis" not-null="true" column="`HEARING_ANALYSIS_ID`"/>
+		<property name="description" type="string" not-null="true" column="`DESCRIPTION`"/>
+		<property name="date" type="java.util.Date" not-null="true" column="`DATE`"/>
+		<component name="creationSignature">
+			<many-to-one name="userAccount" column="`CREATE_ACCOUNT_ID`"
+			             not-null="true"/>
+			<property name="date" column="`CREATE_DATE`" not-null="true"/>
+		</component>
+		<component name="updateSignature">
+			<many-to-one name="userAccount" column="`UPDATE_ACCOUNT_ID`"
+			             not-null="true"/>
+			<property name="date" column="`UPDATE_DATE`" not-null="true"/>
+		</component>
+	</class>
+	<query name="findBoardConsiderationNote"><![CDATA[
+		select boardConsiderationNote
+		from omis.boardconsideration.domain.BoardConsiderationNote boardConsiderationNote
+		where
+			boardConsiderationNote.hearingAnalysis = :hearingAnalysis
+		and
+			boardConsiderationNote.description = :description
+		and
+			boardConsiderationNote.date = :date
+	]]></query>
+	<query name="findBoardConsiderationNoteExcluding"><![CDATA[
+		select boardConsiderationNote
+		from omis.boardconsideration.domain.BoardConsiderationNote boardConsiderationNote
+		where
+			boardConsiderationNote.hearingAnalysis = :hearingAnalysis
+		and
+			boardConsiderationNote.description = :description
+		and
+			boardConsiderationNote.date = :date
+		and
+			boardConsiderationNote <> :excludedBoardConsiderationNote
+	]]></query>
+	<query name="findBoardConsiderationNotesByHearingAnalysis"><![CDATA[
+		select boardConsiderationNote
+		from omis.boardconsideration.domain.BoardConsiderationNote boardConsiderationNote
+		where
+			boardConsiderationNote.hearingAnalysis = :hearingAnalysis
+	]]></query>
+</hibernate-mapping>

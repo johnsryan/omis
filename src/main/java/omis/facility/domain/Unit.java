@@ -89,14 +89,14 @@ public interface Unit extends Serializable {
 	 * 
 	 * @return active
 	 */
-	Boolean getActive();
+	Boolean getValid();
 	
 	/**
-	 * Sets the active value.
+	 * Sets the valid value.
 	 * 
-	 * @param active active
+	 * @param valid valid
 	 */
-	void setActive(Boolean active);
+	void setValid(Boolean valid);
 	
 		/**
 	 * Returns a hash code for {@code this}.

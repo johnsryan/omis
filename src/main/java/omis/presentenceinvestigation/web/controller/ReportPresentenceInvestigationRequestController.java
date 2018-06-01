@@ -1,21 +1,7 @@
 package omis.presentenceinvestigation.web.controller;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
-import omis.beans.factory.PropertyEditorFactory;
-import omis.offender.beans.factory.OffenderPropertyEditorFactory;
-import omis.offender.domain.Offender;
-import omis.offender.web.controller.delegate.OffenderSummaryModelDelegate;
-import omis.person.domain.Person;
-import omis.presentenceinvestigation.domain.PresentenceInvestigationRequest;
-import omis.presentenceinvestigation.report.PresentenceInvestigationRequestSummary;
-import omis.presentenceinvestigation.report.PresentenceInvestigationRequestSummaryReportService;
-import omis.presentenceinvestigation.service.PresentenceInvestigationRequestService;
-import omis.report.ReportFormat;
-import omis.user.domain.UserAccount;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -33,8 +19,18 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.servlet.ModelAndView;
 
+import omis.beans.factory.PropertyEditorFactory;
+import omis.offender.beans.factory.OffenderPropertyEditorFactory;
+import omis.offender.domain.Offender;
+import omis.offender.web.controller.delegate.OffenderSummaryModelDelegate;
+import omis.person.domain.Person;
+import omis.presentenceinvestigation.domain.PresentenceInvestigationRequest;
+import omis.presentenceinvestigation.report.PresentenceInvestigationRequestSummaryReportService;
+import omis.presentenceinvestigation.service.PresentenceInvestigationRequestService;
+import omis.report.ReportFormat;
 import omis.report.ReportRunner;
 import omis.report.web.controller.delegate.ReportControllerDelegate;
+import omis.user.domain.UserAccount;
 
 /**
  * Report presentence investigation request controller.
@@ -42,7 +38,7 @@ import omis.report.web.controller.delegate.ReportControllerDelegate;
  * @author Joel Norris
  * @author Annie Wahl
  * @author Josh Divine
- * @version 0.1.3 (May 2, 2018)
+ * @version 0.1.4 (May 15, 2018)
  * @since OMIS 3.0
  */
 @Controller
@@ -120,6 +116,12 @@ public class ReportPresentenceInvestigationRequestController {
 	private static final String USER_ACCOUNT_MODEL_KEY =
 			"AuditComponentRetrieverSpringMvcImpl#auditUserAccount";
 	
+	private static final String UNSUBMITTED_SUMMARIES_MODEL_KEY = 
+			"unsubmittedSummaries";
+	
+	private static final String SUBMITTED_SUMMARIES_MODEL_KEY = 
+			"submittedSummaries";
+	
 	/* Services. */
 	@Autowired
 	@Qualifier("reportRunner")
@@ -189,32 +191,40 @@ public class ReportPresentenceInvestigationRequestController {
 			@RequestParam(value = "offender", required = false)
 				final Person offender) {
 		ModelMap map = new ModelMap();
-		List<PresentenceInvestigationRequestSummary> summaries 
-			= new ArrayList<PresentenceInvestigationRequestSummary>();
-		
 		if(offender == null && assignedUser != null){
-			summaries = this.presentenceInvestigationRequestReportService
-					.findUnsubmittedPresentenceInvestigationRequestSummariesByUser(
-							assignedUser);
 			map.addAttribute(ASSIGNED_USER_MODEL_KEY, assignedUser);
+			map.addAttribute(UNSUBMITTED_SUMMARIES_MODEL_KEY, this
+					.presentenceInvestigationRequestReportService
+					.findUnsubmittedPresentenceInvestigationRequestSummariesByUser(
+							assignedUser));
+			map.addAttribute(SUBMITTED_SUMMARIES_MODEL_KEY, this
+					.presentenceInvestigationRequestReportService
+					.findSubmittedPresentenceInvestigationRequestSummariesByUser(
+							assignedUser));
 		}
 		else if(offender != null){
-			summaries = this.presentenceInvestigationRequestReportService
-			.findPresentenceInvestigationRequestSummariesByOffender(offender);
 			if(this.presentenceInvestigationRequestService.isOffender(offender)){
 				this.offenderSummaryModelDelegate.add(map,(Offender) offender);
 			}
 			map.addAttribute(OFFENDER_MODEL_KEY, offender);
+			map.addAttribute(SUMMARIES_MODEL_KEY, this
+					.presentenceInvestigationRequestReportService
+					.findPresentenceInvestigationRequestSummariesByOffender(
+							offender));
 			
 		}
 		else if(offender == null && assignedUser == null){
 			UserAccount user = this.retrieveUserAccount();
-			summaries = this.presentenceInvestigationRequestReportService
+			map.addAttribute(UNSUBMITTED_SUMMARIES_MODEL_KEY, this
+					.presentenceInvestigationRequestReportService
 					.findUnsubmittedPresentenceInvestigationRequestSummariesByUser(
-							user);
+							user));
+			map.addAttribute(SUBMITTED_SUMMARIES_MODEL_KEY, this
+					.presentenceInvestigationRequestReportService
+					.findSubmittedPresentenceInvestigationRequestSummariesByUser(
+							user));
 			map.addAttribute(ASSIGNED_USER_MODEL_KEY, user);
 		}
-		map.addAttribute(SUMMARIES_MODEL_KEY, summaries);
 		
 		return new ModelAndView(LIST_VIEW_NAME, map);
 	}

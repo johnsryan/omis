@@ -34,7 +34,7 @@ import omis.user.domain.UserAccount;
  * @author Joel Norris
  * @author Annie Wahl
  * @author Josh Divine
- * @version 0.1.3 (Apr 23, 2018)
+ * @version 0.1.4 (May 9, 2018)
  * @since OMIS 3.0
  */
 public class PresentenceInvestigationRequestImpl 
@@ -48,13 +48,10 @@ public class PresentenceInvestigationRequestImpl
 	private Date sentenceDate;
 	private UserAccount assignedUser;
 	private Docket docket;
-	private Date completionDate;
 	private PresentenceInvestigationCategory category;
 	private Date submissionDate;
 	private UpdateSignature updateSignature;
 	private CreationSignature creationSignature;
-
-	private Date actualSentenceDate;
 	
 	/** {@inheritDoc} */
 	@Override
@@ -114,12 +111,6 @@ public class PresentenceInvestigationRequestImpl
 		return this.expectedCompletionDate;
 	}
 
-	/** {@inhertiDoc} */
-	@Override
-	public Date getCompletionDate() {
-		return this.completionDate;
-	}
-
 	/** {@inheritDoc} */
 	@Override
 	public UserAccount getAssignedUser() {
@@ -142,12 +133,6 @@ public class PresentenceInvestigationRequestImpl
 	@Override
 	public void setRequestDate(final Date requestDate) {
 		this.requestDate = requestDate;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void setCompletionDate(final Date completionDate) {
-		this.completionDate = completionDate;
 	}
 
 	/** {@inheritDoc} */
@@ -190,18 +175,6 @@ public class PresentenceInvestigationRequestImpl
 	@Override
 	public void setCategory(PresentenceInvestigationCategory category) {
 		this.category = category;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public Date getActualSentenceDate() {
-		return actualSentenceDate;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void setActualSentenceDate(final Date actualSentenceDate) {
-		this.actualSentenceDate = actualSentenceDate;
 	}
 	
 	/** {@inheritDoc} */

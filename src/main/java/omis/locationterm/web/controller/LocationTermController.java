@@ -352,9 +352,11 @@ public class LocationTermController {
 		ModelAndView mav = new ModelAndView(LIST_VIEW_NAME);
 		mav.addObject(LOCATION_TERM_SUMMARIES_MODEL_KEY, locationTermSummaries);
 		if (placementTerm != null) {
-			mav.addObject(SUPERVISORY_ORGANIZATION_MODEL_KEY,
-					placementTerm.getSupervisoryOrganizationTerm()
-						.getSupervisoryOrganization());
+			if (placementTerm.getSupervisoryOrganizationTerm() != null) {
+				mav.addObject(SUPERVISORY_ORGANIZATION_MODEL_KEY,
+						placementTerm.getSupervisoryOrganizationTerm()
+							.getSupervisoryOrganization());
+			}
 			mav.addObject(CORRECTIONAL_STATUS_MODEL_KEY,
 					placementTerm.getCorrectionalStatusTerm()
 						.getCorrectionalStatus());
@@ -447,7 +449,8 @@ public class LocationTermController {
 			locationTermForm.setAllowLocation(true);
 			locationTermForm.setAllowState(true);
 			locationTermForm.setState(homeState);
-			if (placementTerm != null) {
+			if (placementTerm != null
+					&& placementTerm.getSupervisoryOrganizationTerm() != null) {
 				locationTermForm.setEndDate(
 						DateRange.getEndDate(placementTerm.getDateRange()));
 				locationTermForm.setEndTime(
@@ -542,7 +545,7 @@ public class LocationTermController {
 				locationTermForm.setEndTime(this.parseTimeText(defaultEndTime));
 			}
 		}
-		locationTermForm.setAllowMultipleReasonTerms(true);
+		locationTermForm.setAllowMultipleReasonTerms(false);
 		List<LocationReasonTerm> reasonTerms = this.locationTermService
 				.findReasonTerms(locationTerm);
 		Collections.reverse(reasonTerms);

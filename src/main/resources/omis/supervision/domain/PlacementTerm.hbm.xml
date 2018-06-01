@@ -46,7 +46,7 @@
 			</generator>
 		</id>
 		<many-to-one name="offender" entity-name="omis.offender.domain.Offender" not-null="true" column="`OFFENDER_ID`"/>
-		<many-to-one name="supervisoryOrganizationTerm" entity-name="omis.supervision.domain.SupervisoryOrganizationTerm" not-null="true" column="`SUPERVISORY_ORGANZTN_TERM_ID`"/>
+		<many-to-one name="supervisoryOrganizationTerm" entity-name="omis.supervision.domain.SupervisoryOrganizationTerm" not-null="false" column="`SUPERVISORY_ORGANZTN_TERM_ID`"/>
 		<many-to-one name="correctionalStatusTerm" entity-name="omis.supervision.domain.CorrectionalStatusTerm" not-null="true" column="`CORRECTIONAL_STATUS_TERM_ID`"/>
 		<many-to-one name="startChangeReason" entity-name="omis.supervision.domain.PlacementTermChangeReason" not-null="false" column="`START_CHANGE_REASON_ID`"/>
 		<many-to-one name="endChangeReason" entity-name="omis.supervision.domain.PlacementTermChangeReason" not-null="false" column="`END_CHANGE_REASON_ID`"/>
@@ -94,8 +94,9 @@
 		select placementTerm
 		from omis.supervision.domain.PlacementTerm placementTerm
 		where placementTerm.offender = :offender
-			and placementTerm.correctionalStatusTerm.correctionalStatus = :correctionalStatus
-			and placementTerm.supervisoryOrganizationTerm.supervisoryOrganization = :supervisoryOrganization
+			and placementTerm.correctionalStatusTerm = :correctionalStatusTerm
+			and (placementTerm.supervisoryOrganizationTerm = :supervisoryOrganizationTerm
+				or (placementTerm.supervisoryOrganizationTerm is null and :supervisoryOrganizationTerm is null))
 			and (placementTerm.dateRange.startDate = :startDate
 			  or (placementTerm.dateRange.startDate is null and :startDate is null))
 			and (placementTerm.dateRange.endDate = :endDate
@@ -107,8 +108,9 @@
 		select placementTerm
 		from omis.supervision.domain.PlacementTerm placementTerm
 		where placementTerm.offender = :offender
-			and placementTerm.correctionalStatusTerm.correctionalStatus = :correctionalStatus
-			and placementTerm.supervisoryOrganizationTerm.supervisoryOrganization = :supervisoryOrganization
+			and placementTerm.correctionalStatusTerm = :correctionalStatusTerm
+			and (placementTerm.supervisoryOrganizationTerm = :supervisoryOrganizationTerm
+				or (placementTerm.supervisoryOrganizationTerm is null and :supervisoryOrganizationTerm is null))
 			and (placementTerm.dateRange.startDate = :startDate
 			  or (placementTerm.dateRange.startDate is null and :startDate is null))
 			and (placementTerm.dateRange.endDate = :endDate
@@ -182,7 +184,8 @@
 		select placementTerm
 		from omis.supervision.domain.PlacementTerm placementTerm
 		where placementTerm.offender = :offender
-		  and placementTerm.dateRange.endDate = :endDate
+		  and (placementTerm.dateRange.endDate = :endDate
+		    or (placementTerm.dateRange.endDate is null and :endDate is null))
 	]]></query>
 	
 	<!-- Counts placement term by offender after date. -->

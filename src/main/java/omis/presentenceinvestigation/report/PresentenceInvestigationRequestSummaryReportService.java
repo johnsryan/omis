@@ -29,16 +29,20 @@ import omis.user.domain.UserAccount;
  * @author Ryan Johns
  * @author Annie Wahl
  * @author Josh Divine
- * @version 0.1.2 (Apr 24, 2018)
+ * @version 0.1.3 (May 15, 2018)
  * @since OMIS 3.0
  */
 public interface PresentenceInvestigationRequestSummaryReportService {
 	
-	/** Finds presentence investigation request summaries by staff member.
-	 * @param user - user.
-	 * @return list of presentence investigation summaries. */
+	/** 
+	 * Returns a list of presentence investigation request summaries by staff 
+	 * member that have been submitted.
+	 * 
+	 * @param user user
+	 * @return list of presentence investigation summaries. 
+	 */
 	List<PresentenceInvestigationRequestSummary> 
-		findPresentenceInvestigationRequestSummariesByUser(
+		findSubmittedPresentenceInvestigationRequestSummariesByUser(
 				UserAccount user);
 	
 	/**

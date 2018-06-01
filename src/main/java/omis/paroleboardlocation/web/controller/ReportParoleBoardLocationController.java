@@ -17,10 +17,13 @@
 */
 package omis.paroleboardlocation.web.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
@@ -34,11 +37,15 @@ import omis.beans.factory.PropertyEditorFactory;
 import omis.paroleboardlocation.domain.ParoleBoardLocation;
 import omis.paroleboardlocation.report.ParoleBoardLocationSummary;
 import omis.paroleboardlocation.report.ParoleBoardLocationSummaryReportService;
+import omis.report.ReportFormat;
+import omis.report.ReportRunner;
+import omis.report.web.controller.delegate.ReportControllerDelegate;
 
 /**
  * Controller for displaying parole board locations.
  * 
  * @author Josh Divine
+ * @author Sierra Rosales
  * @version 0.1.0 (Feb 21, 2018)
  * @since OMIS 3.0
  */
@@ -64,6 +71,16 @@ public class ReportParoleBoardLocationController {
 	private static final String PAROLE_BOARD_LOCATION_MODEL_KEY = 
 			"paroleBoardLocation";
 	
+	/* Report Names. */
+	
+	private static final String BOARD_LOCATION_DETAILS_REPORT_NAME
+		= "/BOPP/Parole_Board_Location_Details";
+	
+	/* Report Parameters. */
+	
+	private static final String BOARD_LOCATION_DETAILS_ID_REPORT_PARAM_NAME
+		= "BOARD_LOCATION_ID";		
+	
 	/* Property editor factories. */
 	
 	@Autowired
@@ -76,6 +93,18 @@ public class ReportParoleBoardLocationController {
 	@Qualifier("paroleBoardLocationSummaryReportService")
 	private ParoleBoardLocationSummaryReportService 
 			paroleBoardLocationSummaryReportService;
+	
+	/* Report runners. */
+	
+	@Autowired
+	@Qualifier("reportRunner")
+	private ReportRunner reportRunner;
+	
+	/* Controller delegates. */
+	
+	@Autowired
+	@Qualifier("reportControllerDelegate")
+	private ReportControllerDelegate reportControllerDelegate;	
 	
 	/* Constructors. */
 	
@@ -120,6 +149,31 @@ public class ReportParoleBoardLocationController {
 		mav.addObject(PAROLE_BOARD_LOCATION_MODEL_KEY, 
 				paroleBoardLocation);
 		return mav;
+	}
+	
+	/**
+	 * Returns the report for the specified board location.
+	 * 
+	 * @param paroleBoardLocation parole board location
+	 * @param reportFormat report format
+	 * @return response entity with report
+	 */
+	@RequestMapping(value = "/boardLocationDetailsReport.html",
+			method = RequestMethod.GET)
+	@PreAuthorize("hasRole('PAROLE_BOARD_LOCATION_LIST') or hasRole('ADMIN')")
+	public ResponseEntity<byte []> reportBoardLocationDetails(@RequestParam(
+			value = "paroleBoardLocation", required = true)
+			final ParoleBoardLocation paroleBoardLocation,
+			@RequestParam(value = "reportFormat", required = true)
+			final ReportFormat reportFormat) {
+		Map<String, String> reportParamMap = new HashMap<String, String>();
+		reportParamMap.put(BOARD_LOCATION_DETAILS_ID_REPORT_PARAM_NAME,
+				Long.toString(paroleBoardLocation.getId()));
+		byte[] doc = this.reportRunner.runReport(
+				BOARD_LOCATION_DETAILS_REPORT_NAME,
+				reportParamMap, reportFormat);
+		return this.reportControllerDelegate.constructReportResponseEntity(
+				doc, reportFormat);
 	}
 	
 	/* Init binders. */

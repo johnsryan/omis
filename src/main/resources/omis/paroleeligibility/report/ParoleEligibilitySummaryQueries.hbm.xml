@@ -51,8 +51,11 @@
 		select new omis.paroleeligibility.report.ParoleEligibilitySummary(
 				eligibility.id,
 				(select hearingAnalysis.id
-				 from omis.hearinganalysis.domain.HearingAnalysis hearingAnalysis
-				 where hearingAnalysis.eligibility = eligibility),
+					from 
+			 			omis.hearinganalysis.domain.HearingAnalysis hearingAnalysis
+				 	inner join hearingAnalysis.eligibility eligibility2
+			 		where
+						eligibility2 = eligibility),
 				eligibility.hearingEligibilityDate,
 				appearanceCategory.name,
 				status.category,
@@ -63,23 +66,84 @@
 				name.firstName,
 				name.middleName,
 				offender.offenderNumber,
+				(select hearingAnalysis2.expectedCompletionDate
+					from 
+			 			omis.hearinganalysis.domain.HearingAnalysis hearingAnalysis2
+			 		inner join hearingAnalysis2.eligibility eligibility3
+			 		where
+						eligibility3 = eligibility),
+				(select organization.name
+					from 
+			 			omis.hearinganalysis.domain.HearingAnalysis hearingAnalysis3
+		 			inner join hearingAnalysis3.eligibility eligibility4
+		 			inner join hearingAnalysis3.paroleBoardItinerary paroleBoardItinerary
+					inner join paroleBoardItinerary.paroleBoardLocation paroleBoardLocation
+		 			inner join paroleBoardLocation.location location
+					inner join location.organization organization
+			 		where
+						eligibility4 = eligibility),
 				boardHearing.hearingDate
 			)
-		from omis.paroleeligibility.domain.ParoleEligibility as eligibility
-		  left join eligibility.appearanceCategory as appearanceCategory
-	 	  inner join eligibility.status as status
-	  	  left join status.reason as reason
-	  	  inner join eligibility.offender offender
-	  	  inner join offender.name name,
-	  	  omis.boardhearing.domain.BoardHearing boardHearing
-		where 
-			eligibility = boardHearing.paroleEligibility
-		and
+		from omis.boardhearing.domain.BoardHearing as boardHearing
+			right outer join boardHearing.paroleEligibility as eligibility
+			left join eligibility.appearanceCategory as appearanceCategory
+			inner join eligibility.status as status
+			left join status.reason as reason
+			inner join eligibility.offender offender
+			inner join offender.name name
+		where
 			boardHearing not in (select boardHearingDecision.hearing
 								 from omis.boardhearingdecision.domain.BoardHearingDecision boardHearingDecision
 								 where boardHearingDecision.hearing = boardHearing)
 		and
 			status.category not in ('WAIVED', 'INELIGIBLE')
 		order by eligibility.hearingEligibilityDate desc
+	]]></query>
+	<query name="summarizeParoleEligibility"><![CDATA[
+		select new omis.paroleeligibility.report.ParoleEligibilitySummary(
+				eligibility.id,
+				(select hearingAnalysis.id
+					from 
+			 			omis.hearinganalysis.domain.HearingAnalysis hearingAnalysis
+				 	inner join hearingAnalysis.eligibility eligibility2
+			 		where
+						eligibility2 = :paroleEligibility),
+				eligibility.hearingEligibilityDate,
+				appearanceCategory.name,
+				status.category,
+				status.date,
+				eligibility.reviewDate,
+				reason.name,
+				name.lastName,
+				name.firstName,
+				name.middleName,
+				offender.offenderNumber,
+				(select hearingAnalysis2.expectedCompletionDate
+					from 
+			 			omis.hearinganalysis.domain.HearingAnalysis hearingAnalysis2
+			 		inner join hearingAnalysis2.eligibility eligibility3
+			 		where
+						eligibility3 = :paroleEligibility),
+				(select organization.name
+					from 
+			 			omis.hearinganalysis.domain.HearingAnalysis hearingAnalysis3
+		 			inner join hearingAnalysis3.eligibility eligibility4
+		 			inner join hearingAnalysis3.paroleBoardItinerary paroleBoardItinerary
+					inner join paroleBoardItinerary.paroleBoardLocation paroleBoardLocation
+		 			inner join paroleBoardLocation.location location
+					inner join location.organization organization
+			 		where
+						eligibility4 = :paroleEligibility),
+				boardHearing.hearingDate
+			)
+		from omis.boardhearing.domain.BoardHearing as boardHearing
+			right outer join boardHearing.paroleEligibility as eligibility
+			left join eligibility.appearanceCategory as appearanceCategory
+			inner join eligibility.status as status
+			left join status.reason as reason
+			inner join eligibility.offender offender
+			inner join offender.name name
+		where
+			eligibility = :paroleEligibility
 	]]></query>
 </hibernate-mapping>

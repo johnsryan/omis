@@ -7,7 +7,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import omis.address.domain.Address;
 import omis.address.domain.ZipCode;
+import omis.address.web.form.AddressFields;
 import omis.audit.domain.VerificationMethod;
 import omis.location.domain.Location;
 import omis.region.domain.City;
@@ -73,6 +75,28 @@ public class ResidenceForm {
 	= new ArrayList<NonResidenceTerm>();
 	
 	private Boolean endConflictingNonResidenceTerms; 
+	
+	private AddressFields addressFields;
+	
+	private Address existingAddress;
+	
+	private ExistingResidenceAddressOperation existingAddressOperation;
+	
+	private Boolean showAddressFields;
+	
+	private Boolean enterAddressFields;
+	
+	private String existingStringAddressQuery;
+	
+	private Boolean createNewCity;
+	
+	private String cityName;
+	
+	private Boolean createNewZipCode;
+	
+	private String zipCodeValue;
+	
+	private String zipCodeExtension;
 	
 	/**
 	 * Instantiates a default instance of residence form.
@@ -498,5 +522,203 @@ public class ResidenceForm {
 	 */
 	public void setEndConflictingNonResidenceTerms(final Boolean endConflictingNonResidenceTerms) {
 		this.endConflictingNonResidenceTerms = endConflictingNonResidenceTerms;
+	}
+
+	/**
+	 *
+	 *
+	 * @return the addressFields
+	 */
+	public AddressFields getAddressFields() {
+		return this.addressFields;
+	}
+
+	/**
+	 *
+	 *
+	 * @param addressFields addressFields
+	 */
+	public void setAddressFields(AddressFields addressFields) {
+		this.addressFields = addressFields;
+	}
+
+	/**
+	 *
+	 *
+	 * @return the existingAddress
+	 */
+	public Address getExistingAddress() {
+		return this.existingAddress;
+	}
+
+	/**
+	 *
+	 *
+	 * @param existingAddress existingAddress
+	 */
+	public void setExistingAddress(Address existingAddress) {
+		this.existingAddress = existingAddress;
+	}
+
+	/**
+	 *
+	 *
+	 * @return the existingAddressOperation
+	 */
+	public ExistingResidenceAddressOperation getExistingAddressOperation() {
+		return this.existingAddressOperation;
+	}
+
+	/**
+	 *
+	 *
+	 * @param existingAddressOperation existingAddressOperation
+	 */
+	public void setExistingAddressOperation(ExistingResidenceAddressOperation existingAddressOperation) {
+		this.existingAddressOperation = existingAddressOperation;
+	}
+
+	/**
+	 *
+	 *
+	 * @return the showAddressFields
+	 */
+	public Boolean getShowAddressFields() {
+		return this.showAddressFields;
+	}
+
+	/**
+	 *
+	 *
+	 * @param showAddressFields showAddressFields
+	 */
+	public void setShowAddressFields(Boolean showAddressFields) {
+		this.showAddressFields = showAddressFields;
+	}
+
+	/**
+	 *
+	 *
+	 * @return the enterAddressFields
+	 */
+	public Boolean getEnterAddressFields() {
+		return this.enterAddressFields;
+	}
+
+	/**
+	 *
+	 *
+	 * @param enterAddressFields enterAddressFields
+	 */
+	public void setEnterAddressFields(Boolean enterAddressFields) {
+		this.enterAddressFields = enterAddressFields;
+	}
+
+	/**
+	 *
+	 *
+	 * @return the existingStringAddress
+	 */
+	public String getExistingStringAddressQuery() {
+		return this.existingStringAddressQuery;
+	}
+
+	/**
+	 *
+	 *
+	 * @param existingStringAddressQuery existing String Address query
+	 */
+	public void setExistingStringAddressQuery(String existingStringAddressQuery) {
+		this.existingStringAddressQuery = existingStringAddressQuery;
+	}
+
+	/**
+	 *
+	 *
+	 * @return the createNewCity
+	 */
+	public Boolean getCreateNewCity() {
+		return this.createNewCity;
+	}
+
+	/**
+	 *
+	 *
+	 * @param createNewCity createNewCity
+	 */
+	public void setCreateNewCity(Boolean createNewCity) {
+		this.createNewCity = createNewCity;
+	}
+
+	/**
+	 *
+	 *
+	 * @return the createNewZipCode
+	 */
+	public Boolean getCreateNewZipCode() {
+		return this.createNewZipCode;
+	}
+
+	/**
+	 *
+	 *
+	 * @param createNewZipCode createNewZipCode
+	 */
+	public void setCreateNewZipCode(Boolean createNewZipCode) {
+		this.createNewZipCode = createNewZipCode;
+	}
+
+	/**
+	 *
+	 *
+	 * @return the cityName
+	 */
+	public String getCityName() {
+		return this.cityName;
+	}
+
+	/**
+	 *
+	 *
+	 * @param cityName cityName
+	 */
+	public void setCityName(String cityName) {
+		this.cityName = cityName;
+	}
+
+	/**
+	 *
+	 *
+	 * @return the zipCodeValue
+	 */
+	public String getZipCodeValue() {
+		return this.zipCodeValue;
+	}
+
+	/**
+	 *
+	 *
+	 * @param zipCodeValue zipCodeValue
+	 */
+	public void setZipCodeValue(String zipCodeValue) {
+		this.zipCodeValue = zipCodeValue;
+	}
+
+	/**
+	 *
+	 *
+	 * @return the zipCodeExtension
+	 */
+	public String getZipCodeExtension() {
+		return this.zipCodeExtension;
+	}
+
+	/**
+	 *
+	 *
+	 * @param zipCodeExtension zipCodeExtension
+	 */
+	public void setZipCodeExtension(String zipCodeExtension) {
+		this.zipCodeExtension = zipCodeExtension;
 	}
 }

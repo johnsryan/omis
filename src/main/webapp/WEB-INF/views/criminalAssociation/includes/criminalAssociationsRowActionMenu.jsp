@@ -21,7 +21,7 @@
 	<sec:authorize access="hasRole('CRIMINAL_ASSOCIATION_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty criminalAssociation}">
 			<li>
-				<a href="${pageContext.request.contextPath}/criminalAssociation/criminalAssociationDetailsReport.html?criminalAssociation=${criminalAssociation.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="criminalAssociationDetailsReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/criminalAssociation/criminalAssociationDetailsReport.html?criminalAssociation=${criminalAssociation.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="criminalAssociationDetailsReportLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>

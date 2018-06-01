@@ -40,7 +40,7 @@
 		<sec:authorize access="hasRole('PLACEMENT_TERM_VIEW') or hasRole('ADMIN')">
 		<c:if test="${not empty placementTerm}">
 			<li>
-				<a href="${pageContext.request.contextPath}/supervision/placementTerm/placementTermDetailReport.html?placementTerm=${placementTerm.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="placementTermDetailsReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/supervision/placementTerm/placementTermDetailReport.html?placementTerm=${placementTerm.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="placementTermDetailsReportLinkLabel"/></a>
 			</li>
 		</c:if>
 	</sec:authorize>

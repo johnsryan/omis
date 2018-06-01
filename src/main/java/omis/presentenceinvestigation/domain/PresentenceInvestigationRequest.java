@@ -31,7 +31,7 @@ import omis.user.domain.UserAccount;
  * @author Ryan Johns
  * @author Annie Wahl
  * @author Josh Divine
- * @version 0.1.2 (Apr 23, 2018)
+ * @version 0.1.3 (May 9, 2018)
  * @since OMIS 3.0
  */
 public interface PresentenceInvestigationRequest 
@@ -48,10 +48,6 @@ public interface PresentenceInvestigationRequest
 	/** Gets expected completion date.
 	 * @return expected completion date. */
 	public Date getExpectedCompletionDate();
-	
-	/** Gets completion date. 
-	 * @return completion date. */
-	public Date getCompletionDate();
 	
 	/** Gets assigned user.
 	 * @return assigned user. */
@@ -82,11 +78,7 @@ public interface PresentenceInvestigationRequest
 	 * @param requestDate - request date. */
 	public void setRequestDate(Date requestDate);
 	
-	/** Sets completion date. 
-	 * @param completionDate - completion date. */
-	public void setCompletionDate(Date completionDate);
-	
-	/** Sets expected completion date.
+		/** Sets expected completion date.
 	 * @param expectedCompletionDate - expected completion date. */
 	public void setExpectedCompletionDate(Date expectedCompletionDate);
 	
@@ -115,43 +107,4 @@ public interface PresentenceInvestigationRequest
 	 * @param sentenceDate - Date
 	 */
 	public void setSentenceDate(Date sentenceDate);
-	
-	/**
-	 * Returns the actual sentence date for the presentence investigation 
-	 * request.
-	 * 
-	 * @return actual sentence date
-	 */
-	public Date getActualSentenceDate();
-	
-	/**
-	 * Sets the actual sentence date for the presentence investigation request.
-	 * 
-	 * @param actualSentenceDate actual sentence date
-	 */
-	public void setActualSentenceDate(Date actualSentenceDate);
-	
-	 /** Compares {@code this} and {@code obj} for equality.
-	 * <p>
-	 * Any mandatory property may be used in the comparison. If a  mandatory
-	 * property of {@code this} that is used in the comparison is {@code null}
-	 * an {@code IllegalStateException} will be thrown.
-	 * @param obj reference object with which to compare {@code this}
-	 * @return {@code true} if {@code this} and {@code obj} are equal;
-	 * {@code false} otherwise
-	 * @throws IllegalStateException if a mandatory property of {@code this}
-	 * that is used in the comparison is {@code null} */
-	@Override
-	boolean equals(Object obj);
-	
-	/** Returns a hash code for {@code this}.
-	 * <p>
-	 * Any mandatory property of {@code this} may be used in the hash code. If
-	 * a mandatory property that is used in the hash code is {@code null} an
-	 * {@code IllegalStateException} will be thrown.
-	 * @return hash code
-	 * @throws IllegalStateException if a mandatory property of {@code this}
-	 * that is used in the hash code is {@code null} */
-	@Override
-	int hashCode();
 }

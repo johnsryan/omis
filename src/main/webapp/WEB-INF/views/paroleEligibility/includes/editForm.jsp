@@ -18,7 +18,8 @@
 
 <%--
  - Author: Trevor Isles
- - Date: Dec 14, 2017
+ - Author: Annie Wahl
+ - Date: May 23, 2018
  - Since: OMIS 3.0
  --%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>

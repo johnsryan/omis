@@ -1,4 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+ - OMIS - Offender Management Information System
+ - Copyright (C) 2011 - 2017 State of Montana
+ -
+ - This program is free software: you can redistribute it and/or modify
+ - it under the terms of the GNU General Public License as published by
+ - the Free Software Foundation, either version 3 of the License, or
+ - (at your option) any later version.
+ -
+ - This program is distributed in the hope that it will be useful,
+ - but WITHOUT ANY WARRANTY; without even the implied warranty of
+ - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ - GNU General Public License for more details.
+ -
+ - You should have received a copy of the GNU General Public License
+ - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<!-- 
+  - Violation event configuration.
+  -
+  - Author: Annie Wahl
+  - Author: Josh Divine
+  - Version: 0.1.5 (May 17, 2018)
+  - Since: OMIS 3.0
+  -->
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -8,6 +33,8 @@
 		http://www.springframework.org/schema/context
 		http://www.springframework.org/schema/context/spring-context-3.1.xsd">
 		
+		<!-- Services -->
+		
 		<bean id="violationEventService" class="omis.violationevent.service.impl.ViolationEventServiceImpl">
 			<constructor-arg name="violationEventDelegate" ref="violationEventDelegate" />
 			<constructor-arg name="disciplinaryCodeViolationDelegate" ref="disciplinaryCodeViolationDelegate" />
@@ -16,20 +43,29 @@
 			<constructor-arg name="conditionViolationDelegate" ref="conditionViolationDelegate" />
 			<constructor-arg name="documentDelegate" ref="documentDelegate" />
 			<constructor-arg name="documentTagDelegate" ref="documentTagDelegate" />
-			<constructor-arg name="supervisoryOrganizationDao" ref="supervisoryOrganizationDao" />
+			<constructor-arg name="supervisoryOrganizationDelegate" ref="supervisoryOrganizationDelegate" />
 			<constructor-arg name="disciplinaryCodeDelegate" ref="disciplinaryCodeDelegate" />
 			<constructor-arg name="facilityDelegate" ref="facilityDelegate" />
-			<constructor-arg name="treatmentCenterDao" ref="treatmentCenterDao" />
-			<constructor-arg name="preReleaseCenterDao" ref="preReleaseCenterDao" />
-			<constructor-arg name="communitySupervisionOfficeDao" ref="communitySupervisionOfficeDao" />
-			<constructor-arg name="assessmentSanctionRevocationCenterDao" ref="assessmentSanctionRevocationCenterDao" />
+			<constructor-arg name="treatmentCenterDelegate" ref="treatmentCenterDelegate" />
+			<constructor-arg name="preReleaseCenterDelegate" ref="preReleaseCenterDelegate" />
+			<constructor-arg name="communitySupervisionOfficeDelegate" ref="communitySupervisionOfficeDelegate" />
+			<constructor-arg name="assessmentSanctionRevocationCenterDelegate" ref="assessmentSanctionRevocationCenterDelegate" />
 			<constructor-arg name="conditionDelegate" ref="conditionDelegate" />
+			<constructor-arg name="hearingDelegate" ref="hearingDelegate" />
+			<constructor-arg name="hearingNoteDelegate" ref="hearingNoteDelegate" />
+			<constructor-arg name="hearingStatusDelegate" ref="hearingStatusDelegate" />
+			<constructor-arg name="imposedSanctionDelegate" ref="imposedSanctionDelegate" />
+			<constructor-arg name="infractionDelegate" ref="infractionDelegate" />
+			<constructor-arg name="userAttendanceDelegate" ref="userAttendanceDelegate" />
+			<constructor-arg name="unitDelegate" ref="unitDelegate" />
+		</bean>
+		
+		<bean id="violationEventProfileItemService" class="omis.violationevent.report.impl.hibernate.ViolationEventProfileItemServiceHibernateImpl">
+			<constructor-arg name="sessionFactory" ref="sessionFactory"/> 
 		</bean>
 		
 		
-		
-		
-		
+		<!-- Data access objects -->
 		
 		<bean id="violationEventDao" class="omis.violationevent.dao.impl.hibernate.ViolationEventDaoHibernateImpl">
 			<constructor-arg name="sessionFactory" ref="sessionFactory" />
@@ -51,12 +87,12 @@
 			<constructor-arg name="entityName" value="omis.violationevent.domain.ViolationEventNote" />
 		</bean>
 		
+		<bean id="conditionViolationDao" class="omis.violationevent.dao.impl.hibernate.ConditionViolationDaoHibernateImpl">
+			<constructor-arg name="sessionFactory" ref="sessionFactory" />
+			<constructor-arg name="entityName" value="omis.violationevent.domain.ConditionViolation" />
+		</bean>
 		
-		
-		
-		
-		
-		
+		<!-- Delegates -->
 		
 		<bean id="violationEventDelegate" class="omis.violationevent.service.delegate.ViolationEventDelegate">
 			<constructor-arg name="violationEventDao" ref="violationEventDao" />
@@ -82,11 +118,13 @@
 			<constructor-arg name="auditComponentRetriever" ref="auditComponentRetriever" />
 		</bean>
 		
-		
-		
-		<bean id="violationEventProfileItemService" class="omis.violationevent.report.impl.hibernate.ViolationEventProfileItemServiceHibernateImpl">
-			<constructor-arg name="sessionFactory" ref="sessionFactory"/> 
+		<bean id="conditionViolationDelegate" class="omis.violationevent.service.delegate.ConditionViolationDelegate">
+			<constructor-arg name="conditionViolationDao" ref="conditionViolationDao" />
+			<constructor-arg name="conditionViolationInstanceFactory" ref="conditionViolationInstanceFactory" />
+			<constructor-arg name="auditComponentRetriever" ref="auditComponentRetriever" />
 		</bean>
+		
+		<!-- Instance factories -->
 		
 		<bean id="violationEventInstanceFactory" class="omis.instance.factory.hibernate.impl.InstanceFactoryHibernateImpl">
 			<constructor-arg name="instanceFactoryDelegate" ref="instanceFactoryDelegate" />
@@ -108,8 +146,12 @@
 			<constructor-arg name="entityName" value="omis.violationevent.domain.ViolationEventNote" />
 		</bean>
 		
+		<bean id="conditionViolationInstanceFactory" class="omis.instance.factory.hibernate.impl.InstanceFactoryHibernateImpl">
+			<constructor-arg name="instanceFactoryDelegate" ref="instanceFactoryDelegate" />
+			<constructor-arg name="entityName" value="omis.violationevent.domain.ConditionViolation" />
+		</bean>
 		
-		
+		<!--Property editor factories -->
 		
 		<bean id="violationEventPropertyEditorFactory"
 		class="omis.beans.factory.impl.hibernate.PropertyEditorFactoryHibernateImpl">
@@ -143,6 +185,16 @@
 			<constructor-arg name="configuration" ref="hibernateConfiguration" />
 		</bean>
 		
+		<bean id="conditionViolationPropertyEditorFactory"
+		class="omis.beans.factory.impl.hibernate.PropertyEditorFactoryHibernateImpl">
+			<constructor-arg name="dao" ref="conditionViolationDao" />
+			<constructor-arg name="entityName"
+				value="omis.violationevent.domain.ConditionViolation" />
+			<constructor-arg name="configuration" ref="hibernateConfiguration" />
+		</bean>
+		
+		<!-- Document Beans -->
+		
 		<bean id="violationEventDocumentPersister" class="omis.document.io.impl.SimpleDocumentPersisterImpl">
 			<constructor-arg name="fileLocator" ref="violationEventDocumentLocator"/>
 		</bean>
@@ -159,35 +211,5 @@
 		<bean id="violationEventDocumentRemover" class="omis.io.impl.SimpleFileRemoverImpl">
 			<constructor-arg name="fileLocator" ref="violationEventDocumentLocator"/>
 		</bean>
-		
-		
-		
-		
-		<!-- ConditionViolation Beans -->
-		
-		<bean id="conditionViolationDao" class="omis.violationevent.dao.impl.hibernate.ConditionViolationDaoHibernateImpl">
-			<constructor-arg name="sessionFactory" ref="sessionFactory" />
-			<constructor-arg name="entityName" value="omis.violationevent.domain.ConditionViolation" />
-		</bean>
-		
-		<bean id="conditionViolationDelegate" class="omis.violationevent.service.delegate.ConditionViolationDelegate">
-			<constructor-arg name="conditionViolationDao" ref="conditionViolationDao" />
-			<constructor-arg name="conditionViolationInstanceFactory" ref="conditionViolationInstanceFactory" />
-			<constructor-arg name="auditComponentRetriever" ref="auditComponentRetriever" />
-		</bean>
-		
-		<bean id="conditionViolationInstanceFactory" class="omis.instance.factory.hibernate.impl.InstanceFactoryHibernateImpl">
-			<constructor-arg name="instanceFactoryDelegate" ref="instanceFactoryDelegate" />
-			<constructor-arg name="entityName" value="omis.violationevent.domain.ConditionViolation" />
-		</bean>
-		
-		<bean id="conditionViolationPropertyEditorFactory"
-		class="omis.beans.factory.impl.hibernate.PropertyEditorFactoryHibernateImpl">
-			<constructor-arg name="dao" ref="conditionViolationDao" />
-			<constructor-arg name="entityName"
-				value="omis.violationevent.domain.ConditionViolation" />
-			<constructor-arg name="configuration" ref="hibernateConfiguration" />
-		</bean>
-		
 		
 </beans>

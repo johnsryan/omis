@@ -47,7 +47,7 @@
 	<jsp:include page="/WEB-INF/views/common/includes/searchResources.jsp"/>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/common/scripts/SessionConfig.js"></script>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/hearingAnalysis/scripts/JQuery/jquery.omis.hearingAnalysis.js?VERSION=1"></script>
-	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/hearingAnalysis/scripts/hearingAnalysis.js?VERSION=1"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/hearingAnalysis/scripts/hearingAnalysis.js?VERSION=2"></script>
 	<script type="text/javascript">
 		//Track current indexes
 		var currentHearingAnalysisNoteIndex = ${hearingAnalysisNoteIndex};

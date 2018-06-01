@@ -1,5 +1,5 @@
 <%--
-  - Family association telephone number edit/creation table.
+  - Family association online account edit/creation table.
   -
   - Author: Yidong Li
   --%>

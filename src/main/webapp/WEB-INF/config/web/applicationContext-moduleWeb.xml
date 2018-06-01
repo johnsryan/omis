@@ -30,6 +30,8 @@
   
   <import resource="applicationContext-biographicAndContactSectionWeb.xml"/>
   
+  <import resource="applicationContext-boardConsiderationWeb.xml"/>
+  
   <import resource="applicationContext-boardHearingWeb.xml"/>
   
   <import resource="applicationContext-boardHearingDecisionWeb.xml"/>
@@ -203,6 +205,8 @@
   <import resource="applicationContext-tierDesignationWeb.xml"/>
   
   <import resource="applicationContext-trackedDocumentWeb.xml"/>
+  
+  <import resource="applicationContext-travelPermitWeb.xml"/>
 
   <import resource="applicationContext-userWeb.xml"/>
   

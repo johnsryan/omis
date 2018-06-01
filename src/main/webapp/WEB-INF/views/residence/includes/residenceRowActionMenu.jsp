@@ -17,7 +17,7 @@
 		<sec:authorize access="hasRole('RESIDENCE_TERM_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty residenceTerm}">
 			<li>
-				<a href="${pageContext.request.contextPath}/residence/residenceDetailsReport.html?residenceTerm=${residenceTerm.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="residenceDetailsReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/residence/residenceDetailsReport.html?residenceTerm=${residenceTerm.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="residenceDetailsReportLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>

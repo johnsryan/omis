@@ -33,7 +33,7 @@
 	<sec:authorize access="hasRole('STG_ACTIVITY_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty activity}">
 			<li>
-				<a href="${pageContext.request.contextPath}/stg/stgActivityDetailsReport.html?activity=${activity.id}&offender=${offender.id}&reportFormat=PDF" class="newTab reportLink">
+				<a href="${pageContext.request.contextPath}/stg/stgActivityDetailsReport.html?activity=${activity.id}&offender=${offender.id}&reportFormat=PDF" class="newTab printLink">
 					<fmt:message key="stgActivityDetailsReportLinkLabel"/>
 				</a>
 			</li>

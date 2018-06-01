@@ -85,7 +85,7 @@ import omis.violationevent.service.delegate.ViolationEventDelegate;
  * Tests method to update infractions.
  *
  * @author Josh Divine
- * @version 0.1.0 (May 4, 2018)
+ * @version 0.1.1 (May 23, 2018)
  * @since OMIS 3.0
  */
 @Test
@@ -396,7 +396,7 @@ public class HearingServiceUpdateInfractionTests
 		SupervisoryOrganization jurisdiction = this
 				.supervisoryOrganizationDelegate.create("Batcave", "TBC", null);
 		return this.violationEventDelegate.create(
-				hearing.getSubject().getOffender(), jurisdiction, 
+				hearing.getSubject().getOffender(), jurisdiction, null,
 				this.parseDateText("05/05/2017"), 
 				"Event Details", ViolationEventCategory.DISCIPLINARY);
 	}

@@ -26,7 +26,7 @@
 	<c:if test="${not empty identificationNumber}">
 		<sec:authorize access="hasRole('IDENTIFICATION_NUMBER_VIEW') or hasRole('ADMIN')">
 			<li>
-				<a href="${pageContext.request.contextPath}/identificationNumber/identificationNumberDetailsReport.html?identificationNumber=${identificationNumber.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="identificationNumberDetailsReportLinkLabel" bundle="${identificationNumberBundle}"/></a>
+				<a href="${pageContext.request.contextPath}/identificationNumber/identificationNumberDetailsReport.html?identificationNumber=${identificationNumber.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="identificationNumberDetailsReportLinkLabel" bundle="${identificationNumberBundle}"/></a>
 			</li>
 		</sec:authorize>
 	</c:if>
@@ -41,7 +41,7 @@
 	
 		<sec:authorize access="hasRole('IDENTIFICATION_NUMBER_VIEW') or hasRole('ADMIN')">
 			<li>
-				<a href="${pageContext.request.contextPath}/identificationNumber/identificationNumberListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="identificationNumberListingReportLinkLabel" bundle="${identificationNumberBundle}"/></a>
+				<a href="${pageContext.request.contextPath}/identificationNumber/identificationNumberListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="identificationNumberListingReportLinkLabel" bundle="${identificationNumberBundle}"/></a>
 			</li>
 		</sec:authorize>
 	</c:if>

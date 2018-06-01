@@ -201,7 +201,7 @@ public class HearingAnalysisServiceUpdateHearingAnalysisNoteTests
 				EligibilityStatusCategory.APPEARING;
 		Date statusDate = this.parseDateText("01/01/2017");
 		EligibilityStatusReason statusReason = eligibilityStatusReasonDelegate
-				.create("Reason", true);
+				.create("Reason", statusCategory, true);
 		String statusComment = "Comment";
 		ParoleEligibilityStatus paroleEligibilityStatus = 
 				new ParoleEligibilityStatus(statusDate, statusComment, 
@@ -248,7 +248,7 @@ public class HearingAnalysisServiceUpdateHearingAnalysisNoteTests
 		HearingAnalysisCategory category = this.hearingAnalysisCategoryDelegate
 				.create("Category", true);
 		HearingAnalysis hearingAnalysis = this.hearingAnalysisDelegate.create(
-				eligibility, boardItinerary, category, analyst);
+				eligibility, boardItinerary, category, analyst, null);
 		Date date = this.parseDateText("01/01/2017");
 		String description = "Description";
 		HearingAnalysisNote hearingAnalysisNote = this
@@ -288,7 +288,7 @@ public class HearingAnalysisServiceUpdateHearingAnalysisNoteTests
 				EligibilityStatusCategory.APPEARING;
 		Date statusDate = this.parseDateText("01/01/2017");
 		EligibilityStatusReason statusReason = eligibilityStatusReasonDelegate
-				.create("Reason", true);
+				.create("Reason", statusCategory, true);
 		String statusComment = "Comment";
 		ParoleEligibilityStatus paroleEligibilityStatus = 
 				new ParoleEligibilityStatus(statusDate, statusComment, 
@@ -335,7 +335,7 @@ public class HearingAnalysisServiceUpdateHearingAnalysisNoteTests
 		HearingAnalysisCategory category = this.hearingAnalysisCategoryDelegate
 				.create("Category", true);
 		HearingAnalysis hearingAnalysis = this.hearingAnalysisDelegate.create(
-				eligibility, boardItinerary, category, analyst);
+				eligibility, boardItinerary, category, analyst, null);
 		Date date = this.parseDateText("01/01/2017");
 		String description = "Description";
 		HearingAnalysisNote hearingAnalysisNote = this
@@ -375,7 +375,7 @@ public class HearingAnalysisServiceUpdateHearingAnalysisNoteTests
 				EligibilityStatusCategory.APPEARING;
 		Date statusDate = this.parseDateText("01/01/2017");
 		EligibilityStatusReason statusReason = eligibilityStatusReasonDelegate
-				.create("Reason", true);
+				.create("Reason", statusCategory, true);
 		String statusComment = "Comment";
 		ParoleEligibilityStatus paroleEligibilityStatus = 
 				new ParoleEligibilityStatus(statusDate, statusComment, 
@@ -422,7 +422,7 @@ public class HearingAnalysisServiceUpdateHearingAnalysisNoteTests
 		HearingAnalysisCategory category = this.hearingAnalysisCategoryDelegate
 				.create("Category", true);
 		HearingAnalysis hearingAnalysis = this.hearingAnalysisDelegate.create(
-				eligibility, boardItinerary, category, analyst);
+				eligibility, boardItinerary, category, analyst, null);
 		Date date = this.parseDateText("01/01/2017");
 		String description = "Description";
 		this.hearingAnalysisNoteDelegate.create(hearingAnalysis, description, 

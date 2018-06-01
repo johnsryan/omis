@@ -122,6 +122,26 @@ public class FamilyAssociationFieldsValidatorDelegate implements Validator {
 				errors.rejectValue("personFields.sex", 
 						"familyAssociationFields.sex.empty");
 			}
+			else if(FamilyAssociationCategoryClassification.SPOUSE.equals(
+				form.getCategory().getClassification())){
+				if(form.getMarriageDate()!=null
+					&&form.getDivorceDate()!=null
+					&&form.getMarriageDate().getTime()
+					>form.getDivorceDate()
+					.getTime()){
+					errors.rejectValue("marriageDate",
+						"mDateGreaterThanDDate");
+					
+				}
+			} else {
+				if(form.getStartDate()!=null
+					&&form.getEndDate()!=null
+					&&form.getStartDate().getTime()
+					>form.getEndDate().getTime()){
+					errors.rejectValue("startDate",
+						"dateRange.startDateGreaterThanEndDate");
+				}
+			}
 		}
 		
 		if (form.getFamilyAssociationNoteItems() != null) {

@@ -18,6 +18,7 @@
 package omis.hearinganalysis.web.form;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 import omis.hearinganalysis.domain.HearingAnalysisCategory;
@@ -28,7 +29,8 @@ import omis.paroleboarditinerary.domain.ParoleBoardItinerary;
  * Hearing analysis form.
  *
  * @author Josh Divine
- * @version 0.1.1 (Apr 18, 2018)
+ * @author Annie Wahl
+ * @version 0.1.2 (May 29, 2018)
  * @since OMIS 3.0
  */
 public class HearingAnalysisForm implements Serializable {
@@ -40,6 +42,8 @@ public class HearingAnalysisForm implements Serializable {
 	private HearingAnalysisCategory category;
 	
 	private BoardAttendee analyst;
+	
+	private Date dueDate;
 	
 	private List<HearingAnalysisNoteItem> hearingAnalysisNoteItems;
 	
@@ -102,6 +106,22 @@ public class HearingAnalysisForm implements Serializable {
 	 */
 	public void setAnalyst(final BoardAttendee analyst) {
 		this.analyst = analyst;
+	}
+	
+	/**
+	 * Returns the dueDate.
+	 * @return dueDate - Date
+	 */
+	public Date getDueDate() {
+		return this.dueDate;
+	}
+
+	/**
+	 * Sets the dueDate.
+	 * @param dueDate - Date
+	 */
+	public void setDueDate(final Date dueDate) {
+		this.dueDate = dueDate;
 	}
 
 	/**

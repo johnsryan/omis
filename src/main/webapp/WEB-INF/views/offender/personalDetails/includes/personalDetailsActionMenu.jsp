@@ -22,14 +22,14 @@
 	<sec:authorize access="(hasRole('OFFENDER_VIEW') and hasRole('OFFENDER_SSN_VIEW') ) or hasRole('ADMIN')">
 		<c:if test="${not empty offender}">
 		<li>
-			<a href="${pageContext.request.contextPath}/offender/personalDetails/legalNameAndIdentityDetailsFullReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="legalNameAndIdentityDetailsFullReportLink"  bundle="${personalDetails}"/></a>
+			<a href="${pageContext.request.contextPath}/offender/personalDetails/legalNameAndIdentityDetailsFullReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="legalNameAndIdentityDetailsFullReportLink"  bundle="${personalDetails}"/></a>
 		</li>
 		</c:if>
 	</sec:authorize>
 	<sec:authorize access="hasRole('OFFENDER_VIEW') or hasRole('ADMIN')">
 		<c:if test="${not empty offender}">
 		<li>
-			<a href="${pageContext.request.contextPath}/offender/personalDetails/legalNameAndIdentityDetailsRedactedReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="legalNameAndIdentityDetailsRedactedReportLink"  bundle="${personalDetails}"/></a>
+			<a href="${pageContext.request.contextPath}/offender/personalDetails/legalNameAndIdentityDetailsRedactedReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="legalNameAndIdentityDetailsRedactedReportLink"  bundle="${personalDetails}"/></a>
 		</li>
 		</c:if>
 	</sec:authorize>			

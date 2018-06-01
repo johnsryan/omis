@@ -442,6 +442,7 @@ public class UpdateOffenderRelationServiceImpl
 		Relationship relationship = this.relationshipDelegate.find(offender, 
 				relation);
 		this.relationshipDelegate.remove(relationship);
+		this.relationshipNoteDelegate.removeByRelationship(relationship);
 	}
 	
 	/** {@inheritDoc} */

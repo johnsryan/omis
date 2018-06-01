@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="omis.travelpermit.report">
+	<query name="findTravelPermitByOffender"><![CDATA[
+		select new omis.travelpermit.report.TravelPermitSummary(
+			permit.id, name.lastName, name.firstName, name.middleName, name.suffix, 
+  			offender.offenderNumber, permit.dateRange.startDate, permit.dateRange.endDate,
+  			permit.purpose, otherTravelers.persons, otherTravelers.relationships,
+  			destination.name, destination.telephoneNumber, destination.address.value, 
+  			destination.city.name, destination.state.name, destination.state.abbreviation, 
+  			destination.city.country.name, destination.city.country.abbreviation, 
+  			destination.zipCode.value, destination.zipCode.extension, periodicity.name,
+  			issuance.date, issuer.id, uname.lastName, uname.firstName, 
+  			uname.middleName, uname.suffix, issuer.username,  transportation.number,
+  			transportation.description, method.name)
+		from 
+			omis.travelpermit.domain.TravelPermit permit
+			left outer join permit.offender offender
+			left outer join offender.name name
+			left outer join permit.otherTravellers otherTravelers
+			left outer join permit.destination destination
+			left outer join permit.periodicity periodicity
+			left outer join permit.issuance issuance
+			left outer join issuance.issuer issuer
+			left outer join issuer.user user
+			left outer join user.name uname
+			left outer join permit.transportation transportation
+			inner join transportation.method method
+		where
+			permit.offender = :offender
+		order by permit.dateRange.startDate desc
+	]]></query>
+</hibernate-mapping>

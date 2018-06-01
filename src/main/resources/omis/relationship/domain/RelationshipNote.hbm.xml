@@ -71,4 +71,8 @@
       )
 		order by note.date
 	]]></query>
+	<query name="deleteRelationshipNotesByRelationship"><![CDATA[
+		delete from omis.relationship.domain.RelationshipNote note
+		where note.relationship = :relationship
+	]]></query>
 </hibernate-mapping>

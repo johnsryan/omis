@@ -25,6 +25,7 @@
  */
 window.onload = function() {	
 	applyActionMenu(document.getElementById("actionMenuLink"));
+	applyDatePicker(document.getElementById("dueDate"));
 	applyFormUpdateChecker(document.getElementById("hearingAnalysisForm"));
 	applyHearingAnalysisBehavior();
 	applyActionMenu(document.getElementById("hearingAnalysisNotesActionMenuLink"), hearingAnalysisNoteActionMenuOnClick);

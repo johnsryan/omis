@@ -62,14 +62,14 @@
 		</sec:authorize>
 		<sec:authorize access="hasRole('LOCATION_TERM_VIEW') or hasRole('ADMIN')">
 		<li>
-			<a href="${pageContext.request.contextPath}/locationTerm/locationTermDetailsReport.html?locationTerm=${locationTerm.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="locationTermDetailsReportLinkLabel"/></a>
+			<a href="${pageContext.request.contextPath}/locationTerm/locationTermDetailsReport.html?locationTerm=${locationTerm.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="locationTermDetailsReportLinkLabel"/></a>
 		</li>
 	</sec:authorize>
 	</c:if>
 	<c:if test="${not empty offender}">
 		<sec:authorize access="hasRole('LOCATION_TERM_LIST') or hasRole('ADMIN')">
 		<li>
-			<a href="${pageContext.request.contextPath}/locationTerm/locationTermListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="locationTermListingReportLinkLabel"/></a>
+			<a href="${pageContext.request.contextPath}/locationTerm/locationTermListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="locationTermListingReportLinkLabel"/></a>
 		</li>
 		</sec:authorize>
 	</c:if>

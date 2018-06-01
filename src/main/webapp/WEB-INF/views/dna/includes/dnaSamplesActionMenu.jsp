@@ -19,13 +19,6 @@
 			</c:if>
 		</sec:authorize>
 		<sec:authorize access="hasRole('DNA_VIEW') or hasRole('ADMIN')">
-			<c:if test="${not empty offender}">
-			<li>
-				<a href="${pageContext.request.contextPath}/dna/dnaListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="dnaListingReportLinkLabel"/></a>
-			</li>
-			</c:if>
-		</sec:authorize>
-		<sec:authorize access="hasRole('DNA_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty dnaSample}">
 				<li>
 					<a class="viewEditLink" href="${pageContext.request.contextPath}/dna/edit.html?dnaSample=${dnaSample.id}"><span class="visibleLinkLabel"><fmt:message key="viewEditDNALink"/></span></a>
@@ -36,13 +29,6 @@
 			<c:if test="${not empty dnaSample}">
 			<li>
 				<a class="removeLink" href="${pageContext.request.contextPath}/dna/remove.html?dnaSample=${dnaSample.id}"><span class="visibleLinkLabel"><fmt:message key="removeDNALink"/></span></a>
-			</li>
-			</c:if>
-		</sec:authorize>
-		<sec:authorize access="hasRole('DNA_VIEW') or hasRole('ADMIN')">
-			<c:if test="${not empty dnaSample}">
-			<li>
-				<a href="${pageContext.request.contextPath}/dna/dnaDetailsReport.html?dnaSample=${dnaSample.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="dnaDetailsReportLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>
@@ -61,11 +47,25 @@
 			</c:if>
 		</sec:authorize>
 		<sec:authorize access="hasRole('DNA_VIEW') or hasRole('ADMIN')">
+			<c:if test="${not empty dnaSample}">
+			<li>
+				<a href="${pageContext.request.contextPath}/dna/dnaDetailsReport.html?dnaSample=${dnaSample.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="dnaDetailsReportLinkLabel"/></a>
+			</li>
+			</c:if>
+		</sec:authorize>		
+		<sec:authorize access="hasRole('DNA_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty offender}">
 			<li>
-				<a href="${pageContext.request.contextPath}/dna/biologicalSampleReport.html?offender=${offender.id}&reportFormat=DOCX" class="reportLink"><fmt:message key="biologicalSampleReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/dna/biologicalSampleReport.html?offender=${offender.id}&reportFormat=DOCX" class="msWordReportLink"><fmt:message key="biologicalSampleReportLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>
+		<sec:authorize access="hasRole('DNA_VIEW') or hasRole('ADMIN')">
+			<c:if test="${not empty offender}">
+			<li>
+				<a href="${pageContext.request.contextPath}/dna/dnaListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="dnaListingReportLinkLabel"/></a>
+			</li>
+			</c:if>
+		</sec:authorize>		
 	</ul>
 </fmt:bundle>

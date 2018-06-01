@@ -32,13 +32,14 @@ import omis.instance.factory.InstanceFactory;
 import omis.location.domain.Location;
 import omis.offender.domain.Offender;
 import omis.user.domain.UserAccount;
+import omis.violationevent.domain.ViolationEvent;
 
 /**
  * HearingDelegate.java
  * 
  * @author Annie Wahl 
  * @author Josh Divine
- * @version 0.1.2 (May 3, 2018)
+ * @version 0.1.3 (May 17, 2018)
  * @since OMIS 3.0
  */
 public class HearingDelegate {
@@ -164,5 +165,16 @@ public class HearingDelegate {
 				new UpdateSignature(
 						this.auditComponentRetriever.retrieveUserAccount(),
 						this.auditComponentRetriever.retrieveDate()));
+	}
+
+	/**
+	 * Returns a list of hearings for the specified violation event.
+	 * 
+	 * @param violationEvent violation event
+	 * @return list of hearings
+	 */
+	public List<Hearing> findByViolationEvent(
+			final ViolationEvent violationEvent) {
+		return this.hearingDao.findByViolationEvent(violationEvent);
 	}
 }

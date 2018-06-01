@@ -44,13 +44,16 @@ import omis.offender.web.controller.delegate.OffenderSummaryModelDelegate;
 import omis.person.domain.Person;
 import omis.questionnaire.domain.AdministeredQuestionnaire;
 import omis.questionnaire.domain.QuestionnaireCategory;
+import omis.questionnaire.domain.QuestionnaireSection;
 import omis.questionnaire.domain.QuestionnaireType;
+import omis.questionnaire.service.AdministeredQuestionnaireService;
 
 /**
  * Controller for managing assessments.
  * 
  * @author Josh Divine
- * @version 0.1.0 (Mar 27, 2018)
+ * @author Annie Wahl
+ * @version 0.1.0 (Apr 12, 2018)
  * @since OMIS 3.0
  */
 @Controller
@@ -59,29 +62,29 @@ import omis.questionnaire.domain.QuestionnaireType;
 public class ManageAssessmentController {
 
 	/* View names. */
-	
+
 	private static final String VIEW_NAME = "assessment/edit";
 	
 	/* Action menus. */
 	
-	private static final String ACTION_MENU_VIEW_NAME = 
+	private static final String ACTION_MENU_VIEW_NAME =
 			"assessment/includes/assessmentActionMenu";
 	
 	/* Redirects. */
 	
-	private static final String REDIRECT_URL = 
+	private static final String REDIRECT_URL =
 			"redirect:/assessment/home.html?administeredQuestionnaire=%d";
 	
 	/* Model keys. */
 	
 	private static final String OFFENDER_MODEL_KEY = "offender";
 	
-	private static final String QUESTIONNAIRE_TYPES_MODEL_KEY = 
+	private static final String QUESTIONNAIRE_TYPES_MODEL_KEY =
 			"questionnaireTypes";
 	
 	private static final String ASSESSMENT_FORM_MODEL_KEY = "assessmentForm";
 	
-	private static final String QUESTIONNAIRE_CATEGORY_MODEL_KEY = 
+	private static final String QUESTIONNAIRE_CATEGORY_MODEL_KEY =
 			"questionnaireCategory";
 	
 	/* Services. */
@@ -89,6 +92,11 @@ public class ManageAssessmentController {
 	@Autowired
 	@Qualifier("assessmentService")
 	private AssessmentService assessmentService;
+	
+	//TODO: add required methods to assessment service, and remove this.
+	@Autowired
+	@Qualifier("administeredQuestionnaireService")
+	private AdministeredQuestionnaireService administeredQuestionnaireService;
 	
 	/* Property editor factories. */
 	
@@ -143,13 +151,13 @@ public class ManageAssessmentController {
 	@PreAuthorize("hasRole('ASSESSMENT_CREATE') or hasRole('ADMIN')")
 	@RequestMapping(value = "/create.html", method = RequestMethod.GET)
 	public ModelAndView create(
-			@RequestParam(value = "offender", required = true) 
+			@RequestParam(value = "offender", required = true)
 					final Offender offender,
-			@RequestParam(value = "questionnaireCategory", required = true) 
+			@RequestParam(value = "questionnaireCategory", required = true)
 			final QuestionnaireCategory questionnaireCategory) {
 		AssessmentForm assessmentForm = new AssessmentForm();
 		assessmentForm.setAssessDate(new Date());
-		ModelAndView mav = this.prepareEditMav(assessmentForm, offender, 
+		ModelAndView mav = this.prepareEditMav(assessmentForm, offender,
 				questionnaireCategory);
 		return mav;
 	}
@@ -161,8 +169,8 @@ public class ManageAssessmentController {
 	 * @param questionnaireCategory questionnaire category
 	 * @param assessmentForm assessment form
 	 * @param bindingResult binding result
-	 * @return redirect to work assessment screen 
-	 * @throws DuplicateEntityFoundException if administered questionnaire 
+	 * @return redirect to work assessment screen
+	 * @throws DuplicateEntityFoundException if administered questionnaire
 	 * already exists
 	 */
 	@PreAuthorize("hasRole('ASSESSMENT_CREATE') or hasRole('ADMIN')")
@@ -172,21 +180,30 @@ public class ManageAssessmentController {
 					final Offender offender,
 			@RequestParam(value = "questionnaireCategory", required = true) 
 			final QuestionnaireCategory questionnaireCategory,
-			final AssessmentForm assessmentForm, 
-			final BindingResult bindingResult) 
+			final AssessmentForm assessmentForm,
+			final BindingResult bindingResult)
 					throws DuplicateEntityFoundException {
 		this.assessmentFormValidator.validate(assessmentForm, bindingResult);
 		if (bindingResult.hasErrors()) {
-			return this.prepareRedisplay(assessmentForm, offender, 
+			return this.prepareRedisplay(assessmentForm, offender,
 					questionnaireCategory, bindingResult);
 		}
 		AdministeredQuestionnaire administeredQuestionnaire = this
-				.assessmentService.createAdministeredQuestionnaire(offender, 
-						false, assessmentForm.getComments(), 
-						assessmentForm.getAssessor(), 
-						assessmentForm.getAssessDate(), 
+				.assessmentService.createAdministeredQuestionnaire(offender,
+						true, assessmentForm.getComments(),
+						assessmentForm.getAssessor(),
+						assessmentForm.getAssessDate(),
 						assessmentForm.getQuestionnaireType());
-		return new ModelAndView(String.format(REDIRECT_URL, 
+		for (QuestionnaireSection questionnaireSection
+				: this.administeredQuestionnaireService
+				.findQuestionnaireSectionsByQuestionnaireType(
+						assessmentForm.getQuestionnaireType())) {
+			this.administeredQuestionnaireService
+				.createAdministeredQuestionnaireSectionStatus(
+						questionnaireSection, administeredQuestionnaire,
+						true, assessmentForm.getAssessDate());
+		}
+		return new ModelAndView(String.format(REDIRECT_URL,
 				administeredQuestionnaire.getId()));
 	}
 	
@@ -210,9 +227,9 @@ public class ManageAssessmentController {
 	
 	/* Helper methods. */
 	
-	// Prepares the model and view to display the screen to edit assessments. 
+	// Prepares the model and view to display the screen to edit assessments.
 	private ModelAndView prepareEditMav(final AssessmentForm asseessmentForm,
-			final Offender offender, 
+			final Offender offender,
 			final QuestionnaireCategory questionnaireCategory) {
 		ModelAndView mav = new ModelAndView(VIEW_NAME);
 		mav.addObject(ASSESSMENT_FORM_MODEL_KEY, asseessmentForm);
@@ -228,10 +245,10 @@ public class ManageAssessmentController {
 	// Prepares redisplay model and view
 	private ModelAndView prepareRedisplay(
 			final AssessmentForm assessmentForm,
-			final Offender offender, 
+			final Offender offender,
 			final QuestionnaireCategory questionnaireCategory,
 			final BindingResult bindingResult) {
-		ModelAndView mav = this.prepareEditMav(assessmentForm, offender, 
+		ModelAndView mav = this.prepareEditMav(assessmentForm, offender,
 				questionnaireCategory);
 		mav.addObject(BindingResult.MODEL_KEY_PREFIX
 					+ ASSESSMENT_FORM_MODEL_KEY, bindingResult);

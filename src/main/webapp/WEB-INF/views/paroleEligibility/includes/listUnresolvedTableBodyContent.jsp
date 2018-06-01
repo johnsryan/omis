@@ -28,7 +28,7 @@
 <fmt:bundle basename="omis.paroleeligibility.msgs.paroleEligibility">
 <c:forEach var="paroleEligibilitySummary" items="${paroleEligibilitySummaries}" varStatus="status">
 	<tr>
-		<td><a class="actionMenuItem" href="${pageContext.request.contextPath}/paroleEligibility/unresolvedEligibilitiesActionMenu.html?eligibility=${paroleEligibilitySummary.paroleEligibilityId}" id="paroleEligibilities${status.index}"></a></td>
+		<td><a class="actionMenuItem" href="${pageContext.request.contextPath}/paroleEligibility/unresolvedEligibilitiesRowActionMenu.html?eligibility=${paroleEligibilitySummary.paroleEligibilityId}" id="paroleEligibilities${status.index}"></a></td>
 		<td><fmt:formatDate value="${paroleEligibilitySummary.hearingEligibilityDate}" pattern="MM/dd/yyyy"/></td>
 		<td><c:out value="${paroleEligibilitySummary.lastName}, ${paroleEligibilitySummary.firstName} ${paroleEligibilitySummary.middleName} (${paroleEligibilitySummary.offenderNumber})"/></td>
 		<td><fmt:formatDate value="${paroleEligibilitySummary.statusDate}" pattern="MM/dd/yyyy"/></td>

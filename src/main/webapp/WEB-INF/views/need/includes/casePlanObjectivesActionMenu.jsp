@@ -16,7 +16,7 @@
 		<sec:authorize access="hasRole('NEED_MODULE') or hasRole('ADMIN')">
 			<c:if test="${not empty offender}">
 				<li>
-					<a href="${pageContext.request.contextPath}/need/casePlanObjective/casePlanObjectiveListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="casePlanObjectiveListingReportLinkLabel"/></a>
+					<a href="${pageContext.request.contextPath}/need/casePlanObjective/casePlanObjectiveListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="casePlanObjectiveListingReportLinkLabel"/></a>
 				</li>
 			</c:if>
 		</sec:authorize>

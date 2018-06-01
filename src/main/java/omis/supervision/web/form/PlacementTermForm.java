@@ -86,6 +86,8 @@ public class PlacementTermForm
 	
 	private boolean allowStatusFields;
 	
+	private boolean allowEndChangeReason;
+	
 	private boolean allowSendToLocation;
 
 	/** Instantiates a default form for placement terms. */
@@ -493,6 +495,24 @@ public class PlacementTermForm
 	 */
 	public void setAllowStartTime(final boolean allowStartTime) {
 		this.allowStartTime = allowStartTime;
+	}
+	
+	/**
+	 * Returns whether end change reason is allowed.
+	 * 
+	 * @return whether end change reason is allowed
+	 */
+	public boolean getAllowEndChangeReason() {
+		return this.allowEndChangeReason;
+	}
+	
+	/**
+	 * Sets whether end change reason is allowed.
+	 * 
+	 * @param allowEndChangeReason whether end change reason is allowed
+	 */
+	public void setAllowEndChangeReason(final boolean allowEndChangeReason) {
+		this.allowEndChangeReason = allowEndChangeReason;
 	}
 	
 	/**

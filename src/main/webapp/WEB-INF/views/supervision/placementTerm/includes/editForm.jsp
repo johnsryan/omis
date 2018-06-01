@@ -51,41 +51,45 @@
 			<form:errors path="correctionalStatus" cssClass="error"/>
 		</span>
 		<form:hidden path="allowState"/>
-		<span class="fieldGroup">
-			<form:label path="state" class="fieldLabel">
-				<fmt:message key="stateLabel" bundle="${stateBundle}"/></form:label>
-			<c:choose>
-				<c:when test="${placementTermForm.allowState}">
-					<form:select id="state" path="state">
-						<form:option value=""><fmt:message key="allStatesLabel" bundle="${stateBundle}"/></form:option>
-						<form:options itemValue="id" itemLabel="name" items="${states}"/>
-					</form:select>
-				</c:when>
-				<c:otherwise>
-					<form:hidden path="state"/>
-					<span><c:out value="${placementTermForm.state.name}"/></span>
-				</c:otherwise>
-			</c:choose>
-			<form:errors path="state" cssClass="error"/>
-		</span>
+		<c:if test="${placementTermForm.allowState or not empty placementTermForm.state}">
+			<span class="fieldGroup">
+				<form:label path="state" class="fieldLabel">
+					<fmt:message key="stateLabel" bundle="${stateBundle}"/></form:label>
+				<c:choose>
+					<c:when test="${placementTermForm.allowState}">
+						<form:select id="state" path="state">
+							<form:option value=""><fmt:message key="allStatesLabel" bundle="${stateBundle}"/></form:option>
+							<form:options itemValue="id" itemLabel="name" items="${states}"/>
+						</form:select>
+					</c:when>
+					<c:otherwise>
+						<form:hidden path="state"/>
+						<span><c:out value="${placementTermForm.state.name}"/></span>
+					</c:otherwise>
+				</c:choose>
+				<form:errors path="state" cssClass="error"/>
+			</span>
+		</c:if>
 		<form:hidden path="allowSupervisoryOrganization"/>
-		<span class="fieldGroup">
-			<form:label path="supervisoryOrganization" class="fieldLabel">
-				<fmt:message key="supervisoryOrganizationLabel"/></form:label>
-			<c:choose>
-				<c:when test="${placementTermForm.allowSupervisoryOrganization}">
-					<form:select id="supervisoryOrganization" path="supervisoryOrganization">
-						<form:option value=""><fmt:message key="nullLabel" bundle="${commonBundle}"/></form:option>
-						<form:options itemValue="id" itemLabel="name" items="${supervisoryOrganizations}"/>
-					</form:select>
-				</c:when>
-				<c:otherwise>
-					<form:hidden path="supervisoryOrganization"/>
-					<span><c:out value="${placementTermForm.supervisoryOrganization.name}"/></span>
-				</c:otherwise>
-			</c:choose>		
-			<form:errors path="supervisoryOrganization" cssClass="error"/>
-		</span>
+		<c:if test="${placementTermForm.allowSupervisoryOrganization or not empty placementTermForm.supervisoryOrganization}">
+			<span class="fieldGroup">
+				<form:label path="supervisoryOrganization" class="fieldLabel">
+					<fmt:message key="supervisoryOrganizationLabel"/></form:label>
+				<c:choose>
+					<c:when test="${placementTermForm.allowSupervisoryOrganization}">
+						<form:select id="supervisoryOrganization" path="supervisoryOrganization">
+							<form:option value=""><fmt:message key="nullLabel" bundle="${commonBundle}"/></form:option>
+							<form:options itemValue="id" itemLabel="name" items="${supervisoryOrganizations}"/>
+						</form:select>
+					</c:when>
+					<c:otherwise>
+						<form:hidden path="supervisoryOrganization"/>
+						<span><c:out value="${placementTermForm.supervisoryOrganization.name}"/></span>
+					</c:otherwise>
+				</c:choose>		
+				<form:errors path="supervisoryOrganization" cssClass="error"/>
+			</span>
+		</c:if>
 		<form:hidden path="allowStartDate"/>
 		<span class="fieldGroup">
 			<form:label path="startDate" class="fieldLabel">
@@ -137,15 +141,18 @@
 			<form:input path="endTime" class="time"/>
 			<form:errors path="endTime" cssClass="error"/>
 		</span>
-		<span class="fieldGroup">
-			<form:label path="endChangeReason" class="fieldLabel">
-				<fmt:message key="endChangeReasonLabel"/></form:label>
-			<form:select path="endChangeReason">
-				<form:option value=""><fmt:message key="nullLabel" bundle="${commonBundle}"/></form:option>
-				<form:options items="${endChangeReasons}" itemLabel="name" itemValue="id"/>
-			</form:select>
-			<form:errors path="endChangeReason" cssClass="error"/>
-		</span>
+		<form:hidden path="allowEndChangeReason"/>
+		<c:if test="${placementTermForm.allowEndChangeReason}">
+			<span class="fieldGroup">
+				<form:label path="endChangeReason" class="fieldLabel">
+					<fmt:message key="endChangeReasonLabel"/></form:label>
+				<form:select path="endChangeReason">
+					<form:option value=""><fmt:message key="nullLabel" bundle="${commonBundle}"/></form:option>
+					<form:options items="${endChangeReasons}" itemLabel="name" itemValue="id"/>
+				</form:select>
+				<form:errors path="endChangeReason" cssClass="error"/>
+			</span>
+		</c:if>
 		<form:hidden path="allowStatusFields"/>
 		<c:if test="${placementTermForm.allowStatusFields}">
 			<span class="fieldGroup">

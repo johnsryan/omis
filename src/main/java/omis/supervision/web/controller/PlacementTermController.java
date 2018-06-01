@@ -44,7 +44,6 @@ import org.springframework.web.servlet.ModelAndView;
 import omis.beans.factory.PropertyEditorFactory;
 import omis.beans.factory.spring.CustomDateEditorFactory;
 import omis.datatype.DateRange;
-import omis.exception.DuplicateEntityFoundException;
 import omis.locationterm.domain.LocationTerm;
 import omis.offender.beans.factory.OffenderPropertyEditorFactory;
 import omis.offender.domain.Offender;
@@ -415,13 +414,14 @@ public class PlacementTermController {
 		Date effectiveDate = new Date();
 		PlacementTermForm placementTermForm = new PlacementTermForm();
 		placementTermForm.setAllowStatusFields(false);
-		placementTermForm.setAllowCorrectionalStatus(true);
-		placementTermForm.setAllowSupervisoryOrganization(true);
-		placementTermForm.setAllowState(true);
+		placementTermForm.setAllowCorrectionalStatus(false);
+		placementTermForm.setAllowSupervisoryOrganization(false);
+		placementTermForm.setAllowState(false);
 		placementTermForm.setAllowStartDate(true);
 		placementTermForm.setAllowStartTime(true);
 		placementTermForm.setStartDate(effectiveDate);
 		placementTermForm.setStartTime(effectiveDate);
+		placementTermForm.setAllowEndChangeReason(false);
 		if (allowCorrectionalStatusChange != null
 				&& allowCorrectionalStatusChange) {
 			placementTermForm.setAllowCorrectionalStatus(true);
@@ -441,8 +441,10 @@ public class PlacementTermController {
 			}
 			placementTermForm.setAllowCorrectionalStatus(false);
 		}
-		placementTermForm.setState(this.placementTermService
-				.findHomeState());
+		if (placementTermForm.getAllowState()) {
+			placementTermForm.setState(this.placementTermService
+					.findHomeState());
+		}
 		placementTermForm.setAllowSendToLocation(true);
 		placementTermForm.setSendToLocation(true);
 		return this.prepareEditMav(placementTermForm, offender,
@@ -462,18 +464,21 @@ public class PlacementTermController {
 			@RequestParam(value = "placementTerm", required = true)
 				final PlacementTerm placementTerm) {
 		PlacementTermForm placementTermForm = new PlacementTermForm();
-		placementTermForm.setAllowStatusFields(true);
+		placementTermForm.setAllowStatusFields(false);
 		placementTermForm.setAllowCorrectionalStatus(false);
 		placementTermForm.setAllowSupervisoryOrganization(false);
 		placementTermForm.setAllowState(false);
 		placementTermForm.setAllowStartDate(false);
 		placementTermForm.setAllowStartTime(false);
+		placementTermForm.setAllowEndChangeReason(false);
 		placementTermForm.setCorrectionalStatus(
 				placementTerm.getCorrectionalStatusTerm()
 					.getCorrectionalStatus());
-		placementTermForm.setSupervisoryOrganization(
-				placementTerm.getSupervisoryOrganizationTerm()
-					.getSupervisoryOrganization());
+		if (placementTerm.getSupervisoryOrganizationTerm() != null) {
+			placementTermForm.setSupervisoryOrganization(
+					placementTerm.getSupervisoryOrganizationTerm()
+						.getSupervisoryOrganization());
+		}
 		if (placementTerm.getDateRange() != null) {
 			placementTermForm.setStartDate(
 					placementTerm.getDateRange().getStartDate());
@@ -518,12 +523,14 @@ public class PlacementTermController {
 		// location - this might not be the State used to originally set the
 		// supervisory organization. States must be ordered in order for the
 		// State selected to not vary between requests - SA
-		List<State> states = this.placementTermService
-				.findStatesForSupervisoryOrganization(
-						placementTerm.getSupervisoryOrganizationTerm()
-							.getSupervisoryOrganization());
-		if (states.size() > 0) {
-			placementTermForm.setState(states.get(0));
+		if (placementTerm.getSupervisoryOrganizationTerm() != null) {
+			List<State> states = this.placementTermService
+					.findStatesForSupervisoryOrganization(
+							placementTerm.getSupervisoryOrganizationTerm()
+								.getSupervisoryOrganization());
+			if (states.size() > 0) {
+				placementTermForm.setState(states.get(0));
+			}
 		}
 		
 		// Adds note items
@@ -725,8 +732,16 @@ public class PlacementTermController {
 				PlacementTermNoteExistsException {
 		this.placementTermFormValidator.validate(placementTermForm, result);
 		if (result.hasErrors()) {
+			Date effectiveDate;
+			if (placementTermForm.getStartDate() != null) {
+				effectiveDate = DateManipulator.getDateAtTimeOfDay(
+						placementTermForm.getStartDate(),
+						placementTermForm.getStartTime());
+			} else {
+				effectiveDate = new Date();
+			}
 			return this.prepareRedisplayMav(
-					offender, placementTermForm, result);
+					offender, effectiveDate, placementTermForm, result);
 		}
 		DateRange dateRange = this.createDateRange(
 				placementTermForm.getStartDate(),
@@ -832,6 +847,7 @@ public class PlacementTermController {
 	 * @throws SupervisoryOrganizationTermConflictException if conflicting
 	 * supervisory organization terms exist
 	 * @throws PlacementTermLockedException if placement term is locked
+	 * @throws PlacementTermNoteExistsException if placement term note exists
 	 */
 	@RequestMapping(value = "/edit.html", method = RequestMethod.POST)
 	@PreAuthorize("hasRole('ADMIN') or hasRole('PLACEMENT_TERM_EDIT')")
@@ -840,14 +856,23 @@ public class PlacementTermController {
 				final PlacementTerm placementTerm,
 			final PlacementTermForm placementTermForm,
 			final BindingResult result)
-					throws DuplicateEntityFoundException,
-						CorrectionalStatusTermConflictException,
-						SupervisoryOrganizationTermConflictException,
-						PlacementTermLockedException {
+						throws CorrectionalStatusTermConflictException,
+							SupervisoryOrganizationTermConflictException,
+							PlacementTermLockedException,
+							PlacementTermNoteExistsException {
 		this.placementTermFormValidator.validate(placementTermForm, result);
 		if (result.hasErrors()) {
+			Date effectiveDate;
+			if (placementTermForm.getStartDate() != null) {
+				effectiveDate = DateManipulator.getDateAtTimeOfDay(
+						placementTermForm.getStartDate(),
+						placementTermForm.getStartTime());
+			} else {
+				effectiveDate = new Date();
+			}
 			ModelAndView mav = prepareRedisplayMav(
-					placementTerm.getOffender(), placementTermForm, result);
+					placementTerm.getOffender(), effectiveDate,
+					placementTermForm, result);
 			mav.addObject(PLACEMENT_TERM_MODEL_KEY, placementTerm);
 			return mav;
 		}
@@ -922,10 +947,11 @@ public class PlacementTermController {
 	// Returns a model and view to redisplay edit screen
 	private ModelAndView prepareRedisplayMav(
 			final Offender offender,
+			final Date effectiveDate,
 			final PlacementTermForm placementTermForm,
 			final BindingResult result) {
 		ModelAndView mav = this.prepareEditMav(
-				placementTermForm, offender, new Date());
+				placementTermForm, offender, effectiveDate);
 		mav.addObject(
 			BindingResult.MODEL_KEY_PREFIX + PLACEMENT_TERM_FORM_MODEL_KEY,
 			result);
@@ -944,16 +970,22 @@ public class PlacementTermController {
 			final Organization organization,
 			final Date startDate,
 			final Date endDate) {
+		Long organizationId;
+		if (organization != null) {
+			organizationId = organization.getId();
+		} else {
+			organizationId = null;
+		}
 		if (endDate != null) {
 			return new ModelAndView(String.format(
 				CREATE_LOCATION_TERM_REDIRECT,
-				offender.getId(), organization.getId(),
+				offender.getId(), organizationId,
 				this.formatDate(startDate), this.formatTime(startDate),
 				this.formatDate(endDate), this.formatTime(endDate)));
 		} else {
 			return new ModelAndView(String.format(
 				CREATE_LOCATION_TERM_WITHOUT_END_DATE_REDIRECT,
-				offender.getId(), organization.getId(),
+				offender.getId(), organizationId,
 				this.formatDate(startDate), this.formatTime(startDate)));			
 		}
 	}

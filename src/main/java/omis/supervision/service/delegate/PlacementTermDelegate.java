@@ -116,8 +116,8 @@ public class PlacementTermDelegate {
 		if (this.placementTermDao.find(offender,
 				DateRange.getStartDate(dateRange),
 				DateRange.getEndDate(dateRange),
-				correctionalStatusTerm.getCorrectionalStatus(),
-				supervisoryOrganizationTerm.getSupervisoryOrganization())
+				correctionalStatusTerm,
+				supervisoryOrganizationTerm)
 					!= null) {
 			throw new DuplicateEntityFoundException("Placement term exists");
 		}
@@ -162,8 +162,8 @@ public class PlacementTermDelegate {
 				placementTerm.getOffender(),
 				DateRange.getStartDate(dateRange),
 				DateRange.getEndDate(dateRange),
-				correctionalStatusTerm.getCorrectionalStatus(),
-				supervisoryOrganizationTerm.getSupervisoryOrganization(),
+				correctionalStatusTerm,
+				supervisoryOrganizationTerm,
 				placementTerm) != null) {
 			throw new DuplicateEntityFoundException("Placement term exists");
 		}

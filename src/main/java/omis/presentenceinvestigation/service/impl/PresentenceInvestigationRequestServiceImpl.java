@@ -49,9 +49,9 @@ import omis.user.service.delegate.UserAccountDelegate;
  * Implementation of presentence investigation request service.
  * 
  * @author Ryan Johns
- * @author Annie Jacques
+ * @author Annie Wahl
  * @author Josh Divine
- * @version 0.1.2 (Apr 24, 2018)
+ * @version 0.1.3 (May 15, 2018)
  * @since OMIS 3.0
  */
 public class PresentenceInvestigationRequestServiceImpl 
@@ -127,13 +127,12 @@ public class PresentenceInvestigationRequestServiceImpl
 	public PresentenceInvestigationRequest create(
 			final UserAccount assignedUser, final Date requestDate, 
 			final Date expectedCompletionDate, final Docket docket,
-			final Date completionDate, final Date sentenceDate,
-			final Date actualSentenceDate, 
+			final Date sentenceDate, 
 			final PresentenceInvestigationCategory category, 
 			final Date submissionDate) throws DuplicateEntityFoundException {
 		return this.presentenceInvestigationRequestDelegate.create(assignedUser, 
-				requestDate, expectedCompletionDate, docket, completionDate, 
-				sentenceDate, actualSentenceDate, category, submissionDate);
+				requestDate, expectedCompletionDate, docket, sentenceDate, 
+				category, submissionDate);
 	}
 
 	/** {@inheritDoc} */
@@ -142,15 +141,14 @@ public class PresentenceInvestigationRequestServiceImpl
 			final PresentenceInvestigationRequest 
 				presentenceInvestigationRequest,
 			final UserAccount assignedUser, final Date requestDate, 
-			final Date completionDate, final Date expectedCompletionDate,
-			final Docket docket, final Date sentenceDate,
-			final Date actualSentenceDate,
+			final Date expectedCompletionDate, final Docket docket, 
+			final Date sentenceDate,
 			final PresentenceInvestigationCategory category, 
 			final Date submissionDate) throws DuplicateEntityFoundException {
 		return this.presentenceInvestigationRequestDelegate.update(
 				presentenceInvestigationRequest, assignedUser, requestDate,
-				completionDate, expectedCompletionDate, docket, sentenceDate,
-				actualSentenceDate, category, submissionDate);
+				expectedCompletionDate, docket, sentenceDate, category, 
+				submissionDate);
 	}
 
 	/** {@inheritDoc} */

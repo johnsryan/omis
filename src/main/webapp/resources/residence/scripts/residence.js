@@ -14,6 +14,8 @@ window.onload = function() {
 	createNewLocation();
 	assignFormOptions();
 	applyVerifiedByUserSearch();
+	applyNewCityOnClick();
+	applyNewZipCodeOnClick();
 	
 	var existingPrimaryResidence = document.getElementById("existingPrimaryResidence");
 	if (existingPrimaryResidence != null && existingPrimaryResidence.value != "") {

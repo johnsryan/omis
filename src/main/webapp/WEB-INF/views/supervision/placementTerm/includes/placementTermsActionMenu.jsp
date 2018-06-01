@@ -37,7 +37,7 @@
 			<li><a class="createLink" href="${pageContext.request.contextPath}/supervision/placementTerm/create.html?offender=${offender.id}&amp;allowCorrectionalStatusChange=false"><span class="visibleLinkLabel"><fmt:message key="facilityTransferLink"/></span></a></li>
 		</sec:authorize>
 	</c:if>
-	<c:if test="${not empty effectivePlacementTerm and not effectivePlacementTerm.correctionalStatusTerm.correctionalStatus.locationRequired}">
+	<c:if test="${not empty effectivePlacementTerm and not empty effectivePlacementTerm.supervisoryOrganizationTerm and not effectivePlacementTerm.correctionalStatusTerm.correctionalStatus.locationRequired}">
 		<sec:authorize access="hasRole('PLACEMENT_TERM_CREATE') or hasRole('ADMIN')">
 			<li><a class="createLink" href="${pageContext.request.contextPath}/supervision/placementTerm/create.html?offender=${offender.id}&amp;allowCorrectionalStatusChange=false"><span class="visibleLinkLabel"><fmt:message key="changeSupervisoryOrganizationLink"/></span></a></li>
 		</sec:authorize>
@@ -55,14 +55,14 @@
 	<sec:authorize access="hasRole('PLACEMENT_TERM_VIEW') or hasRole('ADMIN')">
 		<c:if test="${not empty offender}">
 			<li>
-				<a href="${pageContext.request.contextPath}/supervision/placementTerm/placementListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="placementListingReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/supervision/placementTerm/placementListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab adobeReportLink"><fmt:message key="placementListingReportLinkLabel"/></a>
 			</li>
 		</c:if>
 	</sec:authorize>
 	<sec:authorize access="hasRole('PLACEMENT_TERM_VIEW') or hasRole('ADMIN')">
 		<c:if test="${not empty offender}">
 			<li>
-				<a href="${pageContext.request.contextPath}/supervision/placementTerm//placementSupOrgListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="placementSupOrgListingReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/supervision/placementTerm//placementSupOrgListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="placementSupOrgListingReportLinkLabel"/></a>
 			</li>
 		</c:if>
 	</sec:authorize>	

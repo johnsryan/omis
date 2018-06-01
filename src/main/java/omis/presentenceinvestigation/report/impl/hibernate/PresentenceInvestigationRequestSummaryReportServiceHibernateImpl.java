@@ -33,7 +33,7 @@ import omis.user.domain.UserAccount;
  * 
  * @author Annie Wahl
  * @author Josh Divine
- * @version 0.1.2 (Apr 24, 2018)
+ * @version 0.1.3 (May 15, 2018)
  * @since OMIS 3.0
  */
 public class 
@@ -41,7 +41,7 @@ public class
 	implements PresentenceInvestigationRequestSummaryReportService {
 	
 	private static final String FIND_BY_USER_QUERY_NAME = 
-			"findPresentenceInvestigationRequestSummariesByUser";
+			"findSubmittedPresentenceInvestigationRequestSummariesByUser";
 	
 	private static final String FIND_BY_OFFENDER_QUERY_NAME 
 		= "findPresentenceInvestigationRequestSummariesByOffender";
@@ -73,7 +73,7 @@ public class
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<PresentenceInvestigationRequestSummary> 
-		findPresentenceInvestigationRequestSummariesByUser(
+		findSubmittedPresentenceInvestigationRequestSummariesByUser(
 			final UserAccount user) {
 			return (List<PresentenceInvestigationRequestSummary>) this
 					.sessionFactory.getCurrentSession()

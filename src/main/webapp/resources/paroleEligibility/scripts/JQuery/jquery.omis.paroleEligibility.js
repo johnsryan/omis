@@ -2,7 +2,8 @@
  * Parole eligibility list screen.
  * 
  * Author: Trevor Isles
- * Version: 0.1.0 (Dec 21, 2017)
+ * Author: Annie Wahl
+ * Version: 0.1.1 (May 23, 2018)
  * Since: OMIS 3.0
  */
 
@@ -66,5 +67,24 @@ function paroleEligibilityNoteItemRowOnClick(paroleEligibilityNoteItemIndex) {
 			$("#paroleEligibilityNoteItemRow" + paroleEligibilityNoteItemIndex).remove();
 		}
 		return false;
+	});
+}
+
+function showStatusReasons(statusCategory) {
+	$.ajax({
+		type: "GET",
+		async: false,
+		url: "statusReasonOptions.html",
+		data: {
+			statusCategory: statusCategory
+		},
+		success: function(response) {
+			$("#eligibilityStatusReason").html(response);
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			alert("Error - status: " + textStatus + "; error: "
+					+ errorThrown);
+			$("#eligibilityStatusReason").html(jqXHR.responseText );
+		}
 	});
 }

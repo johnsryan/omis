@@ -42,6 +42,7 @@ import omis.region.service.delegate.StateDelegate;
 import omis.residence.domain.NonResidenceTerm;
 import omis.residence.domain.ResidenceCategory;
 import omis.residence.domain.ResidenceStatus;
+import omis.residence.exception.NonResidenceTermExistsException;
 import omis.residence.exception.PrimaryResidenceExistsException;
 import omis.residence.exception.ResidenceStatusConflictException;
 import omis.residence.exception.ResidenceTermExistsException;
@@ -112,11 +113,12 @@ public class ResidenceServiceUpdateHomelessTermTests
 	 * @throws DuplicateEntityFoundException if duplicate entity exists
 	 * @throws ResidenceStatusConflictException if residence term conflict 
 	 * exists
+	 * @throws NonResidenceTermExistsException nonResidence term exists
 	 */
 	@Test
 	public void testUpdateHomelessTermDateRange() 
 			throws DuplicateEntityFoundException, 
-			ResidenceStatusConflictException {
+			ResidenceStatusConflictException, NonResidenceTermExistsException {
 		// Arrangements
 		Person person = this.personDelegate.create("Smith", "John", "Jay", 
 				null);
@@ -157,11 +159,12 @@ public class ResidenceServiceUpdateHomelessTermTests
 	 * @throws DuplicateEntityFoundException if duplicate entity exists
 	 * @throws ResidenceStatusConflictException if residence term conflict 
 	 * exists
+	 * @throws NonResidenceTermExistsException nonResidence term exists
 	 */
 	@Test
 	public void testUpdateHomelessTermCity() 
 			throws DuplicateEntityFoundException, 
-			ResidenceStatusConflictException {
+			ResidenceStatusConflictException, NonResidenceTermExistsException {
 		// Arrangements
 		Person person = this.personDelegate.create("Smith", "John", "Jay", 
 				null);
@@ -201,11 +204,12 @@ public class ResidenceServiceUpdateHomelessTermTests
 	 * @throws DuplicateEntityFoundException if duplicate entity exists
 	 * @throws ResidenceStatusConflictException if residence term conflict 
 	 * exists
+	 * @throws NonResidenceTermExistsException nonResidence term exists
 	 */
 	@Test
 	public void testUpdateHomelessTermState() 
 			throws DuplicateEntityFoundException, 
-			ResidenceStatusConflictException {
+			ResidenceStatusConflictException, NonResidenceTermExistsException {
 		// Arrangements
 		Person person = this.personDelegate.create("Smith", "John", "Jay", 
 				null);
@@ -245,11 +249,12 @@ public class ResidenceServiceUpdateHomelessTermTests
 	 * @throws DuplicateEntityFoundException if duplicate entity exists
 	 * @throws ResidenceStatusConflictException if residence term conflict 
 	 * exists
+	 * @throws NonResidenceTermExistsException nonResidence term exists
 	 */
 	@Test
 	public void testUpdateHomelessTermNotes() 
 			throws DuplicateEntityFoundException, 
-			ResidenceStatusConflictException {
+			ResidenceStatusConflictException, NonResidenceTermExistsException {
 		// Arrangements
 		Person person = this.personDelegate.create("Smith", "John", "Jay", 
 				null);
@@ -289,11 +294,12 @@ public class ResidenceServiceUpdateHomelessTermTests
 	 * @throws DuplicateEntityFoundException if duplicate entity exists
 	 * @throws ResidenceStatusConflictException if residence term conflict 
 	 * exists
+	 * @throws NonResidenceTermExistsException nonResidence term exists
 	 */
 	@Test
 	public void testUpdateHomelessTermConfirmed() 
 			throws DuplicateEntityFoundException, 
-			ResidenceStatusConflictException {
+			ResidenceStatusConflictException, NonResidenceTermExistsException {
 		// Arrangements
 		Person person = this.personDelegate.create("Smith", "John", "Jay", 
 				null);
@@ -335,16 +341,18 @@ public class ResidenceServiceUpdateHomelessTermTests
 	 * exists
 	 * @throws PrimaryResidenceExistsException if primary residence exists
 	 * @throws ResidenceTermExistsException residence term exists exception 
+	 * @throws NonResidenceTermExistsException nonResidence term exists
 	 */
 	@Test(expectedExceptions = {ResidenceStatusConflictException.class})
 	public void testResidenceStatusConflictException() 
 			throws DuplicateEntityFoundException, ResidenceTermExistsException,
-			ResidenceStatusConflictException, PrimaryResidenceExistsException {
+			ResidenceStatusConflictException, PrimaryResidenceExistsException, 
+			NonResidenceTermExistsException {
 		// Arrangements
 		Person person = this.personDelegate.create("Smith", "John", "Jay", 
 				null);
 		DateRange dateRange = new DateRange(this.parseDateText("01/01/2017"), 
-				this.parseDateText("06/01/2017"));
+			this.parseDateText("06/01/2017"));
 		
 		Country country = this.countryDelegate.create("Country", "C", true);
 		State state = this.stateDelegate.create("State", "ST", country, true, 
@@ -369,11 +377,11 @@ public class ResidenceServiceUpdateHomelessTermTests
 	}
 	
 	// Parses date text
-		private Date parseDateText(final String text) {
-			try {
-				return new SimpleDateFormat("MM/dd/yyyy").parse(text);
-			} catch (ParseException e) {
-				throw new RuntimeException("Parse error", e);
-			}
+	private Date parseDateText(final String text) {
+		try {
+			return new SimpleDateFormat("MM/dd/yyyy").parse(text);
+		} catch (ParseException e) {
+			throw new RuntimeException("Parse error", e);
 		}
+	}
 }

@@ -17,13 +17,15 @@
  */
 package omis.paroleeligibility.domain.impl;
 
+import omis.paroleeligibility.domain.EligibilityStatusCategory;
 import omis.paroleeligibility.domain.EligibilityStatusReason;
 
 /**
  * Eligibility status reason implementation.
  *
  * @author Trevor Isles
- * @version 0.1.0 (Nov 7, 2017)
+ * @author Annie Wahl
+ * @version 0.1.1 (May 23, 2018)
  * @since OMIS 3.0
  */
 public class EligibilityStatusReasonImpl implements EligibilityStatusReason {
@@ -35,6 +37,8 @@ public class EligibilityStatusReasonImpl implements EligibilityStatusReason {
 	private String name;
 	
 	private Boolean valid;
+	
+	private EligibilityStatusCategory statusCategory;
 	
 	/**
 	 * Instantiates an implementation of eligibility status reason.
@@ -73,6 +77,19 @@ public class EligibilityStatusReasonImpl implements EligibilityStatusReason {
 		return this.valid; 
 	}
 
+	/**{@inheritDoc} */
+	@Override
+	public EligibilityStatusCategory getStatusCategory() {
+		return this.statusCategory;
+	}
+
+	/**{@inheritDoc} */
+	@Override
+	public void setStatusCategory(
+			final EligibilityStatusCategory statusCategory) {
+		this.statusCategory = statusCategory;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public void setValid(Boolean valid) {
@@ -89,45 +106,44 @@ public class EligibilityStatusReasonImpl implements EligibilityStatusReason {
 			return false;
 		}
 		EligibilityStatusReason that = (EligibilityStatusReason) obj;
-		if (this.getId() == null) {
-			throw new IllegalStateException("Id required");
-		}
-		if (!this.getId().equals(that.getId())) {
-			return false;
-		}
+		
 		if (this.getName() == null) {
 			throw new IllegalStateException("Name required");
-		}
-		if (!this.getName().equals(that.getName())) {
-			return false;
 		}
 		if (this.getValid() == null) {
 			throw new IllegalStateException("Valid required");
 		}
-		if (!this.getValid().equals(that.getValid())) {
+		if (this.getStatusCategory() == null) {
+			throw new IllegalStateException("Status Category required");
+		}
+		
+		if (!this.getName().equals(that.getName())) {
 			return false;
 		}
+		if (!this.getStatusCategory().equals(that.getStatusCategory())) {
+			return false;
+		}
+		
 		return true;
 	}
 	
 	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
-		if (this.getId() == null) {
-			throw new IllegalStateException("Id required.");
-		}
 		if (this.getName() == null) {
 			throw new IllegalStateException("Name required.");
 		}
 		if (this.getValid() == null) {
 			throw new IllegalStateException("Valid required.");
 		}
+		if (this.getStatusCategory() == null) {
+			throw new IllegalStateException("Status Category required");
+		}
 		
 		int hashCode = 14;
 		
-		hashCode = 29 * hashCode + this.getId().hashCode();
 		hashCode = 29 * hashCode + this.getName().hashCode();
-		hashCode = 29 * hashCode + this.getValid().hashCode();
+		hashCode = 29 * hashCode + this.getStatusCategory().hashCode();
 		return hashCode;
 	}
 	
@@ -140,5 +156,4 @@ public class EligibilityStatusReasonImpl implements EligibilityStatusReason {
 				this.getName(),
 				this.getValid());
 	}
-
 }

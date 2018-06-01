@@ -21,7 +21,7 @@
 		<sec:authorize access="hasRole('SEPARATION_NEED_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty separationNeed}">
 			<li>
-				<a href="${pageContext.request.contextPath}/separationNeed/separationNeedDetailsReport.html?separationNeed=${separationNeed.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="separationNeedDetailsReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/separationNeed/separationNeedDetailsReport.html?separationNeed=${separationNeed.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="separationNeedDetailsReportLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>

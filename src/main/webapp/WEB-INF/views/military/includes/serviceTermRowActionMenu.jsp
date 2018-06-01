@@ -22,7 +22,7 @@
 		<sec:authorize access="hasRole('MILITARY_LIST') or hasRole('ADMIN')">
 			<c:if test="${not empty serviceTerm}">
 			<li>
-				<a href="${pageContext.request.contextPath}/military/militaryServiceTermDetailsReport.html?serviceTerm=${serviceTerm.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="militaryDetailsReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/military/militaryServiceTermDetailsReport.html?serviceTerm=${serviceTerm.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="militaryDetailsReportLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>

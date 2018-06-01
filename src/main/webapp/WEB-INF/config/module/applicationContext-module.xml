@@ -23,6 +23,8 @@
   
   <import resource="applicationContext-biographicAndContactSection.xml"/>
   
+  <import resource="applicationContext-boardConsideration.xml"/>
+  
   <import resource="applicationContext-boardHearing.xml"/>
   
   <import resource="applicationContext-boardHearingDecision.xml"/>
@@ -216,6 +218,8 @@
   <import resource="applicationContext-treatment.xml"/>
   
   <import resource="applicationContext-trackeddocument.xml"/>
+  
+  <import resource="applicationContext-travelPermit.xml"/>
   
   <import resource="applicationContext-user.xml"/>
   

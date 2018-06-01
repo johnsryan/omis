@@ -1,10 +1,13 @@
 package omis.paroleboardmember.web.controller;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -21,11 +24,15 @@ import omis.paroleboardmember.domain.ParoleBoardMember;
 import omis.paroleboardmember.report.ParoleBoardMemberSummary;
 import omis.paroleboardmember.report.ParoleBoardMemberSummaryReportService;
 import omis.paroleboardmember.web.form.ParoleBoardMemberSearchForm;
+import omis.report.ReportFormat;
+import omis.report.ReportRunner;
+import omis.report.web.controller.delegate.ReportControllerDelegate;
 
 /**
  * Controller for displaying parole board members.
  *
  * @author Josh Divine
+ * @author Sierra Rosales
  * @version 0.1.0 (Nov 9, 2017)
  * @since OMIS 3.0
  */
@@ -53,6 +60,16 @@ public class ReportParoleBoardMemberController {
 	
 	private static final String PAROLE_BOARD_MEMBER_SEARCH_FORM_MODEL_KEY = 
 			"paroleBoardMemberSearchForm";
+
+	/* Report Names. */
+	
+	private static final String BOARD_MEMBER_DETAILS_REPORT_NAME
+		= "/BOPP/Board_of_Pardons_and_Parole_Staff_Details";
+	
+	/* Report Parameters. */
+	
+	private static final String BOARD_MEMBER_DETAILS_ID_REPORT_PARAM_NAME
+		= "BOARD_MEMBER_ID";		
 	
 	/* Property editor factories. */
 	
@@ -70,6 +87,18 @@ public class ReportParoleBoardMemberController {
 	@Qualifier("paroleBoardMemberSummaryReportService")
 	private ParoleBoardMemberSummaryReportService 
 			paroleBoardMemberSummaryReportService;
+	
+	/* Report runners. */
+	
+	@Autowired
+	@Qualifier("reportRunner")
+	private ReportRunner reportRunner;
+	
+	/* Controller delegates. */
+	
+	@Autowired
+	@Qualifier("reportControllerDelegate")
+	private ReportControllerDelegate reportControllerDelegate;	
 	
 	/* Constructors. */
 	
@@ -166,6 +195,31 @@ public class ReportParoleBoardMemberController {
 				paroleBoardMember);
 		return mav;
 	}
+	
+	/**
+	 * Returns the report for the specified board member.
+	 * 
+	 * @param paroleBoardMember parole board member
+	 * @param reportFormat report format
+	 * @return response entity with report
+	 */
+	@RequestMapping(value = "/boardMemberDetailsReport.html",
+			method = RequestMethod.GET)
+	@PreAuthorize("hasRole('PAROLE_BOARD_MEMBER_LIST') or hasRole('ADMIN')")
+	public ResponseEntity<byte []> reportBoardMemberDetails(@RequestParam(
+			value = "paroleBoardMember", required = true)
+			final ParoleBoardMember paroleBoardMember,
+			@RequestParam(value = "reportFormat", required = true)
+			final ReportFormat reportFormat) {
+		Map<String, String> reportParamMap = new HashMap<String, String>();
+		reportParamMap.put(BOARD_MEMBER_DETAILS_ID_REPORT_PARAM_NAME,
+				Long.toString(paroleBoardMember.getId()));
+		byte[] doc = this.reportRunner.runReport(
+				BOARD_MEMBER_DETAILS_REPORT_NAME,
+				reportParamMap, reportFormat);
+		return this.reportControllerDelegate.constructReportResponseEntity(
+				doc, reportFormat);
+	}	
 	
 	/* Init binders. */
 	

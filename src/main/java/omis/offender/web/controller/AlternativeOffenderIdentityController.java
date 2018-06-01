@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.offender.web.controller;
 
 import java.util.Date;
@@ -10,7 +27,6 @@ import omis.beans.factory.spring.CustomDateEditorFactory;
 import omis.country.domain.Country;
 import omis.datatype.DateRange;
 import omis.demographics.domain.Sex;
-import omis.exception.DuplicateEntityFoundException;
 import omis.offender.beans.factory.OffenderPropertyEditorFactory;
 import omis.offender.domain.Offender;
 import omis.offender.service.AlternativeOffenderIdentityService;
@@ -20,8 +36,11 @@ import omis.offender.web.validator.AlternativeOffenderIdentityFormValidator;
 import omis.person.domain.AlternativeIdentityAssociation;
 import omis.person.domain.AlternativeIdentityCategory;
 import omis.person.domain.AlternativeNameAssociation;
+import omis.person.exception.AlternativeIdentityAssociationExistsException;
+import omis.person.exception.PersonIdentityExistsException;
 import omis.region.domain.City;
 import omis.region.domain.State;
+import omis.region.exception.CityExistsException;
 import omis.report.ReportFormat;
 import omis.report.ReportRunner;
 import omis.report.web.controller.delegate.ReportControllerDelegate;
@@ -110,8 +129,13 @@ public class AlternativeOffenderIdentityController {
 	
 	/* Errors messages. */
 	
-	private static final String DUPLICATE_ENTITY_FOUND_MESSAGE_KEY
-		= "birthCityOrIdentity.exists";
+	private static final String PERSON_IDENTITY_EXISTS_MESSAGE_KEY
+		= "personIdentity.exists";
+	
+	private static final String ALTERNATIVE_IDENTITY_ASSOCIATION_EXISTS_MESSAGE_KEY
+		= "alternativeIdentityAssociation.exists";
+	
+	private static final String CITY_EXISTS_MESSAGE_KEY = "birthCity.exists";
 
 	/* Bundles. */
 	
@@ -293,9 +317,16 @@ public class AlternativeOffenderIdentityController {
 				= new AlternativeOffenderIdentityForm();
 		if (alternativeIdentityAssociation.getIdentity()
 				.getSocialSecurityNumber() != null) {
-			alternativeOffenderIdentityForm.setSocialSecurityNumber(
+			String ssnString = String.format("%09d",
 					alternativeIdentityAssociation.getIdentity()
-						.getSocialSecurityNumber().toString());
+						.getSocialSecurityNumber());
+			if (ssnString.length() == 9) {
+				ssnString = String.format("%s-%s-%s",
+						ssnString.substring(0, 3),
+						ssnString.substring(3, 5),
+						ssnString.substring(5, 9));
+			}
+			alternativeOffenderIdentityForm.setSocialSecurityNumber(ssnString);
 		}
 		alternativeOffenderIdentityForm.setStateIdNumber(
 				alternativeIdentityAssociation.getIdentity()
@@ -386,12 +417,18 @@ public class AlternativeOffenderIdentityController {
 							.getBirthState());
 			mav.addObject(CITIES_MODEL_KEY, cities);
 		} else if (
-				alternativeOffenderIdentityForm.getBirthCountry() != null
-				&& !this.alternativeOffenderIdentityService.hasStates(
-						alternativeOffenderIdentityForm.getBirthCountry())) {
-			List<City> cities = this.alternativeOffenderIdentityService
-					.findCityByCountry(
+				alternativeOffenderIdentityForm.getBirthCountry() != null) {
+			List<City> cities;
+			if (this.alternativeOffenderIdentityService.hasStates(
+					alternativeOffenderIdentityForm.getBirthCountry())) {
+				cities = this.alternativeOffenderIdentityService
+						.findCitiesByCountryWithoutState(
 							alternativeOffenderIdentityForm.getBirthCountry());
+			} else {
+				cities = this.alternativeOffenderIdentityService
+						.findCitiesByCountry(
+							alternativeOffenderIdentityForm.getBirthCountry());	
+			}
 			mav.addObject(CITIES_MODEL_KEY, cities);
 		}
 		mav.addObject(ALTERNATIVE_IDENTITY_CATEGORIES_MODEL_KEY, categories);
@@ -418,9 +455,11 @@ public class AlternativeOffenderIdentityController {
 	public ModelAndView save(
 			@RequestParam(value = "offender", required = true)
 				final Offender offender,
-			final AlternativeOffenderIdentityForm
-				form,
-			final BindingResult result) throws DuplicateEntityFoundException {
+			final AlternativeOffenderIdentityForm form,
+			final BindingResult result)
+					throws CityExistsException,
+						AlternativeIdentityAssociationExistsException,
+						PersonIdentityExistsException {
 		this.alternativeOffenderIdentityFormValidator.validate(
 				form, result);
 		if (result.hasErrors()) {
@@ -472,9 +511,11 @@ public class AlternativeOffenderIdentityController {
 			@RequestParam(value = "alternativeIdentityAssociation")
 				final AlternativeIdentityAssociation
 					alternativeIdentityAssociation,
-			final AlternativeOffenderIdentityForm
-				form,
-			final BindingResult result) throws DuplicateEntityFoundException {
+			final AlternativeOffenderIdentityForm form,
+			final BindingResult result)
+					throws CityExistsException,
+						AlternativeIdentityAssociationExistsException,
+						PersonIdentityExistsException {
 		this.alternativeOffenderIdentityFormValidator.validate(
 				form, result);
 		if (result.hasErrors()) {
@@ -591,30 +632,26 @@ public class AlternativeOffenderIdentityController {
 	
 	/**
 	 * Returns options for cities by country.
-	 * 
-	 * <p>By default, if the country has States, no cities will be returned.
-	 * To return cities if the country has States, {@code allowIfHasStates}
-	 * must be set to {@code true}.
-	 * 
+	 *  
 	 * @param country country for which to return cities
-	 * @param allowIfHasStates whether to return cities when country has States
 	 * @return options for cities by country
 	 */
 	@RequestMapping(value = "/findCitiesByCountry.html",
 			method = RequestMethod.GET)
 	public ModelAndView findCitiesByCountry(
 			@RequestParam(value = "country", required = true)
-				final Country country,
-			@RequestParam(value = "allowIfHasStates", required = false)
-				final Boolean allowIfHasStates) {
+				final Country country) {
 		ModelAndView mav = new ModelAndView(CITY_OPTIONS_VIEW_NAME);
-		if ((allowIfHasStates != null && allowIfHasStates)
-				|| !this.alternativeOffenderIdentityService
-					.hasStates(country)) {
-			List<City> cities = this.alternativeOffenderIdentityService
-					.findCityByCountry(country);
-			mav.addObject(CITIES_MODEL_KEY, cities);
+		List<City> cities;
+		if (this.alternativeOffenderIdentityService.hasStates(country)) {
+			cities = this.alternativeOffenderIdentityService
+					.findCitiesByCountryWithoutState(country);
+		} else {
+			cities = this.alternativeOffenderIdentityService
+					.findCitiesByCountry(country);
+					
 		}
+		mav.addObject(CITIES_MODEL_KEY, cities);
 		return mav;
 	}
 	
@@ -803,17 +840,48 @@ public class AlternativeOffenderIdentityController {
 	/* Exception handlers. */
 	
 	/**
-	 * Handles {@code DuplicateEntityFoundException}.
+	 * Handles {@code PersonIdentityExistsException}.
 	 * 
-	 * @param duplicateEntityFoundException exception
-	 * @return screen to handle {@code DuplicateEntityFoundException}
+	 * @param personIdentityExistsException exception
+	 * @return screen to handle {@code PersonIdentityExistsException}
 	 */
-	@ExceptionHandler(DuplicateEntityFoundException.class)
-	public ModelAndView handleDuplicateEntityFoundException(
-			final DuplicateEntityFoundException duplicateEntityFoundException) {
+	@ExceptionHandler(PersonIdentityExistsException.class)
+	public ModelAndView handlePersonIdentityExistsException(
+			final PersonIdentityExistsException personIdentityExistsException) {
 		return this.businessExceptionHandlerDelegate.prepareModelAndView(
-				DUPLICATE_ENTITY_FOUND_MESSAGE_KEY, ERROR_BUNDLE_NAME,
-				duplicateEntityFoundException);
+				PERSON_IDENTITY_EXISTS_MESSAGE_KEY, ERROR_BUNDLE_NAME,
+				personIdentityExistsException);
+	}
+	
+	/**
+	 * Handles {@code AlternativeIdentityAssociationExistsException}.
+	 * 
+	 * @param alternativeIdentityAssociationExistsException exception
+	 * @return screen to handle
+	 * {@code AlternativeIdentityAssociationExistsException}
+	 */
+	@ExceptionHandler(AlternativeIdentityAssociationExistsException.class)
+	public ModelAndView handleAlternativeIdentityAssociationExistsException(
+			final AlternativeIdentityAssociationExistsException
+				alternativeIdentityAssociationExistsException) {
+		return this.businessExceptionHandlerDelegate.prepareModelAndView(
+				ALTERNATIVE_IDENTITY_ASSOCIATION_EXISTS_MESSAGE_KEY,
+				ERROR_BUNDLE_NAME,
+				alternativeIdentityAssociationExistsException);
+	}
+	
+	/**
+	 * Handles {@code CityExistsException}.
+	 * 
+	 * @param cityExistsException exception
+	 * @return screen to handle {@code CityExistsException}
+	 */
+	@ExceptionHandler(CityExistsException.class)
+	public ModelAndView handleCityExistsException(
+			final CityExistsException cityExistsException) {
+		return this.businessExceptionHandlerDelegate.prepareModelAndView(
+				CITY_EXISTS_MESSAGE_KEY, ERROR_BUNDLE_NAME,
+				cityExistsException);
 	}
 	
 	/* Init binder. */

@@ -15,7 +15,7 @@
 		<sec:authorize access="hasRole('TIER_DESIGNATION_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty offender}">
 			<li>
-				<a href="${pageContext.request.contextPath}/tierDesignation/tierDesignationListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="tierDesignationListingReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/tierDesignation/tierDesignationListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="tierDesignationListingReportLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>
@@ -36,7 +36,7 @@
 		<sec:authorize access="hasRole('TIER_DESIGNATION_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty tierDesignation}">
 			<li>
-				<a href="${pageContext.request.contextPath}/tierDesignation/tierDesignationDetailsReport.html?tierDesignation=${tierDesignation.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="tierDesignationDetailsReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/tierDesignation/tierDesignationDetailsReport.html?tierDesignation=${tierDesignation.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="tierDesignationDetailsReportLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>

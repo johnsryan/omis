@@ -65,4 +65,13 @@
 		where
 			paroleEligibility.offender = :offender
 	]]></query>
+	<query name="findParoleEligibilitiesByOffenderAfterDate"><![CDATA[
+		select eligibility
+		from
+			omis.paroleeligibility.domain.ParoleEligibility eligibility
+		where
+			eligibility.offender = :offender
+		and
+			eligibility.hearingEligibilityDate > :date
+	]]></query>
 </hibernate-mapping>

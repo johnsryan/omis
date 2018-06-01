@@ -17,6 +17,8 @@
 */
 package omis.hearinganalysis.domain;
 
+import java.util.Date;
+
 import omis.audit.domain.Creatable;
 import omis.audit.domain.Updatable;
 import omis.paroleboarditinerary.domain.BoardAttendee;
@@ -27,7 +29,8 @@ import omis.paroleeligibility.domain.ParoleEligibility;
  * Hearing analysis.
  *
  * @author Josh Divine
- * @version 0.1.1 (Apr 18, 2018)
+ * @author Annie Wahl
+ * @version 0.1.2 (May 29, 2018)
  * @since OMIS 3.0
  */
 public interface HearingAnalysis extends Creatable, Updatable {
@@ -101,6 +104,18 @@ public interface HearingAnalysis extends Creatable, Updatable {
 	 * @return parole board itinerary
 	 */
 	ParoleBoardItinerary getParoleBoardItinerary();
+	
+	/**
+	 * Returns the ExpectedCompletionDate for the Hearing Analysis.
+	 * @return expectedCompletionDate - Date
+	 */
+	Date getExpectedCompletionDate();
+	
+	/**
+	 * Sets the ExpectedCompletionDate for the Hearing Analysis.
+	 * @param expectedCompletionDate - Date
+	 */
+	void setExpectedCompletionDate(Date expectedCompletionDate);
 	
 	/**
 	 * Compares {@code this} and {@code obj} for equality.

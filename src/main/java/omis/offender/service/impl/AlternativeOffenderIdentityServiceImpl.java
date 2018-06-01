@@ -1,26 +1,44 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.offender.service.impl;
 
 import java.util.Date;
 import java.util.List;
 
-
 import omis.country.domain.Country;
 import omis.country.service.delegate.CountryDelegate;
 import omis.datatype.DateRange;
 import omis.demographics.domain.Sex;
-import omis.exception.DuplicateEntityFoundException;
 import omis.offender.domain.Offender;
 import omis.offender.service.AlternativeOffenderIdentityService;
 import omis.person.domain.AlternativeIdentityAssociation;
 import omis.person.domain.AlternativeIdentityCategory;
 import omis.person.domain.AlternativeNameAssociation;
 import omis.person.domain.PersonIdentity;
+import omis.person.exception.AlternativeIdentityAssociationExistsException;
+import omis.person.exception.PersonIdentityExistsException;
 import omis.person.service.delegate.AlternativeIdentityAssociationDelegate;
 import omis.person.service.delegate.AlternativeIdentityCategoryDelegate;
 import omis.person.service.delegate.AlternativeNameAssociationDelegate;
 import omis.person.service.delegate.PersonIdentityDelegate;
 import omis.region.domain.City;
 import omis.region.domain.State;
+import omis.region.exception.CityExistsException;
 import omis.region.service.delegate.CityDelegate;
 import omis.region.service.delegate.StateDelegate;
 
@@ -99,7 +117,8 @@ public class AlternativeOffenderIdentityServiceImpl
 			final String stateIdNumber, final Sex sex,
 			final DateRange dateRange, 
 			final AlternativeIdentityCategory category)
-			throws DuplicateEntityFoundException {
+					throws AlternativeIdentityAssociationExistsException,
+						PersonIdentityExistsException {
 		PersonIdentity identity = this.personIdentityDelegate
 				.create(offender, sex, birthDate, birthCountry,
 						(birthPlace != null ? birthPlace.getState() : null),
@@ -122,7 +141,8 @@ public class AlternativeOffenderIdentityServiceImpl
 			final String stateIdNumber, final Sex sex, 
 			final DateRange dateRange, 
 			final AlternativeIdentityCategory category)
-			throws DuplicateEntityFoundException {
+			throws AlternativeIdentityAssociationExistsException,
+				PersonIdentityExistsException {
 		PersonIdentity identity = this.personIdentityDelegate
 				.update(association.getIdentity(), sex, birthDate, birthCountry,
 						(birthPlace != null ? birthPlace.getState() : null),
@@ -143,7 +163,8 @@ public class AlternativeOffenderIdentityServiceImpl
 			final City birthPlace, final String stateIdNumber, 
 			final Sex sex, final DateRange dateRange, 
 			final AlternativeIdentityCategory category) 
-					throws DuplicateEntityFoundException {
+					throws AlternativeIdentityAssociationExistsException,
+						PersonIdentityExistsException{
 		PersonIdentity identity = this.personIdentityDelegate
 				.update(association.getIdentity(), sex, birthDate, birthCountry,
 						(birthPlace != null ? birthPlace.getState() : null),
@@ -207,14 +228,20 @@ public class AlternativeOffenderIdentityServiceImpl
 	@Override
 	public City createCity(
 			final String name, final State state, final Country country)
-				throws DuplicateEntityFoundException {
+				throws CityExistsException {
 		return this.cityDelegate.create(name, true, state, country);
 	}
 	
 	/** {@inheritDoc} */
 	@Override
-	public List<City> findCityByCountry(final Country country) {
+	public List<City> findCitiesByCountry(final Country country) {
 		return this.cityDelegate.findByCountry(country);
+	}
+	
+	/** {@inheritDoc} */
+	@Override
+	public List<City> findCitiesByCountryWithoutState(final Country country) {
+		return this.cityDelegate.findByCountryWithoutState(country);
 	}
 	
 	/** {@inheritDoc} */
@@ -234,6 +261,5 @@ public class AlternativeOffenderIdentityServiceImpl
 	@Override
 	public State findHomeState() {
 		return this.stateDelegate.findHomeState();
-	}
-	
+	}	
 }

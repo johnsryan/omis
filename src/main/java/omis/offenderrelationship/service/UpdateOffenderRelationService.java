@@ -366,6 +366,8 @@ public interface UpdateOffenderRelationService {
 	/**
 	 * Removes relationship of offender to relation.
 	 * 
+	 * <p>Removes associated notes.
+	 * 
 	 * @param offender offender
 	 * @param relation relation
 	 */

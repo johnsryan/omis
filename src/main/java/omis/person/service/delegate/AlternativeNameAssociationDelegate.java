@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.person.service.delegate;
 
 import java.util.Date;
@@ -7,21 +24,21 @@ import omis.audit.AuditComponentRetriever;
 import omis.audit.domain.CreationSignature;
 import omis.audit.domain.UpdateSignature;
 import omis.datatype.DateRange;
-import omis.exception.DuplicateEntityFoundException;
 import omis.instance.factory.InstanceFactory;
 import omis.person.dao.AlternativeNameAssociationDao;
 import omis.person.domain.AlternativeNameAssociation;
 import omis.person.domain.AlternativeNameCategory;
 import omis.person.domain.Person;
 import omis.person.domain.PersonName;
+import omis.person.exception.AlternativeNameAssociationExistsException;
 
 /**
- * AlternativeNameAssociationDelegate.java
+ * Delegate for alternative name associations.
  * 
- *@author Annie Jacques 
- *@version 0.1.0 (Nov 9, 2016)
- *@since OMIS 3.0
- *
+ * @author Annie Jacques
+ * @author Stephen Abson
+ * @version 0.1.0 (Nov 9, 2016)
+ * @since OMIS 3.0
  */
 public class AlternativeNameAssociationDelegate {
 	
@@ -60,15 +77,16 @@ public class AlternativeNameAssociationDelegate {
 	 * @param dateRange - date range
 	 * @param category - alternative name category
 	 * @return AlternativeNameAssociation with the given parameters
-	 * @throws DuplicateEntityFoundException - when AlternativeNameAssociation 
-	 * already exists with the given parameters
+	 * @throws AlternativeNameAssociationExistsException if alternative name
+	 * association exists
 	 */
 	public AlternativeNameAssociation create(final PersonName name, 
 			final DateRange dateRange, final AlternativeNameCategory category)
-			throws DuplicateEntityFoundException{
+			throws AlternativeNameAssociationExistsException {
 		if(this.alternativeNameAssociationDao.find(name, category, 
 				name.getPerson(), dateRange)){
-			throw new DuplicateEntityFoundException(DUPLICATE_ENTITY_FOUND_MSG);
+			throw new AlternativeNameAssociationExistsException(
+					DUPLICATE_ENTITY_FOUND_MSG);
 		}
 		
 		AlternativeNameAssociation alternativeNameAssociation = 
@@ -98,18 +116,19 @@ public class AlternativeNameAssociationDelegate {
 	 * @param dateRange - date range
 	 * @param category - alternative name category
 	 * @return Updated AlternativeNameAssociation with the given parameters
-	 * @throws DuplicateEntityFoundException - when AlternativeNameAssociation 
-	 * already exists with the given parameters
+	 * @throws AlternativeNameAssociationExistsException if alternative name
+	 * association exists
 	 */
 	public AlternativeNameAssociation update(
 			final AlternativeNameAssociation alternativeNameAssociation, 
 			final PersonName name, final DateRange dateRange, 
 			final AlternativeNameCategory category)
-			throws DuplicateEntityFoundException{
+			throws AlternativeNameAssociationExistsException {
 		if(this.alternativeNameAssociationDao.findExcluding(
 				alternativeNameAssociation, name, category, name.getPerson(),
 				dateRange)){
-			throw new DuplicateEntityFoundException(DUPLICATE_ENTITY_FOUND_MSG);
+			throw new AlternativeNameAssociationExistsException(
+					DUPLICATE_ENTITY_FOUND_MSG);
 		}
 		
 		alternativeNameAssociation.setCategory(category);

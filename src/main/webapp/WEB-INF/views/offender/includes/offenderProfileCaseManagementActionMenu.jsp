@@ -19,28 +19,28 @@
 		<sec:authorize access="hasRole('OFFENDER_PROFILE_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty offender}">
 			<li>
-				<a href="${pageContext.request.contextPath}/offender/profileInstitutionalCasePlanReport.rtf?offender=${offender.id}&reportFormat=RTF" class="reportLink"><fmt:message key="institutionalCasePlanLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/offender/profileInstitutionalCasePlanReport.rtf?offender=${offender.id}&reportFormat=RTF" class="msWordReportLink"><fmt:message key="institutionalCasePlanLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>			
 		<sec:authorize access="hasRole('OFFENDER_PROFILE_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty offender}">
 			<li>
-				<a href="${pageContext.request.contextPath}/offender/profileOffenderContactReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="offenderContactReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/offender/profileOffenderContactReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab adobeReportLink"><fmt:message key="offenderContactReportLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>
 		<sec:authorize access="hasRole('OFFENDER_PROFILE_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty offender}">
 			<li>
-				<a href="${pageContext.request.contextPath}/offender/profileSignUpReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="signUpReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/offender/profileSignUpReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab adobeReportLink"><fmt:message key="signUpReportLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>
 		<sec:authorize access="hasRole('OFFENDER_PROFILE_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty offender}">
 			<li>
-				<a href="${pageContext.request.contextPath}/offender/profileTransitionalCasePlanReport.rtf?offender=${offender.id}&reportFormat=RTF" class="reportLink"><fmt:message key="transitionalCasePlanLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/offender/profileTransitionalCasePlanReport.rtf?offender=${offender.id}&reportFormat=RTF" class="msWordReportLink"><fmt:message key="transitionalCasePlanLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>	

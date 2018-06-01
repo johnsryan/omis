@@ -38,7 +38,8 @@ import omis.paroleeligibility.service.delegate.ParoleEligibilityNoteDelegate;
  * Implementation of service for parole eligibility service.
  *
  * @author Trevor Isles
- * @version 0.1.0 (Nov 9, 2017)
+ * @author Annie Wahl
+ * @version 0.1.1 (May 23, 2018)
  * @since OMIS 3.0
  */
 public class ParoleEligibilityServiceImpl implements ParoleEligibilityService {
@@ -160,4 +161,20 @@ public class ParoleEligibilityServiceImpl implements ParoleEligibilityService {
 		return this.appearanceCategoryDelegate.findAppearanceCategories();
 	}
 
+	/**{@inheritDoc} */
+	@Override
+	public List<EligibilityStatusReason>
+		findEligibilityStatusReasonsByEligibilityStatusCategory(
+			final EligibilityStatusCategory statusCategory) {
+		return this.eligibilityStatusReasonDelegate
+				.findByStatusCategory(statusCategory);
+	}
+
+	/**{@inheritDoc} */
+	@Override
+	public List<ParoleEligibility> findParoleEligibilitiesByOffenderAfterDate(
+			final Offender offender, final Date date) {
+		return this.paroleEligibilityDelegate.findByOffenderAfterDate(
+				offender, date);
+	}
 }

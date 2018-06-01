@@ -29,7 +29,7 @@ import omis.boardhearing.web.form.BoardHearingNoteItem;
  * 
  * @author Annie Wahl 
  * @author Josh Divine
- * @version 0.1.1 (Apr 18, 2018)
+ * @version 0.1.2 (May 31, 2018)
  * @since OMIS 3.0
  */
 public class BoardHearingFormValidator implements Validator {
@@ -45,7 +45,7 @@ public class BoardHearingFormValidator implements Validator {
 	private static final String BOARD_MEMBER_REQUIRED_MSG_KEY =
 			"boardHearing.boardMember.required";
 
-
+	@SuppressWarnings("unused")
 	private static final String REASON_REQUIRED_MSG_KEY =
 			"boardHearing.reason.required";
 	
@@ -65,10 +65,10 @@ public class BoardHearingFormValidator implements Validator {
 		
 		BoardHearingForm form = (BoardHearingForm) target;
 		
-		if (form.getCancelled()) {
+		/*if (form.getCancelled()) {
 			ValidationUtils.rejectIfEmpty(errors, "reason", 
 					REASON_REQUIRED_MSG_KEY);
-		}
+		}*/
 		
 		if (form.getBoardHearingNoteItems() != null) {
 			int i = 0;

@@ -7,13 +7,13 @@
 	<ul>
 		<sec:authorize access="hasRole('COMMIT_STATUS_EDIT') or hasRole('ADMIN')">
 			<li>
-				<a class="viewEditLink" href="${pageContext.request.contextPath}/commitStatus/create.html?offender=${offender.id}"><span class="visibleLinkLabel"><fmt:message key="createCommitStatusLink" /></span></a>
+				<a class="createLink" href="${pageContext.request.contextPath}/commitStatus/create.html?offender=${offender.id}"><span class="visibleLinkLabel"><fmt:message key="createCommitStatusLink" /></span></a>
 			</li>
 	 	</sec:authorize> 
 	 	<sec:authorize access="hasRole('COMMIT_STATUS_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty offender}">
 			<li>
-				<a href="${pageContext.request.contextPath}/commitStatus/commitStatusListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="commitStatusListingReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/commitStatus/commitStatusListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="commitStatusListingReportLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>

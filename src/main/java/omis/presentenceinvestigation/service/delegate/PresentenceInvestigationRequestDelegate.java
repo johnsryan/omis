@@ -19,7 +19,6 @@ package omis.presentenceinvestigation.service.delegate;
 
 import java.util.Date;
 
-
 import omis.audit.AuditComponentRetriever;
 import omis.audit.domain.CreationSignature;
 import omis.audit.domain.UpdateSignature;
@@ -37,7 +36,7 @@ import omis.user.domain.UserAccount;
  * @author Ryan Johns
  * @author Annie Jacques
  * @author Josh Divine
- * @version 0.1.2 (Apr 24, 2018)
+ * @version 0.1.3 (May 15, 2018)
  * @since OMIS 3.0
  */
 public class PresentenceInvestigationRequestDelegate {
@@ -77,9 +76,7 @@ public class PresentenceInvestigationRequestDelegate {
 	 * @param requestDate - request date.
 	 * @param expectedCompletionDate - expected completion date.
 	 * @param docket - docket.
-	 * @param completionDate - completion date.
 	 * @param sentenceDate - sentence date.
-	 * @param actualSentenceDate actual sentence date
 	 * @param category - PresentenceInvestigationCategory
 	 * @param submissionDate - submission date.
 	 * @return Presentence investigation request.
@@ -88,9 +85,9 @@ public class PresentenceInvestigationRequestDelegate {
 	public PresentenceInvestigationRequest create(
 			final UserAccount assignedUser,
 			final Date requestDate, final  Date expectedCompletionDate, 
-			final Docket docket, final Date completionDate, 
-			final Date sentenceDate, final Date actualSentenceDate,
-			final PresentenceInvestigationCategory category, final Date submissionDate) 
+			final Docket docket, final Date sentenceDate, 
+			final PresentenceInvestigationCategory category, 
+			final Date submissionDate) 
 					throws DuplicateEntityFoundException {
 		if (this.presentenceInvestigationRequestDao.find(docket) != null) {
 			throw new DuplicateEntityFoundException(
@@ -104,9 +101,8 @@ public class PresentenceInvestigationRequestDelegate {
 						this.auditComponenetRetriever.retrieveUserAccount(), 
 						this.auditComponenetRetriever.retrieveDate()));
 		populatePresentenceInvestigationRequest(presentenceInvestigationRequest, 
-				assignedUser, requestDate, completionDate, 
-				expectedCompletionDate, docket, sentenceDate, 
-				actualSentenceDate, category, submissionDate);
+				assignedUser, requestDate, expectedCompletionDate, docket, 
+				sentenceDate, category, submissionDate);
 		return this.presentenceInvestigationRequestDao.makePersistent(
 				presentenceInvestigationRequest);
 	}
@@ -116,12 +112,10 @@ public class PresentenceInvestigationRequestDelegate {
 	 * request.
 	 * @param assignedUser - assigned user.
 	 * @param requestDate - request date.
-	 * @param completionDate - completion date.
 	 * @param expectedCompletionDate - expected completion date.
 	 * @param completionDate - completion date.
 	 * @param docket - docket. 
 	 * @param sentenceDate - sentence date.
-	 * @param actualSentenceDate actual sentence date
 	 * @param category - PresentenceInvestigationCategory
 	 * @param submissionDate - submission date.
 	 * @return presentence investigation request.
@@ -131,10 +125,10 @@ public class PresentenceInvestigationRequestDelegate {
 			final PresentenceInvestigationRequest 
 				presentenceInvestigationRequest,
 			final UserAccount assignedUser, final Date requestDate,
-			final Date completionDate,
 			final Date expectedCompletionDate, final Docket docket,
-			final Date sentenceDate, final Date actualSentenceDate,
-			final PresentenceInvestigationCategory category, final Date submissionDate)
+			final Date sentenceDate, 
+			final PresentenceInvestigationCategory category, 
+			final Date submissionDate)
 	throws DuplicateEntityFoundException {
 		
 		if (this.presentenceInvestigationRequestDao.findExcluding(
@@ -143,9 +137,8 @@ public class PresentenceInvestigationRequestDelegate {
 					DUPLICATE_ENTITY_FOUND_MSG);
 		}
 		populatePresentenceInvestigationRequest(presentenceInvestigationRequest, 
-				assignedUser, requestDate, completionDate, 
-				expectedCompletionDate, docket, sentenceDate, 
-				actualSentenceDate, category, submissionDate);
+				assignedUser, requestDate, expectedCompletionDate, docket, 
+				sentenceDate, category, submissionDate);
 		return this.presentenceInvestigationRequestDao.makePersistent(
 				presentenceInvestigationRequest);
 	}
@@ -164,20 +157,16 @@ public class PresentenceInvestigationRequestDelegate {
 			final PresentenceInvestigationRequest 
 					presentenceInvestigationRequest, 
 			final UserAccount assignedUser, final Date requestDate, 
-			final Date completionDate, final Date expectedCompletionDate, 
-			final Docket docket, final Date sentenceDate, 
-			final Date actualSentenceDate, 
+			final Date expectedCompletionDate, final Docket docket, 
+			final Date sentenceDate, 
 			final PresentenceInvestigationCategory category,
 			final Date submissionDate) {
-		presentenceInvestigationRequest.setCompletionDate(completionDate);
 		presentenceInvestigationRequest.setDocket(docket);
 		presentenceInvestigationRequest.setExpectedCompletionDate(
 				expectedCompletionDate);
 		presentenceInvestigationRequest.setRequestDate(requestDate);
 		presentenceInvestigationRequest.setAssignedUser(assignedUser);
 		presentenceInvestigationRequest.setSentenceDate(sentenceDate);
-		presentenceInvestigationRequest.setActualSentenceDate(
-				actualSentenceDate);
 		presentenceInvestigationRequest.setCategory(category);
 		presentenceInvestigationRequest.setSubmissionDate(submissionDate);
 		presentenceInvestigationRequest.setUpdateSignature(

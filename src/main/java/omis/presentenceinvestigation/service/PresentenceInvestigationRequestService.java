@@ -37,7 +37,7 @@ import omis.user.domain.UserAccount;
  * @author Ryan Johns
  * @author Annie Wahl
  * @author Josh Divine
- * @version 0.1.2 (Apr 24, 2018)
+ * @version 0.1.3 (May 15, 2018)
  * @since OMIS 3.0
  */
 public interface PresentenceInvestigationRequestService {
@@ -47,9 +47,7 @@ public interface PresentenceInvestigationRequestService {
 	 * @param requestDate - request date.
 	 * @param expectedCompletionDate - expected completion date.
 	 * @param docket - docket.
-	 * @param completionDate - completion date.
 	 * @param sentenceDate - sentence date.
-	 * @param actualSentenceDate actual sentence date
 	 * @param category - PresentenceInvestigationCategory
 	 * @param submissionDate - submission date.
 	 * @return presentence investigation request. 
@@ -58,21 +56,18 @@ public interface PresentenceInvestigationRequestService {
 	 public PresentenceInvestigationRequest create(
 			 UserAccount assignedUser, Date requestDate, 
 			 Date expectedCompletionDate, Docket docket, 
-			 Date completionDate, Date sentenceDate, Date actualSentenceDate,
-			 PresentenceInvestigationCategory category, Date submissionDate)
-	 throws DuplicateEntityFoundException;
+			 Date sentenceDate, PresentenceInvestigationCategory category, 
+			 Date submissionDate) throws DuplicateEntityFoundException;
 	 
 	 /** Updates an existing presentence investigation request.\
 	 * @param presentenceInvestigationRequest - presentence investigation 
 	 * request.
 	 * @param assignedUser - assigned user.
 	 * @param requestDate - request date.
-	 * @param completionDate - completion date.
 	 * @param expectedCompletionDate - expected completion date.
 	 * @param completionDate - completion date.
 	 * @param docket - docket.
 	 * @param sentenceDate - sentence date.
-	 * @param actualSentenceDate actual sentence date
 	 * @param category - PresentenceInvestigationCategory
 	 * @param submissionDate - submission date.
 	 * @return presentence investigation request.
@@ -81,11 +76,10 @@ public interface PresentenceInvestigationRequestService {
 	public PresentenceInvestigationRequest update(
 			PresentenceInvestigationRequest 
 				presentenceInvestigationRequest,
-			UserAccount assignedUser, Date requestDate,
-			Date completionDate, Date expectedCompletionDate, 
-			Docket docket, Date sentenceDate, Date actualSentenceDate,
-			PresentenceInvestigationCategory category, Date submissionDate)
-	throws DuplicateEntityFoundException;
+			UserAccount assignedUser, Date requestDate, 
+			Date expectedCompletionDate, Docket docket, Date sentenceDate, 
+			PresentenceInvestigationCategory category, Date submissionDate) 
+					throws DuplicateEntityFoundException;
 	
 	/** Removes a presentence investigation request.
 	 * @param presentenceInvestigationRequest - presentence investigation 

@@ -5,29 +5,28 @@ import java.util.Date;
 import omis.person.domain.Person;
 
 /**
- * WarrantReleaseForm.java
+ * Warrant release form.
  * 
- *@author Annie Jacques 
- *@version 0.1.0 (May 9, 2017)
- *@since OMIS 3.0
- *
+ * @author Annie Jacques 
+ * @author Joel Norris
+ * @version 0.1.1 (May 21, 2018)
+ * @since OMIS 3.0
  */
 public class WarrantReleaseForm {
 	
-	public String addressee;
+	private String addressee;
 	
-	public Date releaseDate;
+	private Date releaseDate;
 	
-	public String instructions;
+	private String instructions;
 	
 	private Person clearedBy;
 	
 	private Date clearedByDate;
 	
-	/**
-	 * 
-	 */
+	/** Instantiates a default warrant release form. */
 	public WarrantReleaseForm() {
+		//Default constructor.
 	}
 
 	/**

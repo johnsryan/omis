@@ -17,6 +17,8 @@
 */
 package omis.hearinganalysis.dao;
 
+import java.util.List;
+
 import omis.dao.GenericDao;
 import omis.hearinganalysis.domain.HearingAnalysisCategory;
 
@@ -24,7 +26,8 @@ import omis.hearinganalysis.domain.HearingAnalysisCategory;
  * Data access object for hearing analysis category.
  * 
  * @author Josh Divine
- * @version 0.1.0 (Jan 9, 2018)
+ * @author Annie Wahl
+ * @version 0.1.1 (May 29, 2018)
  * @since OMIS 3.0
  */
 public interface HearingAnalysisCategoryDao 
@@ -48,5 +51,12 @@ public interface HearingAnalysisCategoryDao
 	 */
 	HearingAnalysisCategory findExcluding(String name, 
 			HearingAnalysisCategory excludedHearingAnalysisCategory);
+	
+	/**
+	 * Returns a list of all valid Hearing Analysis Categories.
+	 * 
+	 * @return List of all valid Hearing Analysis Categories.
+	 */
+	List<HearingAnalysisCategory> findAllHearingAnalysisCategories();
 
 }

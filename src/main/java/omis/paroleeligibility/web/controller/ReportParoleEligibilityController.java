@@ -49,7 +49,9 @@ import omis.report.web.controller.delegate.ReportControllerDelegate;
  *
  * @author Trevor Isles
  * @author Josh Divine
- * @version 0.1.2 (Apr 17, 2018)
+ * @author Annie Wahl
+ * @author Sierra Rosales
+ * @version 0.1.3 (May 31, 2018)
  * @since OMIS 3.0
  */
 @Controller
@@ -69,7 +71,12 @@ public class ReportParoleEligibilityController {
 	private static final String ELIGIBILITIES_ACTION_MENU_VIEW_NAME = 
 			"paroleEligibility/includes/eligibilitiesActionMenu";
 	
-	private static final String UNRESOLVED_ELIGIBILITIES_ACTION_MENU_VIEW_NAME =
+	private static final String
+		UNRESOLVED_ELIGIBILITIES_ROW_ACTION_MENU_VIEW_NAME =
+			"paroleEligibility/includes/unresolvedEligibilitiesRowActionMenu";
+	
+	private static final String
+		UNRESOLVED_ELIGIBILITIES_ACTION_MENU_VIEW_NAME =
 			"paroleEligibility/includes/unresolvedEligibilitiesActionMenu";
 	
 	/* Model keys. */
@@ -84,7 +91,7 @@ public class ReportParoleEligibilityController {
 	private static final String HEARING_ANALYSIS_MODEL_KEY = "hearingAnalysis";
 	
 	private static final String BOARD_HEARING_MODEL_KEY = "boardHearing";
-	
+		
 	/* Services. */
 	
 	@Autowired
@@ -260,18 +267,18 @@ public class ReportParoleEligibilityController {
 	}
 	
 	/**
-	 * Returns eligibilities action menu.
+	 * Returns eligibilities row action menu.
 	 *
 	 * @param eligibility parole eligibility
 	 * @return eligibilities action menu
 	 */
-	@RequestMapping(value = "/unresolvedEligibilitiesActionMenu.html", 
+	@RequestMapping(value = "/unresolvedEligibilitiesRowActionMenu.html", 
 			method = RequestMethod.GET)
-	public ModelAndView showUnresolvedEligibilitiesActionMenu(
+	public ModelAndView showUnresolvedEligibilitiesRowActionMenu(
 			@RequestParam(value = "eligibility", required = true)
 				final ParoleEligibility eligibility) {
 		ModelAndView mav = new ModelAndView(
-				UNRESOLVED_ELIGIBILITIES_ACTION_MENU_VIEW_NAME);
+				UNRESOLVED_ELIGIBILITIES_ROW_ACTION_MENU_VIEW_NAME);
 		mav.addObject(ELIGIBILITY_MODEL_KEY, eligibility);
 		mav.addObject(HEARING_ANALYSIS_MODEL_KEY, this
 				.paroleEligibilityReportService
@@ -279,6 +286,19 @@ public class ReportParoleEligibilityController {
 		mav.addObject(BOARD_HEARING_MODEL_KEY, this
 				.paroleEligibilityReportService
 				.findBoardHearingByParoleEligibility(eligibility));
+		return mav;
+	}
+	
+	/**
+	 * Returns unresolved eligibilities action menu.
+	 *
+	 * @return unresolved eligibilities action menu
+	 */
+	@RequestMapping(value = "/unresolvedEligibilitiesActionMenu.html", 
+			method = RequestMethod.GET)
+	public ModelAndView showUnresolvedEligibilitiesActionMenu() {
+		ModelAndView mav = new ModelAndView(
+				UNRESOLVED_ELIGIBILITIES_ACTION_MENU_VIEW_NAME);
 		return mav;
 	}
 	

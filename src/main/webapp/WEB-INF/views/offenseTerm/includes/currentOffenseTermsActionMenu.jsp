@@ -37,7 +37,7 @@
 	<c:if test="${not empty person}">
 		<sec:authorize access="hasRole('OFFENSE_TERM_VIEW') or hasRole('ADMIN')">
 			<li>
-				<a href="${pageContext.request.contextPath}/offenseTerm/currentCourtCaseListingReport.html?person=${person.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="courtCaseCurrentListingReportLinkLabel" bundle="${offenseTermBundle}"/></a>
+				<a href="${pageContext.request.contextPath}/offenseTerm/currentCourtCaseListingReport.html?person=${person.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="courtCaseCurrentListingReportLinkLabel" bundle="${offenseTermBundle}"/></a>
 			</li>
 		</sec:authorize>
 	</c:if>
@@ -65,7 +65,7 @@
 	<c:if test="${not empty sentence}">
 		<sec:authorize access="hasRole('OFFENSE_TERM_VIEW') or hasRole('ADMIN')">
 			<li>
-				<a href="${pageContext.request.contextPath}/offenseTerm/courtCaseDetailsReport.html?courtCase=${sentence.conviction.courtCase.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="courtCaseDetailsReportLinkLabel" bundle="${offenseTermBundle}"/></a>
+				<a href="${pageContext.request.contextPath}/offenseTerm/courtCaseDetailsReport.html?courtCase=${sentence.conviction.courtCase.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="courtCaseDetailsReportLinkLabel" bundle="${offenseTermBundle}"/></a>
 			</li>
 		</sec:authorize>
 	</c:if>
@@ -73,7 +73,7 @@
 	<c:if test="${not empty sentence}">
 		<sec:authorize access="hasRole('OFFENSE_TERM_VIEW') or hasRole('ADMIN')">
 			<li>
-				<a href="${pageContext.request.contextPath}/offenseTerm/reportOfViolationReport.rtf?courtCase=${sentence.conviction.courtCase.id}&reportFormat=RTF" class="reportLink"><fmt:message key="reportOfViolationReportLinkLabel" bundle="${offenseTermBundle}"/></a>
+				<a href="${pageContext.request.contextPath}/offenseTerm/reportOfViolationReport.rtf?courtCase=${sentence.conviction.courtCase.id}&reportFormat=RTF" class="msWordReportLink"><fmt:message key="reportOfViolationReportLinkLabel" bundle="${offenseTermBundle}"/></a>
 			</li>
 		</sec:authorize>
 	</c:if>	

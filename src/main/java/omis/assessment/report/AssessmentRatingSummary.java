@@ -35,6 +35,8 @@ public class AssessmentRatingSummary implements Serializable {
 	
 	private final Long assessmentCategoryScoreId;
 	
+	private final BigDecimal assessmentCategoryScoreValue;
+	
 	private final Boolean assessmentCategoryScorePertinent;
 	
 	private final Boolean override;
@@ -62,6 +64,7 @@ public class AssessmentRatingSummary implements Serializable {
 	 */
 	public AssessmentRatingSummary(final Long assessmentRatingId,
 			final Long assessmentCategoryScoreId,
+			final BigDecimal assessmentCategoryScoreValue,
 			final Boolean assessmentCategoryScorePertinent,
 			final Boolean override,
 			final String assessmentRatingDescription,
@@ -70,6 +73,7 @@ public class AssessmentRatingSummary implements Serializable {
 			final BigDecimal assessmentRatingMax) {
 		this.assessmentRatingId = assessmentRatingId;
 		this.assessmentCategoryScoreId = assessmentCategoryScoreId;
+		this.assessmentCategoryScoreValue = assessmentCategoryScoreValue;
 		this.assessmentCategoryScorePertinent = 
 				assessmentCategoryScorePertinent;
 		this.override = override;
@@ -77,6 +81,14 @@ public class AssessmentRatingSummary implements Serializable {
 		this.rankName = rankName;
 		this.assessmentRatingMin = assessmentRatingMin;
 		this.assessmentRatingMax = assessmentRatingMax;
+	}
+
+	/**
+	 * Returns the assessmentCategoryScoreValue.
+	 * @return assessmentCategoryScoreValue - BigDecimal
+	 */
+	public BigDecimal getAssessmentCategoryScoreValue() {
+		return this.assessmentCategoryScoreValue;
 	}
 
 	/**

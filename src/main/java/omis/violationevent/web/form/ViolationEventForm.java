@@ -1,17 +1,35 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.violationevent.web.form;
 
 import java.util.Date;
 import java.util.List;
 
+import omis.facility.domain.Unit;
 import omis.supervision.domain.SupervisoryOrganization;
 
 /**
- * ViolationEventForm.java
+ * Violation event form.
  * 
- *@author Annie Jacques 
- *@version 0.1.1 (Aug 3, 2017)
- *@since OMIS 3.0
- *
+ * @author Annie Wahl 
+ * @author Josh Divine
+ * @version 0.1.2 (May 23, 2018)
+ * @since OMIS 3.0
  */
 public class ViolationEventForm {
 	
@@ -22,6 +40,8 @@ public class ViolationEventForm {
 	private Date eventDate;
 	
 	private String eventDetails;
+	
+	private Unit unit;
 	
 	private List<DisciplinaryCodeViolationItem> disciplinaryCodeViolationItems;
 	
@@ -54,6 +74,26 @@ public class ViolationEventForm {
 		this.jurisdiction = jurisdiction;
 	}
 	
+	/**
+	 * Returns the unit.
+	 *
+	 * @return unit
+	 */
+	public Unit getUnit() {
+		return unit;
+	}
+
+
+	/**
+	 * Sets the unit.
+	 *
+	 * @param unit unit
+	 */
+	public void setUnit(final Unit unit) {
+		this.unit = unit;
+	}
+
+
 	/**
 	 * Returns the jurisdictionFilter
 	 * @return jurisdictionFilter - JurisdictionFilter

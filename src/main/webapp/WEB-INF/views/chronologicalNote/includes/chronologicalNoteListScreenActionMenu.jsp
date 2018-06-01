@@ -41,7 +41,7 @@
 		<sec:authorize access="hasRole('CHRONOLOGICAL_NOTE_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty offender}">
 				<li>
-					<a href="${pageContext.request.contextPath}/chronologicalNote/chronologicalNoteListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="chronologicalNoteListingReportLinkLabel"/></a>
+					<a href="${pageContext.request.contextPath}/chronologicalNote/chronologicalNoteListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="chronologicalNoteListingReportLinkLabel"/></a>
 				</li>
 			</c:if>
 		</sec:authorize>

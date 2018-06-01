@@ -7,5 +7,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 	<c:if test="${empty linksCSS}">
 		<c:set var="linksCSS" value="true" scope="request"/>
-		<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/common/style/links.css?VERSION=4"/>
+		<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/common/style/links.css?VERSION=5"/>
 	</c:if>

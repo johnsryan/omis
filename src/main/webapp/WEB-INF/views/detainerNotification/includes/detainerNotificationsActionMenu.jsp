@@ -18,9 +18,6 @@
 					<omis:reportPro reportPath="/Legal/DetainersAndNotifications/Arson_Release_Notice&DOC_ID=${offender.offenderNumber}" decorate="no" title="" className="newTab reportLink"><fmt:message key="arsonReleaseNoticeReportLinkLabel"/></omis:reportPro>
 				</li>
 				<li>
-					<a href="${pageContext.request.contextPath}/detainerNotification/detainerNotificationListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="detainerNotificationListingReportLinkLabel"/></a>
-				</li>
-				<li>
 					<omis:reportPro reportPath="/Legal/DetainersAndNotifications/Escape_Notification&DOC_ID=${offender.offenderNumber}" decorate="no" title="" className="newTab reportLink"><fmt:message key="escapeNotificationReportLinkLabel"/></omis:reportPro>
 				</li>
 				<li>
@@ -32,6 +29,9 @@
 				<li>
 					<omis:reportPro reportPath="/Legal/DetainersAndNotifications/Notification_of_Inmate_Passing&DOC_ID=${offender.offenderNumber}" decorate="no" title="" className="newTab reportLink"><fmt:message key="notificationOfInmatePassingReportLinkLabel"/></omis:reportPro>
 				</li>
+				<li>
+					<a href="${pageContext.request.contextPath}/detainerNotification/detainerNotificationListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="detainerNotificationListingReportLinkLabel"/></a>
+				</li>				
 			</c:if>
 		</sec:authorize>
 	</ul>

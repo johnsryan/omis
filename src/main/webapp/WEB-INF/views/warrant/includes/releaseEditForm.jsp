@@ -10,7 +10,7 @@
 	<fieldset>
 		<span class="fieldGroup">
 			<form:label path="addressee" class="fieldLabel">
-				<fmt:message key="addresseeLabel"/>
+				<fmt:message key="holdingAgencyFacilityLabel"/>
 			</form:label>
 			<form:input path="addressee"/>
 			<form:errors path="addressee" cssClass="error"/>
@@ -35,6 +35,7 @@
 			</form:label>
 			<input id="clearedByInput"/>
 			<form:hidden id="clearedBy" path="clearedBy"/>
+			<a id="currentClearedBy" class="currentUserAccountLink"></a>
 			<a id="clearClearedBy" class="clearLink"></a>
 			<span id="clearedByDisplay">
 				<c:if test="${not empty warrantReleaseForm.clearedBy}" >

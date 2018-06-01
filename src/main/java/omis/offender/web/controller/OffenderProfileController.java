@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.offender.web.controller;
 
 import java.util.Date;
@@ -121,6 +138,9 @@ public class OffenderProfileController {
 	
 	private static final String SAFETY_DETAILS_REPORT_NAME 
 		= "/Safety/Safety_Summary_Redacted";
+	
+	private static final String PREA_ACKNOWLEDGEMENT_REPORT_NAME 
+		= "/Safety/Offender_PREA_Acknowledgement";	
 
 	private static final String BASIC_INFO_SHEET_REPORT_NAME 
 		= "/BasicInformation/Demographics/Offender_File_Cover_Sheet";
@@ -487,6 +507,31 @@ public class OffenderProfileController {
 		return this.reportControllerDelegate.constructReportResponseEntity(
 				doc, reportFormat);
 	}
+	
+	/**
+	 * Returns the prea acknowledgement report for the specified offender.
+	 * 
+	 * @param offender offender
+	 * @param reportFormat report format
+	 * @return response entity with report
+	 */
+	@RequestMapping(value = "/profilePREAAcknowledgementReport.html",
+			method = RequestMethod.GET)
+	@PreAuthorize("hasRole('OFFENDER_VIEW') or hasRole('ADMIN')")
+	public ResponseEntity<byte []> reportProfilePREAAcknowledgement(@RequestParam(
+			value = "offender", required = true)
+			final Offender offender,
+			@RequestParam(value = "reportFormat", required = true)
+			final ReportFormat reportFormat) {
+		Map<String, String> reportParamMap = new HashMap<String, String>();
+		reportParamMap.put(DOC_ID_REPORT_PARAM_NAME,
+				Long.toString(offender.getOffenderNumber()));
+		byte[] doc = this.reportRunner.runReport(
+				PREA_ACKNOWLEDGEMENT_REPORT_NAME,
+				reportParamMap, reportFormat);
+		return this.reportControllerDelegate.constructReportResponseEntity(
+				doc, reportFormat);
+	}	
 	
 	/**
 	 * Returns the report for the specified offender.

@@ -2,6 +2,7 @@ package omis.family.web.validator.delegate;
 
 import org.springframework.validation.Errors;
 
+import omis.family.domain.FamilyAssociationCategoryClassification;
 import omis.family.web.form.FamilyAssociationFields;
 
 /**
@@ -41,7 +42,32 @@ public class FamilyAssociationFieldsCreateValidatorDelegate {
 		if (familyAssociationFields.getCategory() == null) {
 			errors.rejectValue(familyAssociationFieldsVariableName 
 					+ ".category", "familyAssociationFields.category.empty");
-		}		
+		}
+		if(familyAssociationFields.getCategory()!=null
+			&&FamilyAssociationCategoryClassification.SPOUSE.equals(
+			familyAssociationFields.getCategory().getClassification())){
+				if(familyAssociationFields.getMarriageDate()!=null
+					&&familyAssociationFields.getDivorceDate()!=null
+					&&familyAssociationFields.getMarriageDate().getTime()
+					>familyAssociationFields.getDivorceDate()
+					.getTime()){
+					errors.rejectValue(familyAssociationFieldsVariableName
+						+".marriageDate",
+						"mDateGreaterThanDDate");
+			}
+		}
+		if(familyAssociationFields.getCategory()!=null
+			&&!FamilyAssociationCategoryClassification.SPOUSE.equals(
+			familyAssociationFields.getCategory().getClassification())){
+			if(familyAssociationFields.getStartDate()!=null
+				&&familyAssociationFields.getEndDate()!=null
+				&&familyAssociationFields.getStartDate().getTime()
+				>familyAssociationFields.getEndDate().getTime()){
+				errors.rejectValue(familyAssociationFieldsVariableName
+						+".startDate",
+					"dateRange.startDateGreaterThanEndDate");
+			}
+		}
 		return errors;		
 	}
 }

@@ -17,14 +17,14 @@
 		<sec:authorize access="(hasRole('OFFENDER_ALT_IDENTITY_VIEW') and hasRole('OFFENDER_SSN_VIEW')) or hasRole('ADMIN')">
 			<c:if test="${not empty alternativeIdentityAssociation}">
 			<li>
-				<a href="${pageContext.request.contextPath}/offender/identity/alternative/altIdentityDetailsFullReport.html?alternativeIdentityAssociation=${alternativeIdentityAssociation.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="altIdentityDetailsFullReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/offender/identity/alternative/altIdentityDetailsFullReport.html?alternativeIdentityAssociation=${alternativeIdentityAssociation.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="altIdentityDetailsFullReportLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>
 		<sec:authorize access="hasRole('OFFENDER_ALT_IDENTITY_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty alternativeIdentityAssociation}">
 			<li>
-				<a href="${pageContext.request.contextPath}/offender/identity/alternative/altIdentityDetailsRedactedReport.html?alternativeIdentityAssociation=${alternativeIdentityAssociation.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="altIdentityDetailsRedactedReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/offender/identity/alternative/altIdentityDetailsRedactedReport.html?alternativeIdentityAssociation=${alternativeIdentityAssociation.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="altIdentityDetailsRedactedReportLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>

@@ -136,7 +136,8 @@ public class ParolePlanServiceCreateParolePlanNoteTests
 		Offender offender = this.offenderDelegate.createWithoutIdentity("Smith",
 				"John", "Jay", null);
 		EligibilityStatusReason statusReason = this
-				.eligibilityStatusReasonDelegate.create("Reason", true);
+				.eligibilityStatusReasonDelegate.create("Reason",
+						EligibilityStatusCategory.APPEARING, true);
 		AppearanceCategory appearanceCategory = this.appearanceCategoryDelegate
 				.create("Category", true);
 		ParoleEligibility paroleEligibility = this.paroleEligibilityDelegate
@@ -187,7 +188,8 @@ public class ParolePlanServiceCreateParolePlanNoteTests
 		Offender offender = this.offenderDelegate.createWithoutIdentity("Smith",
 				"John", "Jay", null);
 		EligibilityStatusReason statusReason = this
-				.eligibilityStatusReasonDelegate.create("Reason", true);
+				.eligibilityStatusReasonDelegate.create("Reason",
+						EligibilityStatusCategory.APPEARING, true);
 		AppearanceCategory appearanceCategory = this.appearanceCategoryDelegate
 				.create("Category", true);
 		ParoleEligibility paroleEligibility = this.paroleEligibilityDelegate

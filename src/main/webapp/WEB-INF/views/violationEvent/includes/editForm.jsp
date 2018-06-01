@@ -1,3 +1,20 @@
+<%--
+ - OMIS - Offender Management Information System
+ - Copyright (C) 2011 - 2017 State of Montana
+ -
+ - This program is free software: you can redistribute it and/or modify
+ - it under the terms of the GNU General Public License as published by
+ - the Free Software Foundation, either version 3 of the License, or
+ - (at your option) any later version.
+ -
+ - This program is distributed in the hope that it will be useful,
+ - but WITHOUT ANY WARRANTY; without even the implied warranty of
+ - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ - GNU General Public License for more details.
+ -
+ - You should have received a copy of the GNU General Public License
+ - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ --%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
@@ -59,22 +76,29 @@
 				<fmt:message key="jurisdictionLabel"/>
 			</form:label>
 			<form:select path="jurisdiction">
-				<jsp:include page="../../includes/nullOption.jsp"/>
-				<c:forEach items="${jurisdictions}" var="jur">
-					<option value="${jur.id}" ${jur == violationEventForm.jurisdiction ? 'selected="selected"' : ''} >
-						<c:out value="${jur.name}"/>
-					</option>
-				</c:forEach>
+				<c:set value="${violationEventForm.jurisdiction}" var="jurisdiction" scope="request"/>
+				<jsp:include page="jurisdictionOptions.jsp"/>
 			</form:select>
 			<form:errors path="jurisdiction" cssClass="error"/>
 		</span>
-		
+	
 		<span class="fieldGroup">
 			<form:label path="eventDate" class="fieldLabel">
 				<fmt:message key="dateOfEventLabel"/>
 			</form:label>
 			<form:input path="eventDate" value="${eventDateParameter}" cssClass="date" />
 			<form:errors path="eventDate" cssClass="error"/>
+		</span>
+			
+		<span class="fieldGroup">
+			<form:label path="unit" class="fieldLabel">
+				<fmt:message key="unitLabel"/>
+			</form:label>
+			<form:select path="unit">
+				<c:set value="${violationEventForm.unit}" var="unit" scope="request"/>
+				<jsp:include page="unitOptions.jsp"/>
+			</form:select>
+			<form:errors path="unit" cssClass="error"/>
 		</span>
 		
 		<span class="fieldGroup">

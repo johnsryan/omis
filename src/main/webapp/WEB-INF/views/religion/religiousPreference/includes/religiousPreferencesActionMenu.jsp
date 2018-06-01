@@ -16,7 +16,7 @@
 	<sec:authorize access="hasRole('RELIGIOUS_PREFERENCE_VIEW') or hasRole('ADMIN')">
 		<c:if test="${not empty offender}">
 		<li>
-			<a href="${pageContext.request.contextPath}/religion/religiousPreference/religiousPreferenceListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="religiousPreferenceListingReportLinkLabel"/></a>
+			<a href="${pageContext.request.contextPath}/religion/religiousPreference/religiousPreferenceListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="religiousPreferenceListingReportLinkLabel"/></a>
 		</li>
 		</c:if>
 	</sec:authorize>
@@ -39,7 +39,7 @@
 	<sec:authorize access="hasRole('RELIGIOUS_PREFERENCE_VIEW') or hasRole('ADMIN')">
 		<c:if test="${not empty preference}">
 		<li>
-			<a href="${pageContext.request.contextPath}/religion/religiousPreference/religiousPreferenceDetailsReport.html?preference=${preference.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="religiousPreferenceDetailsReportLinkLabel"/></a>
+			<a href="${pageContext.request.contextPath}/religion/religiousPreference/religiousPreferenceDetailsReport.html?preference=${preference.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="religiousPreferenceDetailsReportLinkLabel"/></a>
 		</li>
 		</c:if>
 	</sec:authorize>

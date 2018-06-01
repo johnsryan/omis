@@ -5,6 +5,7 @@ import java.io.Serializable;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import omis.family.domain.FamilyAssociationCategoryClassification;
 import omis.family.web.form.FamilyAssociationForm;
 import omis.offenderrelationship.web.form.OffenderRelationshipNoteItem;
 import omis.offenderrelationship.web.form.OffenderRelationshipNoteItemOperation;
@@ -95,6 +96,29 @@ public class FamilyAssociationFieldsEditValidator implements Validator {
 		if (familyAssociationFields.getCategory() == null) {
 			errors.rejectValue("category", 
 				"familyAssociationFields.category.empty");
+		}
+		if(familyAssociationFields.getCategory()!=null){
+			if(FamilyAssociationCategoryClassification.SPOUSE.equals(
+				familyAssociationFields.getCategory().getClassification())){
+				if(familyAssociationFields.getMarriageDate()!=null
+					&&familyAssociationFields.getDivorceDate()!=null
+					&&familyAssociationFields.getMarriageDate().getTime()
+					>familyAssociationFields.getDivorceDate()
+					.getTime()){
+					errors.rejectValue("marriageDate",
+						"mDateGreaterThanDDate");
+					
+				}
+			} else {
+				if(familyAssociationFields.getStartDate()!=null
+					&&familyAssociationFields.getEndDate()!=null
+					&&familyAssociationFields.getStartDate().getTime()
+					>familyAssociationFields.getEndDate().getTime()){
+					errors.rejectValue("startDate",
+						"dateRange.startDateGreaterThanEndDate");
+					
+				}
+			}
 		}
 	}
 }  

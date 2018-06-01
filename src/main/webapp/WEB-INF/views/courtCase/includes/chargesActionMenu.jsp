@@ -23,7 +23,7 @@
 		<sec:authorize access="hasRole('CHARGE_LIST') or hasRole('ADMIN')">
 			<c:if test="${not empty defendant}">
 				<li>
-					<a href="${pageContext.request.contextPath}/courtCase/chargeListingReport.html?defendant=${defendant.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="chargeListingReportLinkLabel"/></a>
+					<a href="${pageContext.request.contextPath}/courtCase/chargeListingReport.html?defendant=${defendant.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="chargeListingReportLinkLabel"/></a>
 				</li>
 			</c:if>
 		</sec:authorize>
@@ -48,7 +48,7 @@
 		<sec:authorize access="hasRole('CHARGE_LIST') or hasRole('ADMIN')">
 			<c:if test="${not empty charge}">
 				<li>
-					<a href="${pageContext.request.contextPath}/courtCase/chargeDetailsReport.html?charge=${charge.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="chargeDetailsReportLinkLabel"/></a>
+					<a href="${pageContext.request.contextPath}/courtCase/chargeDetailsReport.html?charge=${charge.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="chargeDetailsReportLinkLabel"/></a>
 				</li>
 			</c:if>
 	</sec:authorize>

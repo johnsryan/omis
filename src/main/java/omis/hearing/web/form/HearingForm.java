@@ -32,7 +32,7 @@ import omis.user.domain.UserAccount;
  * 
  * @author Annie Wahl 
  * @author Josh Divine
- * @version 0.1.3 (May 3, 2018)
+ * @version 0.1.4 (May 15, 2018)
  * @since OMIS 3.0
  */
 public class HearingForm {
@@ -44,6 +44,8 @@ public class HearingForm {
 	private Location location;
 	
 	private Date date;
+	
+	private Date time;
 	
 	private HearingStatusCategory status;
 	
@@ -123,6 +125,24 @@ public class HearingForm {
 	 */
 	public void setDate(final Date date) {
 		this.date = date;
+	}
+
+	/**
+	 * Returns the time.
+	 *
+	 * @return time
+	 */
+	public Date getTime() {
+		return time;
+	}
+
+	/**
+	 * Sets the time.
+	 *
+	 * @param time time
+	 */
+	public void setTime(final Date time) {
+		this.time = time;
 	}
 
 	/**

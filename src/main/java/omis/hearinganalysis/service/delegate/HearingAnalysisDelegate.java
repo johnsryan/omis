@@ -17,6 +17,8 @@
 */
 package omis.hearinganalysis.service.delegate;
 
+import java.util.Date;
+
 import omis.audit.AuditComponentRetriever;
 import omis.audit.domain.CreationSignature;
 import omis.audit.domain.UpdateSignature;
@@ -33,7 +35,8 @@ import omis.paroleeligibility.domain.ParoleEligibility;
  * Hearing analysis delegate.
  *
  * @author Josh Divine
- * @version 0.1.1 (Apr 18, 2018)
+ * @author Annie Wahl
+ * @version 0.1.2 (May 29, 2018)
  * @since OMIS 3.0
  */
 public class HearingAnalysisDelegate {
@@ -74,12 +77,14 @@ public class HearingAnalysisDelegate {
 	 * @param paroleBoardItinerary parole board itinerary
 	 * @param category hearing analysis category
 	 * @param analyst board attendee
+	 * @param expectedCompletionDate expected completion date
 	 * @return hearing analysis
 	 * @throws DuplicateEntityFoundException if duplicate entity exists
 	 */
 	public HearingAnalysis create(final ParoleEligibility eligibility, 
 			final ParoleBoardItinerary paroleBoardItinerary,
-			final HearingAnalysisCategory category, final BoardAttendee analyst) 
+			final HearingAnalysisCategory category, final BoardAttendee analyst,
+			final Date expectedCompletionDate)
 					throws DuplicateEntityFoundException {
 		if (this.hearingAnalysisDao.find(eligibility, paroleBoardItinerary, 
 				category, analyst) != null) {
@@ -92,7 +97,7 @@ public class HearingAnalysisDelegate {
 				this.auditComponentRetriever.retrieveUserAccount(), 
 				this.auditComponentRetriever.retrieveDate()));
 		populateHearingAnalysis(hearingAnalysis, eligibility, category, analyst,
-				paroleBoardItinerary);
+				paroleBoardItinerary, expectedCompletionDate);
 		return this.hearingAnalysisDao.makePersistent(hearingAnalysis);
 	}
 
@@ -104,13 +109,15 @@ public class HearingAnalysisDelegate {
 	 * @param paroleBoardItinerary parole board itinerary
 	 * @param category hearing analysis category
 	 * @param analyst board attendee
+	 * @param expectedCompletionDate expected completion date
 	 * @return hearing analysis
 	 * @throws DuplicateEntityFoundException if duplicate entity exists
 	 */
 	public HearingAnalysis update(final HearingAnalysis hearingAnalysis, 
 			final ParoleEligibility eligibility,
 			final ParoleBoardItinerary paroleBoardItinerary,
-			final HearingAnalysisCategory category, final BoardAttendee analyst) 
+			final HearingAnalysisCategory category, final BoardAttendee analyst,
+			final Date expectedCompletionDate)
 					throws DuplicateEntityFoundException {
 		if (this.hearingAnalysisDao.findExcluding(eligibility, 
 				paroleBoardItinerary, category, analyst, hearingAnalysis) != 
@@ -119,7 +126,7 @@ public class HearingAnalysisDelegate {
 					"Hearing analyis already exists");
 		}
 		populateHearingAnalysis(hearingAnalysis, eligibility, category, analyst,
-				paroleBoardItinerary);
+				paroleBoardItinerary, expectedCompletionDate);
 		return this.hearingAnalysisDao.makePersistent(hearingAnalysis);
 	}
 
@@ -147,11 +154,13 @@ public class HearingAnalysisDelegate {
 	private void populateHearingAnalysis(final HearingAnalysis hearingAnalysis, 
 			final ParoleEligibility eligibility, 
 			final HearingAnalysisCategory category, final BoardAttendee analyst, 
-			final ParoleBoardItinerary paroleBoardItinerary) {
+			final ParoleBoardItinerary paroleBoardItinerary,
+			final Date expectedCompletionDate) {
 		hearingAnalysis.setEligibility(eligibility);
 		hearingAnalysis.setAnalyst(analyst);
 		hearingAnalysis.setCategory(category);
 		hearingAnalysis.setParoleBoardItinerary(paroleBoardItinerary);
+		hearingAnalysis.setExpectedCompletionDate(expectedCompletionDate);
 		hearingAnalysis.setUpdateSignature(new UpdateSignature(
 				this.auditComponentRetriever.retrieveUserAccount(), 
 				this.auditComponentRetriever.retrieveDate()));

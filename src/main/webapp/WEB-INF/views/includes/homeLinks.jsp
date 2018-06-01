@@ -149,6 +149,7 @@
 					</span>
 				</a>
 			</li>
+			<sec:authorize access="(hasRole('ADMIN') and hasRole('APP_DEV'))">
 			<li>
 				<a href="${pageContext.request.contextPath}/bopp/home.html">
 					<span class="banner">
@@ -157,6 +158,7 @@
 					</span>
 				</a>
 			</li>
+			</sec:authorize>
 			<li>
 				<a href="${pageContext.request.contextPath}/presentenceInvestigation/request/list.html">
 					<span class="banner">

@@ -33,6 +33,9 @@ public class RelationshipNoteDaoHibernateImpl
 	private static final String FIND_EXCLUDING_QUERY_NAME
 			= "findRelationshipNoteExcluding";
 	
+	private static final String DELETE_BY_RELATIONSHIP_QUERY_NAME
+			= "deleteRelationshipNotesByRelationship";
+	
 	/* Parameters. */
 	
 	private static final String RELATIONSHIP_PARAM_NAME = "relationship";
@@ -108,5 +111,14 @@ public class RelationshipNoteDaoHibernateImpl
 				.setParameterList(EXCLUDED_PARAM_NAME, excludedNotes)
 				.uniqueResult();
 		return note;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public int removeByRelationship(final Relationship relationship) {
+		return this.getSessionFactory().getCurrentSession()
+				.getNamedQuery(DELETE_BY_RELATIONSHIP_QUERY_NAME)
+				.setParameter(RELATIONSHIP_PARAM_NAME, relationship)
+				.executeUpdate();
 	}
 }

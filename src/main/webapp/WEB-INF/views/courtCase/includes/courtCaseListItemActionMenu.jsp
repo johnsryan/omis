@@ -68,7 +68,7 @@
 	<c:if test="${not empty courtCase and not courtCase.flags.dismissed }">
 		<sec:authorize access="hasRole('LIST_COURT_CASE') or hasRole('ADMIN')">
 			<li>
-				<a href="${pageContext.request.contextPath}/courtCase/courtCaseDetailsReport.html?courtCase=${courtCase.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="courtCaseDetailsReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/courtCase/courtCaseDetailsReport.html?courtCase=${courtCase.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="courtCaseDetailsReportLinkLabel"/></a>
 			</li>
 		</sec:authorize>
 	</c:if>

@@ -67,7 +67,7 @@ import omis.util.PropertyValueAsserter;
  * Tests method to update presentence investigation delays.
  *
  * @author Josh Divine
- * @version 0.1.0 (Apr 24, 2018)
+ * @version 0.1.1 (May 9, 2018)
  * @since OMIS 3.0
  */
 @Test
@@ -172,8 +172,8 @@ public class
 		PresentenceInvestigationRequest presentenceInvestigationRequest = this
 				.presentenceInvestigationRequestDelegate.create(
 						userAccount, this.parseDateText("01/01/2016"),
-						this.parseDateText("12/31/2017"), docket, null, 
-						this.parseDateText("03/25/2015"), null, category, 
+						this.parseDateText("12/31/2017"), docket,  
+						this.parseDateText("03/25/2015"), category, 
 						this.parseDateText("04/01/2017"));
 		Date date = this.parseDateText("11/30/2017");
 		PresentenceInvestigationDelayCategory reason = this
@@ -237,8 +237,8 @@ public class
 		PresentenceInvestigationRequest presentenceInvestigationRequest = this
 				.presentenceInvestigationRequestDelegate.create(
 						userAccount, this.parseDateText("01/01/2016"),
-						this.parseDateText("12/31/2017"), docket, null, 
-						this.parseDateText("03/25/2015"), null, category, 
+						this.parseDateText("12/31/2017"), docket,  
+						this.parseDateText("03/25/2015"), category, 
 						this.parseDateText("04/01/2017"));
 		Date date = this.parseDateText("11/30/2017");
 		PresentenceInvestigationDelayCategory reason = this
@@ -304,8 +304,8 @@ public class
 		PresentenceInvestigationRequest presentenceInvestigationRequest = this
 				.presentenceInvestigationRequestDelegate.create(
 						userAccount, this.parseDateText("01/01/2016"),
-						this.parseDateText("12/31/2017"), docket, null, 
-						this.parseDateText("03/25/2015"), null, category, 
+						this.parseDateText("12/31/2017"), docket,  
+						this.parseDateText("03/25/2015"), category, 
 						this.parseDateText("04/01/2017"));
 		Date date = this.parseDateText("11/30/2017");
 		PresentenceInvestigationDelayCategory reason = this

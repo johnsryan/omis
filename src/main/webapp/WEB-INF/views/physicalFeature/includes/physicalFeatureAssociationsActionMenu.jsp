@@ -20,12 +20,10 @@
 		<sec:authorize access="hasRole('PHYSICAL_FEATURE_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty offender}">
 				<li>
-					<a href="${pageContext.request.contextPath}/physicalFeature/physicalFeatureListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="physicalFeatureListingReportLinkLabel"/></a>
+					<a href="${pageContext.request.contextPath}/physicalFeature/physicalFeatureListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="physicalFeatureListingReportLinkLabel"/></a>
 				</li>
-			</c:if>
-			<c:if test="${not empty offender}">
 				<li>
-					<a href="${pageContext.request.contextPath}/physicalFeature/physicalFeatureListingTextReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="physicalFeatureListingTextReportLinkLabel"/></a>
+					<a href="${pageContext.request.contextPath}/physicalFeature/physicalFeatureListingTextReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="physicalFeatureListingTextReportLinkLabel"/></a>
 				</li>
 			</c:if>
 		</sec:authorize>

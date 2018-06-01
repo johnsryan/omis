@@ -22,13 +22,15 @@ import java.util.List;
 import omis.exception.DuplicateEntityFoundException;
 import omis.instance.factory.InstanceFactory;
 import omis.paroleeligibility.dao.EligibilityStatusReasonDao;
+import omis.paroleeligibility.domain.EligibilityStatusCategory;
 import omis.paroleeligibility.domain.EligibilityStatusReason;
 
 /**
  * Delegate for the eligibility status reason.
  *
  * @author Trevor Isles
- * @version 0.1.0 (Nov 9, 2017)
+ * @author Annie Wahl
+ * @version 0.1.1 (May 23, 2018)
  * @since OMIS 3.0
  */
 public class EligibilityStatusReasonDelegate {
@@ -62,18 +64,19 @@ public class EligibilityStatusReasonDelegate {
 	 * @throws DuplicateEntityFoundException
 	 */
 	public EligibilityStatusReason create(
-			final String name, 
+			final String name, final EligibilityStatusCategory statusCategory,
 			final Boolean valid)
 		throws DuplicateEntityFoundException {
 		if (this.eligibilityStatusReasonDao.findEligibilityStatusReason(
-				name) != null) {
+				name, statusCategory) != null) {
 			throw new DuplicateEntityFoundException(
 					"Duplicate eligibility status reason found.");
 		}
 		
 		EligibilityStatusReason statusReason = 
 				this.eligibilityStatusReasonInstanceFactory.createInstance();
-				this.populateEligibilityStatusReason(statusReason, name, valid);
+				this.populateEligibilityStatusReason(statusReason, name,
+						statusCategory, valid);
 		return this.eligibilityStatusReasonDao.makePersistent(statusReason);
 	}
 	
@@ -88,17 +91,17 @@ public class EligibilityStatusReasonDelegate {
 	 */
 	public EligibilityStatusReason update(
 			final EligibilityStatusReason eligibilityStatusReason,
-			final String name,
+			final String name, final EligibilityStatusCategory statusCategory,
 			final Boolean valid)
 		throws DuplicateEntityFoundException {
 		if (this.eligibilityStatusReasonDao
-				.findEligibilityStatusReasonExcluding(eligibilityStatusReason, 
-						name) != null) {
+				.findEligibilityStatusReasonExcluding(eligibilityStatusReason,
+						name, statusCategory) != null) {
 			throw new DuplicateEntityFoundException(
 					"Duplicate eligibility status reason found.");
 		}
 		this.populateEligibilityStatusReason(
-				eligibilityStatusReason, name, valid);
+				eligibilityStatusReason, name, statusCategory, valid);
 		return this.eligibilityStatusReasonDao.makePersistent(
 				eligibilityStatusReason);
 	}
@@ -133,9 +136,24 @@ public class EligibilityStatusReasonDelegate {
 	private void populateEligibilityStatusReason(
 			final EligibilityStatusReason eligibilityStatusReason,
 			final String name,
+			final EligibilityStatusCategory statusCategory,
 			final Boolean valid) {
 		eligibilityStatusReason.setName(name);
+		eligibilityStatusReason.setStatusCategory(statusCategory);
 		eligibilityStatusReason.setValid(valid);
 	}
-
+	
+	/**
+	 * Returns a list of Eligibility Status Reasons by the specified
+	 * Eligibility Status Category.
+	 * 
+	 * @param statusCategory Eligibility Status Category
+	 * @return List of Eligibility Status Reasons by the specified
+	 * Eligibility Status Category.
+	 */
+	public List<EligibilityStatusReason> findByStatusCategory(
+				final EligibilityStatusCategory statusCategory) {
+		return this.eligibilityStatusReasonDao.findByStatusCategory(
+				statusCategory);
+	}
 }

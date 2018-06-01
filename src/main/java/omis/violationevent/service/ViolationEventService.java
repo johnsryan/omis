@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.violationevent.service;
 
 import java.util.Date;
@@ -8,6 +25,13 @@ import omis.disciplinaryCode.domain.DisciplinaryCode;
 import omis.document.domain.Document;
 import omis.document.domain.DocumentTag;
 import omis.exception.DuplicateEntityFoundException;
+import omis.facility.domain.Unit;
+import omis.hearing.domain.Hearing;
+import omis.hearing.domain.HearingNote;
+import omis.hearing.domain.HearingStatus;
+import omis.hearing.domain.ImposedSanction;
+import omis.hearing.domain.Infraction;
+import omis.hearing.domain.UserAttendance;
 import omis.offender.domain.Offender;
 import omis.supervision.domain.SupervisoryOrganization;
 import omis.violationevent.domain.ConditionViolation;
@@ -18,20 +42,12 @@ import omis.violationevent.domain.ViolationEventDocument;
 import omis.violationevent.domain.ViolationEventNote;
 
 /**
- * ViolationEventService.java
+ * Violation event service.
  * 
- *@author Annie Jacques 
- *@version 0.1.0 (Jan 18, 2017)
- *@since OMIS 3.0
- *
- */
-/**
- * ViolationEventService.java
- * 
- *@author Annie Jacques 
- *@version 0.1.0 (Aug 30, 2017)
- *@since OMIS 3.0
- *
+ * @author Annie Wahl 
+ * @author Josh Divine
+ * @version 0.1.1 (May 23, 2018)
+ * @since OMIS 3.0
  */
 public interface ViolationEventService {
 	
@@ -39,6 +55,7 @@ public interface ViolationEventService {
 	 * Creates a new ViolationEvent with the specified properties
 	 * @param offender - Offender
 	 * @param jurisdiction - SupervisoryOrganization
+	 * @param unit unit
 	 * @param date - Date
 	 * @param details - String
 	 * @param category - ViolationEventCategory
@@ -47,15 +64,15 @@ public interface ViolationEventService {
 	 * exists with all of the given properties for the Offender
 	 */
 	public ViolationEvent createViolationEvent(Offender offender,
-			SupervisoryOrganization jurisdiction,
-			Date date, String details,
-			ViolationEventCategory category)
+			SupervisoryOrganization jurisdiction, Unit unit, Date date, 
+			String details, ViolationEventCategory category)
 					throws DuplicateEntityFoundException;
 	
 	/**
 	 * Updates a violation event with specified properties
 	 * @param violationEvent - ViolationEvent to update
 	 * @param jurisdiction - SupervisoryOrganization
+	 * @param unit unit
 	 * @param date - Date
 	 * @param details - String
 	 * @param category - ViolationEventCategory
@@ -64,9 +81,8 @@ public interface ViolationEventService {
 	 * exists with all of the given properties for the Offender
 	 */
 	public ViolationEvent updateViolationEvent(ViolationEvent violationEvent,
-			SupervisoryOrganization jurisdiction,
-			Date date, String details,
-			ViolationEventCategory category)
+			SupervisoryOrganization jurisdiction, Unit unit, Date date, 
+			String details, ViolationEventCategory category)
 					throws DuplicateEntityFoundException;
 	
 	/**
@@ -376,12 +392,101 @@ public interface ViolationEventService {
 	public List<SupervisoryOrganization>
 			findAssessmentSanctionRevocationCenterSupervisoryOrganizations();
 	
+	/**
+	 * Returns a list of hearing notes for the specified hearing.
+	 * 
+	 * @param hearing hearing
+	 * @return list of hearing notes
+	 */
+	List<HearingNote> findHearingNotesByHearing(Hearing hearing);
 	
+	/**
+	 * Returns a list of hearing statuses for the specified hearing.
+	 * 
+	 * @param hearing hearing
+	 * @return list of hearing statuses
+	 */
+	List<HearingStatus> findHearingStatusesByHearing(Hearing hearing);
 	
+	/**
+	 * Returns a list of hearings for the specified violation event.
+	 * 
+	 * @param violationEvent violation event
+	 * @return list of hearings
+	 */
+	List<Hearing> findHearingsByViolationEvent(ViolationEvent violationEvent);
 	
+	/**
+	 * Returns the imposed sanction for the specified infraction.
+	 * 
+	 * @param infraction infraction
+	 * @return imposed sanction
+	 */
+	ImposedSanction findImposedSanctionByInfraction(Infraction infraction);
 	
+	/**
+	 * Returns a list of infractions for the specified hearing.
+	 * 
+	 * @param hearing hearing
+	 * @return list of infractions
+	 */
+	List<Infraction> findInfractionsByHearing(Hearing hearing);
 	
+	/**
+	 * Returns a list of user attendances for the specified hearing.
+	 * 
+	 * @param hearing hearing
+	 * @return list of user attendances
+	 */
+	List<UserAttendance> findUserAttendedByHearing(Hearing hearing);
 	
+	/**
+	 * Removes the specified hearing.
+	 * 
+	 * @param hearing hearing
+	 */
+	void removeHearing(Hearing hearing);
 	
+	/**
+	 * Removes the specified hearing note.
+	 * 
+	 * @param hearingNote hearing note
+	 */
+	void removeHearingNote(HearingNote hearingNote);
 	
+	/**
+	 * Removes the specified hearing status.
+	 * 
+	 * @param hearingStatus hearing status
+	 */
+	void removeHearingStatus(HearingStatus hearingStatus);
+	
+	/**
+	 * Removes the specified imposed sanction.
+	 * 
+	 * @param imposedSanction imposed sanction
+	 */
+	void removeImposedSanction(ImposedSanction imposedSanction);
+	
+	/**
+	 * Removes the specified infraction.
+	 * 
+	 * @param infraction infraction
+	 */
+	void removeInfraction(Infraction infraction);
+	
+	/**
+	 * Removes the specified user attendance.
+	 * @param userAttendance user attendance
+	 */
+	void removeUserAttended(UserAttendance userAttendance);
+	
+	/**
+	 * Returns a list of units for the specified supervisory organization.
+	 * 
+	 * @param supervisoryOrganization supervisory organization
+	 * @return list of units
+	 */
+	List<Unit> findUnitsBySupervisoryOrganization(
+			SupervisoryOrganization supervisoryOrganization);
 }

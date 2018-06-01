@@ -11,10 +11,10 @@
 	<td>			
 		<c:choose>
 			<c:when test="${residenceSummary.type.name eq 'RESIDENCE'}">
-				<a class="actionMenuItem rowActionMenuItem" href="${pageContext.request.contextPath}/residence/residenceRowActionMenu.html?residenceTerm=${residenceSummary.id}"></a>
+				<a class="actionMenuItem rowActionMenuItem" id="residenceActionMenuLink${residenceSummary.id}" href="${pageContext.request.contextPath}/residence/residenceRowActionMenu.html?residenceTerm=${residenceSummary.id}"></a>
 			</c:when>
 			<c:otherwise>
-				<a class="actionMenuItem rowActionMenuItem" href="${pageContext.request.contextPath}/residence/nonResidenceRowActionMenu.html?nonResidenceTerm=${residenceSummary.id}"></a>
+				<a class="actionMenuItem rowActionMenuItem" id="residenceActionMenuLink${residenceSummary.id}" href="${pageContext.request.contextPath}/residence/nonResidenceRowActionMenu.html?nonResidenceTerm=${residenceSummary.id}"></a>
 			</c:otherwise>
 		</c:choose>	
 	</td>

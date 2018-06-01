@@ -20,13 +20,15 @@ package omis.paroleeligibility.dao;
 import java.util.List;
 
 import omis.dao.GenericDao;
+import omis.paroleeligibility.domain.EligibilityStatusCategory;
 import omis.paroleeligibility.domain.EligibilityStatusReason;
 
 /**
  * Eligibility status reason data access object.
  *
  * @author Trevor Isles
- * @version 0.1.0 (Nov 8, 2017)
+ * @author Annie Wahl
+ * @version 0.1.1 (May 23, 2018)
  * @since OMIS 3.0
  */
 public interface EligibilityStatusReasonDao 
@@ -43,22 +45,34 @@ public interface EligibilityStatusReasonDao
 	 * Finds an eligibility status reason
 	 * 
 	 * @param name name of the eligibility status reason
-	 * @param valid whether an eligibility status reason is valid
+	 * @param statusCategory Eligibility Status Category
 	 * @return eligibility status reason
 	 */
 	EligibilityStatusReason findEligibilityStatusReason(
-			String name);
+			String name, EligibilityStatusCategory statusCategory);
 
 	/**
 	 * Finds an eligibility status reason, not including the specified
 	 * eligibility status reason.
 	 * @param eligibilityStatusReason eligibility status reason
 	 * @param name name of the eligibility status reason
-	 * @param valid whether an eligibility status reason is valid
-	 * @return eligibility status reason, not including th specified
+	 * @param statusCategory Eligibility Status Category
+	 * @return eligibility status reason, not including the specified
 	 * eligibility status reason
 	 */
 	EligibilityStatusReason findEligibilityStatusReasonExcluding(
-			EligibilityStatusReason eligibilityStatusReason, String name);
-
+			EligibilityStatusReason eligibilityStatusReason, String name,
+			EligibilityStatusCategory statusCategory);
+	
+	/**
+	 * Returns a list of Eligibility Status Reasons by the specified
+	 * Eligibility Status Category.
+	 * 
+	 * @param statusCategory Eligibility Status Category
+	 * @return List of Eligibility Status Reasons by the specified
+	 * Eligibility Status Category.
+	 */
+	List<EligibilityStatusReason> findByStatusCategory(
+				EligibilityStatusCategory statusCategory);
+	
 }

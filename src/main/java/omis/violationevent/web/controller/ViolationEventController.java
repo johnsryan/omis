@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.violationevent.web.controller;
 
 import java.io.IOException;
@@ -38,6 +55,13 @@ import omis.document.io.impl.DocumentFilenameGenerator;
 import omis.document.web.form.DocumentTagItem;
 import omis.document.web.form.DocumentTagOperation;
 import omis.exception.DuplicateEntityFoundException;
+import omis.facility.domain.Unit;
+import omis.hearing.domain.Hearing;
+import omis.hearing.domain.HearingNote;
+import omis.hearing.domain.HearingStatus;
+import omis.hearing.domain.ImposedSanction;
+import omis.hearing.domain.Infraction;
+import omis.hearing.domain.UserAttendance;
 import omis.incident.domain.IncidentStatement;
 import omis.io.FileRemover;
 import omis.offender.beans.factory.OffenderPropertyEditorFactory;
@@ -66,12 +90,12 @@ import omis.violationevent.web.validator.ViolationEventFormValidator;
 import omis.web.controller.delegate.BusinessExceptionHandlerDelegate;
 
 /**
- * ViolationEventController.java
+ * Violation event controller.
  * 
- *@author Annie Jacques 
- *@version 0.1.0 (Aug 30, 2017)
- *@since OMIS 3.0
- *
+ * @author Annie Wahl 
+ * @author Josh Divine
+ * @version 0.1.1 (May 23, 2018)
+ * @since OMIS 3.0
  */
 @Controller
 @RequestMapping("/violationEvent/")
@@ -124,6 +148,9 @@ public class ViolationEventController {
 	
 	private static final String DOCUMENT_TAG_ITEM_ROW_VIEW_NAME =
 			"/violationEvent/includes/documentTagItemContent";
+	
+	private static final String UNIT_OPTIONS_VIEW_NAME =
+			"/violationEvent/includes/unitOptions";
 	
 	/* Model Keys */
 	
@@ -183,6 +210,8 @@ public class ViolationEventController {
 			"violationEventDocumentItem";
 	
 	private static final String DOCUMENT_TAG_ITEM_MODEL_KEY = "documentTagItem";
+	
+	private static final String UNITS_MODEL_KEY = "units";
 	
 	private static final String POSITIVE_SUBSTANCE_TEST_MSG_KEY =
 			"Positive Substance Test Result";
@@ -295,6 +324,10 @@ public class ViolationEventController {
 	
 	@Autowired
 	private CustomDateEditorFactory customDateEditorFactory;
+	
+	@Autowired
+	@Qualifier("unitPropertyEditorFactory")
+	private PropertyEditorFactory unitPropertyEditorFactory;
 	
 	/* Helpers. */
 	
@@ -410,8 +443,8 @@ public class ViolationEventController {
 		else{
 			ViolationEvent violationEvent = this.violationEventService
 					.createViolationEvent(offender, form.getJurisdiction(),
-							form.getEventDate(), form.getEventDetails(),
-							category);
+							form.getUnit(), form.getEventDate(), 
+							form.getEventDetails(), category);
 			
 			this.processItems(violationEvent, form);
 			
@@ -476,8 +509,8 @@ public class ViolationEventController {
 			
 			this.violationEventService.updateViolationEvent(
 						violationEvent, form.getJurisdiction(),
-						form.getEventDate(), form.getEventDetails(),
-						category);
+						form.getUnit(), form.getEventDate(), 
+						form.getEventDetails(), category);
 			
 			return new ModelAndView(String.format(LIST_REDIRECT,
 					violationEvent.getOffender().getId()));
@@ -511,6 +544,33 @@ public class ViolationEventController {
 		List<ViolationEventDocument> violationEventDocuments =
 				this.violationEventService
 				.findViolationEventDocumentsByViolationEvent(violationEvent);
+		
+		for (Hearing hearing : this.violationEventService
+				.findHearingsByViolationEvent(violationEvent)) {
+			for (Infraction infraction : this.violationEventService
+					.findInfractionsByHearing(hearing)) {
+				ImposedSanction imposedSanction = this.violationEventService
+						.findImposedSanctionByInfraction(infraction);
+				if (imposedSanction != null) {
+					this.violationEventService.removeImposedSanction(
+							imposedSanction);
+				}
+				this.violationEventService.removeInfraction(infraction);
+			}
+			for (HearingNote hearingNote : this.violationEventService
+					.findHearingNotesByHearing(hearing)) {
+				this.violationEventService.removeHearingNote(hearingNote);
+			}
+			for (HearingStatus hearingStatus : this.violationEventService
+					.findHearingStatusesByHearing(hearing)) {
+				this.violationEventService.removeHearingStatus(hearingStatus);
+			}
+			for (UserAttendance userAttendance : this.violationEventService
+					.findUserAttendedByHearing(hearing)) {
+				this.violationEventService.removeUserAttended(userAttendance);
+			}
+			this.violationEventService.removeHearing(hearing);
+		}
 		
 		for(DisciplinaryCodeViolation violation : disciplinaryCodeViolations){
 			this.violationEventService.removeDisciplinaryCodeViolation(violation);
@@ -788,6 +848,24 @@ public class ViolationEventController {
 	}
 	
 	/**
+	 * Displays the unit options based on given jurisdiction.
+	 * 
+	 * @param jurisdiction supervisory organization
+	 * @return model and view
+	 */
+	@RequestMapping(value = "/showUnitOptions.html",
+			method = RequestMethod.GET)
+	public ModelAndView showUnitOptions(
+			@RequestParam(value = "jurisdiction", required = true)
+				final SupervisoryOrganization jurisdiction) {
+		ModelMap map = new ModelMap();
+		map.put(UNITS_MODEL_KEY, this.violationEventService
+				.findUnitsBySupervisoryOrganization(jurisdiction));
+		
+		return new ModelAndView(UNIT_OPTIONS_VIEW_NAME, map);
+	}
+	
+	/**
 	 * Displays the disciplinary code options based on given jurisdiction
 	 * and event date
 	 * @param jurisdiction - SupervisoryOrganization
@@ -1027,6 +1105,10 @@ public class ViolationEventController {
 		if(form.getViolationEventNoteItems() != null){
 			venIndex = form.getViolationEventNoteItems().size();
 		}
+		if (form.getUnit() != null) {
+			map.addAttribute(UNITS_MODEL_KEY, this.violationEventService
+					.findUnitsBySupervisoryOrganization(form.getJurisdiction()));
+		}
 		map.addAttribute(DISCIPLINARY_CODE_VIOLATION_ITEM_INDEX_MODEL_KEY,
 				dcvIndex);
 		map.addAttribute(CONDITION_VIOLATION_ITEM_INDEX_MODEL_KEY, cvIndex);
@@ -1175,6 +1257,7 @@ public class ViolationEventController {
 			form.setJurisdiction((SupervisoryOrganization) violationEvent
 					.getJurisdiction());
 		}
+		form.setUnit(violationEvent.getUnit());
 		form.setViolationEventDocumentItems(vedItems);
 		form.setViolationEventNoteItems(venItems);
 		form.setDisciplinaryCodeViolationItems(dcvItems);
@@ -1476,6 +1559,8 @@ public class ViolationEventController {
 				.createPropertyEditor());
 		binder.registerCustomEditor(byte[].class,
 				new ByteArrayMultipartFileEditor());
+		binder.registerCustomEditor(Unit.class, 
+				this.unitPropertyEditorFactory.createPropertyEditor());
 	}
 	
 }

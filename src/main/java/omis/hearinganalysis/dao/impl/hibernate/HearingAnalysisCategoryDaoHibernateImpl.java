@@ -17,6 +17,8 @@
 */
 package omis.hearinganalysis.dao.impl.hibernate;
 
+import java.util.List;
+
 import org.hibernate.SessionFactory;
 
 import omis.dao.impl.hibernate.GenericHibernateDaoImpl;
@@ -27,7 +29,8 @@ import omis.hearinganalysis.domain.HearingAnalysisCategory;
  * Hibernate implementation of the hearing analysis category data access object.
  *
  * @author Josh Divine
- * @version 0.1.0 (Jan 9, 2018)
+ * @author Annie Wahl
+ * @version 0.1.1 (May 29, 2018)
  * @since OMIS 3.0
  */
 public class HearingAnalysisCategoryDaoHibernateImpl 
@@ -41,6 +44,8 @@ public class HearingAnalysisCategoryDaoHibernateImpl
 	private static final String FIND_EXCLUDING_QUERY_NAME = 
 			"findHearingAnalysisCategoryExcluding";
 	
+	private static final String FIND_ALL_QUERY_NAME =
+			"findAllHearingAnalysisCategories";
 	
 	/* Parameters. */
 	
@@ -86,5 +91,16 @@ public class HearingAnalysisCategoryDaoHibernateImpl
 				.uniqueResult();
 		return hearingAnalysisCategory;
 	}
-
+	
+	/** {@inheritDoc} */
+	@Override
+	public List<HearingAnalysisCategory> findAllHearingAnalysisCategories() {
+		@SuppressWarnings("unchecked")
+		List<HearingAnalysisCategory> hearingAnalysisCategories = 
+				this.getSessionFactory().getCurrentSession()
+				.getNamedQuery(FIND_ALL_QUERY_NAME)
+				.list();
+		return hearingAnalysisCategories;
+	}
+	
 }

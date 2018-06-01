@@ -39,6 +39,14 @@ public interface RelationshipNoteDao
 			RelationshipNoteCategory category, String value, Date date);
 
 	/**
+	 * Removes notes by relationship.
+	 * 
+	 * @param relationship relationship
+	 * @return count of notes removed
+	 */
+	int removeByRelationship(Relationship relationship);
+	
+	/**
 	 * Returns relationship note with notes excluded
 	 * 
 	 * @param relationship relationship

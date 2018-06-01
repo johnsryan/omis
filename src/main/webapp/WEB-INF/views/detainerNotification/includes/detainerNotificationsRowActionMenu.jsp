@@ -34,7 +34,7 @@
 				<omis:reportPro reportPath="/Legal/DetainersAndNotifications/Agreement_on_Detainer_Form_VA&DETAINER_ID=${detainer.id}" decorate="no" title="" className="newTab reportLink"><fmt:message key="agreementOnDetainerFormVAReportLinkLabel"/></omis:reportPro>
 			</li>
 			<li>
-				<a href="${pageContext.request.contextPath}/detainerNotification/detainerNotificationDetailsReport.html?detainer=${detainer.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="detainerNotificationDetailsReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/detainerNotification/detainerNotificationDetailsReport.html?detainer=${detainer.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="detainerNotificationDetailsReportLinkLabel"/></a>
 			</li>
 		</sec:authorize>
 	</ul>
