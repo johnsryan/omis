@@ -74,6 +74,7 @@ public class TravelPermitDelegate {
 	 * @param transportation travel transportation
 	 * @param destination travel destination
 	 * @param dateRange date range
+	 * @param purpose purpose
 	 * @throws TravelPermitExistsException permit already exists
 	 * @return travel permit
 	 */
@@ -82,7 +83,8 @@ public class TravelPermitDelegate {
 		final TravelPermitIssuance issuance,
 		final TravelTransportation transportation,
 		final TravelDestination destination,
-		final DateRange dateRange) 
+		final DateRange dateRange,
+		final String purpose) 
 		throws TravelPermitExistsException {
 		if(this.travelPermitDao.findExistingTravelPermit(offender,
 			dateRange.getStartDate())!=null){
@@ -92,11 +94,13 @@ public class TravelPermitDelegate {
 		
 		TravelPermit travelPermit
 		= this.travelPermitInstanceFactory.createInstance();
+		travelPermit.setPurpose(purpose);
 		travelPermit.setDestination(destination);
 		travelPermit.setIssuance(issuance);
 		travelPermit.setOffender(offender);
 		travelPermit.setPeriodicity(periodicity);
 		travelPermit.setTransportation(transportation);
+		travelPermit.setDateRange(dateRange);
 		travelPermit.setCreationSignature(new CreationSignature(
 			this.auditComponentRetriever.retrieveUserAccount(),
 			this.auditComponentRetriever.retrieveDate()));
@@ -121,13 +125,15 @@ public class TravelPermitDelegate {
 			final TravelPermitIssuance issuance,
 			final TravelTransportation transportation,
 			final TravelDestination destination,
-			final DateRange dateRange)
+			final DateRange dateRange,
+			final String purpose)
 			throws TravelPermitExistsException{
 		if (this.travelPermitDao.findExcludedExistingTravelPermit(
 			permit, permit.getOffender(), dateRange.getStartDate())!=null) {
 			throw new TravelPermitExistsException(
 				"Travel permit already exists");
 		}
+		permit.setPurpose(purpose);
 		permit.setPeriodicity(periodicity);
 		permit.setIssuance(issuance);
 		permit.setTransportation(transportation);

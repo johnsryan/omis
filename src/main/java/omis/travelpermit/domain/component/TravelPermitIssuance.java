@@ -24,39 +24,68 @@ import omis.user.domain.UserAccount;
 /**
  * Implementation of travel permits issuance.
  * @author Yidong Li
- * @version 0.1.0 (May 17, 2018)
+ * @author Joel Norris
+ * @version 0.1.1 (June 06, 2018)
  * @since OMIS 3.0 
  */
 public class TravelPermitIssuance implements Serializable {
+	
 	private static final long serialVersionUID = 1L;
-	private Long id;
 	private Date date;
 	private UserAccount issuer;
 	
-	/** Constructor. */
+	/* Constructors. */
+	
+	/**
+	 * Instantiates a default instance of travel permit issuance.
+	 */
 	public TravelPermitIssuance() {
+		//Default constructor.
 	}
 	
-	public Long getId() {
-		return this.id;
-	}
-
-	public void setId(final Long id) {
-		this.id = id;
+	/**
+	 * Instantiates a travel permit issuance with the specified date and issuer.
+	 * 
+	 * @param date date
+	 * @param issuer user account
+	 */
+	public TravelPermitIssuance(Date date, UserAccount issuer) {
+		this.date = date;
+		this.issuer = issuer;
 	}
 	
+	/**
+	 * Returns the date.
+	 * 
+	 * @return date
+	 */
 	public Date getDate() {
 		return this.date;
 	}
 
+	/**
+	 * Sets the date.
+	 * 
+	 * @param date date
+	 */
 	public void setDate(final Date date) {
 		this.date = date;
 	}
 	
+	/**
+	 * Returns the issuer {@code UserAccount}.
+	 * 
+	 * @return issuer
+	 */
 	public UserAccount getIssuer() {
 		return this.issuer;
 	}
 
+	/**
+	 * Sets the issuer {@code UserAccount}.
+	 * 
+	 * @param issuer user account
+	 */
 	public void setIssuer(final UserAccount issuer) {
 		this.issuer = issuer;
 	}

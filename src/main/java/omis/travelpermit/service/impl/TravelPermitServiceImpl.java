@@ -22,6 +22,7 @@ import java.util.List;
 
 
 
+
 import omis.address.domain.Address;
 //import omis.address.domain.Address;
 import omis.address.domain.ZipCode;
@@ -112,6 +113,7 @@ public class TravelPermitServiceImpl implements TravelPermitService {
 	/** {@inheritDoc} */
 	@Override
 	public TravelPermit create(final Offender offender,
+			final String purpose,
 			final DateRange dateRange,
 			final TravelPermitPeriodicity periodicity,
 			final TravelPermitIssuance issuance,
@@ -119,18 +121,21 @@ public class TravelPermitServiceImpl implements TravelPermitService {
 			final TravelDestination destination)
 				throws TravelPermitExistsException {
 		return this.travelPermitDelegate.createTravelPermit(offender,
-			periodicity, issuance, transportation, destination, dateRange);
+			periodicity, issuance, transportation, destination, dateRange,
+			purpose);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public TravelPermit update(TravelPermit travelPermit, DateRange dateRange,
-			Offender offender, TravelPermitPeriodicity periodicity,
+	public TravelPermit update(TravelPermit travelPermit, String purpose,
+			DateRange dateRange, Offender offender,
+			TravelPermitPeriodicity periodicity,
 			TravelPermitIssuance issuance, TravelTransportation transportation,
 			TravelDestination destination)
 			throws TravelPermitExistsException {
 		return this.travelPermitDelegate.updateTravelPermit(travelPermit,
-			periodicity, issuance, transportation, destination, dateRange);
+			periodicity, issuance, transportation, destination, dateRange,
+			purpose);
 		}
 	
 	/** {@inheritDoc} */

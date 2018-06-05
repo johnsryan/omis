@@ -12,23 +12,26 @@ import org.hibernate.SessionFactory;
  * Hibernate implementation of data access object for travel permits.
  * 
  * @author Yidong Li
- * @version 0.1.0 (Aug 18, 2016)
+ * @author Joel NOrris
+ * @version 0.1.2 (June 06, 2018)
  * @since OMIS 3.0
  */
 public class TravelPermitPeriodicityDaoHibernateImpl
 		extends GenericHibernateDaoImpl<TravelPermitPeriodicity>
 		implements TravelPermitPeriodicityDao {
+	
 	/* Queries. */
+	
 	private static final String 
 	FIND_EXISTING_TRAVEL_PERMIT_PERIODICITIES_QUERY_NAME
-	= "findTravelPermitPeriodicities";
+		= "findTravelPermitPeriodicities";
+	private static final String FIND_PERIODICITY_QUERY_NAME
+		= "findTravelPermitPeriodicity";
 
 	/* Parameters. */
-	/*private static final String OffENDER_PARAMETER_NAME = "offender";
-	private static final String CATEGORY_PARAMETER_NAME = "category";
-	private static final String ASSIGNED_DATE_PARAMETER_NAME = "assignedDate";
-	private static final String EXCLUDED_WORK_ASSIGNMENT_PARAMETER_NAME 
-		= "excludedWorkAssignment";*/
+	private static final String NAME_PARAM_NAME = "name";
+	
+	/* Constructor. */
 	
 	/**
 	 * Instantiates an Hibernate implementation of data access object for
@@ -43,6 +46,8 @@ public class TravelPermitPeriodicityDaoHibernateImpl
 		super(sessionFactory, entityName);
 	}
 	
+	/* Method implementations. */
+	
 	/** {@inheritDoc} */
 	@Override
 	public List<TravelPermitPeriodicity> findAllPeriodicities(){
@@ -52,5 +57,15 @@ public class TravelPermitPeriodicityDaoHibernateImpl
 			.getNamedQuery(FIND_EXISTING_TRAVEL_PERMIT_PERIODICITIES_QUERY_NAME)
 			.list();
 		return travelMethods;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public TravelPermitPeriodicity find(final String name) {
+		TravelPermitPeriodicity periodicity = (TravelPermitPeriodicity) this.getSessionFactory().getCurrentSession()
+				.getNamedQuery(FIND_PERIODICITY_QUERY_NAME)
+				.setParameter(NAME_PARAM_NAME, name)
+				.uniqueResult();
+		return periodicity;
 	}
 }

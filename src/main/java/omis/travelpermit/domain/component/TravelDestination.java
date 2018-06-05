@@ -25,13 +25,14 @@ import omis.region.domain.State;
 
 /**
  * Travel Destination.
+ * 
  * @author Yidong Li
- * @version 0.1.0 (May 17, 2018)
+ * @author Joel Norris
+ * @version 0.1.1 (June 04, 2018)
  * @since OMIS 3.0 
  */
 public class TravelDestination implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private Long id;
 	private String name;
 	private Long telephoneNumber;
 	private Address address;
@@ -39,62 +40,142 @@ public class TravelDestination implements Serializable {
 	private City city;
 	private ZipCode zipCode;
 	
-	/** Constructor. */
+	/* Constructors. */
+	
+	/** 
+	 * Instantiates a default instance of travel destination.
+	 */
 	public TravelDestination() {
+		//Default constructor.
 	}
 	
-	public Long getId() {
-		return this.id;
-	}
-
-	public void setId(final Long id) {
-		this.id = id;
+	/**
+	 * Instantiates a travel destination with the specified values.
+	 * 
+	 * @param name name
+	 * @param telephoneNumber telephone number
+	 * @param address address
+	 * @param state state
+	 * @param city city
+	 * @param zipCode zip code
+	 */
+	public TravelDestination(final String name, final Long telephoneNumber,
+			final Address address, final State state,
+			final City city, final ZipCode zipCode) {
+		this.name = name;
+		this.telephoneNumber = telephoneNumber;
+		this.address = address;
+		this.state = state;
+		this.city = city;
+		this.zipCode = zipCode;
 	}
 	
+	/* Getters and Setters */
+	
+	/**
+	 * Returns name.
+	 * 
+	 * @return name
+	 */
 	public String getName() {
 		return this.name;
 	}
 
+	/**
+	 * Sets name.
+	 * 
+	 * @param name name
+	 */
 	public void setName(final String name) {
 		this.name = name;
 	}
 	
+	/**
+	 * Returns telephone number.
+	 * 
+	 * @return telephone number
+	 */
 	public Long getTelephoneNumber() {
 		return this.telephoneNumber;
 	}
 
+	/**
+	 * Sets telephone number.
+	 * 
+	 * @param telephoneNumber telephone number
+	 */
 	public void setTelephoneNumber(final Long telephoneNumber) {
 		this.telephoneNumber = telephoneNumber;
 	}
 	
+	/**
+	 * Returns address.
+	 * 
+	 * @return address
+	 */
 	public Address getAddress() {
 		return this.address;
 	}
 
+	/**
+	 * Sets address.
+	 * 
+	 * @param address address
+	 */
 	public void setAddress(final Address address) {
 		this.address = address;
 	}
 	
+	/**
+	 * Returns state.
+	 * 
+	 * @return state
+	 */
 	public State getState() {
 		return this.state;
 	}
 
+	/**
+	 * Sets state.
+	 * 
+	 * @param state state
+	 */
 	public void setState(final State state) {
 		this.state = state;
 	}
 	
+	/**
+	 * Returns city.
+	 * 
+	 * @return city
+	 */
 	public City getCity() {
 		return this.city;
 	}
 
+	/**
+	 * Sets city.
+	 * 
+	 * @param city city
+	 */
 	public void setCity(final City city) {
 		this.city = city;
 	}
 	
+	/**
+	 * Returns zip code.
+	 * 
+	 * @return zip code
+	 */
 	public ZipCode getZipCode() {
 		return this.zipCode;
 	}
 
+	/**
+	 * Sets zip code.
+	 * 
+	 * @param zipCode zip code
+	 */
 	public void setZipCode(final ZipCode zipCode) {
 		this.zipCode = zipCode;
 	}

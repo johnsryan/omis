@@ -32,6 +32,7 @@
   <bean id="travelMethodDelegate"
         class="omis.travelpermit.service.delegate.TravelMethodDelegate">
     <constructor-arg name="travelMethodDao" ref="travelMethodDao"/>
+    <constructor-arg name="travelMethodInstanceFactory" ref="travelMethodInstanceFactory"/>
   </bean>
   
   <bean id="travelPermitNoteDelegate"
@@ -44,6 +45,7 @@
   <bean id="travelPermitPeriodicityDelegate"
         class="omis.travelpermit.service.delegate.TravelPermitPeriodicityDelegate">
     <constructor-arg name="travelPermitPeriodicityDao" ref="travelPermitPeriodicityDao"/>
+    <constructor-arg name="travelPermitPeriodicityInstanceFactory" ref="travelPermitPeriodicityInstanceFactory"/>
   </bean>
   
   <!-- Report services -->

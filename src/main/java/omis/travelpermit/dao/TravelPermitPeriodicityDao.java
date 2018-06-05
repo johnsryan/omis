@@ -26,7 +26,8 @@ import omis.travelpermit.domain.TravelPermitPeriodicity;
  * Data access object for travel permit periodicity.
  * 
  * @author Yidong Li
- * @version 0.1.1 (Aug 18, 2016)
+ * @author Joel Norris
+ * @version 0.1.1 (June 4, 2018)
  * @since OMIS 3.0
  */
 public interface TravelPermitPeriodicityDao
@@ -37,4 +38,6 @@ public interface TravelPermitPeriodicityDao
 	 * @return existing travel permit periodicities
 	 */
 	List<TravelPermitPeriodicity> findAllPeriodicities();
+	
+	TravelPermitPeriodicity find(String name);
 }

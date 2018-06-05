@@ -19,6 +19,7 @@ package omis.travelpermit.service.delegate;
 
 import java.util.List;
 
+import omis.instance.factory.InstanceFactory;
 import omis.travelpermit.dao.TravelMethodDao;
 import omis.travelpermit.domain.TravelMethod;
 
@@ -27,22 +28,29 @@ import omis.travelpermit.domain.TravelMethod;
  * Delegate for travel method.
  *
  * @author Yidong Li
- * @version 0.0.2 (Aug 18, 2018)
+ * @author Joel Norris
+ * @version 0.1.1 (June 04, 2018)
  * @since OMIS 3.0
  */
 public class TravelMethodDelegate {
+	
 	/* Resources. */
+	
 	private final TravelMethodDao travelMethodDao;
+	private final InstanceFactory<TravelMethod> travelMethodInstanceFactory;
 	
 	/* Constructors. */
+	
 	/**
 	 * Instantiates delegate for managing travel method.
 	 * 
 	 * @param travelMethodDao data access object for travel method
+	 * @param travelMethodInstanceFactory travel method instance factory
 	 */
-	public TravelMethodDelegate(
-		final TravelMethodDao travelMethodDao) {
+	public TravelMethodDelegate( final TravelMethodDao travelMethodDao,
+		final InstanceFactory<TravelMethod> travelMethodInstanceFactory) {
 		this.travelMethodDao = travelMethodDao;
+		this.travelMethodInstanceFactory = travelMethodInstanceFactory;
 	}
 
 	/**
@@ -53,5 +61,27 @@ public class TravelMethodDelegate {
 	 */
 	public List<TravelMethod> findTravelMethods(){
 		return this.travelMethodDao.findTravelMethods();
+	}
+	
+	/**
+	 * Creates a travel method.
+	 * 
+	 * @param name name
+	 * @param descriptionRequired description required
+	 * @param descriptionName description name
+	 * @param numberName number name
+	 * @param sortOrder sort order
+	 * @return newly create travel method
+	 */
+	public TravelMethod create(final String name, final Boolean descriptionRequired,
+			final String descriptionName, final String numberName,
+			final Short sortOrder) {
+		TravelMethod method = this.travelMethodInstanceFactory.createInstance();
+		method.setName(name);
+		method.setDescriptionRequired(descriptionRequired);
+		method.setDescriptionName(descriptionName);
+		method.setNumberName(numberName);
+		method.setSortOrder(sortOrder);
+		return this.travelMethodDao.makePersistent(method);
 	}
 }

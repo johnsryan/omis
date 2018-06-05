@@ -447,7 +447,7 @@ public class PlacementTermController {
 		}
 		placementTermForm.setAllowSendToLocation(true);
 		placementTermForm.setSendToLocation(true);
-		return this.prepareEditMav(placementTermForm, offender,
+		return this.prepareCreateMav(placementTermForm, offender,
 				effectiveDate);
 	}
 	
@@ -552,15 +552,77 @@ public class PlacementTermController {
 		
 		// Prepares and returns model and view
 		ModelAndView mav = this.prepareEditMav(
-				placementTermForm, placementTerm.getOffender(), new Date());
+				placementTermForm, placementTerm.getOffender(), new Date(),
+				placementTerm);
 		mav.addObject(PLACEMENT_TERM_MODEL_KEY, placementTerm);
 		return mav;
 	}
 	
-	// Prepares edit form model and view
-	private ModelAndView prepareEditMav(
+	// Prepares create form model and view
+	public ModelAndView prepareCreateMav(
 			final PlacementTermForm placementTermForm,
 			final Offender offender, final Date effectiveDate) {
+		
+		// Effective placement term is on effective date
+		PlacementTerm effectivePlacementTerm = this.placementTermService
+				.findPlacementTerm(offender, effectiveDate);
+		
+		// Adds start change reasons
+		CorrectionalStatus fromCorrectionalStatus;
+		if (effectivePlacementTerm != null) {
+			fromCorrectionalStatus = effectivePlacementTerm
+				.getCorrectionalStatusTerm().getCorrectionalStatus();
+		} else {
+			fromCorrectionalStatus = null;
+		}
+		List<PlacementTermChangeReason> startChangeReasons
+			= this.placementTermService.findAllowedStartChangeReasons(
+				fromCorrectionalStatus,
+				placementTermForm.getCorrectionalStatus());
+		
+		// Returns model and view
+		return this.prepareEditMavImpl(
+			placementTermForm, effectivePlacementTerm, offender, effectiveDate,
+			startChangeReasons);
+	}
+	
+	// Prepares edit form model and view
+	public ModelAndView prepareEditMav(
+			final PlacementTermForm placementTermForm,
+			final Offender offender, final Date effectiveDate,
+			final PlacementTerm effectivePlacementTerm) {
+		
+		// Adds start change reasons
+		CorrectionalStatus fromCorrectionalStatus;
+		PlacementTerm previousPlacementTerm = this.placementTermService
+				.findPlacementTermForOffenderWithEndDate(offender,
+						DateRange.getStartDate(effectivePlacementTerm
+								.getDateRange()));
+		if (previousPlacementTerm != null) {
+			fromCorrectionalStatus = previousPlacementTerm
+					.getCorrectionalStatusTerm()
+						.getCorrectionalStatus();
+		} else {
+			fromCorrectionalStatus = null;
+		}
+		List<PlacementTermChangeReason> startChangeReasons
+			= this.placementTermService.findAllowedStartChangeReasons(
+					fromCorrectionalStatus,
+					effectivePlacementTerm.getCorrectionalStatusTerm()
+						.getCorrectionalStatus());
+		
+		// Returns model and view
+		return this.prepareEditMavImpl(
+			placementTermForm, effectivePlacementTerm, offender, effectiveDate,
+			startChangeReasons);
+	}
+	
+	// Prepares edit form model and view implementation
+	private ModelAndView prepareEditMavImpl(
+			final PlacementTermForm placementTermForm,
+			final PlacementTerm effectivePlacementTerm,
+			final Offender offender, final Date effectiveDate,
+			final List<PlacementTermChangeReason> startChangeReasons) {
 		ModelAndView mav = new ModelAndView(EDIT_FORM_VIEW_NAME);
 		mav.addObject(PLACEMENT_TERM_FORM_MODEL_KEY, placementTermForm);
 		mav.addObject(OFFENDER_MODEL_KEY, offender);
@@ -579,10 +641,6 @@ public class PlacementTermController {
 		// Adds home States
 		List<State> states = this.placementTermService.findHomeStates();
 		mav.addObject(STATES_MODEL_KEY, states);
-		
-		// Effective placement term is on effective date
-		PlacementTerm effectivePlacementTerm = this.placementTermService
-				.findPlacementTerm(offender, effectiveDate);
 		
 		// Adds correctional statuses that can be changed to based off
 		// correctional status on effective date
@@ -631,28 +689,6 @@ public class PlacementTermController {
 		}
 		mav.addObject(SUPERVISORY_ORGANIZATIONS_MODEL_KEY,
 				supervisoryOrganizations);
-		
-		// Adds start change reasons
-		CorrectionalStatus fromCorrectionalStatus;
-		if (effectivePlacementTerm != null) {
-			PlacementTerm previousPlacementTerm = this.placementTermService
-					.findPlacementTermForOffenderWithEndDate(offender,
-							DateRange.getStartDate(effectivePlacementTerm
-									.getDateRange()));
-			if (previousPlacementTerm != null) {
-				fromCorrectionalStatus = previousPlacementTerm
-						.getCorrectionalStatusTerm()
-							.getCorrectionalStatus();
-			} else {
-				fromCorrectionalStatus = null;
-			}
-		} else {
-			fromCorrectionalStatus = null;
-		}
-		List<PlacementTermChangeReason> startChangeReasons
-			= this.placementTermService.findAllowedStartChangeReasons(
-					fromCorrectionalStatus,
-					placementTermForm.getCorrectionalStatus());
 
 		mav.addObject(PLACEMENT_TERM_START_CHANGE_REASONS_MODEL_KEY,
 				startChangeReasons);
@@ -740,7 +776,7 @@ public class PlacementTermController {
 			} else {
 				effectiveDate = new Date();
 			}
-			return this.prepareRedisplayMav(
+			return this.prepareCreateRedisplayMav(
 					offender, effectiveDate, placementTermForm, result);
 		}
 		DateRange dateRange = this.createDateRange(
@@ -751,8 +787,6 @@ public class PlacementTermController {
 		PlacementTerm placementTerm;
 		if (allowCorrectionalStatusChange != null
 				&& allowCorrectionalStatusChange) {
-			
-			// TODO Remove status and statusDate parameters - SA
 			placementTerm = this.placementTermService
 				.create(offender,
 						placementTermForm.getSupervisoryOrganization(),
@@ -870,9 +904,9 @@ public class PlacementTermController {
 			} else {
 				effectiveDate = new Date();
 			}
-			ModelAndView mav = prepareRedisplayMav(
+			ModelAndView mav = prepareEditRedisplayMav(
 					placementTerm.getOffender(), effectiveDate,
-					placementTermForm, result);
+					placementTerm, placementTermForm, result);
 			mav.addObject(PLACEMENT_TERM_MODEL_KEY, placementTerm);
 			return mav;
 		}
@@ -943,15 +977,31 @@ public class PlacementTermController {
 		}
 		return prepareListRedirect(placementTerm.getOffender());
 	}
-	
-	// Returns a model and view to redisplay edit screen
-	private ModelAndView prepareRedisplayMav(
+
+	// Returns a model and view to redisplay create screen
+	private ModelAndView prepareCreateRedisplayMav(
 			final Offender offender,
 			final Date effectiveDate,
 			final PlacementTermForm placementTermForm,
 			final BindingResult result) {
-		ModelAndView mav = this.prepareEditMav(
+		ModelAndView mav = this.prepareCreateMav(
 				placementTermForm, offender, effectiveDate);
+		mav.addObject(
+			BindingResult.MODEL_KEY_PREFIX + PLACEMENT_TERM_FORM_MODEL_KEY,
+			result);
+		return mav;
+	}
+	
+	// Returns a model and view to redisplay edit screen
+	private ModelAndView prepareEditRedisplayMav(
+			final Offender offender,
+			final Date effectiveDate,
+			final PlacementTerm placementTerm,
+			final PlacementTermForm placementTermForm,
+			final BindingResult result) {
+		ModelAndView mav = this.prepareEditMav(
+				placementTermForm, offender, effectiveDate,
+				placementTerm);
 		mav.addObject(
 			BindingResult.MODEL_KEY_PREFIX + PLACEMENT_TERM_FORM_MODEL_KEY,
 			result);

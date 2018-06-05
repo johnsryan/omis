@@ -15,6 +15,13 @@
 		<property name="name" column="`NAME`" not-null="true" type="java.lang.String" unique="true"/>
 		<property name="sortOrder" type="java.lang.Short" not-null="true" column="`SORT_ORDER`"/>
 	</class>
+	<query name="findTravelPermitPeriodicity"><![CDATA[
+		select periodicity
+		from
+			omis.travelpermit.domain.TravelPermitPeriodicity periodicity
+		where
+			periodicity.name = :name
+	]]></query>
 	<query name="findTravelPermitPeriodicities"><![CDATA[
 	select periodicity
 	from 

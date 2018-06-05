@@ -791,8 +791,7 @@ public class PlacementTermServiceImpl
 				// throws exception if conflicts are found
 				if (searchStartDate != null || searchEndDate != null) {
 					
-					// TODO Should correctionalStatusTermOnEndDate be added to
-					// excludedCorrectionalStatusTerms? [SA]
+					// Determines correctional status terms to exclude
 					List<CorrectionalStatusTerm> excludedCorrectionalStatusTerms
 						= new ArrayList<CorrectionalStatusTerm>();
 					if (correctionalStatusTermOnEndDate != null
@@ -801,7 +800,17 @@ public class PlacementTermServiceImpl
 						&& startDate != null && !correctionalStatusTermOnEndDate
 							.getDateRange().getEndDate().equals(endDate)) {
 						
-						// Exclude correctional status term with start date of
+						// Excludes correctional status term on end date if its
+						// start date matches that of new end date
+						if (DateRange.getStartDate(
+									correctionalStatusTermOnEndDate
+										.getDateRange())
+								.equals(endDate)) {
+							excludedCorrectionalStatusTerms
+								.add(correctionalStatusTermOnEndDate);
+						}
+						
+						// Excludes correctional status term with start date of
 						// end  date from search for conflicting correctional
 						// status  terms
 						CorrectionalStatusTerm

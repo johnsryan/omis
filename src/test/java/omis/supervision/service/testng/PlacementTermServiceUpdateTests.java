@@ -1075,14 +1075,186 @@ public class PlacementTermServiceUpdateTests
 						.getDateRange().getEndDate());
 	}
 	
+	/**
+	 * Tests that first placement term of three can be updated with same
+	 * values without a conflict being erroneously reported.
+	 * 
+	 * <p>Supervisory organization terms are not created.
+	 * 
+	 * @throws PlacementTermLockedException if placement term is locked 
+	 * @throws SupervisoryOrganizationTermConflictException if conflicting
+	 * supervisory organization terms exist
+	 * @throws CorrectionalStatusTermConflictException if conflicting
+	 * correctional status terms exist 
+	 * @throws DuplicateEntityFoundException if duplicate entities exist 
+	 */
+	public void testUpdateFirstPlacementTermOfThreeWithSameValues()
+			throws CorrectionalStatusTermConflictException,
+				SupervisoryOrganizationTermConflictException,
+				PlacementTermLockedException,
+				DuplicateEntityFoundException {
+		
+		// Arrangements - places Blofeld securely, on parole and then probation
+		Offender offender = this.createOffender();
+		DateRange secureRange = this.createDateRange(
+				"01/01/2001", "02/02/2002");
+		CorrectionalStatus secureStatus = this.createSecureStatus();
+		PlacementTerm securePlacement = this.placementTermDelegate.create(
+				offender, secureRange, null,
+				this.correctionalStatusTermDelegate
+					.create(offender, secureRange, secureStatus),
+				null, null, false);
+		DateRange paroleRange = this.createDateRange(
+				"02/02/2002", "03/03/2003");
+		this.placementTermDelegate.create(offender, paroleRange, null,
+				this.correctionalStatusTermDelegate.create(
+						offender, paroleRange, this.createParoleStatus()),
+				null, null, false);
+		DateRange probationRange = this.createDateRange(
+				"03/03/2003", "04/04/2004");
+		this.placementTermDelegate.create(offender, probationRange, null,
+				this.correctionalStatusTermDelegate.create(
+						offender, probationRange, this.createProbationStatus()),
+				null, null, false);
+		
+		// Action - updates secure placement term with same values
+		securePlacement = this.placementTermService.update(securePlacement,
+				DateRange.getEndDate(secureRange),
+				securePlacement.getStatus(),
+				securePlacement.getStatusDateRange(),
+				securePlacement.getStartChangeReason(),
+				securePlacement.getEndChangeReason());
+		
+		// Assertions - verifies that properties are the same
+		PropertyValueAsserter.create()
+				.addExpectedValue("dateRange", secureRange)
+				.addExpectedValue("correctionalStatusTerm.correctionalStatus",
+						secureStatus)
+				.performAssertions(securePlacement);
+	}
+	
+	/**
+	 * Tests that middle placement term of three can be updated with same
+	 * values without a conflict being erroneously reported.
+	 * 
+	 * <p>Supervisory organization terms are not created.
+	 * 
+	 * @throws DuplicateEntityFoundException if duplicate entities exist
+	 * @throws CorrectionalStatusTermConflictException if conflicting
+	 * correctional status terms exist
+	 * @throws SupervisoryOrganizationTermConflictException if conflicting
+	 * supervisory organization terms exist
+	 * @throws PlacementTermLockedException if placement term is locked
+	 */
+	public void testUpdateSecondPlacementTermOfThreeWithSameValues()
+			throws DuplicateEntityFoundException,
+				CorrectionalStatusTermConflictException,
+					SupervisoryOrganizationTermConflictException,
+					PlacementTermLockedException {
+		
+		// Arrangements - places Blofeld securely, on parole and then probation
+		Offender offender = this.createOffender();
+		DateRange secureRange = this.createDateRange(
+				"01/01/2001", "02/02/2002");
+		this.placementTermDelegate.create(offender, secureRange, null,
+				this.correctionalStatusTermDelegate.create(
+						offender, secureRange, this.createSecureStatus()),
+				null, null, false);
+		DateRange paroleRange = this.createDateRange(
+				"02/02/2002", "03/03/2003");
+		CorrectionalStatus paroleStatus = this.createParoleStatus();
+		PlacementTerm parolePlacement = this.placementTermDelegate
+				.create(offender, paroleRange, null,
+						this.correctionalStatusTermDelegate.create(
+								offender, paroleRange, paroleStatus), 
+				null, null, false);
+		DateRange probationRange = this.createDateRange(
+				"03/03/2003", "04/04/2004");
+		this.placementTermDelegate.create(offender, probationRange, null,
+				this.correctionalStatusTermDelegate.create(
+						offender, probationRange, this.createProbationStatus()),
+				null, null, false);
+		
+		// Action - updates parole placement term with same values
+		parolePlacement = this.placementTermService.update(parolePlacement,
+				DateRange.getEndDate(paroleRange),
+				parolePlacement.getStatus(), 
+				parolePlacement.getStatusDateRange(),
+				parolePlacement.getStartChangeReason(),
+				parolePlacement.getEndChangeReason());
+		
+		// Assertions - verifies that properties are the same
+		PropertyValueAsserter.create()
+			.addExpectedValue("dateRange", paroleRange)
+			.addExpectedValue("correctionalStatusTerm.correctionalStatus",
+					paroleStatus)
+			.performAssertions(parolePlacement);
+	}
+	
+	/**
+	 * Tests that last placement term of three can be updated with same values
+	 * without a conflict being erroneously reported.
+	 * 
+	 * @throws CorrectionalStatusTermConflictException if conflicting
+	 * correctional status terms exist
+	 * @throws SupervisoryOrganizationTermConflictException if conflicting
+	 * supervisory organization terms exist
+	 * @throws PlacementTermLockedException if placement term is locked
+	 * @throws DuplicateEntityFoundException if duplicate entities exist
+	 */
+	public void testUpdateThirdPlacementTermOfThreeWithSameValues()
+			throws CorrectionalStatusTermConflictException,
+				SupervisoryOrganizationTermConflictException,
+				PlacementTermLockedException,
+				DuplicateEntityFoundException {
+		
+		// Arrangements - places Blofeld securely, on parole and then probation
+		Offender offender = this.createOffender();
+		DateRange secureRange = this.createDateRange(
+				"01/01/2001", "02/02/2002");
+		this.placementTermDelegate.create(offender, secureRange, null,
+				this.correctionalStatusTermDelegate.create(
+						offender, secureRange, this.createSecureStatus()),
+				null, null, false);
+		DateRange paroleRange = this.createDateRange(
+				"02/02/2002", "03/03/2003");
+		this.placementTermDelegate.create(offender, paroleRange, null,
+				this.correctionalStatusTermDelegate.create(
+						offender, paroleRange, this.createParoleStatus()),
+				null, null, false);
+		DateRange probationRange = this.createDateRange(
+				"03/03/2003", "04/04/2004");
+		CorrectionalStatus probationStatus = this.createProbationStatus();
+		PlacementTerm probationPlacement = this.placementTermDelegate
+				.create(offender, probationRange, null,
+						this.correctionalStatusTermDelegate
+							.create(offender, probationRange, probationStatus),
+						null, null, false);
+		
+		// Action - updates probation placement term with same values
+		probationPlacement = this.placementTermService
+				.update(probationPlacement,
+						DateRange.getEndDate(probationRange),
+						probationPlacement.getStatus(),
+						probationPlacement.getStatusDateRange(),
+						probationPlacement.getStartChangeReason(),
+						probationPlacement.getEndChangeReason());
+		
+		// Assertions - verifies that properties are the same
+		PropertyValueAsserter.create()
+			.addExpectedValue("dateRange", probationRange)
+			.addExpectedValue("correctionalStatusTerm.correctionalStatus",
+					probationStatus)
+			.performAssertions(probationPlacement);
+	}
+	
 	/* Helper methods. */
 	
 	private void assertValues(PlacementTerm placementTerm, 
 			SupervisoryOrganization supervisoryOrganization,
 			CorrectionalStatus correctionalStatus, DateRange dateRange, 
 			PlacementTermChangeReason startChangeReason, 
-			PlacementTermChangeReason endChangeReason)
-	{
+			PlacementTermChangeReason endChangeReason) {
 		assert supervisoryOrganization.equals(placementTerm
 			.getSupervisoryOrganizationTerm().getSupervisoryOrganization()) 
 			: String.format("Wrong supervisory organization: %s found; %s "
@@ -1163,9 +1335,31 @@ public class PlacementTermServiceUpdateTests
 		return this.createCorrectionalStatus("Parole", "PAR", false, (short) 1);
 	}
 	
+	// Returns secure status
+	private CorrectionalStatus createSecureStatus()
+			throws DuplicateEntityFoundException {
+		return this.createCorrectionalStatus("Secure", "SEC", true, (short) 2);
+	}
+	
+	// Returns probation status
+	private CorrectionalStatus createProbationStatus()
+			throws DuplicateEntityFoundException {
+		return this.createCorrectionalStatus(
+				"Probation", "PRO", true, (short) 3);
+	}
+	
 	// Returns P & P office
 	private SupervisoryOrganization createPnpOffice()
 			throws DuplicateEntityFoundException {
 		return this.createSupervisoryOrganization("PnP Office", "PNP");
+	}
+	
+	// Returns date range
+	private DateRange createDateRange(
+			final String startDateText,
+			final String endDateText) {
+		return new DateRange(
+				this.parseDateText(startDateText),
+				this.parseDateText(endDateText));
 	}
 }

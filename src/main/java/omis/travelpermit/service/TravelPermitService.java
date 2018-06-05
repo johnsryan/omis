@@ -63,10 +63,11 @@ public interface TravelPermitService {
 	 * @param transportation travel transportation
 	 * @param dateRange date range
 	 * @param destination travel destination
+	 * @param purpose purpose
 	 * @return TravelPermit
 	 * @throws TravelPermitExistException travel permit already exists
 	 */
-	TravelPermit create(Offender offender, DateRange dateRange,
+	TravelPermit create(Offender offender, String purpose, DateRange dateRange,
 		TravelPermitPeriodicity periodicity,
 		TravelPermitIssuance issuance, TravelTransportation transportation,
 		TravelDestination destination)
@@ -81,12 +82,13 @@ public interface TravelPermitService {
 	 * @param transportation travel transportation
 	 * @param destination travel destination
 	 * @param dateRange date range
+	 * @param purpose purpose
 	 * @return TravelPermit
 	 * @throws TravelPermitExistException travel permit already exists
 	 * @return Updated travel permit
 	 * @throws DuplicateEntityFoundException if work assignment already exists
 	 */
-	TravelPermit update(TravelPermit travelPermit, DateRange dateRange,
+	TravelPermit update(TravelPermit travelPermit, String purpose, DateRange dateRange,
 			Offender offender, TravelPermitPeriodicity periodicity,
 			TravelPermitIssuance issuance, TravelTransportation transportation,
 			TravelDestination destination)

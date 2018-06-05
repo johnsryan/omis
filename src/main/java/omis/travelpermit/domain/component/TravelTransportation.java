@@ -23,36 +23,61 @@ import omis.travelpermit.domain.TravelMethod;
 /**
  * Travel transportation.
  * @author Yidong Li
- * @version 0.1.0 (May 17, 2018)
+ * @author Joel Norris
+ * @version 0.1.1 (June 06, 2018)
  * @since OMIS 3.0 
  */
 public class TravelTransportation implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private Long id;
 	private String number;
 	private String description;
 	private TravelMethod method;
 	
-	/** Constructor. */
+	/** 
+	 * Instantiates a default instance of travel transportation.
+	 */
 	public TravelTransportation() {
+		//Default constructor.
 	}
 	
-	public Long getId() {
-		return this.id;
-	}
-
-	public void setId(final Long id) {
-		this.id = id;
+	/**
+	 * Instantiates an instance of travel transportation with the specified
+	 * number, description and travel method.
+	 * 
+	 * @param number number
+	 * @param description description
+	 * @param method travel method
+	 */
+	public TravelTransportation(final String number,
+			final String description, final TravelMethod method) {
+		this.number = number;
+		this.description = description;
+		this.method = method;
 	}
 	
+	/**
+	 * Returns number.
+	 * 
+	 * @return number
+	 */
 	public String getNumber() {
 		return this.number;
 	}
 
+	/**
+	 * Sets number.
+	 * 
+	 * @param number number
+	 */
 	public void setNumber(final String number) {
 		this.number = number;
 	}
 	
+	/**
+	 * Returns description.
+	 * 
+	 * @return description
+	 */
 	public String getDescription() {
 		return this.description;
 	}
@@ -61,10 +86,19 @@ public class TravelTransportation implements Serializable {
 		this.description = description;
 	}
 	
+	/**
+	 * Returns method {@link TravelMethod}.
+	 * @return
+	 */
 	public TravelMethod getMethod() {
 		return this.method;
 	}
 
+	/**
+	 * Sets travel method {@link TravelMethod}.
+	 * 
+	 * @param method travel method
+	 */
 	public void setMethod(final TravelMethod method) {
 		this.method = method;
 	}

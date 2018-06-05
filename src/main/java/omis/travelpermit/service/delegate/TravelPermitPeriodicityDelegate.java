@@ -19,30 +19,38 @@ package omis.travelpermit.service.delegate;
 
 import java.util.List;
 
+import omis.instance.factory.InstanceFactory;
 import omis.travelpermit.dao.TravelPermitPeriodicityDao;
 import omis.travelpermit.domain.TravelPermitPeriodicity;
+import omis.travelpermit.exception.TravelPermitPeriodicityExistsException;
 
 
 /**
  * Delegate for travel method.
  *
  * @author Yidong Li
- * @version 0.0.2 (Aug 18, 2018)
+ * @author Joel Norris
+ * @version 0.1.1 (June 06, 2018)
  * @since OMIS 3.0
  */
 public class TravelPermitPeriodicityDelegate {
+	
 	/* Resources. */
 	private final TravelPermitPeriodicityDao travelPermitPeriodicityDao;
+	private final InstanceFactory<TravelPermitPeriodicity> travelPermitPeriodicityInstanceFactory;
 	
 	/* Constructors. */
 	/**
 	 * Instantiates delegate for managing travel method.
 	 * 
 	 * @param travelMethodDao data access object for travel method
+	 * @param travelPermitPeriodicityInstanceFactory travel permit periodicity instance factory
 	 */
 	public TravelPermitPeriodicityDelegate(
-		final TravelPermitPeriodicityDao travelPermitPeriodicityDao) {
+		final TravelPermitPeriodicityDao travelPermitPeriodicityDao,
+		final InstanceFactory<TravelPermitPeriodicity> travelPermitPeriodicityInstanceFactory) {
 		this.travelPermitPeriodicityDao = travelPermitPeriodicityDao;
+		this.travelPermitPeriodicityInstanceFactory = travelPermitPeriodicityInstanceFactory;
 	}
 
 	/**
@@ -54,4 +62,26 @@ public class TravelPermitPeriodicityDelegate {
 	public List<TravelPermitPeriodicity> findTravelPermitPeriodicities(){
 		return this.travelPermitPeriodicityDao.findAllPeriodicities();
 	}
+	
+	/**
+	 * Creates a travel permit periodicity with the specified name and sort order.
+	 * 
+	 * @param name name
+	 * @param sortOrder sort order
+	 * @return newly created travel permit periodicity
+	 * @throws TravelPermitPeriodicityExistsException Thrown when a travel permit periodicity already
+	 * exists 
+	 */
+	public TravelPermitPeriodicity create(final String name, final Short sortOrder)
+			throws TravelPermitPeriodicityExistsException {
+		if (this.travelPermitPeriodicityDao.find(name) != null) {
+			throw new TravelPermitPeriodicityExistsException("Duplicate travel permit periodicity found");
+		}
+		TravelPermitPeriodicity periodicity = this.travelPermitPeriodicityInstanceFactory.createInstance();
+		periodicity.setName(name);
+		periodicity.setSortOrder(sortOrder);
+		return this.travelPermitPeriodicityDao.makePersistent(periodicity);
+	}
+	
+	
 }
