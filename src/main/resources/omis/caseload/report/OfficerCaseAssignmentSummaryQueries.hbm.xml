@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="omis.caseload.report">
+	<query name="findOfficerCaseAssignmentSummariesByOffender"><![CDATA[
+		select new omis.caseload.report.OfficerCaseAssignmentSummary(
+		oca.id, oca.dateRange.startDate, oca.dateRange.endDate, 
+		oca.officer.user.name.lastName, oca.officer.user.name.firstName, 
+		oca.officer.user.name.middleName, oca.officer.username,
+		oca.offender.name.lastName, oca.offender.name.middleName,
+		oca.offender.name.firstName, oca.offender.offenderNumber,
+		organization.name, supervisionLevel.description)
+		from
+			omis.caseload.domain.OfficerCaseAssignment oca
+		left join oca.supervisionOffice location
+		left join location.organization organization
+		left join oca.supervisionLevel supervisionLevel
+		where
+			oca.offender = :offender	
+		order by
+			oca.dateRange.endDate
+	]]></query>
+	<query name="findOfficerCaseAssignmentSummariesByUserAccount"><![CDATA[
+		select new omis.caseload.report.OfficerCaseAssignmentSummary(
+		oca.id, oca.dateRange.startDate, oca.dateRange.endDate, 
+		oca.officer.user.name.lastName, oca.officer.user.name.firstName, 
+		oca.officer.user.name.middleName, oca.officer.username,
+		oca.offender.name.lastName, oca.offender.name.middleName,
+		oca.offender.name.firstName, oca.offender.offenderNumber,
+		organization.name, supervisionLevel.description)
+		from
+			omis.caseload.domain.OfficerCaseAssignment oca
+		left join oca.supervisionOffice location
+		left join location.organization organization
+		left join oca.supervisionLevel supervisionLevel
+		where
+			oca.officer = :userAccount	
+		order by
+			oca.dateRange.endDate
+	]]></query>
+</hibernate-mapping>

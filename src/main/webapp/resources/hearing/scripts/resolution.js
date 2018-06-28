@@ -35,7 +35,7 @@ window.onload = function() {
 		dispositionInputs[i].onchange = function(event){
 			if(event.target.name.indexOf('[') > -1){
 				var j = event.target.name.split('[')[1].split(']')[0];
-				if(event.target.value == "GUILTY"){
+				if(event.target.value == "GUILTY" || event.target.value == "REDUCED"){
 					document.getElementById("sanction"+j).className = document.getElementById("sanction"+j).className.replace(/\bhidden\b/g, "");
 				}
 				else{
@@ -45,7 +45,7 @@ window.onload = function() {
 			}
 			else{
 				var j = 0;
-				if(event.target.value == "GUILTY"){
+				if(event.target.value == "GUILTY" || event.target.value == "REDUCED"){
 					document.getElementById("sanction"+j).className = document.getElementById("sanction"+j).className.replace(/\bhidden\b/g, "");
 				}
 				else{

@@ -35,7 +35,9 @@ import omis.supervision.domain.PlacementTerm;
 import omis.supervision.domain.PlacementTermChangeReason;
 import omis.supervision.domain.SupervisoryOrganization;
 import omis.supervision.domain.SupervisoryOrganizationTerm;
+import omis.supervision.exception.CorrectionalStatusExistsException;
 import omis.supervision.exception.CorrectionalStatusTermConflictException;
+import omis.supervision.exception.CorrectionalStatusTermExistsException;
 import omis.supervision.exception.PlacementTermConflictException;
 import omis.supervision.exception.PlacementTermExistsException;
 import omis.supervision.exception.SupervisoryOrganizationTermConflictException;
@@ -1202,10 +1204,7 @@ public class PlacementTermServiceCreateTests
 	 * correctional status term exists 
 	 * @throws PlacementTermExistsException if placement term exists 
 	 */
-	// Disabled as correctional status (and supervisory organization) check
-	// is before placement term check in implementation - SA
-	@Test(expectedExceptions = {PlacementTermConflictException.class},
-			enabled = true)
+	@Test(expectedExceptions = {PlacementTermConflictException.class})
 	public void testPlacementTermConflictWithStartAndEndOverlap()
 			throws DuplicateEntityFoundException,
 				PlacementTermExistsException,
@@ -1281,6 +1280,101 @@ public class PlacementTermServiceCreateTests
 				.create("Prerelease", "PRER", null);
 		this.placementTermService.create(
 				blofeld, prerelease, alt, altRange, null, null);
+	}
+	
+	/**
+	 * Tests that future placement terms conflict with new placement term
+	 * with {@code null} end date.
+	 * 
+	 * @throws CorrectionalStatusExistsException if correctional status exists
+	 * @throws CorrectionalStatusTermExistsException if correctional status
+	 * term exists
+	 * @throws PlacementTermExistsException if placement term exists
+	 * @throws CorrectionalStatusTermConflictException if conflicting
+	 * correctional status terms exist
+	 * @throws SupervisoryOrganizationTermConflictException if conflicting
+	 * supervisory organization terms exist
+	 * @throws PlacementTermConflictException if conflicting placement terms
+	 * exist - asserted
+	 */
+	@Test(expectedExceptions = {PlacementTermConflictException.class})
+	public void testPlacementTermConflictExistingAfterWithNullEndDate()
+			throws CorrectionalStatusExistsException,
+				CorrectionalStatusTermExistsException,
+				PlacementTermExistsException,
+				CorrectionalStatusTermConflictException,
+				SupervisoryOrganizationTermConflictException,
+				PlacementTermConflictException {
+		
+		// Arrangements - placed Blofeld on parole
+		Offender blofeld = this.offenderDelegate.createWithoutIdentity(
+				"Blofeld", "Ernst", "Stavro", null);
+		DateRange paroleRange = new DateRange(
+				this.parseDateText("02/02/2002"),
+				this.parseDateText("04/04/2004"));
+		CorrectionalStatus parole = this.correctionalStatusDelegate
+				.create("Parole", "PAR", false, (short) 1, true);
+		CorrectionalStatusTerm paroleTerm = this.correctionalStatusTermDelegate
+				.create(blofeld, paroleRange, parole);
+		this.placementTermDelegate.create(
+				blofeld, paroleRange, null, paroleTerm, null, null, false);
+		
+		// Action - places Blofeld securely with a null end date before the
+		// existing parole placement
+		DateRange secureRange = new DateRange(
+				this.parseDateText("01/01/2001"), null);
+		CorrectionalStatus secure = this.correctionalStatusDelegate
+				.create("Secure", "SEC", true, (short) 1, true);
+		this.placementTermService.create(blofeld, null, secure, secureRange,
+				null, null);
+	}
+	
+	/**
+	 * Tests that past placement terms conflict with new placement term with
+	 * {@code null} start date.
+	 * 
+	 * @throws CorrectionalStatusExistsException if correctional status exists
+	 * @throws CorrectionalStatusTermExistsException if correctional status
+	 * term exists
+	 * @throws PlacementTermExistsException if placement term exists
+	 * @throws CorrectionalStatusTermConflictException if conflicting
+	 * correctional status terms exist
+	 * @throws SupervisoryOrganizationTermConflictException if conflicting
+	 * supervisory organization terms exist
+	 * @throws PlacementTermConflictException if conflicting placement terms
+	 * exist - asserted
+	 */
+	@Test(expectedExceptions = {PlacementTermConflictException.class})
+	public void testPlacementTermConflictExistingBeforeWithNullStartDate()
+				throws CorrectionalStatusExistsException,
+					CorrectionalStatusTermExistsException,
+					PlacementTermExistsException,
+					CorrectionalStatusTermConflictException,
+					SupervisoryOrganizationTermConflictException,
+					PlacementTermConflictException {
+		
+		// Arrangements - places Blofeld securely
+		Offender blofeld = this.offenderDelegate.createWithoutIdentity(
+				"Blofeld", "Ernst", "Stavro", null);
+		DateRange secureRange = new DateRange(
+				this.parseDateText("01/01/2001"),
+				this.parseDateText("02/02/2002"));
+		CorrectionalStatus secure = this.correctionalStatusDelegate
+				.create("Secure", "SEC", true, (short) 1, true);
+		CorrectionalStatusTerm secureTerm
+			= this.correctionalStatusTermDelegate
+				.create(blofeld, secureRange, secure);
+		this.placementTermDelegate.create(
+				blofeld, secureRange, null, secureTerm, null, null, false);
+		
+		// Action - places Blofeld on parole with a null start date after the
+		// existing secure placement
+		DateRange paroleRange = new DateRange(
+				null, this.parseDateText("03/03/2003"));
+		CorrectionalStatus parole = this.correctionalStatusDelegate
+				.create("Parole", "PAR", false, (short) 1, true);
+		this.placementTermService.create(blofeld, null, parole, paroleRange,
+				null, null);
 	}
 	
 	/* Helper methods. */

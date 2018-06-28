@@ -62,4 +62,20 @@ public interface VictimAssociationDao
 	 * @return victim association
 	 */
 	VictimAssociation findOnDate(Relationship relationship, Date date);
+
+	/**
+	 * Removes victim associations by relationship.
+	 * 
+	 * @param relationship relationship
+	 * @return number of victim associations removed by relationship
+	 */
+	int removeByRelationship(Relationship relationship);
+
+	/**
+	 * Returns count of victim associations by relationship.
+	 * 
+	 * @param relationship relationship
+	 * @return count of victim associations by relationship
+	 */
+	long countByRelationship(Relationship relationship);
 }

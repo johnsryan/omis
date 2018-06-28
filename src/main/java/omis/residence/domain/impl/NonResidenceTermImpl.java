@@ -219,7 +219,44 @@ public class NonResidenceTermImpl
 		}
 		if (!this.getStatus().equals(that.getStatus())) {
 			return false;
-		}	
+		}
+		if (this.getDateRange() != null) {
+			if (that.getDateRange() != null) {	
+				if (this.getDateRange().getStartDate() != null) {
+					if (!this.getDateRange().getStartDate().equals(
+							that.getDateRange().getStartDate())) {
+						return false;
+					}
+				} else if (that.getDateRange().getStartDate() != null) {
+					return false;
+				}
+			} else {
+				return false;
+			}
+		} else if (that.getDateRange() != null) {
+			return false;
+		}
+		if (this.getLocation() != null) {
+			if (!this.getLocation().equals(that.getLocation())) {
+				return false;
+			}
+		} else if (that.getLocation() != null) {
+			return false;
+		}		
+		if (this.getState() != null) {
+			if (!this.getState().equals(that.getState())) {
+				return false;
+			}
+		} else if (that.getState() != null) {
+			return false;
+		}
+		if (this.getCity() != null) {
+			if (!this.getCity().equals(that.getCity())) {
+			return false;
+			}
+		} else if (that.getCity() != null) {
+			return false;
+		}
 		return true;
 	}
 	/** {@inheritDoc} */
@@ -231,11 +268,26 @@ public class NonResidenceTermImpl
 		if (this.getStatus() == null) {
 			throw new IllegalStateException("Status required.");
 		}
+		
 		int hashCode = 14;
 		
 		hashCode = 29 * hashCode + this.getPerson().hashCode();
 		hashCode = 29 * hashCode + this.getStatus().hashCode();
-		
+		if (this.getDateRange() != null) {
+			if (this.getDateRange().getStartDate() != null) {
+				hashCode = 29 * hashCode + this.getDateRange()
+						.getStartDate().hashCode();
+			}
+		}
+		if (this.getLocation() != null) {
+			hashCode = 29 * hashCode + this.getLocation().hashCode();
+		}
+		if (this.getState() != null) {
+			hashCode = 29 * hashCode + this.getState().hashCode();
+		}
+		if (this.getCity() != null) {
+			hashCode = 29 * hashCode + this.getCity().hashCode();
+		}
 		return hashCode;
 	}
 }

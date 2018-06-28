@@ -23,13 +23,15 @@ import org.hibernate.SessionFactory;
 
 import omis.task.report.TaskReportService;
 import omis.task.report.TaskSummary;
+import omis.user.domain.UserAccount;
 
 /**
  * Hibernate implementation of report service for tasks.
  *
  * @author Stephen Abson
  * @author Josh Divine
- * @version 0.0.2 (Feb 14, 2018)
+ * @author Annie Wahl
+ * @version 0.0.3 (June 21, 2018)
  * @since OMIS 3.0
  */
 public class TaskReportServiceHibernateImpl
@@ -40,9 +42,15 @@ public class TaskReportServiceHibernateImpl
 	private static final String SUMMARIZE_BY_SOURCE_ACCOUNT_USERNAME_QUERY_NAME
 		= "summarizeTasksBySourceAccountUsername";
 	
+	private static final String FIND_UNINVOKED_COUNT_BY_ASSIGNEE_QUERY_NAME =
+			"findUninvokedTaskCountByAssigneeUserAccount";
+	
 	/* Parameters. */
 	
 	private static final String USERNAME_PARAM_NAME = "username";
+	
+	private static final String ASSIGNEE_ACCOUNT_PARAM_NAME =
+			"assigneeAccount";
 	
 	/* Resources. */
 	
@@ -74,5 +82,17 @@ public class TaskReportServiceHibernateImpl
 				.setReadOnly(true)
 				.list();
 		return taskSummaries;
+	}
+
+	/**{@inheritDoc} */
+	@Override
+	public Long findUninvokedTaskCountByAssigneeUserAccount(
+			final UserAccount assigneeAccount) {
+		return (Long) this.sessionFactory.getCurrentSession()
+				.getNamedQuery(
+						FIND_UNINVOKED_COUNT_BY_ASSIGNEE_QUERY_NAME)
+				.setParameter(ASSIGNEE_ACCOUNT_PARAM_NAME, assigneeAccount)
+				.setReadOnly(true)
+				.uniqueResult();
 	}
 }

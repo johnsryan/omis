@@ -18,6 +18,7 @@
 package omis.hearing.service.delegate;
 
 import java.util.List;
+
 import omis.audit.AuditComponentRetriever;
 import omis.audit.domain.CreationSignature;
 import omis.audit.domain.UpdateSignature;
@@ -27,6 +28,7 @@ import omis.hearing.domain.Hearing;
 import omis.hearing.domain.Infraction;
 import omis.hearing.domain.InfractionPlea;
 import omis.hearing.domain.component.Resolution;
+import omis.hearing.exception.InfractionExistsException;
 import omis.instance.factory.InstanceFactory;
 import omis.violationevent.domain.ConditionViolation;
 import omis.violationevent.domain.DisciplinaryCodeViolation;
@@ -42,7 +44,7 @@ import omis.violationevent.domain.DisciplinaryCodeViolation;
 public class InfractionDelegate {
 	
 	
-	private static final String DUPLICATE_ENTITY_FOUND_MSG =
+	private static final String INFRACTION_EXISTS_FOUND_MSG =
 			"Infraction already exists with given Hearing, ConditionViolation, "
 			+ "and DisciplinaryCodeViolation.";
 	
@@ -85,10 +87,10 @@ public class InfractionDelegate {
 			final ConditionViolation conditionViolation,
 			final DisciplinaryCodeViolation disciplinaryCodeViolation,
 			final Resolution resolution, final InfractionPlea plea)
-					throws DuplicateEntityFoundException {
+					throws InfractionExistsException {
 		if (this.infractionDao.find(hearing, conditionViolation,
 				disciplinaryCodeViolation) != null) {
-			throw new DuplicateEntityFoundException(DUPLICATE_ENTITY_FOUND_MSG);
+			throw new InfractionExistsException(INFRACTION_EXISTS_FOUND_MSG);
 		}
 		
 		Infraction infraction = 
@@ -127,11 +129,11 @@ public class InfractionDelegate {
 			final ConditionViolation conditionViolation,
 			final DisciplinaryCodeViolation disciplinaryCodeViolation,
 			final Resolution resolution, final InfractionPlea plea)
-					throws DuplicateEntityFoundException {
+					throws InfractionExistsException {
 		if (this.infractionDao.findExcluding(infraction.getHearing(),
 				conditionViolation, disciplinaryCodeViolation,
 				infraction) != null) {
-			throw new DuplicateEntityFoundException(DUPLICATE_ENTITY_FOUND_MSG);
+			throw new InfractionExistsException(INFRACTION_EXISTS_FOUND_MSG);
 		}
 		
 		infraction.setConditionViolation(conditionViolation);

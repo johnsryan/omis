@@ -10,7 +10,8 @@ import omis.user.domain.UserAccount;
  * Implementation of task assignment.
  *
  * @author Stephen Abson
- * @version 0.0.1
+ * @author Annie Wahl
+ * @version 0.0.2
  * @since OMIS 3.0
  */
 public class TaskAssignmentImpl
@@ -25,6 +26,8 @@ public class TaskAssignmentImpl
 	private UserAccount assigneeAccount;
 	
 	private Date assignedDate;
+	
+	private Date lastInvokedDate;
 	
 	/** Instantiates implementation of task assignment. */
 	public TaskAssignmentImpl() {
@@ -78,7 +81,19 @@ public class TaskAssignmentImpl
 	public Date getAssignedDate() {
 		return this.assignedDate;
 	}
-
+	
+	/**{@inheritDoc} */
+	@Override
+	public Date getLastInvokedDate() {
+		return this.lastInvokedDate;
+	}
+	
+	/**{@inheritDoc} */
+	@Override
+	public void setLastInvokedDate(final Date lastInvokedDate) {
+		this.lastInvokedDate = lastInvokedDate;
+	}
+	
 	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object obj) {

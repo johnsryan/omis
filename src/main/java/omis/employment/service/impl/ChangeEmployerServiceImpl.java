@@ -4,22 +4,28 @@ import java.util.List;
 
 import omis.address.domain.Address;
 import omis.address.domain.ZipCode;
+import omis.address.exception.AddressExistsException;
+import omis.address.exception.ZipCodeExistsException;
 import omis.address.service.delegate.AddressDelegate;
 import omis.address.service.delegate.ZipCodeDelegate;
 import omis.country.domain.Country;
 import omis.country.service.delegate.CountryDelegate;
 import omis.employment.domain.Employer;
 import omis.employment.domain.EmploymentTerm;
+import omis.employment.exception.EmployerExistsException;
+import omis.employment.exception.EmploymentExistsException;
 import omis.employment.service.ChangeEmployerService;
 import omis.employment.service.delegate.EmployerDelegate;
 import omis.employment.service.delegate.EmploymentTermDelegate;
-import omis.exception.DuplicateEntityFoundException;
 import omis.location.domain.Location;
+import omis.location.exception.LocationExistsException;
 import omis.location.service.delegate.LocationDelegate;
 import omis.organization.domain.Organization;
+import omis.organization.exception.OrganizationExistsException;
 import omis.organization.service.delegate.OrganizationDelegate;
 import omis.region.domain.City;
 import omis.region.domain.State;
+import omis.region.exception.CityExistsException;
 import omis.region.service.delegate.CityDelegate;
 import omis.region.service.delegate.StateDelegate;
 
@@ -83,16 +89,19 @@ public class ChangeEmployerServiceImpl implements ChangeEmployerService {
 	/** {@inheritDoc} */
 	@Override
 	public EmploymentTerm change(final EmploymentTerm employmentTerm, 
-		final Employer employer) throws DuplicateEntityFoundException{
+		final Employer employer) throws EmploymentExistsException{
 		return this.employmentTermDelegate.change(employmentTerm, employer);
 	}
 	
-	/** {@inheritDoc} */
+	/** {@inheritDoc} 
+	 * @throws OrganizationExistsException 
+	 * @throws LocationExistsException */
 	@Override
 	public Employer createEmployer(final String name, final Long telephoneNumber, 
-		final Address address) throws DuplicateEntityFoundException {
+		final Address address) throws EmployerExistsException, 
+			OrganizationExistsException, LocationExistsException {
 		if (this.employerDelegate.findByNameAndAddress(name, address) != null) {
-			throw new DuplicateEntityFoundException("Employer Already Exist");
+			throw new EmployerExistsException("Employer Already Exist");
 		}
 		Organization organization = this.organizationDelegate.findByName(name);
 		if(organization == null){
@@ -106,7 +115,7 @@ public class ChangeEmployerServiceImpl implements ChangeEmployerService {
 	/** {@inheritDoc} */
 	@Override
 	public Address createAddress(final String value, final ZipCode zipCode) 
-		throws DuplicateEntityFoundException {
+		throws AddressExistsException {
 		return this.addressDelegate.findOrCreate(value, null, null, null, 
 			zipCode);
 	}
@@ -142,14 +151,14 @@ public class ChangeEmployerServiceImpl implements ChangeEmployerService {
 	/** {@inheritDoc} */
 	@Override
 	public City createCity(final String name, final State state, 
-		final Country country) throws DuplicateEntityFoundException{
+		final Country country) throws CityExistsException{
 		return this.cityDelegate.create(name, true, state, country);
 	}
 	
 	/** {@inheritDoc} */
 	@Override
 	public ZipCode createZipCode(final String value, final String extension, 
-		final City city) throws DuplicateEntityFoundException{
+		final City city) throws ZipCodeExistsException{
 		return this.zipCodeDelegate.create(city, value, extension, true);
 	}
 	
@@ -170,5 +179,5 @@ public class ChangeEmployerServiceImpl implements ChangeEmployerService {
 	public List<Organization> findOrganizationsByPartialName(
 			final String partialName) {
 		return this.organizationDelegate.findByPartialName(partialName);
-	};
+	}
 }

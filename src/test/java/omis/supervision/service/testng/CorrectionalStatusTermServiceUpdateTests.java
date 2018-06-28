@@ -27,7 +27,6 @@ import org.testng.annotations.Test;
 import omis.beans.factory.spring.CustomDateEditorFactory;
 import omis.datatype.DateRange;
 import omis.exception.DateRangeOutOfBoundsException;
-import omis.exception.DuplicateEntityFoundException;
 import omis.offender.domain.Offender;
 import omis.offender.service.delegate.OffenderDelegate;
 import omis.supervision.domain.CorrectionalStatus;
@@ -35,7 +34,13 @@ import omis.supervision.domain.CorrectionalStatusTerm;
 import omis.supervision.domain.PlacementTermChangeReason;
 import omis.supervision.domain.SupervisoryOrganization;
 import omis.supervision.domain.SupervisoryOrganizationTerm;
+import omis.supervision.exception.CorrectionalStatusExistsException;
 import omis.supervision.exception.CorrectionalStatusTermConflictException;
+import omis.supervision.exception.CorrectionalStatusTermExistsException;
+import omis.supervision.exception.PlacementTermChangeReasonExistsException;
+import omis.supervision.exception.PlacementTermExistsException;
+import omis.supervision.exception.SupervisoryOrganizationExistsException;
+import omis.supervision.exception.SupervisoryOrganizationTermExistsException;
 import omis.supervision.service.CorrectionalStatusTermService;
 import omis.supervision.service.delegate.CorrectionalStatusDelegate;
 import omis.supervision.service.delegate.CorrectionalStatusTermDelegate;
@@ -50,6 +55,7 @@ import omis.util.PropertyValueAsserter;
  * Tests method to update correctional status terms.
  *
  * @author Josh Divine
+ * @author Stephen Abson
  * @version 0.0.1
  * @since OMIS 3.0
  */
@@ -105,16 +111,21 @@ public class CorrectionalStatusTermServiceUpdateTests
 	/**
 	 * Tests the update of a correctional status term.
 	 * 
-	 * @throws DuplicateEntityFoundException thrown if entity already exists
+	 * @throws CorrectionalStatusTermExistsException thrown if correctional
+	 * status exists
 	 * @throws CorrectionalStatusTermConflictException thrown if date range 
 	 * conflicts with existing date ranges
 	 * @throws DateRangeOutOfBoundsException thrown if existing placement terms 
 	 * are outside the updated date range
+	 * @throws CorrectionalStatusExistsException thrown if correctional status
+	 * exists
 	 */
 	@Test
-	public void testUpdate() throws DuplicateEntityFoundException, 
-			CorrectionalStatusTermConflictException, 
-			DateRangeOutOfBoundsException {
+	public void testUpdate()
+			throws CorrectionalStatusTermExistsException, 
+				CorrectionalStatusTermConflictException, 
+				DateRangeOutOfBoundsException,
+				CorrectionalStatusExistsException {
 		// Arrangements
 		Offender offender = this.offenderDelegate.createWithoutIdentity("Smith",
 				"John", "Bob", null);
@@ -141,19 +152,23 @@ public class CorrectionalStatusTermServiceUpdateTests
 	}
 	
 	/**
-	 * Tests the {@code DuplicateEntityFoundException} is thrown.
+	 * Tests the {@code CorrectionalStatusTermExistsException} is thrown.
 	 * 
-	 * @throws DuplicateEntityFoundException thrown if entity already exists
+	 * @throws CorrectionalStatusTermExistsException thrown if correctional
+	 * status term exists - asserted
 	 * @throws CorrectionalStatusTermConflictException thrown if date range 
 	 * conflicts with existing date ranges
 	 * @throws DateRangeOutOfBoundsException thrown if existing placement terms 
 	 * are outside the updated date range
+	 * @throws CorrectionalStatusExistsException thrown if correctional status
+	 * exists
 	 */
-	@Test(expectedExceptions = {DuplicateEntityFoundException.class})
+	@Test(expectedExceptions = {CorrectionalStatusTermExistsException.class})
 	public void testDuplicateEntityFoundException() 
-			throws DuplicateEntityFoundException, 
-			CorrectionalStatusTermConflictException, 
-			DateRangeOutOfBoundsException {
+			throws CorrectionalStatusTermExistsException, 
+				CorrectionalStatusTermConflictException, 
+				DateRangeOutOfBoundsException,
+				CorrectionalStatusExistsException {
 		// Arrangements
 		Offender offender = this.offenderDelegate.createWithoutIdentity("Smith",
 				"John", "Bob", null);
@@ -179,17 +194,22 @@ public class CorrectionalStatusTermServiceUpdateTests
 	/**
 	 * Tests the {@code CorrectionalStatusTermConflictException} is thrown.
 	 * 
-	 * @throws DuplicateEntityFoundException thrown if entity already exists
+	 * @throws CorrectionalStatusTermExistsException thrown if correctional
+	 * status term exists
 	 * @throws CorrectionalStatusTermConflictException thrown if date range 
-	 * conflicts with existing date ranges
+	 * conflicts with existing date ranges - asserted
 	 * @throws DateRangeOutOfBoundsException thrown if existing placement terms 
 	 * are outside the updated date range
+	 * @throws CorrectionalStatusExistsException thrown if correctional status
+	 * exists
+	 * @throw CorrectionalStatusExistsException thrown if correctional status
+	 * exists 
 	 */
 	@Test(expectedExceptions = {CorrectionalStatusTermConflictException.class})
 	public void testCorrectionalStatusTermConflictException() 
-			throws DuplicateEntityFoundException, 
-			CorrectionalStatusTermConflictException, 
-			DateRangeOutOfBoundsException {
+			throws CorrectionalStatusTermExistsException, 
+				CorrectionalStatusTermConflictException, 
+				DateRangeOutOfBoundsException, CorrectionalStatusExistsException {
 		// Arrangements
 		Offender offender = this.offenderDelegate.createWithoutIdentity("Smith",
 				"John", "Bob", null);
@@ -215,17 +235,32 @@ public class CorrectionalStatusTermServiceUpdateTests
 	/**
 	 * Tests the {@code DateRangeOutOfBoundsException} is thrown.
 	 * 
-	 * @throws DuplicateEntityFoundException thrown if entity already exists
+	 * @throws CorrectionalStatusTermExistsException thrown if correctional
+	 * status term exists
 	 * @throws CorrectionalStatusTermConflictException thrown if date range 
 	 * conflicts with existing date ranges
 	 * @throws DateRangeOutOfBoundsException thrown if existing placement terms 
-	 * are outside the updated date range
+	 * are outside the updated date range - asserted
+	 * @throws CorrectionalStatusExistsException thrown if correctional status
+	 * exists
+	 * @throws SupervisoryOrganizationExistsException if supervisory
+	 * organization exists
+	 * @throws SupervisoryOrganizationTermExistsException if supervisory
+	 * organization term exists
+	 * @throws PlacementTermChangeReasonExistsException if placement term
+	 * change reason exists
+	 * @throws PlacementTermExistsException if placement term exists
 	 */
 	@Test(expectedExceptions = {DateRangeOutOfBoundsException.class})
 	public void testDateRangeOutOfBoundsException() 
-			throws DuplicateEntityFoundException, 
-			CorrectionalStatusTermConflictException, 
-			DateRangeOutOfBoundsException {
+			throws CorrectionalStatusTermExistsException, 
+				CorrectionalStatusTermConflictException, 
+				DateRangeOutOfBoundsException,
+				CorrectionalStatusExistsException,
+				SupervisoryOrganizationExistsException,
+				SupervisoryOrganizationTermExistsException,
+				PlacementTermChangeReasonExistsException,
+				PlacementTermExistsException {
 		// Arrangements
 		Offender offender = this.offenderDelegate.createWithoutIdentity("Smith",
 				"John", "Bob", null);

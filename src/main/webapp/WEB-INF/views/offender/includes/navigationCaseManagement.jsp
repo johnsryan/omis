@@ -113,5 +113,16 @@
 			</div>
 		</div>
 	</c:if>	
+	<c:if test="${offenderProfileItemsProperties.travelPermitProfileItemEnabled}">
+		<div class="foregroundUltraLight navItemContainer hoverable">
+			<div class="navItem">
+				<a href="${pageContext.request.contextPath}/travelPermit/list.html?offender=${offenderSummary.id}">
+					<span>
+						<fmt:message key="travelPermitLabel"/>
+					</span>
+				</a>
+			</div>
+		</div>
+	</c:if>	
 </div>
 </fmt:bundle>

@@ -9,6 +9,7 @@ import omis.audit.domain.UpdateSignature;
 import omis.employment.dao.EmploymentNoteDao;
 import omis.employment.domain.EmploymentNote;
 import omis.employment.domain.EmploymentTerm;
+import omis.employment.exception.EmploymentNoteExistsException;
 import omis.exception.DuplicateEntityFoundException;
 import omis.instance.factory.InstanceFactory;
 
@@ -60,12 +61,12 @@ public class EmploymentNoteDelegate {
 	 * @param date date
 	 * @param value value
 	 * @return employment note 
-	 * @throws DuplicateEntityFoundException if duplicate entity exists 
+	 * @throws EmploymentNoteExistsException if duplicate entity exists 
 	 */
 	public EmploymentNote create(final EmploymentTerm term, final Date date, 
-			final String value) throws DuplicateEntityFoundException {
+			final String value) throws EmploymentNoteExistsException {
 		if (this.employmentNoteDao.find(term, date, value) != null) {
-			throw new DuplicateEntityFoundException(
+			throw new EmploymentNoteExistsException(
 					"Duplicate employment note found.");
 		}
 		EmploymentNote employmentNote 
@@ -85,13 +86,13 @@ public class EmploymentNoteDelegate {
 	 * @param date date
 	 * @param value value
 	 * @return employment note 
-	 * @throws DuplicateEntityFoundException if duplicate entity exists 
+	 * @throws EmploymentNoteExistsException if duplicate entity exists 
 	 */
 	public EmploymentNote update(final EmploymentNote note, final Date date, 
-			final String value) throws DuplicateEntityFoundException {
+			final String value) throws EmploymentNoteExistsException {
 		if (this.employmentNoteDao.findExcluding(note.getEmploymentTerm(), date, 
 				value, note) != null) {
-			throw new DuplicateEntityFoundException(
+			throw new EmploymentNoteExistsException(
 					"Duplicate employment note found.");
 		}
 		this.populateEmploymentNote(note, date, value);

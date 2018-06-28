@@ -17,7 +17,7 @@
 	<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/common/style/home.css?VERSION=1"/>
 	<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/offender/style/advancedOffenderSearch.css?VERSION=1"/>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/offender/scripts/JQuery/jquery.omis.offenderSearch.js?VERSION=1"></script>	
-	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/offender/scripts/offenderSearch.js?VERSION=1"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/offender/scripts/offenderSearch.js?VERSION=1.1"></script>
 </head>		
 <body>	
 	<h1>			

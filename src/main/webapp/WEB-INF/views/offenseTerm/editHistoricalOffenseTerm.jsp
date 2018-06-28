@@ -54,7 +54,7 @@
 	<jsp:include page="/WEB-INF/views/common/includes/toolsResources.jsp"/>
 	<jsp:include page="/WEB-INF/views/common/includes/searchResources.jsp"/>
 	<jsp:include page="/WEB-INF/views/common/includes/contactSummaryResources.jsp"/>
-	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/offenseTerm/scripts/historicalOffenseTerm.js"> </script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/offenseTerm/scripts/historicalOffenseTerm.js?VERSION=1"> </script>
 </head>
 <body>
 	<c:choose>

@@ -19,7 +19,7 @@ import omis.hearing.web.form.UserAttendanceItem;
  * 
  * @author Annie Wahl 
  * @author Josh Divine
- * @version 0.1.3 (May 3, 2018)
+ * @version 0.1.4 (Jun 5, 2018)
  * @since OMIS 3.0
  */
 public class ResolutionFormValidator implements Validator {
@@ -122,7 +122,9 @@ public class ResolutionFormValidator implements Validator {
 							"violationItems[" + i + "].disposition",
 							DISPOSITION_REQUIRED_MSG_KEY);
 					if (!(DispositionCategory.GUILTY.equals(
-							form.getViolationItems().get(i).getDisposition()))
+							form.getViolationItems().get(i).getDisposition()) || 
+							DispositionCategory.REDUCED.equals(
+								form.getViolationItems().get(i).getDisposition()))
 							&& (form.getViolationItems().get(i).getSanction()
 							!= null
 							&& !form.getViolationItems().get(i).getSanction()
@@ -133,8 +135,10 @@ public class ResolutionFormValidator implements Validator {
 				case INFORMAL:
 					if ((ResolutionClassificationCategory.FORMAL.equals(
 							form.getResolutionCategory())
-							&& DispositionCategory.GUILTY.equals(
-							form.getViolationItems().get(i).getDisposition()))
+							&& (DispositionCategory.GUILTY.equals(
+							form.getViolationItems().get(i).getDisposition())
+							|| DispositionCategory.REDUCED.equals(
+							form.getViolationItems().get(i).getDisposition())))
 							|| ResolutionClassificationCategory.INFORMAL.equals(
 							form.getResolutionCategory())) {
 						ValidationUtils.rejectIfEmptyOrWhitespace(errors,
@@ -174,7 +178,9 @@ public class ResolutionFormValidator implements Validator {
 							"violationItem.disposition",
 							DISPOSITION_REQUIRED_MSG_KEY);
 					if (!(DispositionCategory.GUILTY.equals(
-							form.getViolationItem().getDisposition()))
+							form.getViolationItem().getDisposition()) ||
+							DispositionCategory.REDUCED.equals(
+									form.getViolationItem().getDisposition()))
 							&& (form.getViolationItem().getSanction() != null
 									&& !form.getViolationItem().getSanction()
 									.equals(""))) {
@@ -185,8 +191,10 @@ public class ResolutionFormValidator implements Validator {
 					//validate sanction
 					if ((ResolutionClassificationCategory.FORMAL.equals(
 							form.getResolutionCategory())
-							&& DispositionCategory.GUILTY.equals(
-									form.getViolationItem().getDisposition()))
+							&& (DispositionCategory.GUILTY.equals(
+									form.getViolationItem().getDisposition()) || 
+								DispositionCategory.REDUCED.equals(
+									form.getViolationItem().getDisposition())))
 							|| ResolutionClassificationCategory.INFORMAL.equals(
 							form.getResolutionCategory())) {
 						ValidationUtils.rejectIfEmptyOrWhitespace(errors,

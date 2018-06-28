@@ -23,6 +23,9 @@ import java.util.List;
 
 
 
+
+
+
 import omis.address.domain.Address;
 //import omis.address.domain.Address;
 import omis.address.domain.ZipCode;
@@ -44,6 +47,7 @@ import omis.travelpermit.domain.TravelMethod;
 import omis.travelpermit.domain.TravelPermit;
 import omis.travelpermit.domain.TravelPermitNote;
 import omis.travelpermit.domain.TravelPermitPeriodicity;
+import omis.travelpermit.domain.component.OtherTravelers;
 import omis.travelpermit.domain.component.TravelDestination;
 import omis.travelpermit.domain.component.TravelPermitIssuance;
 import omis.travelpermit.domain.component.TravelTransportation;
@@ -54,6 +58,8 @@ import omis.travelpermit.service.delegate.TravelMethodDelegate;
 import omis.travelpermit.service.delegate.TravelPermitDelegate;
 import omis.travelpermit.service.delegate.TravelPermitNoteDelegate;
 import omis.travelpermit.service.delegate.TravelPermitPeriodicityDelegate;
+import omis.user.domain.UserAccount;
+import omis.user.service.delegate.UserAccountDelegate;
 
 /**
  * Implementation of service for travel permit.
@@ -72,6 +78,7 @@ public class TravelPermitServiceImpl implements TravelPermitService {
 	private final ZipCodeDelegate zipCodeDelegate;
 	private final StateDelegate stateDelegate;
 	private final CountryDelegate countryDelegate;
+	private final UserAccountDelegate userAccountDelegate;
 	
 	
 	/**
@@ -86,6 +93,7 @@ public class TravelPermitServiceImpl implements TravelPermitService {
 	 * @param zipCodeDelegate zip code delegate
 	 * @param stateDelegate state delegate
 	 * @param countryDelegate country delegate
+	 * @param userAccountDelegate user account delegate
 	 * 
 	 */
 	public TravelPermitServiceImpl(
@@ -97,7 +105,8 @@ public class TravelPermitServiceImpl implements TravelPermitService {
 			final CityDelegate cityDelegate,
 			final ZipCodeDelegate zipCodeDelegate,
 			final StateDelegate stateDelegate,
-			final CountryDelegate countryDelegate) {
+			final CountryDelegate countryDelegate,
+			final UserAccountDelegate userAccountDelegate) {
 			this.addressDelegate = addressDelegate;
 			this.cityDelegate = cityDelegate;
 			this.travelMethodDelegate = travelMethodDelegate;
@@ -108,6 +117,7 @@ public class TravelPermitServiceImpl implements TravelPermitService {
 			this.zipCodeDelegate = zipCodeDelegate;
 			this.stateDelegate = stateDelegate;
 			this.countryDelegate = countryDelegate;
+			this.userAccountDelegate = userAccountDelegate;
 	}
 
 	/** {@inheritDoc} */
@@ -118,11 +128,12 @@ public class TravelPermitServiceImpl implements TravelPermitService {
 			final TravelPermitPeriodicity periodicity,
 			final TravelPermitIssuance issuance,
 			final TravelTransportation transportation,
-			final TravelDestination destination)
+			final TravelDestination destination,
+			final OtherTravelers otherTravelers)
 				throws TravelPermitExistsException {
 		return this.travelPermitDelegate.createTravelPermit(offender,
 			periodicity, issuance, transportation, destination, dateRange,
-			purpose);
+			purpose, otherTravelers);
 	}
 
 	/** {@inheritDoc} */
@@ -131,11 +142,11 @@ public class TravelPermitServiceImpl implements TravelPermitService {
 			DateRange dateRange, Offender offender,
 			TravelPermitPeriodicity periodicity,
 			TravelPermitIssuance issuance, TravelTransportation transportation,
-			TravelDestination destination)
+			TravelDestination destination, OtherTravelers otherTravelers)
 			throws TravelPermitExistsException {
 		return this.travelPermitDelegate.updateTravelPermit(travelPermit,
 			periodicity, issuance, transportation, destination, dateRange,
-			purpose);
+			purpose, otherTravelers);
 		}
 	
 	/** {@inheritDoc} */
@@ -236,8 +247,8 @@ public class TravelPermitServiceImpl implements TravelPermitService {
 	
 	/** {@inheritDoc} */
 	@Override
-	public List<State> hasStates(final Country country){
-		return this.stateDelegate.findByCountry(country);
+	public boolean hasStates(final Country country){
+		return this.stateDelegate.countByCountry(country) > 0;
 	}
 	
 	/** {@inheritDoc} */
@@ -248,7 +259,7 @@ public class TravelPermitServiceImpl implements TravelPermitService {
 	
 	/** {@inheritDoc} */
 	@Override
-	public List<City> findCitiesByCountry(Country country){
+	public List<City> findCitiesByCountry(final Country country){
 		return this.cityDelegate.findByCountry(country);
 	}
 	
@@ -262,5 +273,23 @@ public class TravelPermitServiceImpl implements TravelPermitService {
 	@Override
 	public Country findHomeCountry(){
 		return this.stateDelegate.findHomeState().getCountry();
+	}
+	
+	/** {@inheritDoc} */
+	@Override
+	public List<State> findStatesByCountry(final Country country){
+		return this.stateDelegate.findByCountry(country);
+	}
+	
+	/** {@inheritDoc} */
+	@Override
+	public List<UserAccount> searchUserAccounts(final String query){
+		return this.userAccountDelegate.search(query);
+	}
+	
+	/** {@inheritDoc} */
+	@Override
+	public List<City> findCitiesByCountryWithoutState(final Country country){
+		return this.cityDelegate.findByCountryWithoutState(country);
 	}
 }

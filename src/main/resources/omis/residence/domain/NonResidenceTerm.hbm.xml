@@ -50,9 +50,17 @@
 		omis.residence.domain.NonResidenceTerm nonResidenceTerm
 	where
 		nonResidenceTerm.person = :person
+	and ((:location is not null and nonResidenceTerm.location = :location)
+	or (:location is null and nonResidenceTerm.location is null)
+		and (:state is null and nonResidenceTerm.state is null or nonResidenceTerm.state = :state)
+		and (:city is null and nonResidenceTerm.city is null or nonResidenceTerm.city = :city))
+	and (nonResidenceTerm.dateRange.startDate = :startDate
+		or
+		(nonResidenceTerm.dateRange.startDate is null and :startDate is null))
 	and 
-		(nonResidenceTerm.location = :location
-		 or nonResidenceTerm.location is null and :location is null)
+		(nonResidenceTerm.dateRange.endDate = :endDate
+		or
+		(nonResidenceTerm.dateRange.endDate is null and :endDate is null))
 	and 
 		nonResidenceTerm.status = :status
 	and nonResidenceTerm != :nonResidenceTerm
@@ -64,9 +72,17 @@
 		omis.residence.domain.NonResidenceTerm nonResidenceTerm
 	where
 		nonResidenceTerm.person = :person	
+	and ((:location is not null and nonResidenceTerm.location = :location)
+	or (:location is null and nonResidenceTerm.location is null)
+		and (:state is null and nonResidenceTerm.state is null or nonResidenceTerm.state = :state)
+		and (:city is null and nonResidenceTerm.city is null or nonResidenceTerm.city = :city))
+	and (nonResidenceTerm.dateRange.startDate = :startDate
+		or
+		(nonResidenceTerm.dateRange.startDate is null and :startDate is null))
 	and 
-		(nonResidenceTerm.location = :location
-		 or nonResidenceTerm.location is null and :location is null)
+		(nonResidenceTerm.dateRange.endDate = :endDate
+		or
+		(nonResidenceTerm.dateRange.endDate is null and :endDate is null))	
 	and 
 		nonResidenceTerm.status = :status
 	]]></query>	

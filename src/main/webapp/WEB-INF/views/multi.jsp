@@ -45,6 +45,9 @@
 						<sec:authorize access="hasRole('ADMIN') or hasRole('NOCR_HOME_VIEW')">
 							<a id="reportHomeLink" class="reportHomeLink iconLink" href='${omis:getSystemProperty("jasperServerNocr")}' title="<fmt:message key='reportHomeLink'/>"></a>
 						</sec:authorize>
+						<sec:authorize access="hasRole('ADMIN') or hasRole('TASK_LIST')">
+							<a id="taskListLink" class="taskListLink iconLink" href="${pageContext.request.contextPath}/task/list.html" title="<fmt:message key='taskLink'/>"></a>
+						</sec:authorize>
 						<c:if test="${not empty helpLinkPropertyHolder.propertyValue}">
 							<a id="applicationHelpLink" class="applicationHelpLink" target="_blank" href="${helpLinkPropertyHolder.propertyValue}" title="<fmt:message key='helpLink'/>"></a>
 						</c:if>

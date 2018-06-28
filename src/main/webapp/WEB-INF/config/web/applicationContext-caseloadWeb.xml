@@ -1,4 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+ - OMIS - Offender Management Information System
+ - Copyright (C) 2011 - 2017 State of Montana
+ -
+ - This program is free software: you can redistribute it and/or modify
+ - it under the terms of the GNU General Public License as published by
+ - the Free Software Foundation, either version 3 of the License, or
+ - (at your option) any later version.
+ -
+ - This program is distributed in the hope that it will be useful,
+ - but WITHOUT ANY WARRANTY; without even the implied warranty of
+ - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ - GNU General Public License for more details.
+ -
+ - You should have received a copy of the GNU General Public License
+ - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+
+<!--
+  - Case load web application configuration file.
+  -
+  - Author: Josh Divine
+  -->
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:context="http://www.springframework.org/schema/context"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -12,17 +35,8 @@
         http://www.springframework.org/schema/aop/spring-aop-3.1.xsd">
 
 	<!-- Validators -->   
-	<bean id="caseloadFormValidator"
-		class="omis.caseload.web.validator.CaseloadFormValidator"/>
-		
-	<bean id="caseloadOffenderContactFormValidator"
-		class="omis.caseload.web.validator.CaseloadOffenderContactFormValidator"/>	
-		
-	<bean id="reassignOffenderCaseloadFormValidator"
-		class="omis.caseload.web.validator.ReassignOffenderCaseloadFormValidator"/>
-	
-	<bean id="reassignOfficerCaseloadFormValidator"
-		class="omis.caseload.web.validator.ReassignOfficerCaseloadFormValidator"/>
+	<bean id="officerCaseAssignmentFormValidator"
+		class="omis.caseload.web.validator.OfficerCaseAssignmentFormValidator"/>
 		
     <!-- Web configuration -->
   
@@ -30,7 +44,7 @@
   
 	<!-- Use controller transactions -->
 	  <aop:config>
-	      <aop:pointcut id="caseloadControllerOperation" expression="execution(* omis.caseload.web.controller.CaseloadController.*(..))"/>
-	      <aop:advisor advice-ref="transactionAdvice" pointcut-ref="caseloadControllerOperation"/>
+	      <aop:pointcut id="officerCaseAssignmentControllerOperation" expression="execution(* omis.caseload.web.controller.ManageOfficerCaseAssignmentController.*(..))"/>
+	      <aop:advisor advice-ref="transactionAdvice" pointcut-ref="officerCaseAssignmentControllerOperation"/>
 	  </aop:config>
 </beans>

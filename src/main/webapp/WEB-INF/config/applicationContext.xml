@@ -177,6 +177,7 @@
     			<value>/WEB-INF/classes/omis/task/msgs/form</value>
     			<value>/WEB-INF/classes/omis/tierdesignation/msgs/form</value>
     			<value>/WEB-INF/classes/omis/trackeddocument/msgs/form</value>
+    			<value>/WEB-INF/classes/omis/travelpermit/msgs/form</value>
     			<value>/WEB-INF/classes/omis/user/msgs/form</value>
     			<value>/WEB-INF/classes/omis/userpreference/msgs/form</value>
     			<value>/WEB-INF/classes/omis/victim/msgs/form</value>

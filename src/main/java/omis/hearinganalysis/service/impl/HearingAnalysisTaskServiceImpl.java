@@ -170,10 +170,11 @@ public class HearingAnalysisTaskServiceImpl
 	@Override
 	public TaskAssignment updateTaskAssignment(
 			final TaskAssignment taskAssignment, 
-			final UserAccount assigneeAccount, final Date assignedDate) 
+			final UserAccount assigneeAccount, final Date assignedDate,
+			final Date lastInvokedDate) 
 					throws DuplicateEntityFoundException {
 		return this.taskAssignmentDelegate.update(taskAssignment, assignedDate, 
-				assigneeAccount);
+				assigneeAccount, lastInvokedDate);
 	}
 
 	/** {@inheritDoc} */

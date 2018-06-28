@@ -26,7 +26,7 @@ import omis.task.service.delegate.TaskTemplateParameterValueDelegate;
 import omis.user.domain.UserAccount;
 
 /**
- * PresentenceInvestigationTaskServiceImpl.java
+ * Presentence Investigation Task Service Implementation.
  * 
  *@author Annie Jacques 
  *@version 0.1.0 (Jun 11, 2017)
@@ -238,10 +238,11 @@ public class PresentenceInvestigationTaskServiceImpl
 	@Override
 	public TaskAssignment updateTaskAssignment(
 			final TaskAssignment taskAssignment,
-			final Date assignedDate, final UserAccount assigneeAccount)
+			final Date assignedDate, final UserAccount assigneeAccount,
+			final Date lastInvokedDate)
 					throws DuplicateEntityFoundException {
 		return this.taskAssignmentDelegate.update(
-				taskAssignment, assignedDate, assigneeAccount);
+				taskAssignment, assignedDate, assigneeAccount, lastInvokedDate);
 	}
 
 	/**{@inheritDoc} */

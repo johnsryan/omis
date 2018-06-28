@@ -1,9 +1,9 @@
 package omis.travelpermit.exception;
 
-import omis.exception.BusinessException;
+import omis.exception.DuplicateEntityFoundException;
 
 public class TravelPermitPeriodicityExistsException
-extends BusinessException {
+extends DuplicateEntityFoundException {
 
 private static final long serialVersionUID = 1L;
 	

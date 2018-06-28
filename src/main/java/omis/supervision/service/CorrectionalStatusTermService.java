@@ -22,11 +22,11 @@ import java.util.List;
 
 import omis.datatype.DateRange;
 import omis.exception.DateRangeOutOfBoundsException;
-import omis.exception.DuplicateEntityFoundException;
 import omis.offender.domain.Offender;
 import omis.supervision.domain.CorrectionalStatus;
 import omis.supervision.domain.CorrectionalStatusTerm;
 import omis.supervision.exception.CorrectionalStatusTermConflictException;
+import omis.supervision.exception.CorrectionalStatusTermExistsException;
 import omis.supervision.exception.PlacementTermExistsException;
 
 /**
@@ -64,13 +64,12 @@ public interface CorrectionalStatusTermService {
 	 * @param correctionalStatus correctional status
 	 * @param dateRange date range
 	 * @return newly created correctional status term
-	 * @throws DuplicateEntityFoundException if correctional status term exists
 	 * @throws CorrectionalStatusTermConflictException if conflicting
 	 * correctional status terms exist
 	 */
 	CorrectionalStatusTerm create(Offender offender,
 			CorrectionalStatus correctionalStatus, DateRange dateRange)
-				throws DuplicateEntityFoundException,
+				throws CorrectionalStatusTermExistsException,
 					CorrectionalStatusTermConflictException;
 	
 	/**
@@ -80,7 +79,8 @@ public interface CorrectionalStatusTermService {
 	 * @param correctionalStatus correctional status
 	 * @param dateRange date range
 	 * @return updated correctional status term
-	 * @throws DuplicateEntityFoundException if correctional status term exists
+	 * @throws CorrectionalStatusTermExistsException if correctional status
+	 * term exists
 	 * @throws CorrectionalStatusTermConflictException if conflicting
 	 * correctional status terms exist
 	 * @throws DateRangeOutOfBoundsException if the associated placement terms
@@ -88,7 +88,7 @@ public interface CorrectionalStatusTermService {
 	 */
 	CorrectionalStatusTerm update(CorrectionalStatusTerm correctionalStatusTerm,
 			CorrectionalStatus correctionalStatus, DateRange dateRange)
-				throws DuplicateEntityFoundException,
+				throws CorrectionalStatusTermExistsException,
 					CorrectionalStatusTermConflictException,
 					DateRangeOutOfBoundsException;	
 	

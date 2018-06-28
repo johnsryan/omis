@@ -22,12 +22,12 @@ import java.util.List;
 
 import omis.datatype.DateRange;
 import omis.exception.DateRangeOutOfBoundsException;
-import omis.exception.DuplicateEntityFoundException;
 import omis.offender.domain.Offender;
 import omis.supervision.domain.SupervisoryOrganization;
 import omis.supervision.domain.SupervisoryOrganizationTerm;
 import omis.supervision.exception.PlacementTermExistsException;
 import omis.supervision.exception.SupervisoryOrganizationTermConflictException;
+import omis.supervision.exception.SupervisoryOrganizationTermExistsException;
 
 /**
  * Service for supervisory organization terms.
@@ -65,15 +65,15 @@ public interface SupervisoryOrganizationTermService {
 	 * @param supervisoryOrganization supervisory organization
 	 * @param dateRange date range
 	 * @return newly created supervisory organization
-	 * @throws DuplicateEntityFoundException if the supervisory organization
-	 * term exists
+	 * @throws SupervisoryOrganizationTermExistsException if the supervisory
+	 * organization term exists
 	 * @throws SupervisoryOrganizationTermConflictException if conflicting
 	 * supervisory organization terms exist
 	 */
 	SupervisoryOrganizationTerm create(Offender offender,
 			SupervisoryOrganization supervisoryOrganization,
 			DateRange dateRange)
-				throws DuplicateEntityFoundException,
+				throws SupervisoryOrganizationTermExistsException,
 					SupervisoryOrganizationTermConflictException;
 
 	/**
@@ -84,8 +84,8 @@ public interface SupervisoryOrganizationTermService {
 	 * @param supervisoryOrganization supervisory organization
 	 * @param dateRange date range
 	 * @return supervisory organization term to update
-	 * @throws DuplicateEntityFoundException if the supervisory organization
-	 * term exists
+	 * @throws SupervisoryOrganizationTermExistsException if the supervisory
+	 * organization term exists
 	 * @throws SupervisoryOrganizationTermConflictException if conflicting
 	 * supervisory organization terms exist
 	 * @throws DateRangeOutOfBoundsException if the associated placement terms
@@ -95,7 +95,7 @@ public interface SupervisoryOrganizationTermService {
 			SupervisoryOrganizationTerm supervisoryOrganizationTerm,
 			SupervisoryOrganization supervisoryOrganization,
 			DateRange dateRange)
-				throws DuplicateEntityFoundException,
+				throws SupervisoryOrganizationTermExistsException,
 					SupervisoryOrganizationTermConflictException,
 					DateRangeOutOfBoundsException;
 	

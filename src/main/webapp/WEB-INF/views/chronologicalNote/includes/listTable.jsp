@@ -30,7 +30,7 @@
 		<thead>
 			<tr>
 				<th class = "operations"> </th>
-				<th><fmt:message key="titleLabel"/></th>
+				<th class="date"><fmt:message key="titleLabel"/></th>
 				<th><fmt:message key="startDateLabel"/></th>
 				<th><fmt:message key="categoriesLabel"/></th>
 				<th><fmt:message key="narrativeLabel"/></th>

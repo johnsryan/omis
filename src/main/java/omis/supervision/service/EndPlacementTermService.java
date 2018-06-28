@@ -20,16 +20,20 @@ package omis.supervision.service;
 import java.util.Date;
 import java.util.List;
 
-import omis.exception.DuplicateEntityFoundException;
+import omis.locationterm.exception.LocationTermExistsException;
 import omis.offender.domain.Offender;
 import omis.supervision.domain.CorrectionalStatus;
 import omis.supervision.domain.PlacementTerm;
 import omis.supervision.domain.PlacementTermChangeReason;
+import omis.supervision.exception.CorrectionalStatusTermExistsException;
+import omis.supervision.exception.PlacementTermExistsException;
+import omis.supervision.exception.SupervisoryOrganizationTermExistsException;
 
 /**
  * Service for ending placement terms.
  * 
  * @author Josh Divine
+ * @author Stephen Abson
  * @version 0.1.0 (Feb 14, 2017)
  * @since OMIS 3.0
  */
@@ -43,12 +47,19 @@ public interface EndPlacementTermService {
 	 * @param endDate end date
 	 * @param endChangeReason end change reason
 	 * @return placement term
-	 * @throws DuplicateEntityFoundException thrown when placement term already 
-	 * exists
+	 * @throws CorrectionalStatusTermExistsException if correctional status
+	 * term exists
+	 * @throws SupervisoryOrganizationTermExistsException if supervisory
+	 * organization term exists
+	 * @throws PlacementTermExistsException if placement term exists
+	 * @throws LocationTermExistsException if location term exists
 	 */
 	PlacementTerm endPlacementTerm(PlacementTerm placementTerm, Date endDate, 
 			PlacementTermChangeReason endChangeReason) 
-					throws DuplicateEntityFoundException;
+					throws CorrectionalStatusTermExistsException,
+						SupervisoryOrganizationTermExistsException,
+						PlacementTermExistsException,
+						LocationTermExistsException;
 	
 	/**
 	 * Returns the list of allowed end change reasons for the specified 

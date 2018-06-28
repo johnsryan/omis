@@ -17,10 +17,10 @@
  */
 package omis.supervision.service.delegate;
 
-import omis.exception.DuplicateEntityFoundException;
 import omis.instance.factory.InstanceFactory;
 import omis.supervision.dao.CorrectionalStatusDao;
 import omis.supervision.domain.CorrectionalStatus;
+import omis.supervision.exception.CorrectionalStatusExistsException;
 
 /**
  * Delegate for correctional statuses.
@@ -36,6 +36,13 @@ public class CorrectionalStatusDelegate {
 	
 	private final CorrectionalStatusDao correctionalStatusDao;
 
+	/**
+	 * Instantiates delegate for correctional statuses.
+	 * 
+	 * @param correctionalStatusInstanceFactory instance factory for
+	 * correctional statuses
+	 * @param correctionalStatusDao data access object for correctional statuses
+	 */
 	public CorrectionalStatusDelegate(
 			final InstanceFactory<CorrectionalStatus>
 				correctionalStatusInstanceFactory,
@@ -80,14 +87,14 @@ public class CorrectionalStatusDelegate {
 	 * @param sortOrder sort order
 	 * @param valid whether valid
 	 * @return correctional status
-	 * @throws DuplicateEntityFoundException if correctional status exists
+	 * @throws CorrectionalStatusExistsException if correctional status exists
 	 */
 	public CorrectionalStatus create(final String name,
 			final String abbreviation, final Boolean locationRequired,
 			final Short sortOrder, final Boolean valid)
-					throws DuplicateEntityFoundException {
+					throws CorrectionalStatusExistsException {
 		if (this.correctionalStatusDao.find(name) != null) {
-			throw new DuplicateEntityFoundException(
+			throw new CorrectionalStatusExistsException(
 					"Correctional status exists");
 		}
 		return this.createImpl(

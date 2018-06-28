@@ -59,4 +59,13 @@
 		  from omis.victim.domain.VictimAssociation association
 		 where association.relationship.firstPerson = :offender
 	]]></query>
+	<query name="countVictimAssociationsByRelationship"><![CDATA[
+		select count(victimAssociation)
+		from omis.victim.domain.VictimAssociation victimAssociation
+		where victimAssociation.relationship = :relationship
+	]]></query>
+	<query name="deleteVictimAssociationsByRelationship"><![CDATA[
+		delete from omis.victim.domain.VictimAssociation victimAssociation
+		where victimAssociation.relationship = :relationship
+	]]></query>
 </hibernate-mapping>

@@ -99,16 +99,20 @@ public class HearingAnalysisTaskServiceUpdateTaskAssignmentTests
 		Person newUser = this.personDelegate.create("Bob", "Jimbo", null, 
 				null);
 		UserAccount newAssigneeAccount = this.userAccountDelegate.create(
-				newUser, "Username3", "password", null, 0, true);;
+				newUser, "Username3", "password", null, 0, true);
+		Date lastInvokedDate = this.parseDateText("01/03/2018");
+		
 		// Action
 		taskAssignment = this.hearingAnalysisTaskService.updateTaskAssignment(
-				taskAssignment, newAssigneeAccount, assignedDate);
+				taskAssignment, newAssigneeAccount, assignedDate,
+				lastInvokedDate);
 
 		// Assertions
 		PropertyValueAsserter.create()
 			.addExpectedValue("task", task)
 			.addExpectedValue("assigneeAccount", newAssigneeAccount)
 			.addExpectedValue("assignedDate", assignedDate)
+			.addExpectedValue("lastInvokedDate", lastInvokedDate)
 			.performAssertions(taskAssignment);
 	}
 	
@@ -134,16 +138,19 @@ public class HearingAnalysisTaskServiceUpdateTaskAssignmentTests
 		TaskAssignment taskAssignment = this.taskAssignmentDelegate.create(task, 
 				assignedDate, assigneeAccount);
 		Date newAssignedDate = this.parseDateText("01/02/2018");
+		Date lastInvokedDate = this.parseDateText("01/03/2018");
 		
 		// Action
 		taskAssignment = this.hearingAnalysisTaskService.updateTaskAssignment(
-				taskAssignment, assigneeAccount, newAssignedDate);
+				taskAssignment, assigneeAccount, newAssignedDate,
+				lastInvokedDate);
 
 		// Assertions
 		PropertyValueAsserter.create()
 			.addExpectedValue("task", task)
 			.addExpectedValue("assigneeAccount", assigneeAccount)
 			.addExpectedValue("assignedDate", newAssignedDate)
+			.addExpectedValue("lastInvokedDate", lastInvokedDate)
 			.performAssertions(taskAssignment);
 	}
 
@@ -174,7 +181,7 @@ public class HearingAnalysisTaskServiceUpdateTaskAssignmentTests
 		
 		// Action
 		taskAssignment = this.hearingAnalysisTaskService.updateTaskAssignment(
-				taskAssignment, assigneeAccount, assignedDate);
+				taskAssignment, assigneeAccount, assignedDate, new Date());
 	}
 	
 	// Parses date text

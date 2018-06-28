@@ -26,12 +26,13 @@ import org.testng.annotations.Test;
 
 import omis.beans.factory.spring.CustomDateEditorFactory;
 import omis.datatype.DateRange;
-import omis.exception.DuplicateEntityFoundException;
 import omis.offender.domain.Offender;
 import omis.offender.service.delegate.OffenderDelegate;
 import omis.supervision.domain.CorrectionalStatus;
 import omis.supervision.domain.CorrectionalStatusTerm;
+import omis.supervision.exception.CorrectionalStatusExistsException;
 import omis.supervision.exception.CorrectionalStatusTermConflictException;
+import omis.supervision.exception.CorrectionalStatusTermExistsException;
 import omis.supervision.service.CorrectionalStatusTermService;
 import omis.supervision.service.delegate.CorrectionalStatusDelegate;
 import omis.supervision.service.delegate.CorrectionalStatusTermDelegate;
@@ -42,6 +43,7 @@ import omis.util.PropertyValueAsserter;
  * Tests method to create correctional status terms.
  *
  * @author Josh Divine
+ * @author Stephen Abson
  * @version 0.0.1
  * @since OMIS 3.0
  */
@@ -80,13 +82,17 @@ public class CorrectionalStatusTermServiceCreateTests
 	/**
 	 * Tests the creation of a correctional status term.
 	 * 
-	 * @throws DuplicateEntityFoundException thrown if entity already exists
+	 * @throws CorrectionalStatusTermExistsException thrown if correctional
+	 * status term exists
 	 * @throws CorrectionalStatusTermConflictException thrown if date range 
 	 * conflicts with existing date ranges
+	 * @throws CorrectionalStatusExistsException thrown if correctional status
+	 * exists
 	 */
 	@Test
-	public void testCreate() throws DuplicateEntityFoundException, 
-			CorrectionalStatusTermConflictException {
+	public void testCreate()
+			throws CorrectionalStatusTermExistsException, 
+				CorrectionalStatusTermConflictException, CorrectionalStatusExistsException {
 		// Arrangements
 		Offender offender = this.offenderDelegate.createWithoutIdentity("Smith",
 				"John", "Bob", null);
@@ -109,16 +115,20 @@ public class CorrectionalStatusTermServiceCreateTests
 	}
 	
 	/**
-	 * Tests the {@code DuplicateEntityFoundException} is thrown.
+	 * Tests the {@code CorrectionalStatusTermExistsException} is thrown.
 	 * 
-	 * @throws DuplicateEntityFoundException thrown if entity already exists
+	 * @throws DuplicateEntityFoundException thrown if correctional
+	 * status term already exists - asserted
 	 * @throws CorrectionalStatusTermConflictException thrown if date range 
 	 * conflicts with existing date ranges
+	 * @throws CorrectionalStatusExistsException thrown if correctional status
+	 * exists
 	 */
-	@Test(expectedExceptions = {DuplicateEntityFoundException.class})
+	@Test(expectedExceptions = {CorrectionalStatusTermExistsException.class})
 	public void testDuplicateEntityFoundException() 
-			throws DuplicateEntityFoundException, 
-			CorrectionalStatusTermConflictException {
+			throws CorrectionalStatusTermExistsException, 
+				CorrectionalStatusTermConflictException,
+				CorrectionalStatusExistsException {
 		// Arrangements
 		Offender offender = this.offenderDelegate.createWithoutIdentity("Smith",
 				"John", "Bob", null);
@@ -137,14 +147,18 @@ public class CorrectionalStatusTermServiceCreateTests
 	/**
 	 * Tests the {@code CorrectionalStatusTermConflictException} is thrown.
 	 * 
-	 * @throws DuplicateEntityFoundException thrown if entity already exists
+	 * @throws CorrectionalStatusTermExistsException thrown if correctional
+	 * status term exists
 	 * @throws CorrectionalStatusTermConflictException thrown if date range 
 	 * conflicts with existing date ranges
+	 * @throws CorrectionalStatusExistsException thrown if correctional status
+	 * exists
 	 */
 	@Test(expectedExceptions = {CorrectionalStatusTermConflictException.class})
 	public void testCorrectionalStatusTermConflictException() 
-			throws DuplicateEntityFoundException, 
-			CorrectionalStatusTermConflictException {
+			throws CorrectionalStatusTermExistsException, 
+				CorrectionalStatusTermConflictException,
+				CorrectionalStatusExistsException {
 		// Arrangements
 		Offender offender = this.offenderDelegate.createWithoutIdentity("Smith",
 				"John", "Bob", null);

@@ -26,12 +26,13 @@ import org.testng.annotations.Test;
 
 import omis.beans.factory.spring.CustomDateEditorFactory;
 import omis.datatype.DateRange;
-import omis.exception.DuplicateEntityFoundException;
 import omis.offender.domain.Offender;
 import omis.offender.service.delegate.OffenderDelegate;
 import omis.supervision.domain.SupervisoryOrganization;
 import omis.supervision.domain.SupervisoryOrganizationTerm;
+import omis.supervision.exception.SupervisoryOrganizationExistsException;
 import omis.supervision.exception.SupervisoryOrganizationTermConflictException;
+import omis.supervision.exception.SupervisoryOrganizationTermExistsException;
 import omis.supervision.service.SupervisoryOrganizationTermService;
 import omis.supervision.service.delegate.SupervisoryOrganizationDelegate;
 import omis.supervision.service.delegate.SupervisoryOrganizationTermDelegate;
@@ -42,6 +43,7 @@ import omis.util.PropertyValueAsserter;
  * Tests method to create supervisory organization terms.
  *
  * @author Josh Divine
+ * @author Stephen Abson
  * @version 0.0.1
  * @since OMIS 3.0
  */
@@ -82,13 +84,18 @@ public class SupervisoryOrganizationTermServiceCreateTests
 	/**
 	 * Tests the creation of a supervisory organization term.
 	 * 
-	 * @throws DuplicateEntityFoundException thrown if entity already exists
+	 * @throws SupervisoryOrganizationTermExistsException thrown if supervisory
+	 * organization term exists
 	 * @throws SupervisoryOrganizationTermConflictException thrown if two or 
 	 * more supervisory organization terms conflict
+	 * @throws SupervisoryOrganizationExistsException thrown if supervisory
+	 * organization exists
 	 */
 	@Test
-	public void testCreate() throws DuplicateEntityFoundException, 
-			SupervisoryOrganizationTermConflictException {
+	public void testCreate()
+			throws SupervisoryOrganizationTermExistsException, 
+				SupervisoryOrganizationTermConflictException,
+				SupervisoryOrganizationExistsException {
 		// Arrangements
 		Offender offender = this.offenderDelegate.createWithoutIdentity("Smith",
 				"John", "Bob", null);
@@ -113,16 +120,20 @@ public class SupervisoryOrganizationTermServiceCreateTests
 	}
 	
 	/**
-	 * Tests the {@code DuplicateEntityFoundException} is thrown.
+	 * Tests the {@code SupervisoryOrganizationTermExistsException} is thrown.
 	 * 
-	 * @throws DuplicateEntityFoundException thrown if entity already exists
+	 * @throws SupervisoryOrganizationTermExistsException thrown if supervisory
+	 * organization term exists - asserted
 	 * @throws SupervisoryOrganizationTermConflictException thrown if two or 
 	 * more supervisory organization terms conflict
+	 * @throws SupervisoryOrganizationExistsException thrown if supervisory
+	 * organization exists
 	 */
-	@Test(expectedExceptions = {DuplicateEntityFoundException.class})
+	@Test(expectedExceptions = {SupervisoryOrganizationTermExistsException.class})
 	public void testDuplicateEntityFoundException() 
-			throws DuplicateEntityFoundException, 
-			SupervisoryOrganizationTermConflictException {
+			throws SupervisoryOrganizationTermExistsException, 
+				SupervisoryOrganizationTermConflictException,
+				SupervisoryOrganizationExistsException {
 		// Arrangements
 		Offender offender = this.offenderDelegate.createWithoutIdentity("Smith",
 				"John", "Bob", null);
@@ -142,15 +153,19 @@ public class SupervisoryOrganizationTermServiceCreateTests
 	/**
 	 * Tests the {@code SupervisoryOrganizationTermConflictException} is thrown.
 	 * 
-	 * @throws DuplicateEntityFoundException thrown if entity already exists
+	 * @throws SupervisoryOrganizationTermExistsException thrown if
+	 * supervisory organization term exists
 	 * @throws SupervisoryOrganizationTermConflictException thrown if two or 
-	 * more supervisory organization terms conflict
+	 * more supervisory organization terms conflict - asserted
+	 * @throws SupervisoryOrganizationExistsException thrown if supervisory
+	 * organization exists
 	 */
 	@Test(expectedExceptions = 
 			{SupervisoryOrganizationTermConflictException.class})
 	public void testSupervisoryOrganizationTermConflictException() 
-			throws DuplicateEntityFoundException, 
-			SupervisoryOrganizationTermConflictException {
+			throws SupervisoryOrganizationTermExistsException, 
+				SupervisoryOrganizationTermConflictException,
+				SupervisoryOrganizationExistsException {
 		// Arrangements
 		Offender offender = this.offenderDelegate.createWithoutIdentity("Smith",
 				"John", "Bob", null);

@@ -11,6 +11,7 @@ import omis.hearing.dao.HearingStatusDao;
 import omis.hearing.domain.Hearing;
 import omis.hearing.domain.HearingStatus;
 import omis.hearing.domain.HearingStatusCategory;
+import omis.hearing.exception.HearingStatusExistsException;
 import omis.instance.factory.InstanceFactory;
 
 /**
@@ -23,7 +24,7 @@ import omis.instance.factory.InstanceFactory;
  */
 public class HearingStatusDelegate {
 	
-	private static final String DUPLICATE_ENTITY_FOUND_MSG =
+	private static final String HEARING_STATUS_EXISTS_MSG =
 			"HearingStatus already exists with given Date and Category for specified Hearing.";
 	
 	private final HearingStatusDao hearingStatusDao;
@@ -61,9 +62,9 @@ public class HearingStatusDelegate {
 	 */
 	public HearingStatus create(final Hearing hearing, final String description,
 			final Date date, final HearingStatusCategory category)
-					throws DuplicateEntityFoundException{
+					throws HearingStatusExistsException{
 		if(this.hearingStatusDao.find(hearing, date, category) != null){
-			throw new DuplicateEntityFoundException(DUPLICATE_ENTITY_FOUND_MSG);
+			throw new HearingStatusExistsException(HEARING_STATUS_EXISTS_MSG);
 		}
 		
 		HearingStatus hearingStatus = 
@@ -98,10 +99,10 @@ public class HearingStatusDelegate {
 	public HearingStatus update(final HearingStatus hearingStatus,
 			final String description, final Date date,
 			final HearingStatusCategory category)
-					throws DuplicateEntityFoundException{
+					throws HearingStatusExistsException{
 		if(this.hearingStatusDao.findExcluding(hearingStatus.getHearing(), date,
 				category, hearingStatus) != null){
-			throw new DuplicateEntityFoundException(DUPLICATE_ENTITY_FOUND_MSG);
+			throw new HearingStatusExistsException(HEARING_STATUS_EXISTS_MSG);
 		}
 		
 		hearingStatus.setCategory(category);

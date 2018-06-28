@@ -2,6 +2,8 @@ package omis.task.report;
 
 import java.util.List;
 
+import omis.user.domain.UserAccount;
+
 /**
  * Report service for tasks.
  *
@@ -18,4 +20,11 @@ public interface TaskReportService {
 	 * @return summaries of tasks by source account username
 	 */
 	List<TaskSummary> summarizeBySourceAccountUsername(String username);
+	
+	/**
+	 * @param assigneeAccount
+	 * @return
+	 */
+	Long findUninvokedTaskCountByAssigneeUserAccount(
+			UserAccount assigneeAccount);
 }

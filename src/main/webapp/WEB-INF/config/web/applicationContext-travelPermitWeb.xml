@@ -31,14 +31,27 @@
         http://www.springframework.org/schema/aop/spring-aop-3.1.xsd">
         
    	<!-- Profile Item -->
-
+	<bean id="travelPermitProfileItem"
+	  	class="omis.travelpermit.web.profile.TravelPermitProfileItem">
+	  	<constructor-arg name="requiredAuthorizations">
+	  		<set>
+	  			<value>TRAVEL_PERMIT_LIST</value>
+	  			<value>ADMIN</value>
+	  		</set>
+	  	</constructor-arg>
+	  	<constructor-arg name="includePage" value="/WEB-INF/views/travelPermit/profile/includes/profileItem.jsp"/>
+	  	<constructor-arg name="name" value="travelPermits"/>
+	  	<constructor-arg name="profileItemRegistry" ref="caseManagementProfileItemRegistry"/>
+	  	<constructor-arg name="travelPermitProfileItemReportService" ref="travelPermitProfileItemReportService"/>
+	  	<constructor-arg name="enabled" value="${travelPermitProfileItemEnabled}"/>
+   </bean>
 	
 	<!-- Summary Item -->
 	
    <!--  Validator -->
-   <!-- <bean id="travelPermitFormValidator" class="omis.travelpermit.web.validator.TravelPermitFormValidator">
+   <bean id="travelPermitFormValidator" class="omis.travelpermit.web.validator.TravelPermitFormValidator">
 		<constructor-arg name="addressFieldsValidatorDelegate" ref="addressFieldsValidatorDelegate"/>
-	</bean> -->
+	</bean>
   
   <!--  Validator delegate -->
   
@@ -51,5 +64,9 @@
 	<aop:config>
 	     <aop:pointcut id="reportTravelPermitControllerOperation" expression="execution(* omis.travelpermit.web.controller.ReportTravelPermitController.*(..))"/>
 	     <aop:advisor advice-ref="transactionAdvice" pointcut-ref="reportTravelPermitControllerOperation"/>
- 	</aop:config>    
+ 	</aop:config>
+ 	<aop:config>
+	      <aop:pointcut id="travelPermitControllerOperation" expression="execution(* omis.travelpermit.web.controller.TravelPermitController.*(..))"/>
+	      <aop:advisor advice-ref="transactionAdvice" pointcut-ref="travelPermitControllerOperation"/>
+	  </aop:config>    
 </beans>        

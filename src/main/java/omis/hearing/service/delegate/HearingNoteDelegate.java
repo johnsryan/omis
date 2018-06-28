@@ -10,6 +10,7 @@ import omis.exception.DuplicateEntityFoundException;
 import omis.hearing.dao.HearingNoteDao;
 import omis.hearing.domain.Hearing;
 import omis.hearing.domain.HearingNote;
+import omis.hearing.exception.HearingNoteExistsException;
 import omis.instance.factory.InstanceFactory;
 
 /**
@@ -21,7 +22,7 @@ import omis.instance.factory.InstanceFactory;
  *
  */
 public class HearingNoteDelegate {
-	private static final String DUPLICATE_ENTITY_FOUND_MSG =
+	private static final String HEARING_NOTE_EXISTS_FOUND_MSG =
 			"Hearing Note already exists for specified hearing with given date"
 			+ " and description";
 	
@@ -58,9 +59,9 @@ public class HearingNoteDelegate {
 	 * for specified hearing with given date and description
 	 */
 	public HearingNote create(final Hearing hearing, final String description,
-			final Date date) throws DuplicateEntityFoundException{
+			final Date date) throws HearingNoteExistsException{
 		if(this.hearingNoteDao.find(hearing, description, date) != null){
-			throw new DuplicateEntityFoundException(DUPLICATE_ENTITY_FOUND_MSG);
+			throw new HearingNoteExistsException(HEARING_NOTE_EXISTS_FOUND_MSG);
 		}
 		
 		HearingNote hearingNote = 
@@ -92,11 +93,11 @@ public class HearingNoteDelegate {
 	 */
 	public HearingNote update(final HearingNote hearingNote,
 			final String description, final Date date)
-			throws DuplicateEntityFoundException{
+			throws HearingNoteExistsException{
 		if(this.hearingNoteDao.findExcluding(
 				hearingNote.getHearing(), description, date,
 				hearingNote) != null){
-			throw new DuplicateEntityFoundException(DUPLICATE_ENTITY_FOUND_MSG);
+			throw new HearingNoteExistsException(HEARING_NOTE_EXISTS_FOUND_MSG);
 		}
 		
 		hearingNote.setDescription(description);

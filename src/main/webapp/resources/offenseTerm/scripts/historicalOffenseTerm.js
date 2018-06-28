@@ -100,17 +100,17 @@ window.onload = function() {
 			request.open("get", config.ServerConfig.getContextPath() + "/offenseTerm/findHistoricalSentenceCategory.json?sentenceCategory=" + categoryId, false);
 			request.send(null);
 			var category = eval("(" + request.responseText + ")");
-			if (category.prison) {
+			if (category.prisonRequirement == "REQUIRED" || category.prisonRequirement == "OPTIONAL") {
 				showSentenceTermFields("prison");
 			} else {
 				hideSentenceTermFields("prison");	
 			}
-			if (category.probation) {
+			if (category.probationRequirement == "REQUIRED" || category.probationRequirement == "OPTIONAL") {
 				showSentenceTermFields("probation");
 			} else {
 				hideSentenceTermFields("probation");
 			}
-			if (category.deferred) {
+			if (category.deferredRequirement == "REQUIRED" || category.deferredRequirement == "OPTIONAL") {
 				showSentenceTermFields("deferred");
 			} else {
 				hideSentenceTermFields("deferred");

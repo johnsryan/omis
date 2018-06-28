@@ -31,6 +31,11 @@ import omis.hearing.domain.Infraction;
 import omis.hearing.domain.InfractionPlea;
 import omis.hearing.domain.UserAttendance;
 import omis.hearing.domain.component.Resolution;
+import omis.hearing.exception.HearingExistsException;
+import omis.hearing.exception.HearingNoteExistsException;
+import omis.hearing.exception.HearingStatusExistsException;
+import omis.hearing.exception.InfractionExistsException;
+import omis.hearing.exception.UserAttendanceExistsException;
 import omis.location.domain.Location;
 import omis.offender.domain.Offender;
 import omis.supervision.domain.SupervisoryOrganization;
@@ -59,13 +64,13 @@ public interface HearingService {
 	 * @param category - HearingCategory
 	 * @param officer user account
 	 * @return Newly Created Hearing
-	 * @throws DuplicateEntityFoundException - when Hearing exists with
+	 * @throws HearingExistsException - when Hearing exists with
 	 * specified offender, location, date, and officer
 	 */
 	Hearing createHearing(Location location, Offender offender,
 			Boolean inAttendance, Date date, HearingCategory category,
 			UserAccount officer)
-			throws DuplicateEntityFoundException;
+			throws HearingExistsException;
 	
 	/**
 	 * Updates a hearing with the specified parameters.
@@ -76,13 +81,13 @@ public interface HearingService {
 	 * @param category - HearingCategory
 	 * @param officer user account
 	 * @return Updated Hearing
-	 * @throws DuplicateEntityFoundException - when Hearing exists with
+	 * @throws HearingExistsException - when Hearing exists with
 	 * specified offender, location, date, and officer
 	 */
 	Hearing updateHearing(Hearing hearing, Location location,
 			Boolean inAttendance, Date date, HearingCategory category,
 			UserAccount officer)
-			throws DuplicateEntityFoundException;
+			throws HearingExistsException;
 	
 	/**
 	 * Removes a hearing.
@@ -96,11 +101,11 @@ public interface HearingService {
 	 * @param description - String
 	 * @param date - Date
 	 * @return newly created hearing note
-	 * @throws DuplicateEntityFoundException - when Hearing Note already exists
+	 * @throws HearingNoteExistsException - when Hearing Note already exists
 	 * for specified hearing with given date and description
 	 */
 	HearingNote createHearingNote(Hearing hearing, String description,
-			Date date) throws DuplicateEntityFoundException;
+			Date date) throws HearingNoteExistsException;
 	
 	/**
 	 * Updates a hearing note with specified parameters.
@@ -108,12 +113,12 @@ public interface HearingService {
 	 * @param description - String
 	 * @param date - Date
 	 * @return updated hearing note
-	 * @throws DuplicateEntityFoundException - when Hearing Note already exists
+	 * @throws HearingNoteExistsException - when Hearing Note already exists
 	 * for specified hearing with given date and description
 	 */
 	HearingNote updateHearingNote(HearingNote hearingNote,
 			String description, Date date)
-					throws DuplicateEntityFoundException;
+					throws HearingNoteExistsException;
 	
 	/**
 	 * Removes a HearingNote.
@@ -134,11 +139,11 @@ public interface HearingService {
 	 * @param hearing hearing
 	 * @param userAccount user account
 	 * @return user attendance
-	 * @throws DuplicateEntityFoundException if user attendance exists for
+	 * @throws UserAttendanceExistsException if user attendance exists for
 	 * specified hearing
 	 */
 	UserAttendance createUserAttendance(Hearing hearing,
-			UserAccount userAccount)throws DuplicateEntityFoundException;
+			UserAccount userAccount)throws UserAttendanceExistsException;
 	
 	/**
 	 * Updates a user attendance with the specified properties.
@@ -146,11 +151,11 @@ public interface HearingService {
 	 * @param userAttendance user attendance
 	 * @param userAccount user account
 	 * @return user attendance
-	 * @throws DuplicateEntityFoundException if user attendance exists for
+	 * @throws UserAttendanceExistsException if user attendance exists for
 	 * specified hearing
 	 */
 	UserAttendance updateUserAttendance(UserAttendance userAttendance,
-			UserAccount userAccount) throws DuplicateEntityFoundException;
+			UserAccount userAccount) throws UserAttendanceExistsException;
 	
 	/**
 	 * Removes a user attendance.
@@ -165,12 +170,12 @@ public interface HearingService {
 	 * @param date - Date
 	 * @param category - HearingStatusCategory
 	 * @return Newly Created HearingStatus
-	 * @throws DuplicateEntityFoundException - When a HearingStatus already
+	 * @throws HearingStatusExistsException - When a HearingStatus already
 	 * exists with specified Date and Category for given Hearing
 	 */
 	HearingStatus createHearingStatus(Hearing hearing, String description,
 			Date date, HearingStatusCategory category)
-					throws DuplicateEntityFoundException;
+					throws HearingStatusExistsException;
 	
 	/**
 	 * Updates a HearingStatus with the specified properties.
@@ -179,13 +184,13 @@ public interface HearingService {
 	 * @param date - Date
 	 * @param category - HearingStatusCategory
 	 * @return Updated HearingStatus
-	 * @throws DuplicateEntityFoundException - When a HearingStatus already
+	 * @throws HearingStatusExistsException - When a HearingStatus already
 	 * exists with specified Date and Category for given Hearing
 	 */
 	HearingStatus updateHearingStatus(HearingStatus hearingStatus,
 			String description, Date date,
 			HearingStatusCategory category)
-					throws DuplicateEntityFoundException;
+					throws HearingStatusExistsException;
 	
 	/**
 	 * Removes a HearingStatus.
@@ -203,13 +208,13 @@ public interface HearingService {
 	 * @return Newly created Infraction
 	 * @throws DuplicateEntityFoundException - When an Infraction already exists
 	 * with given Hearing, ConditionViolation, and DisciplinaryCodeViolation.
-	 * @throws DuplicateEntityFoundException
+	 * @throws InfractionExistsException
 	 */
 	Infraction createInfraction(Hearing hearing,
 			ConditionViolation conditionViolation,
 			DisciplinaryCodeViolation disciplinaryCodeViolation,
 			Resolution resolution, InfractionPlea plea)
-					throws DuplicateEntityFoundException;
+					throws InfractionExistsException;
 	
 	/**
 	 * Updates an Infraction with the specified properties.
@@ -219,14 +224,14 @@ public interface HearingService {
 	 * @param resolution - Resolution
 	 * @param plea - Infraction Plea
 	 * @return Updated Infraction
-	 * @throws DuplicateEntityFoundException - When an Infraction already exists
+	 * @throws InfractionExistsException - When an Infraction already exists
 	 * with given Hearing, ConditionViolation, and DisciplinaryCodeViolation.
 	 */
 	Infraction updateInfraction(Infraction infraction,
 			ConditionViolation conditionViolation,
 			DisciplinaryCodeViolation disciplinaryCodeViolation,
 			Resolution resolution, InfractionPlea plea)
-					throws DuplicateEntityFoundException;
+					throws InfractionExistsException;
 	
 	/**
 	 * Removes an Infraction.

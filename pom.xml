@@ -1,9 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
+ - OMIS - Offender Management Information System
+ - Copyright (C) 2011 - 2017 State of Montana
+ -
+ - This program is free software: you can redistribute it and/or modify
+ - it under the terms of the GNU General Public License as published by
+ - the Free Software Foundation, either version 3 of the License, or
+ - (at your option) any later version.
+ -
+ - This program is distributed in the hope that it will be useful,
+ - but WITHOUT ANY WARRANTY; without even the implied warranty of
+ - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ - GNU General Public License for more details.
+ -
+ - You should have received a copy of the GNU General Public License
+ - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+
+<!--
  - Project configuration.
  -
  - Author: Stephen Abson
+ - Author: Ryan Johns
  -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -38,11 +57,14 @@
     <commons-io.version>2.4</commons-io.version>
     <commons-fileupload.version>1.2.2</commons-fileupload.version>
     <org.aspectj.version>1.7.1</org.aspectj.version>
-    <jboss.jbossts.jbossjta.version>4.9.0.GA</jboss.jbossts.jbossjta.version>
+    <jboss.jbossts.jbossjta.version>4.16.6.Final</jboss.jbossts.jbossjta.version>
     <org.apache.derby.version>10.8.2.2</org.apache.derby.version>
     <c3p0.version>0.9.1.2</c3p0.version>
     <apacheds.version>1.5.5</apacheds.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.scm.plugin.version>1.9.5</maven.scm.plugin.version>
+    <maven.scm.provider.svnjava.version>2.1.2</maven.scm.provider.svnjava.version>
+    <maven.scm.provider.jgit.version>1.9.5</maven.scm.provider.jgit.version>
   </properties>
   <profiles>
     <profile>
@@ -61,7 +83,7 @@
       </properties>
       <dependencies>
         <dependency>
-      	  <groupId>jboss.jbossts</groupId>
+      	  <groupId>org.jboss.jbossts</groupId>
       	  <artifactId>jbossjta</artifactId>
       	  <version>${jboss.jbossts.jbossjta.version}</version>
         </dependency>
@@ -83,7 +105,7 @@
       </properties>
       <dependencies>
         <dependency>
-      	  <groupId>jboss.jbossts</groupId>
+      	  <groupId>org.jboss.jbossts</groupId>
       	  <artifactId>jbossjta</artifactId>
       	  <version>${jboss.jbossts.jbossjta.version}</version>
         </dependency>
@@ -110,7 +132,7 @@
       </properties>
       <dependencies>
         <dependency>
-      	  <groupId>jboss.jbossts</groupId>
+      	  <groupId>org.jboss.jbossts</groupId>
       	  <artifactId>jbossjta</artifactId>
       	  <version>${jboss.jbossts.jbossjta.version}</version>
       	  <scope>provided</scope>
@@ -137,7 +159,7 @@
       </properties>
       <dependencies>
         <dependency>
-      	  <groupId>jboss.jbossts</groupId>
+      	  <groupId>org.jboss.jbossts</groupId>
       	  <artifactId>jbossjta</artifactId>
       	  <version>${jboss.jbossts.jbossjta.version}</version>
       	  <scope>provided</scope>
@@ -164,7 +186,7 @@
       </properties>
       <dependencies>
         <dependency>
-      	  <groupId>jboss.jbossts</groupId>
+      	  <groupId>org.jboss.jbossts</groupId>
       	  <artifactId>jbossjta</artifactId>
       	  <version>${jboss.jbossts.jbossjta.version}</version>
       	  <scope>provided</scope>
@@ -326,7 +348,7 @@
       <artifactId>cglib</artifactId>
       <version>${cglib.version}</version>
     </dependency>
-    <dependency>  
+    <dependency>
       <groupId>org.testng</groupId>  
       <artifactId>testng</artifactId>  
       <version>${org.testng.version}</version>  
@@ -398,6 +420,11 @@
       <version>${c3p0.version}</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+		<groupId>org.apache.maven.scm</groupId>
+		<artifactId>maven-scm-provider-svnexe</artifactId>
+		<version>${maven.scm.plugin.version}</version>
+	</dependency>
   </dependencies>
   <build>
     <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
@@ -487,6 +514,29 @@
             <additionalClasspathElement>${basedir}/src/test/java</additionalClasspathElement>
 		  </additionalClasspathElements>
         </configuration>
+      </plugin>
+      <plugin>
+      	<groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-scm-plugin</artifactId>
+        <version>${maven.scm.plugin.version}</version>
+        <configuration>
+         <providerImplementations>
+            <svn>javasvn</svn>
+            <git>jgit</git>
+          </providerImplementations>
+        </configuration>
+        <dependencies>
+			<dependency>
+    			<groupId>com.google.code.maven-scm-provider-svnjava</groupId>
+    			<artifactId>maven-scm-provider-svnjava</artifactId>
+    			<version>${maven.scm.provider.svnjava.version}</version>
+			</dependency>
+			<dependency>
+              <groupId>org.apache.maven.scm</groupId>
+              <artifactId>maven-scm-provider-jgit</artifactId>
+              <version>${maven.scm.provider.jgit.version}</version>
+          	</dependency>
+       </dependencies>
       </plugin>
     </plugins>
     <finalName>OMIS3</finalName>

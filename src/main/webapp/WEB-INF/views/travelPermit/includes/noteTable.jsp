@@ -17,9 +17,11 @@
 		</thead>
 		<tbody id="noteTableBody">
 			<c:forEach var="travelPermitNoteItem" items="${travelPermitNoteItems}" varStatus="status">
-				<c:set var="travelPermitNoteItem" value="${travelPermitNoteItem}" scope="request"/>
-				<c:set var="travelPermitNoteItemIndex" value="${status.index}" scope="request"/>
-				<jsp:include page="noteTableRow.jsp"/>
+				<c:if test="${travelPermitNoteItem.operation != null}">
+					<c:set var="travelPermitNoteItem" value="${travelPermitNoteItem}" scope="request"/>
+					<c:set var="travelPermitNoteItemIndex" value="${status.index}" scope="request"/>
+					<jsp:include page="noteTableRow.jsp"/>
+				</c:if>
 			</c:forEach>
 		</tbody>
 	</table>

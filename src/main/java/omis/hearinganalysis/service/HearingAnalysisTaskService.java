@@ -118,11 +118,13 @@ public interface HearingAnalysisTaskService {
 	 * @param taskAssignment task assignment
 	 * @param assigneeAccount assignee user account
 	 * @param assignedDate assigned date
+	 * @param lastInvokedDate last invoked date
 	 * @return task assignment
 	 * @throws DuplicateEntityFoundException if duplicate entity exists
 	 */
 	TaskAssignment updateTaskAssignment(TaskAssignment taskAssignment,
-			UserAccount assigneeAccount, Date assignedDate)
+			UserAccount assigneeAccount, Date assignedDate,
+			Date lastInvokedDate)
 					throws DuplicateEntityFoundException;
 	
 	/**

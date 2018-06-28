@@ -4,6 +4,7 @@ import java.util.List;
 
 import omis.employment.dao.EmploymentChangeReasonDao;
 import omis.employment.domain.EmploymentChangeReason;
+import omis.employment.exception.EmploymentChangeReasonExistsException;
 import omis.exception.DuplicateEntityFoundException;
 import omis.instance.factory.InstanceFactory;
 
@@ -51,13 +52,13 @@ public class EmploymentChangeReasonDelegate {
 	 * @param sortOrder sort order
 	 * @param valid valid
 	 * @return employment change reason 
-	 * @throws DuplicateEntityFoundException if duplicate entity exists 
+	 * @throws EmploymentChangeReasonExistsException if duplicate entity exists 
 	 */
 	public EmploymentChangeReason create(final String name, 
 			final Short sortOrder, final Boolean valid) 
-				throws DuplicateEntityFoundException {
+				throws EmploymentChangeReasonExistsException {
 		if (this.employmentChangeReasonDao.find(name)!= null) {
-			throw new DuplicateEntityFoundException(
+			throw new EmploymentChangeReasonExistsException(
 					"Duplicate employment change reason found.");
 		}
 		EmploymentChangeReason employmentChangeReason = this
@@ -76,15 +77,15 @@ public class EmploymentChangeReasonDelegate {
 	 * @param sortOrder sort order
 	 * @param valid valid
 	 * @return employment change reason 
-	 * @throws DuplicateEntityFoundException if duplicate entity exists 
+	 * @throws EmploymentChangeReasonExistsException if duplicate entity exists 
 	 */
 	public EmploymentChangeReason create(
 			final EmploymentChangeReason employmentChangeReason, 
 			final String name, final Short sortOrder, final Boolean valid) 
-				throws DuplicateEntityFoundException {
+				throws EmploymentChangeReasonExistsException {
 		if (this.employmentChangeReasonDao.findExcluding(name, 
 				employmentChangeReason)!= null) {
-			throw new DuplicateEntityFoundException(
+			throw new EmploymentChangeReasonExistsException(
 					"Duplicate employment change reason found.");
 		}
 		populateEmploymentChangeReason(employmentChangeReason, name, sortOrder, 

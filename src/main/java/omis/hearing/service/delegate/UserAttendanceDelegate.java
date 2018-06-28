@@ -26,6 +26,7 @@ import omis.exception.DuplicateEntityFoundException;
 import omis.hearing.dao.UserAttendanceDao;
 import omis.hearing.domain.Hearing;
 import omis.hearing.domain.UserAttendance;
+import omis.hearing.exception.UserAttendanceExistsException;
 import omis.instance.factory.InstanceFactory;
 import omis.user.domain.UserAccount;
 
@@ -38,7 +39,7 @@ import omis.user.domain.UserAccount;
  */
 public class UserAttendanceDelegate {
 	
-	private static final String DUPLICATE_ENTITY_FOUND_MSG =
+	private static final String USER_ATTENDANCE_EXISTS_FOUND_MSG =
 			"User attendance exists for specified hearing with given user "
 			+ "account";
 	
@@ -75,9 +76,10 @@ public class UserAttendanceDelegate {
 	 * @throws DuplicateEntityFoundException if duplicate entity exists
 	 */
 	public UserAttendance create(final Hearing hearing,
-			final UserAccount userAccount)throws DuplicateEntityFoundException{
+			final UserAccount userAccount)throws UserAttendanceExistsException{
 		if(this.userAttendanceDao.find(hearing, userAccount) != null){
-			throw new DuplicateEntityFoundException(DUPLICATE_ENTITY_FOUND_MSG);
+			throw new UserAttendanceExistsException(
+					USER_ATTENDANCE_EXISTS_FOUND_MSG);
 		}
 		UserAttendance userAttendance = this.userAttendanceInstanceFactory
 				.createInstance();
@@ -100,10 +102,11 @@ public class UserAttendanceDelegate {
 	 */
 	public UserAttendance update(final UserAttendance userAttendance,
 			final Hearing hearing, final UserAccount userAccount) 
-					throws DuplicateEntityFoundException{
+					throws UserAttendanceExistsException{
 		if(this.userAttendanceDao.findExcluding(hearing, userAccount, 
 				userAttendance) != null){
-			throw new DuplicateEntityFoundException(DUPLICATE_ENTITY_FOUND_MSG);
+			throw new UserAttendanceExistsException(
+					USER_ATTENDANCE_EXISTS_FOUND_MSG);
 		}
 		populateUserAttendance(userAttendance, hearing, userAccount);
 		

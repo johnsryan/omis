@@ -10,6 +10,7 @@ import org.testng.annotations.Test;
 
 import omis.address.domain.Address;
 import omis.address.domain.ZipCode;
+import omis.address.exception.ZipCodeExistsException;
 import omis.address.service.delegate.AddressDelegate;
 import omis.address.service.delegate.ZipCodeDelegate;
 import omis.audit.domain.VerificationMethod;
@@ -22,6 +23,8 @@ import omis.employment.domain.Employer;
 import omis.employment.domain.EmploymentChangeReason;
 import omis.employment.domain.EmploymentTerm;
 import omis.employment.domain.component.Job;
+import omis.employment.exception.EmploymentChangeReasonExistsException;
+import omis.employment.exception.EmploymentExistsException;
 import omis.employment.service.EmploymentService;
 import omis.employment.service.delegate.EmployerDelegate;
 import omis.employment.service.delegate.EmploymentChangeReasonDelegate;
@@ -29,14 +32,17 @@ import omis.employment.service.delegate.EmploymentTermDelegate;
 import omis.exception.DateConflictException;
 import omis.exception.DuplicateEntityFoundException;
 import omis.location.domain.Location;
+import omis.location.exception.LocationExistsException;
 import omis.location.service.delegate.LocationDelegate;
 import omis.offender.domain.Offender;
 import omis.offender.service.delegate.OffenderDelegate;
 import omis.organization.domain.Organization;
+import omis.organization.exception.OrganizationExistsException;
 import omis.organization.service.delegate.OrganizationDelegate;
 import omis.person.service.delegate.PersonDelegate;
 import omis.region.domain.City;
 import omis.region.domain.State;
+import omis.region.exception.CityExistsException;
 import omis.region.service.delegate.CityDelegate;
 import omis.region.service.delegate.StateDelegate;
 import omis.testng.AbstractHibernateTransactionalTestNGSpringContextTests;
@@ -48,6 +54,7 @@ import omis.util.PropertyValueAsserter;
  *
  * @author Trevor Isles
  * @author Josh Divine
+ * @author Sheronda Vaughn
  * @version 0.0.2 (Dec 14, 2017)
  * @since OMIS 3.0
  */
@@ -123,13 +130,22 @@ public class EmploymentServiceUpdateTests
 	
 	/**
 	 * Tests the update of the job for an employment term.
+	 * @throws EmploymentChangeReasonExistsException 
+	 * @throws CityExistsException 
+	 * @throws ZipCodeExistsException 
+	 * @throws OrganizationExistsException 
+	 * @throws LocationExistsException 
+	 * @throws EmploymentExistsException 
 	 *  
 	 * @throws DuplicateEntityFoundException if duplicate entity exists
 	 * @throws DateConflictException if date conflict exists
 	 */
 	@Test
-	public void testUpdateJob() throws DuplicateEntityFoundException, 
-			DateConflictException {
+	public void testUpdateJob() throws EmploymentChangeReasonExistsException, 
+		CityExistsException, ZipCodeExistsException, 
+		OrganizationExistsException, LocationExistsException, 
+		EmploymentExistsException, DuplicateEntityFoundException, 
+		DateConflictException {
 		// Arrangement
 		EmploymentChangeReason employmentChangeReason = this
 				.employmentChangeReasonDelegate.create("Fired", (short) 1, true);
@@ -202,7 +218,11 @@ public class EmploymentServiceUpdateTests
 	 * @throws DuplicateEntityFoundException if duplicate entity exists
 	 */
 	@Test
-	public void testUpdateDateRange() throws DuplicateEntityFoundException {
+	public void testUpdateDateRange() 
+			throws EmploymentChangeReasonExistsException, CityExistsException, 
+			ZipCodeExistsException, OrganizationExistsException, 
+			LocationExistsException, EmploymentExistsException, 
+			DuplicateEntityFoundException, DateConflictException {
 		// Arrangement
 		EmploymentChangeReason employmentChangeReason = this
 				.employmentChangeReasonDelegate.create("Fired", (short) 1, true);
@@ -265,11 +285,21 @@ public class EmploymentServiceUpdateTests
 	
 	/**
 	 * Tests the update of the end reason for an employment term.
+	 * @throws EmploymentChangeReasonExistsException 
+	 * @throws CityExistsException 
+	 * @throws ZipCodeExistsException 
+	 * @throws OrganizationExistsException 
+	 * @throws LocationExistsException 
+	 * @throws EmploymentExistsException 
 	 *  
 	 * @throws DuplicateEntityFoundException if duplicate entity exists
 	 */
 	@Test
-	public void testUpdateEndReason() throws DuplicateEntityFoundException {
+	public void testUpdateEndReason() 
+			throws EmploymentChangeReasonExistsException, CityExistsException, 
+			ZipCodeExistsException, OrganizationExistsException, 
+			LocationExistsException, EmploymentExistsException,
+			DuplicateEntityFoundException {
 		// Arrangement
 		EmploymentChangeReason employmentChangeReason = this
 				.employmentChangeReasonDelegate.create("Fired", (short) 1, true);
@@ -334,12 +364,21 @@ public class EmploymentServiceUpdateTests
 	/**
 	 * Tests the update of the convicted of employer theft for an employment 
 	 * term.
+	 * @throws EmploymentChangeReasonExistsException 
+	 * @throws CityExistsException 
+	 * @throws ZipCodeExistsException 
+	 * @throws OrganizationExistsException 
+	 * @throws LocationExistsException 
+	 * @throws EmploymentExistsException 
 	 *  
 	 * @throws DuplicateEntityFoundException if duplicate entity exists
 	 */
 	@Test
 	public void testUpdateConvictedOfEmployerTheft() 
-			throws DuplicateEntityFoundException {
+			throws EmploymentChangeReasonExistsException, CityExistsException, 
+			ZipCodeExistsException, OrganizationExistsException, 
+			LocationExistsException, EmploymentExistsException,
+			DuplicateEntityFoundException {
 		// Arrangement
 		EmploymentChangeReason employmentChangeReason = this
 				.employmentChangeReasonDelegate.create("Fired", (short) 1, true);
@@ -401,12 +440,21 @@ public class EmploymentServiceUpdateTests
 	
 	/**
 	 * Tests the update of the verification signature for an employment term.
+	 * @throws CityExistsException 
+	 * @throws ZipCodeExistsException 
+	 * @throws OrganizationExistsException 
+	 * @throws LocationExistsException 
+	 * @throws EmploymentExistsException 
+	 * @throws EmploymentChangeReasonExistsException 
 	 *  
 	 * @throws DuplicateEntityFoundException if duplicate entity exists
 	 */
 	@Test
-	public void testUpdateVerificationSignature() 
-			throws DuplicateEntityFoundException {
+	public void testUpdateVerificationSignature() throws CityExistsException, 
+			ZipCodeExistsException, OrganizationExistsException, 
+			LocationExistsException, EmploymentExistsException, 
+			EmploymentChangeReasonExistsException, DuplicateEntityFoundException
+			 {
 		// Arrangement
 		EmploymentChangeReason employmentChangeReason = this
 				.employmentChangeReasonDelegate.create("Fired", (short) 1, true);
@@ -472,12 +520,20 @@ public class EmploymentServiceUpdateTests
 	
 	/**
 	 * Tests that {@code DuplicateEntityFoundException} is thrown.
+	 * @throws EmploymentChangeReasonExistsException 
+	 * @throws CityExistsException 
+	 * @throws ZipCodeExistsException 
+	 * @throws OrganizationExistsException 
+	 * @throws LocationExistsException 
 	 *  
 	 * @throws DuplicateEntityFoundException if duplicate entity exists
 	 */
-	@Test(expectedExceptions = {DuplicateEntityFoundException.class})
-	public void testDuplicateEntityFoundException() 
-			throws DuplicateEntityFoundException {
+	@Test(expectedExceptions = {EmploymentExistsException.class})
+	public void testEmploymentExistsException() 
+			throws EmploymentExistsException, 
+			EmploymentChangeReasonExistsException, CityExistsException, 
+			ZipCodeExistsException, OrganizationExistsException, 
+			LocationExistsException, DuplicateEntityFoundException {
 		// Arrangements
 		EmploymentChangeReason employmentChangeReason = this
 				.employmentChangeReasonDelegate.create("Fired", (short) 1, true);

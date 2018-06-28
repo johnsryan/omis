@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System.
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 /**
  * 
  * @author Yidong Li
@@ -11,19 +28,23 @@ window.onload = function() {
 	applyDatePicker(endDate);
 	var issueDate = document.getElementById("issueDate");
 	applyDatePicker(issueDate);
-	
+	for(var x = 0; x < travelPermitNoteItemIndex; x++){
+		applyNoteRowBehavior(x);
+	}
+		
 	applyValueLabelAutoComplete(document.getElementById("issuerInput"), 
 			document.getElementById("issuer"), 
 			config.ServerConfig.getContextPath() + "/travelPermit/searchUserAccounts.json");
 	var queryInput = document.getElementById("travelPermitAddressQuery");
 	var searchAddress = document.getElementById("searchAddress");
-	applyValueLabelAutoComplete(queryInput, searchAddress, config.ServerConfig.getContextPath() + "/travelPermit/findOffenderRelationshipAddress.json");
-	document.getElementById("issuerClear").onclick = function() {
+	applyValueLabelAutoComplete(queryInput, searchAddress, config.ServerConfig.getContextPath() + "/travelPermit/findAddress.json");
+	/*document.getElementById("issuerClear").onclick = function() {
 		document.getElementById("issuer").value = "";
 		document.getElementById("issuerInput").value = "";
 		return false;
-	};
+	};*/
 	document.getElementById("useCurrentUserAccountForIssuerLink").onclick = function() {
+		var cc = document.getElementById("issuer");
 		document.getElementById("issuer").value = config.SessionConfig.getUserAccountId();
 		document.getElementById("issuerInput").value = config.SessionConfig.getUserAccountLabel();
 		return false;
@@ -100,95 +121,87 @@ window.onload = function() {
 		} 
 	}
 	
-	function applyNoteRowBehavior(noteItemIndex) {
-		rowItem = document.getElementById("travelPermitNoteRows[" + travelPermitNoteItemIndex + "].row");
-		var noteItemDate = document.getElementById("travelPermitNoteRow[" + travelPermitNoteItemIndex + "].date");
+	function applyNoteRowBehavior(index) {
+		rowItem = document.getElementById("travelPermitNoteRows[" + index + "].row");
+		var noteItemDate = document.getElementById("travelPermitNoteRow[" + index + "].date");
 		applyDatePicker(noteItemDate);
-		var removeLink = document.getElementById("removeNote[" + travelPermitNoteItemIndex + "].removeLink");
-		removeLink.onclick = function() {
-			var noteItemIndex = this.getAttribute("id").replace("removeNote[", "").replace("].removeLink", "");
-			var noteItemTableRow = document.getElementById("travelPermitNoteRows[" + noteItemIndex + "].row");
-			var noteItemTableRowOperation = document.getElementById("travelPermitNoteItems[" + noteItemIndex + "].operation");
-			if(noteItemTableRowOperation.value=="UPDATE"){
-				ui.addClass(noteItemTableRow, "removeRow");
-				noteItemTableRowOperation.value="REMOVE"
-			} else if(noteItemTableRowOperation.value=="REMOVE") {
-				ui.removeClass(noteItemTableRow, "removeRow");
-				noteItemTableRowOperation.value="UPDATE"
-			} 
-			else {
-				noteItemTableRow.parentNode.removeChild(noteItemTableRow);
+		var removeLink = document.getElementById("removeNote[" + index + "].removeLink");
+		if(createTravelPermit){
+			if(removeLink != null){
+				removeLink.onclick = function() {
+					var noteItemIndex = this.getAttribute("id").replace("removeNote[", "").replace("].removeLink", "");
+					var noteItemTableRow = document.getElementById("travelPermitNoteRows[" + noteItemIndex + "].row");
+					var noteItemTableRowOperation = document.getElementById("travelPermitNoteItems[" + noteItemIndex + "].operation");
+					if(noteItemTableRowOperation.value=="UPDATE"){
+						ui.addClass(noteItemTableRow, "removeRow");
+						noteItemTableRowOperation.value="REMOVE"
+					} else if(noteItemTableRowOperation.value=="REMOVE") {
+						ui.removeClass(noteItemTableRow, "removeRow");
+						noteItemTableRowOperation.value="UPDATE";
+					} 
+					else {
+						noteItemTableRow.parentNode.removeChild(noteItemTableRow);
+					}
+					return false;
+				}
 			}
-			return false;
+		}
+		if(!createTravelPermit){
+			var noteItemTableRowOperation = document.getElementById("travelPermitNoteItems[" + index + "].operation");
+			var noteItemTableRow = document.getElementById("travelPermitNoteRows[" + index + "].row");
+			if(noteItemTableRowOperation.value == "REMOVE"){
+				ui.addClass(noteItemTableRow, "removeRow");
+			}
+			if(removeLink != null){
+				removeLink.onclick = function() {
+					var noteItemIndex = this.getAttribute("id").replace("removeNote[", "").replace("].removeLink", "");
+					var noteItemTableRow = document.getElementById("travelPermitNoteRows[" + noteItemIndex + "].row");
+					var noteItemTableRowOperation = document.getElementById("travelPermitNoteItems[" + noteItemIndex + "].operation");
+					if(noteItemTableRowOperation.value == "EDIT"){
+						if (!ui.hasClass(noteItemTableRow, "removeRow")) {
+							ui.addClass(noteItemTableRow, "removeRow");
+							noteItemTableRowOperation.value = "REMOVE";
+						} 
+						return false;
+					} 
+					if (noteItemTableRowOperation.value == "REMOVE"){
+						if(ui.hasClass(noteItemTableRow, "removeRow")) {
+							ui.removeClass(noteItemTableRow, "removeRow");
+							noteItemTableRowOperation.value = "UPDATE";
+						}
+						return false;
+					}
+					if (noteItemTableRowOperation.value == "CREATE"){
+						noteItemTableRow.parentNode.removeChild(noteItemTableRow);
+						return false;
+					}
+				}
+			}
 		}
 	}
 	
-	var travelMethod = document.getElementById("travelMethod");
-	var airplane = document.getElementById("transportMethod2");
-	var privateVehicle = document.getElementById("transportMethod1");
-	var bus = document.getElementById("transportMethod3");
-	var train = document.getElementById("transportMethod4");
+	var travelMethods = document.getElementById("travelMethods");
+	var travelMethodsRadioButtons = document.getElementsByName("travelMethod");
+	for (var index = 0; index < travelMethodsRadioButtons.length; index++) {
+		var button = travelMethodsRadioButtons[index];
+		button.onclick=function(){
+			travelMethodCheck()
+			var transportMethodLink = document.getElementById("transportMethodLink");
+			var url = transportMethodLink.getAttribute("href") + "&travelMethod=" + this.value;
+			var request = new XMLHttpRequest();
+			request.open("GET", url, false);			request.send();
+			if (request.status == 200) {
+				ui.appendHtml(travelMethods, request.responseText);
+			} else {
+				alert("Error - status: " + request.status + "; URL: " + url);
+			}
+		}
+	}
 
-	privateVehicle.onclick=function(){
-		travelMethodCheck()
-		var transportMethodLink = document.getElementById("transportMethodLink");
-		var url = transportMethodLink.getAttribute("href") + "&travelMethod=" + privateVehicle.value;
-		var request = new XMLHttpRequest();
-		request.open("GET", url, false);
-		request.send();
-		if (request.status == 200) {
-			ui.appendHtml(travelMethod, request.responseText);
-		} else {
-			alert("Error - status: " + request.status + "; URL: " + url);
-		}
-	}
-
-	airplane.onclick=function(){
-		travelMethodCheck()
-		var transportMethodLink = document.getElementById("transportMethodLink");
-		var url = transportMethodLink.getAttribute("href") + "&travelMethod=" + airplane.value;
-		var request = new XMLHttpRequest();
-		request.open("GET", url, false);
-		request.send();
-		if (request.status == 200) {
-			ui.appendHtml(travelMethod, request.responseText);
-		} else {
-			alert("Error - status: " + request.status + "; URL: " + url);
-		}
-	}
-	
-	bus.onclick=function(){
-		travelMethodCheck()
-		var transportMethodLink = document.getElementById("transportMethodLink");
-		var url = transportMethodLink.getAttribute("href") + "&travelMethod=" + bus.value;
-		var request = new XMLHttpRequest();
-		request.open("GET", url, false);
-		request.send();
-		if (request.status == 200) {
-			ui.appendHtml(travelMethod, request.responseText);
-		} else {
-			alert("Error - status: " + request.status + "; URL: " + url);
-		}
-	}
-	
-	train.onclick=function(){
-		travelMethodCheck()
-		var transportMethodLink = document.getElementById("transportMethodLink");
-		var url = transportMethodLink.getAttribute("href") + "&travelMethod=" + train.value;
-		var request = new XMLHttpRequest();
-		request.open("GET", url, false);
-		request.send();
-		if (request.status == 200) {
-			ui.appendHtml(travelMethod, request.responseText);
-		} else {
-			alert("Error - status: " + request.status + "; URL: " + url);
-		}
-	}
-	
 	var fullAddressContainer = document.getElementById("fullAddressContainer");
 	var partialAddressContainer = document.getElementById("partialAddressContainer");
-	var fullAddress = document.getElementById("destinationOption1");
-	var partialAddress = document.getElementById("destinationOption2");
+	var fullAddress = document.getElementById("fullAddress");
+	var partialAddress = document.getElementById("partialAddress");
 	
 	fullAddress.onclick=function(){
 		fullAddressContainer.hidden=false;
@@ -201,8 +214,8 @@ window.onload = function() {
 	
 	var existingAddressContainer = document.getElementById("existingAddressContainer");
 	var newAddressContainer = document.getElementById("newAddressContainer");
-	var existingAddress = document.getElementById("addressOption1");
-	var newAddress = document.getElementById("addressOption2");
+	var existingAddress = document.getElementById("useExistingAddress");
+	var newAddress = document.getElementById("createNewAddress");
 	
 	existingAddress.onclick=function(){
 		existingAddressContainer.hidden=false;
@@ -213,39 +226,65 @@ window.onload = function() {
 		newAddressContainer.hidden=false;
 	}
 	
-	var newCityContainer = document.getElementById("newCityContainer");
-	var newCityButton = document.getElementById("newCityName");
-	var newCityValue="false";
-	newCityButton.onclick=function(){
-		if(newCityValue=="false"){
-			newCityContainer.hidden=false;
-			newCityValue="true";
+	var falseNewCity = document.getElementById("newCityFalse");
+	var trueNewCity = document.getElementById("newCityTrue");
+
+	trueNewCity.onclick=function(){
+		if (!ui.hasClass(document.getElementById("existingCityFieldGroup"),"hidden")) {
+			ui.addClass(document.getElementById("existingCityFieldGroup"),"hidden");
 		}
-		else{
-			newCityContainer.hidden=true;
-			newCityValue="false";
+		if (ui.hasClass(document.getElementById("newCityFieldGroup"),"hidden")) {
+			ui.removeClass(document.getElementById("newCityFieldGroup"),"hidden");
 		}
-	}
-	
-	var newZipCodeContainer = document.getElementById("newZipCodeContainer");
-	var newZipCodeButton = document.getElementById("newZipCodeName");
-	var newZipCodeValue="false";
-	newZipCodeButton.onclick=function(){
-		if(newZipCodeValue=="false"){
-			newZipCodeContainer.hidden=false;
-			newZipCodeValue="true";
+		if (ui.hasClass(document.getElementById("newZipCodeFieldGroup"),"hidden")) {
+			ui.removeClass(document.getElementById("newZipCodeFieldGroup"),"hidden");
+			ui.addClass(document.getElementById("existingZipCodeFieldGroup"),"hidden");
 		}
-		else{
-			newZipCodeContainer.hidden=true;
-			newZipCodeValue="false";
+		if (ui.hasClass(document.getElementById("existingZipCodeFieldGroup"),"hidden")) {
+			ui.addClass(document.getElementById("existingZipCodeFieldGroup"),"hidden");
 		}
-	}
+
+		document.getElementById("newZipCodeTrue").checked=true;
+		document.getElementById("newZipCodeFalse").checked=false;
+		document.getElementById("newZipCodeFalse").setAttribute("disabled", "disabled");
+	};
+	falseNewCity.onclick=function(){
+		if (ui.hasClass(document.getElementById("existingCityFieldGroup"),"hidden")) {
+			ui.removeClass(document.getElementById("existingCityFieldGroup"),"hidden");
+		}
+		if (ui.hasClass(document.getElementById("existingZipCodeFieldGroup"),"hidden")) {
+			ui.removeClass(document.getElementById("existingZipCodeFieldGroup"),"hidden");
+			ui.addClass(document.getElementById("newZipCodeFieldGroup"),"hidden");
+			ui.addClass(document.getElementById("newCityFieldGroup"),"hidden");
+		}
+		document.getElementById("newZipCodeFalse").removeAttribute("disabled");
+		document.getElementById("newZipCodeTrue").checked=false;
+		document.getElementById("newZipCodeFalse").checked=true;
+	};
+		
+	var falseNewZipCode = document.getElementById("newZipCodeFalse");
+	var trueNewZipCode = document.getElementById("newZipCodeTrue");
+	trueNewZipCode.onclick=function(){
+		if (ui.hasClass(document.getElementById("newZipCodeFieldGroup"),"hidden")) {
+			ui.removeClass(document.getElementById("newZipCodeFieldGroup"),"hidden");
+		}
+		if (!ui.hasClass(document.getElementById("existingZipCodeFieldGroup"),"hidden")) {
+			ui.addClass(document.getElementById("existingZipCodeFieldGroup"),"hidden");
+		}
+	};
+	falseNewZipCode.onclick=function(){
+		if (!ui.hasClass(document.getElementById("newZipCodeFieldGroup"),"hidden")) {
+			ui.addClass(document.getElementById("newZipCodeFieldGroup"),"hidden");
+		}
+		if (ui.hasClass(document.getElementById("existingZipCodeFieldGroup"),"hidden")) {
+			ui.removeClass(document.getElementById("existingZipCodeFieldGroup"),"hidden");
+		}
+	};
 	
 	function travelMethodCheck(){
-		var legend = document.getElementById("legend");
-		if(legend!=null){
-			var div = document.getElementById("div");
-			div.parentNode.removeChild(div);
+		var travelMethodDiv = document.getElementById("div");
+		if(travelMethodDiv!=null){
+			div.parentNode.removeChild(travelMethodDiv);
 		}
 	}
 }

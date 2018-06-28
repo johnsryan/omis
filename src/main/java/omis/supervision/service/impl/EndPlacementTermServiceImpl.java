@@ -21,10 +21,10 @@ import java.util.Date;
 import java.util.List;
 
 import omis.datatype.DateRange;
-import omis.exception.DuplicateEntityFoundException;
 import omis.locationterm.domain.LocationReasonTerm;
 import omis.locationterm.domain.LocationTerm;
 import omis.locationterm.exception.LocationReasonTermExistsException;
+import omis.locationterm.exception.LocationTermExistsException;
 import omis.locationterm.service.delegate.LocationReasonTermDelegate;
 import omis.locationterm.service.delegate.LocationTermDelegate;
 import omis.offender.domain.Offender;
@@ -33,6 +33,9 @@ import omis.supervision.domain.CorrectionalStatusTerm;
 import omis.supervision.domain.PlacementTerm;
 import omis.supervision.domain.PlacementTermChangeReason;
 import omis.supervision.domain.SupervisoryOrganizationTerm;
+import omis.supervision.exception.CorrectionalStatusTermExistsException;
+import omis.supervision.exception.PlacementTermExistsException;
+import omis.supervision.exception.SupervisoryOrganizationTermExistsException;
 import omis.supervision.service.EndPlacementTermService;
 import omis.supervision.service.delegate.CorrectionalStatusTermDelegate;
 import omis.supervision.service.delegate.PlacementTermChangeReasonDelegate;
@@ -93,9 +96,14 @@ public class EndPlacementTermServiceImpl implements EndPlacementTermService {
 	
 	/** {@inheritDoc} */
 	@Override
-	public PlacementTerm endPlacementTerm(final PlacementTerm placementTerm, 
-			final Date endDate, final PlacementTermChangeReason endChangeReason) 
-					throws DuplicateEntityFoundException {
+	public PlacementTerm endPlacementTerm(
+			final PlacementTerm placementTerm, 
+			final Date endDate,
+			final PlacementTermChangeReason endChangeReason)
+				throws CorrectionalStatusTermExistsException,
+					SupervisoryOrganizationTermExistsException,
+					PlacementTermExistsException,
+					LocationTermExistsException {
 		//End correctional status term if available
 		CorrectionalStatusTerm correctionalStatusTerm 
 			= placementTerm.getCorrectionalStatusTerm();

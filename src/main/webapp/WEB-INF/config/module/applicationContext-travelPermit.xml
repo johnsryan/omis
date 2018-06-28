@@ -19,6 +19,7 @@
     <constructor-arg name="zipCodeDelegate" ref="zipCodeDelegate"/>
     <constructor-arg name="stateDelegate" ref="stateDelegate"/>
     <constructor-arg name="countryDelegate" ref="countryDelegate"/>
+    <constructor-arg name="userAccountDelegate" ref="userAccountDelegate"/>
   </bean>
 
   <!-- Service delegates -->
@@ -46,7 +47,7 @@
         class="omis.travelpermit.service.delegate.TravelPermitPeriodicityDelegate">
     <constructor-arg name="travelPermitPeriodicityDao" ref="travelPermitPeriodicityDao"/>
     <constructor-arg name="travelPermitPeriodicityInstanceFactory" ref="travelPermitPeriodicityInstanceFactory"/>
-  </bean>
+  </bean> 
   
   <!-- Report services -->
    <bean id="travelPermitReportService"
@@ -54,6 +55,10 @@
     	<constructor-arg name="sessionFactory" ref="sessionFactory"/>
   </bean>
 
+  <bean id="travelPermitProfileItemReportService"
+    	class="omis.travelpermit.report.impl.hibernate.TravelPermitProfileItemReportServiceHibernateImpl">
+    	<constructor-arg name="sessionFactory" ref="sessionFactory"/>
+  </bean>
   <!-- Data access objects -->
   
   <bean id="travelPermitDao" class="omis.travelpermit.dao.impl.hibernate.TravelPermitDaoHibernateImpl">

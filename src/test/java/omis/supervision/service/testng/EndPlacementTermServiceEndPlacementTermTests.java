@@ -26,7 +26,7 @@ import org.testng.annotations.Test;
 
 import omis.beans.factory.spring.CustomDateEditorFactory;
 import omis.datatype.DateRange;
-import omis.exception.DuplicateEntityFoundException;
+import omis.locationterm.exception.LocationTermExistsException;
 import omis.offender.domain.Offender;
 import omis.offender.service.delegate.OffenderDelegate;
 import omis.supervision.domain.CorrectionalStatus;
@@ -35,8 +35,12 @@ import omis.supervision.domain.PlacementTerm;
 import omis.supervision.domain.PlacementTermChangeReason;
 import omis.supervision.domain.SupervisoryOrganization;
 import omis.supervision.domain.SupervisoryOrganizationTerm;
-import omis.supervision.exception.OffenderNotUnderSupervisionException;
-import omis.supervision.exception.OffenderSupervisedByOrganizationException;
+import omis.supervision.exception.CorrectionalStatusExistsException;
+import omis.supervision.exception.CorrectionalStatusTermExistsException;
+import omis.supervision.exception.PlacementTermChangeReasonExistsException;
+import omis.supervision.exception.PlacementTermExistsException;
+import omis.supervision.exception.SupervisoryOrganizationExistsException;
+import omis.supervision.exception.SupervisoryOrganizationTermExistsException;
 import omis.supervision.service.EndPlacementTermService;
 import omis.supervision.service.delegate.CorrectionalStatusDelegate;
 import omis.supervision.service.delegate.CorrectionalStatusTermDelegate;
@@ -51,6 +55,7 @@ import omis.util.PropertyValueAsserter;
  * Tests method to end placement terms.
  *
  * @author Josh Divine
+ * @author Stephen Abson
  * @version 0.0.1
  * @since OMIS 3.0
  */
@@ -106,14 +111,27 @@ public class EndPlacementTermServiceEndPlacementTermTests
 	/**
 	 * Tests the end placement term method.
 	 * 
-	 * @throws DuplicateEntityFoundException thrown if placement term exists
-	 * @throws OffenderNotUnderSupervisionException thrown if offender is not 
-	 * currently under supervision
-	 * @throws OffenderSupervisedByOrganizationException thrown if the 
-	 * supervisory organization matches the currently supervised organization
+	 * @throws SupervisoryOrganizationExistsException if supervisory
+	 * organization term exists
+	 * @throws PlacementTermChangeReasonExistsException if placement term
+	 * change reason exists 
+	 * @throws SupervisoryOrganizationTermExistsException if supervisory
+	 * organization term exists 
+	 * @throws CorrectionalStatusExistsException if correctional status exists
+	 * @throws CorrectionalStatusTermExistsException if correctional status
+	 * term exists
+	 * @throws PlacementTermExistsException if placement term exists
+	 * @throws LocationTermExistsException if location term exists
 	 */
 	@Test
-	public void testEndPlacementTerm() throws DuplicateEntityFoundException {
+	public void testEndPlacementTerm()
+				throws SupervisoryOrganizationExistsException,
+					PlacementTermChangeReasonExistsException,
+					SupervisoryOrganizationTermExistsException,
+					CorrectionalStatusExistsException,
+					CorrectionalStatusTermExistsException,
+					PlacementTermExistsException,
+					LocationTermExistsException {
 		// Arrangements
 		Offender offender = this.offenderDelegate.createWithoutIdentity("Smith",
 				"John", "Bob", null);

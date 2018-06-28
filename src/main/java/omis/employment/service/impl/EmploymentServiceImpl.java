@@ -5,6 +5,8 @@ import java.util.List;
 
 import omis.address.domain.Address;
 import omis.address.domain.ZipCode;
+import omis.address.exception.AddressExistsException;
+import omis.address.exception.ZipCodeExistsException;
 import omis.address.service.delegate.AddressDelegate;
 import omis.address.service.delegate.ZipCodeDelegate;
 import omis.audit.domain.VerificationMethod;
@@ -18,19 +20,24 @@ import omis.employment.domain.EmploymentChangeReason;
 import omis.employment.domain.EmploymentNote;
 import omis.employment.domain.EmploymentTerm;
 import omis.employment.domain.component.Job;
+import omis.employment.exception.EmployerExistsException;
+import omis.employment.exception.EmploymentExistsException;
+import omis.employment.exception.EmploymentNoteExistsException;
 import omis.employment.service.EmploymentService;
 import omis.employment.service.delegate.EmployerDelegate;
 import omis.employment.service.delegate.EmploymentChangeReasonDelegate;
 import omis.employment.service.delegate.EmploymentNoteDelegate;
 import omis.employment.service.delegate.EmploymentTermDelegate;
-import omis.exception.DuplicateEntityFoundException;
 import omis.location.domain.Location;
+import omis.location.exception.LocationExistsException;
 import omis.location.service.delegate.LocationDelegate;
 import omis.offender.domain.Offender;
 import omis.organization.domain.Organization;
+import omis.organization.exception.OrganizationExistsException;
 import omis.organization.service.delegate.OrganizationDelegate;
 import omis.region.domain.City;
 import omis.region.domain.State;
+import omis.region.exception.CityExistsException;
 import omis.region.service.delegate.CityDelegate;
 import omis.region.service.delegate.StateDelegate;
 
@@ -107,7 +114,7 @@ public class EmploymentServiceImpl implements EmploymentService {
 			final Boolean convictedOfEmployerTheft,	
 			final EmploymentChangeReason endReason,
 			final VerificationSignature	verificationSignature)	
-		throws DuplicateEntityFoundException {
+		throws EmploymentExistsException {
 		return this.employmentTermDelegate.create(offender, dateRange, job, 
 			convictedOfEmployerTheft, endReason, verificationSignature);
 	}	
@@ -119,7 +126,7 @@ public class EmploymentServiceImpl implements EmploymentService {
 		final Boolean convictedOfEmployerTheft,	
 		final EmploymentChangeReason endReason, 
 		final VerificationSignature	verificationSignature )
-		throws DuplicateEntityFoundException {
+		throws EmploymentExistsException {
 		return this.employmentTermDelegate.update(employmentTerm, dateRange, 
 			job, convictedOfEmployerTheft, endReason, verificationSignature);
 	}
@@ -128,7 +135,7 @@ public class EmploymentServiceImpl implements EmploymentService {
 	@Override
 	public EmploymentNote addNote(final EmploymentTerm term, final String value,
 		final Date date)
-		throws DuplicateEntityFoundException {
+		throws EmploymentNoteExistsException {
 		return this.employmentNoteDelegate.create(term, date, value);
 	}
 	
@@ -136,17 +143,20 @@ public class EmploymentServiceImpl implements EmploymentService {
 	@Override
 	public EmploymentNote updateNote(final EmploymentNote note, 
 		final String value,	final Date date) 
-		throws DuplicateEntityFoundException {
+		throws EmploymentNoteExistsException {
 		return this.employmentNoteDelegate.update(note, date, value);
 	}
 	
-	/** {@inheritDoc} */
+	/** {@inheritDoc} 
+	 * @throws OrganizationExistsException 
+	 * @throws LocationExistsException */
 	@Override
 	public Employer createEmployer(final String name, 
 			final Long telephoneNumber, final Address address) 
-					throws DuplicateEntityFoundException {
+					throws EmployerExistsException, 
+					OrganizationExistsException, LocationExistsException {
 		if(this.employerDelegate.findByNameAndAddress(name, address)!=null){
-			throw new DuplicateEntityFoundException("Employer Already Exist");
+			throw new EmployerExistsException("Employer Already Exist");
 		}
 		Organization organization = this.organizationDelegate.findByName(name);
 		if(organization==null){
@@ -160,7 +170,7 @@ public class EmploymentServiceImpl implements EmploymentService {
 	/** {@inheritDoc} */
 	@Override
 	public Address createAddress(final String value,final ZipCode zipCode) 
-		throws DuplicateEntityFoundException{
+		throws AddressExistsException{
 		return this.addressDelegate.findOrCreate(value, null, null, null, 
 			zipCode);
 	}
@@ -232,14 +242,14 @@ public class EmploymentServiceImpl implements EmploymentService {
 	/** {@inheritDoc} */
 	@Override
 	public City createCity(final String name, final State state, 
-		final Country country) throws DuplicateEntityFoundException{
+		final Country country) throws CityExistsException{
 		return this.cityDelegate.create(name, true, state, country);
 	}
 	
 	/** {@inheritDoc} */
 	@Override
 	public ZipCode createZipCode(final String value, final String extension, 
-		final City city) throws DuplicateEntityFoundException{
+		final City city) throws ZipCodeExistsException{
 		return this.zipCodeDelegate.create(city, value, extension, true);
 	}
 	
@@ -274,4 +284,3 @@ public class EmploymentServiceImpl implements EmploymentService {
 		return this.stateDelegate.findHomeState();
 	}
 }
-

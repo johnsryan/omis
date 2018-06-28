@@ -22,6 +22,7 @@
 			<many-to-one name="assigneeAccount" entity-name="omis.user.domain.UserAccount" column="`ASSIGNEE_ACCOUNT_ID`" not-null="true"/>
 			<property name="assignedDate" type="java.util.Date" column="`ASSIGNED_DATE`" not-null="true"/>
 		</properties>
+		<property name="lastInvokedDate" column="`LAST_INVOKED_DATE`" type="java.util.Date" not-null="false" />
 	</class>
 	<query name="findTaskAssignment"><![CDATA[
 		select taskAssignment

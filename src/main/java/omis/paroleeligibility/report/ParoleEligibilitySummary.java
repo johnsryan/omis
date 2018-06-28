@@ -37,6 +37,8 @@ public class ParoleEligibilitySummary implements Serializable {
 	
 	private final Long paroleEligibilityId;
 	
+	private final Long boardHearingId;
+	
 	private final Date hearingEligibilityDate;
 	
 	private final String appearanceCategoryName;
@@ -44,7 +46,7 @@ public class ParoleEligibilitySummary implements Serializable {
 	private final EligibilityStatusCategory statusCategory;
 	
 	private final Date statusDate;
-	
+	 
 	private final Date reviewDate;
 	
 	private final String reasonName;
@@ -84,7 +86,7 @@ public class ParoleEligibilitySummary implements Serializable {
 			final Date statusDate,
 			final Date reviewDate,
 			final String reasonName) {
-		this(paroleEligibilityId, null, hearingEligibilityDate, 
+		this(paroleEligibilityId, null, null, hearingEligibilityDate, 
 				appearanceCategoryName, statusCategory, statusDate, reviewDate, 
 				reasonName, null, null, null, null, null, null, null);
 	}
@@ -111,7 +113,8 @@ public class ParoleEligibilitySummary implements Serializable {
 	 * @param hearingDate hearing date
 	 */
 	public ParoleEligibilitySummary(
-			final Long paroleEligibilityId, final Long hearingAnalysisId, 
+			final Long paroleEligibilityId, final Long hearingAnalysisId,
+			final Long boardHearingId,
 			final Date hearingEligibilityDate, 
 			final String appearanceCategoryName,
 			final EligibilityStatusCategory statusCategory,
@@ -139,6 +142,7 @@ public class ParoleEligibilitySummary implements Serializable {
 		this.boardHearingItineraryLocationName =
 				boardHearingItineraryLocationName;
 		this.hearingDate = hearingDate;
+		this.boardHearingId = boardHearingId; 
 	}
 	
 	/**
@@ -273,4 +277,15 @@ public class ParoleEligibilitySummary implements Serializable {
 	public Date getHearingDate() {
 		return hearingDate;
 	}
+
+	/**
+	 * Returns the board Hearing ID.
+	 * 
+	 * @return boardHearingId - board hearing ID
+	 */
+	public Long getBoardHearingId() {
+		return this.boardHearingId;
+	}
+	
+	
 }

@@ -23,7 +23,6 @@ import omis.audit.AuditComponentRetriever;
 import omis.audit.domain.CreationSignature;
 import omis.audit.domain.UpdateSignature;
 import omis.datatype.DateRange;
-import omis.exception.DuplicateEntityFoundException;
 import omis.instance.factory.InstanceFactory;
 import omis.offender.domain.Offender;
 import omis.supervision.dao.PlacementTermDao;
@@ -32,6 +31,7 @@ import omis.supervision.domain.PlacementStatus;
 import omis.supervision.domain.PlacementTerm;
 import omis.supervision.domain.PlacementTermChangeReason;
 import omis.supervision.domain.SupervisoryOrganizationTerm;
+import omis.supervision.exception.PlacementTermExistsException;
 
 /**
  * Delegate for placement terms.
@@ -102,7 +102,7 @@ public class PlacementTermDelegate {
 	 * @param endChangeReason end change reason
 	 * @param locked whether placement term is locked
 	 * @return created placement term
-	 * @throws DuplicateEntityFoundException if placement term exists
+	 * @throws PlacementTermExistsException if placement term exists
 	 */
 	public PlacementTerm create(
 			final Offender offender,
@@ -112,14 +112,14 @@ public class PlacementTermDelegate {
 			final PlacementTermChangeReason startChangeReason,
 			final PlacementTermChangeReason endChangeReason,
 			final Boolean locked)
-				throws DuplicateEntityFoundException {
+				throws PlacementTermExistsException {
 		if (this.placementTermDao.find(offender,
 				DateRange.getStartDate(dateRange),
 				DateRange.getEndDate(dateRange),
 				correctionalStatusTerm,
 				supervisoryOrganizationTerm)
 					!= null) {
-			throw new DuplicateEntityFoundException("Placement term exists");
+			throw new PlacementTermExistsException("Placement term exists");
 		}
 		PlacementTerm placementTerm = this.placementTermInstanceFactory
 				.createInstance();
@@ -145,7 +145,7 @@ public class PlacementTermDelegate {
 	 * @param startChangeReason start change reason
 	 * @param endChangeReason end change reason
 	 * @return updated placement term
-	 * @throws DuplicateEntityFoundException if placement term exists
+	 * @throws PlacementTermExistsException if placement term exists
 	 */
 	public PlacementTerm update(
 			final PlacementTerm placementTerm,
@@ -157,7 +157,7 @@ public class PlacementTermDelegate {
 			final PlacementTermChangeReason startChangeReason,
 			final PlacementTermChangeReason endChangeReason,
 			final Boolean locked)
-					throws DuplicateEntityFoundException {
+					throws PlacementTermExistsException {
 		if (this.placementTermDao.findExcluding(
 				placementTerm.getOffender(),
 				DateRange.getStartDate(dateRange),
@@ -165,7 +165,7 @@ public class PlacementTermDelegate {
 				correctionalStatusTerm,
 				supervisoryOrganizationTerm,
 				placementTerm) != null) {
-			throw new DuplicateEntityFoundException("Placement term exists");
+			throw new PlacementTermExistsException("Placement term exists");
 		}
 		this.populatePlacementTerm(placementTerm, status, statusDateRange,
 				dateRange, supervisoryOrganizationTerm, correctionalStatusTerm,

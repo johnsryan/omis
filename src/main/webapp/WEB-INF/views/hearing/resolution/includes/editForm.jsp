@@ -209,7 +209,7 @@
 				</c:choose>
 				<span class="fieldGroup">
 						<c:choose>
-							<c:when test="${(not (violationItem.disposition eq 'GUILTY')) and resolutionCategory eq 'FORMAL'}">
+							<c:when test="${(not (violationItem.disposition eq 'GUILTY' or violationItem.disposition eq 'REDUCED')) and resolutionCategory eq 'FORMAL'}">
 								<span id="sanction${i}" class="hidden">
 									<form:label path="violationItem.sanction" class="fieldLabel">
 										<fmt:message key="sanctionLabel"/>

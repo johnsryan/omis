@@ -20,4 +20,15 @@
 			inner join sourceUser.name sourceUserName
 		where sourceAccount.username = :username
 	]]></query>
+	<query name="findUninvokedTaskCountByAssigneeUserAccount"><![CDATA[
+		select count(task.id)
+			from
+				omis.task.domain.TaskAssignment taskAssignment
+			inner join
+				taskAssignment.task task
+			where
+				taskAssignment.assigneeAccount = :assigneeAccount
+			and
+				taskAssignment.lastInvokedDate = null
+	]]></query>
 </hibernate-mapping>

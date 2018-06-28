@@ -256,7 +256,7 @@ public class PresentenceInvestigationTaskController {
 			else if(TaskItemOperation.UPDATE.equals(item.getTaskItemOperation())) {
 				this.presentenceInvestigationTaskService.updateTaskAssignment(
 						item.getTaskAssignment(), item.getAssignedDate(),
-						item.getAssigneeAccount());
+						item.getAssigneeAccount(), new Date());
 			}
 			else if(TaskItemOperation.REMOVE.equals(item.getTaskItemOperation())) {
 				this.presentenceInvestigationTaskService.removeTaskAssignment(

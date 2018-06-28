@@ -29,6 +29,7 @@ import omis.offender.domain.Offender;
 import omis.travelpermit.dao.TravelPermitDao;
 import omis.travelpermit.domain.TravelPermit;
 import omis.travelpermit.domain.TravelPermitPeriodicity;
+import omis.travelpermit.domain.component.OtherTravelers;
 import omis.travelpermit.domain.component.TravelDestination;
 import omis.travelpermit.domain.component.TravelPermitIssuance;
 import omis.travelpermit.domain.component.TravelTransportation;
@@ -75,6 +76,7 @@ public class TravelPermitDelegate {
 	 * @param destination travel destination
 	 * @param dateRange date range
 	 * @param purpose purpose
+	 * @param otherTravellers other travellers
 	 * @throws TravelPermitExistsException permit already exists
 	 * @return travel permit
 	 */
@@ -84,7 +86,8 @@ public class TravelPermitDelegate {
 		final TravelTransportation transportation,
 		final TravelDestination destination,
 		final DateRange dateRange,
-		final String purpose) 
+		final String purpose,
+		final OtherTravelers otherTravelers) 
 		throws TravelPermitExistsException {
 		if(this.travelPermitDao.findExistingTravelPermit(offender,
 			dateRange.getStartDate())!=null){
@@ -101,6 +104,7 @@ public class TravelPermitDelegate {
 		travelPermit.setPeriodicity(periodicity);
 		travelPermit.setTransportation(transportation);
 		travelPermit.setDateRange(dateRange);
+		travelPermit.setOtherTravellers(otherTravelers);
 		travelPermit.setCreationSignature(new CreationSignature(
 			this.auditComponentRetriever.retrieveUserAccount(),
 			this.auditComponentRetriever.retrieveDate()));
@@ -117,6 +121,7 @@ public class TravelPermitDelegate {
 	 * @param date date
 	 * @param notes notes
 	 * @param dateRange date range
+	 * @param otherTravellers other travellers
 	 * @return a work assignment note
 	 * @throws DuplicateEntityFoundException if work assignment note exists
 	 */
@@ -126,7 +131,8 @@ public class TravelPermitDelegate {
 			final TravelTransportation transportation,
 			final TravelDestination destination,
 			final DateRange dateRange,
-			final String purpose)
+			final String purpose,
+			final OtherTravelers otherTravellers)
 			throws TravelPermitExistsException{
 		if (this.travelPermitDao.findExcludedExistingTravelPermit(
 			permit, permit.getOffender(), dateRange.getStartDate())!=null) {
@@ -141,6 +147,8 @@ public class TravelPermitDelegate {
 		permit.setUpdateSignature(new UpdateSignature(
 			this.auditComponentRetriever.retrieveUserAccount(),
 			this.auditComponentRetriever.retrieveDate()));
+		permit.setOtherTravellers(otherTravellers);
+		permit.setDateRange(dateRange);
 		return this.travelPermitDao.makePersistent(permit);
 	}
 	

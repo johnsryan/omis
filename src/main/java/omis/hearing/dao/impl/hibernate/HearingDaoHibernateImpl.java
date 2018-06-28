@@ -90,7 +90,7 @@ public class HearingDaoHibernateImpl
 				.getNamedQuery(FIND_HEARING_QUERY_NAME)
 				.setParameter(LOCATION_PARAM_NAME, location)
 				.setParameter(OFFENDER_PARAM_NAME, offender)
-				.setDate(DATE_PARAM_NAME, date)
+				.setTimestamp(DATE_PARAM_NAME, date)
 				.setParameter(OFFICER_PARAM_NAME, officer)
 				.setParameter(CATEGORY_PARAM_NAME, category)
 				.uniqueResult();
@@ -109,7 +109,7 @@ public class HearingDaoHibernateImpl
 				.getNamedQuery(FIND_HEARING_EXCLUDING_QUERY_NAME)
 				.setParameter(LOCATION_PARAM_NAME, location)
 				.setParameter(OFFENDER_PARAM_NAME, offender)
-				.setDate(DATE_PARAM_NAME, date)
+				.setTimestamp(DATE_PARAM_NAME, date)
 				.setParameter(OFFICER_PARAM_NAME, officer)
 				.setParameter(CATEGORY_PARAM_NAME, category)
 				.setParameter(HEARING_PARAM_NAME, hearing)

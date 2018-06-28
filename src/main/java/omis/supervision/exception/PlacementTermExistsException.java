@@ -17,7 +17,7 @@
  */
 package omis.supervision.exception;
 
-import omis.exception.BusinessException;
+import omis.exception.DuplicateEntityFoundException;
 
 /**
  * Thrown to indicate the existence of a placement term.
@@ -27,7 +27,7 @@ import omis.exception.BusinessException;
  * @since OMIS 3.0
  */
 public class PlacementTermExistsException
-		extends BusinessException {
+		extends DuplicateEntityFoundException {
 	
 	private static final long serialVersionUID = 1L;
 

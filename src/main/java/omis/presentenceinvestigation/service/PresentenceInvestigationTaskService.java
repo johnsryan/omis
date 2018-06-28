@@ -18,7 +18,7 @@ import omis.task.domain.TaskTemplateParameterValue;
 import omis.user.domain.UserAccount;
 
 /**
- * PresentenceInvestigationTaskServiceService.java
+ * Presentence Investigation Task Service Service.
  * 
  *@author Annie Jacques 
  *@version 0.1.0 (Jun 11, 2017)
@@ -213,12 +213,13 @@ public interface PresentenceInvestigationTaskService {
 	 * @param taskAssignment task assignment to update
 	 * @param assignedDate assigned date
 	 * @param assigneeAccount assignee account
+	 * @param lastInvokedDate last invoked date
 	 * @return updated task assignment
 	 * @throws DuplicateEntityFoundException if task assignment exists
 	 */
 	public TaskAssignment updateTaskAssignment(
 			TaskAssignment taskAssignment, Date assignedDate,
-			UserAccount assigneeAccount)
+			UserAccount assigneeAccount, Date lastInvokedDate)
 				throws DuplicateEntityFoundException;
 	
 	/**

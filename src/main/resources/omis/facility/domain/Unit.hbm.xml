@@ -78,6 +78,8 @@
 			(:complex is null or unit.complex = :complex)
 		and
 			unit.valid = true
+		order by
+			unit.name
 	]]></query>
 	<query name="findUnit"><![CDATA[
 		select unit

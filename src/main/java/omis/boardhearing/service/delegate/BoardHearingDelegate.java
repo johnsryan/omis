@@ -26,6 +26,7 @@ import omis.boardhearing.dao.BoardHearingDao;
 import omis.boardhearing.domain.BoardHearing;
 import omis.boardhearing.domain.BoardHearingCategory;
 import omis.boardhearing.domain.CancellationCategory;
+import omis.boardhearing.exception.BoardHearingExistsException;
 import omis.exception.DuplicateEntityFoundException;
 import omis.instance.factory.InstanceFactory;
 import omis.paroleboarditinerary.domain.ParoleBoardItinerary;
@@ -86,9 +87,9 @@ public class BoardHearingDelegate {
 			final BoardHearingCategory category,
 			final CancellationCategory cancellation,
 			final Boolean videoConference)
-				throws DuplicateEntityFoundException {
+				throws BoardHearingExistsException {
 		if (this.boardHearingDao.find(paroleEligibility) != null) {
-			throw new DuplicateEntityFoundException(DUPLICATE_ENTITY_FOUND_MSG);
+			throw new BoardHearingExistsException(DUPLICATE_ENTITY_FOUND_MSG);
 		}
 		
 		BoardHearing boardHearing = 
@@ -123,10 +124,10 @@ public class BoardHearingDelegate {
 			final BoardHearingCategory category,
 			final CancellationCategory cancellation,
 			final Boolean videoConference)
-				throws DuplicateEntityFoundException {
+				throws BoardHearingExistsException {
 		if (this.boardHearingDao.findExcluding(
 				paroleEligibility, boardHearing) != null) {
-			throw new DuplicateEntityFoundException(DUPLICATE_ENTITY_FOUND_MSG);
+			throw new BoardHearingExistsException(DUPLICATE_ENTITY_FOUND_MSG);
 		}
 		
 		populateBoardHearing(boardHearing, itinerary, hearingDate, 

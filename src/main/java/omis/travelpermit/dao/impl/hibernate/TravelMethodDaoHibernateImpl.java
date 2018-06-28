@@ -22,13 +22,6 @@ public class TravelMethodDaoHibernateImpl
 	private static final String FIND_EXISTING_TRAVEL_METHODS_QUERY_NAME
 	= "findExistingTravelMethods";
 	
-	/* Parameters. */
-	/*private static final String OffENDER_PARAMETER_NAME = "offender";
-	private static final String CATEGORY_PARAMETER_NAME = "category";
-	private static final String ASSIGNED_DATE_PARAMETER_NAME = "assignedDate";
-	private static final String EXCLUDED_WORK_ASSIGNMENT_PARAMETER_NAME 
-		= "excludedWorkAssignment";*/
-	
 	/**
 	 * Instantiates an Hibernate implementation of data access object for
 	 * travel method.

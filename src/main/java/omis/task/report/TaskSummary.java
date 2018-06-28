@@ -7,7 +7,8 @@ import java.util.Date;
  * Summary of task.
  *
  * @author Stephen Abson
- * @version 0.0.1
+ * @author Annie Wahl
+ * @version 0.0.2
  * @since OMIS 3.0
  */
 public class TaskSummary
@@ -36,6 +37,8 @@ public class TaskSummary
 	private final Date originationDate;
 	
 	private final Date completionDate;
+	
+	private final Boolean invoked;
 	
 	/**
 	 * Instantiates summary of task.
@@ -69,6 +72,42 @@ public class TaskSummary
 		this.sourceUsername = sourceUsername;
 		this.originationDate = originationDate;
 		this.completionDate = completionDate;
+		this.invoked = null;
+	}
+	
+	/**
+	 * Instantiates summary of task.
+	 * 
+	 * @param id ID
+	 * @param controllerName controller name
+	 * @param methodName method name
+	 * @param description description
+	 * @param sourceUserLastName last name of source user
+	 * @param sourceUserFirstName first name of source user
+	 * @param sourceUserMiddleName middle name of source user
+	 * @param sourceUserSuffix suffix of source user
+	 * @param sourceUsername username of source user
+	 * @param originationDate date of origination
+	 * @param completionDate date of completion
+	 */
+	public TaskSummary(final Long id, final String controllerName,
+			final String methodName, final String description,
+			final String sourceUserLastName, final String sourceUserFirstName,
+			final String sourceUserMiddleName, final String sourceUserSuffix,
+			final String sourceUsername, final Date originationDate,
+			final Date completionDate, final Boolean invoked) {
+		this.id = id;
+		this.controllerName = controllerName;
+		this.methodName = methodName;
+		this.description = description;
+		this.sourceUserLastName = sourceUserLastName;
+		this.sourceUserFirstName = sourceUserFirstName;
+		this.sourceUserMiddleName = sourceUserMiddleName;
+		this.sourceUserSuffix = sourceUserSuffix;
+		this.sourceUsername = sourceUsername;
+		this.originationDate = originationDate;
+		this.completionDate = completionDate;
+		this.invoked = invoked;
 	}
 	
 	/**
@@ -168,5 +207,13 @@ public class TaskSummary
 	 */
 	public Date getCompletionDate() {
 		return this.completionDate;
+	}
+
+	/**
+	 * Returns the invoked.
+	 * @return invoked - Boolean invoked
+	 */
+	public Boolean getInvoked() {
+		return this.invoked;
 	}
 }

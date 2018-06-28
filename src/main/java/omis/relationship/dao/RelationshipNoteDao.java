@@ -59,4 +59,12 @@ public interface RelationshipNoteDao
 	RelationshipNote findExcluding(Relationship relationship,
 			RelationshipNoteCategory category, String value, Date date,
 			RelationshipNote... excludedNotes);
+
+	/**
+	 * Returns count of relationship notes by relationship.
+	 * 
+	 * @param relationship relationship
+	 * @return count of relationship notes by relationship
+	 */
+	long countByRelationship(Relationship relationship);
 }

@@ -142,5 +142,16 @@
   	<constructor-arg name="entityName" value="omis.relationship.domain.RelationshipNoteCategory"/>
   	<constructor-arg name="configuration" ref="hibernateConfiguration"/>
   </bean>
+  
+  <!-- Operation registries -->
+
+  <bean id="relationshipAssociatedRemovalOperationRegistry" class="omis.relationship.service.delegate.impl.RelationshipAssociatedRemovalOperationRegistryImpl"/>
+
+  <!-- Operations -->
+  
+  <bean class="omis.relationship.service.delegate.impl.RelationshipNoteRemovalByRelationshipOperationImpl">
+  	<constructor-arg name="registry" ref="relationshipAssociatedRemovalOperationRegistry"/>
+  	<constructor-arg name="relationshipNoteDao" ref="relationshipNoteDao"/> 
+  </bean>
 
 </beans>

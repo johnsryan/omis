@@ -3,15 +3,17 @@ package omis.residence.dao.impl.hibernate;
 import java.util.Date;
 import java.util.List;
 
+import org.hibernate.SessionFactory;
+
 import omis.dao.impl.hibernate.GenericHibernateDaoImpl;
 import omis.datatype.DateRange;
 import omis.location.domain.Location;
 import omis.person.domain.Person;
+import omis.region.domain.City;
+import omis.region.domain.State;
 import omis.residence.dao.NonResidenceTermDao;
 import omis.residence.domain.NonResidenceTerm;
 import omis.residence.domain.ResidenceStatus;
-
-import org.hibernate.SessionFactory;
 
 /**
  * Hibernate implementation of non residence term data access object.
@@ -67,6 +69,17 @@ public class NonResidenceTermDaoHibernateImpl
 	private static final String LOCATION_PARAMETER_NAME = "location";
 	
 	private static final String DATE_PARAM_NAME = "date";
+	
+	private static final String STATE_PARAM_NAME = "state";
+	
+	private static final String CITY_PARAM_NAME = "city";
+	
+	/* Property names. */
+	private static final String LOCATION_PROPERTY_NAME = "location";
+
+	private static final String STATE_PROPERTY_NAME = "state";
+	
+	private static final String CITY_PROPERTY_NAME = "city";
 		
 	/**
 	 * Instantiates a hibernate implementation of the data access object for 
@@ -82,14 +95,23 @@ public class NonResidenceTermDaoHibernateImpl
 
 	/** {@inheritDoc} */
 	@Override
-	public NonResidenceTerm findExcluding(final Person person,
-			final Location location, final ResidenceStatus status,
+	public NonResidenceTerm findExcluding(final Person person, 
+			final DateRange dateRange, final Location location, 
+			final State state, final City city, final ResidenceStatus status, 
 			final NonResidenceTerm nonResidenceTerm) {
 		NonResidenceTerm term = (NonResidenceTerm) 
 				this.getSessionFactory().getCurrentSession()
 				.getNamedQuery(FIND_NON_RESIDENCE_TERM_EXCLUDING_QUERY_NAME)
 				.setParameter(PERSON_PARAMETER_NAME, person)
-				.setParameter(LOCATION_PARAMETER_NAME, location)
+				.setTimestamp(START_DATE_PARAMETER_NAME, 
+						dateRange.getStartDate())
+				.setTimestamp(END_DATE_PARAMETER_NAME, dateRange.getEndDate())
+				.setParameter(LOCATION_PARAMETER_NAME, location, 
+						this.getEntityPropertyType(LOCATION_PROPERTY_NAME))
+				.setParameter(STATE_PARAM_NAME, state, 
+						this.getEntityPropertyType(STATE_PROPERTY_NAME))
+				.setParameter(CITY_PARAM_NAME, city, 
+						this.getEntityPropertyType(CITY_PROPERTY_NAME))
 				.setParameter(STATUS_PARAMETER_NAME, status)
 				.setParameter(NON_RESIDENCE_TERM_PARAMETER_NAME, 
 						nonResidenceTerm)
@@ -100,12 +122,21 @@ public class NonResidenceTermDaoHibernateImpl
 	/** {@inheritDoc} */
 	@Override
 	public NonResidenceTerm find(final Person person, 
-			final Location location, final ResidenceStatus status) {
+			final DateRange dateRange, final Location location, 
+			final State state, final City city, final ResidenceStatus status) {
 		NonResidenceTerm nonResidenceTerm = (NonResidenceTerm) 
 				this.getSessionFactory().getCurrentSession()
 				.getNamedQuery(FIND_NON_RESIDENCE_TERM_QUERY_NAME)
-				.setParameter(PERSON_PARAMETER_NAME, person)				
-				.setParameter(LOCATION_PARAMETER_NAME, location)
+				.setParameter(PERSON_PARAMETER_NAME, person)
+				.setTimestamp(START_DATE_PARAMETER_NAME, 
+						dateRange.getStartDate())
+				.setTimestamp(END_DATE_PARAMETER_NAME, dateRange.getEndDate())
+				.setParameter(LOCATION_PARAMETER_NAME, location, 
+						this.getEntityPropertyType(LOCATION_PROPERTY_NAME))
+				.setParameter(STATE_PARAM_NAME, state, 
+						this.getEntityPropertyType(STATE_PROPERTY_NAME))
+				.setParameter(CITY_PARAM_NAME, city, 
+						this.getEntityPropertyType(CITY_PROPERTY_NAME))
 				.setParameter(STATUS_PARAMETER_NAME, status)
 				.uniqueResult();
 		return nonResidenceTerm;

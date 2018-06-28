@@ -22,6 +22,7 @@ import omis.travelpermit.domain.TravelMethod;
 /**
  * Implementation of travel method.
  * @author Yidong Li
+ * @author Sheronda Vaughn
  * @version 0.1.0 (May 17, 2018)
  * @since OMIS 3.0 
  */
@@ -123,13 +124,6 @@ public class TravelMethodImpl implements TravelMethod {
 		if (this.getName() == null) {
 			throw new IllegalStateException("Name required.");
 		}
-		if (this.getDescriptionRequired() == null) {
-			throw new IllegalStateException("DescriptionRequired required.");
-		}
-		if (this.getSortOrder() == null) {
-			throw new IllegalStateException("Sort order required.");
-		}
-	
 		if (this.getName().equals(that.getName())) {
 			return true;
 		}
@@ -142,18 +136,10 @@ public class TravelMethodImpl implements TravelMethod {
 		if (this.getName() == null) {
 			throw new IllegalStateException("Name required.");
 		}
-		if (this.descriptionRequired == null) {
-			throw new IllegalStateException("DescriptionRequired required.");
-		}
-		if (this.getSortOrder() == null) {
-			throw new IllegalStateException("Sort order required.");
-		}
 		
 		int hashCode = 14;
 		
 		hashCode += 29 * this.getName().hashCode();
-		hashCode += 29 * this.descriptionRequired.hashCode();
-		hashCode += 29 * this.getSortOrder().hashCode();
 		return hashCode;
 	}
 }

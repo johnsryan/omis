@@ -24,6 +24,7 @@ import omis.audit.domain.UpdateSignature;
 import omis.boardhearing.dao.BoardHearingParticipantDao;
 import omis.boardhearing.domain.BoardHearing;
 import omis.boardhearing.domain.BoardHearingParticipant;
+import omis.boardhearing.exception.BoardHearingParticipantExistsException;
 import omis.exception.DuplicateEntityFoundException;
 import omis.instance.factory.InstanceFactory;
 import omis.paroleboardmember.domain.ParoleBoardMember;
@@ -80,10 +81,11 @@ public class BoardHearingParticipantDelegate {
 	 */
 	public BoardHearingParticipant create(final BoardHearing hearing,
 			final ParoleBoardMember boardMember, final Long number)
-				throws DuplicateEntityFoundException {
+				throws BoardHearingParticipantExistsException {
 		if (this.boardHearingParticipantDao.find(
 				boardMember, hearing) != null) {
-			throw new DuplicateEntityFoundException(DUPLICATE_ENTITY_FOUND_MSG);
+			throw new BoardHearingParticipantExistsException(
+					DUPLICATE_ENTITY_FOUND_MSG);
 		}
 		
 		BoardHearingParticipant boardHearingParticipant = 
@@ -122,10 +124,11 @@ public class BoardHearingParticipantDelegate {
 			final BoardHearingParticipant boardHearingParticipant,
 			final BoardHearing hearing,
 			final ParoleBoardMember boardMember, final Long number)
-				throws DuplicateEntityFoundException {
+				throws BoardHearingParticipantExistsException {
 		if (this.boardHearingParticipantDao.findExcluding(boardMember, hearing,
 				boardHearingParticipant) != null) {
-			throw new DuplicateEntityFoundException(DUPLICATE_ENTITY_FOUND_MSG);
+			throw new BoardHearingParticipantExistsException(
+					DUPLICATE_ENTITY_FOUND_MSG);
 		}
 		
 		boardHearingParticipant.setBoardMember(boardMember);

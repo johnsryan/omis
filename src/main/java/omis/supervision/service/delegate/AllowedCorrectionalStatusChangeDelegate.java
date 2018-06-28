@@ -17,12 +17,12 @@
  */
 package omis.supervision.service.delegate;
 
-import omis.exception.DuplicateEntityFoundException;
 import omis.instance.factory.InstanceFactory;
 import omis.supervision.dao.AllowedCorrectionalStatusChangeDao;
 import omis.supervision.domain.AllowedCorrectionalStatusChange;
 import omis.supervision.domain.CorrectionalStatus;
 import omis.supervision.domain.PlacementTermChangeAction;
+import omis.supervision.exception.AllowedCorrectionalStatusChangeExistsException;
 
 /**
  * Delegate for allowed correctional status changes.
@@ -79,17 +79,17 @@ public class AllowedCorrectionalStatusChangeDelegate {
 	 * @param fromCorrectionalStatus from correctional status
 	 * @param toCorrectionalStatus to correctional status
 	 * @return allowed correctional status change
-	 * @throws DuplicateEntityFoundException if allowed correctional status
-	 * change exists
+	 * @throws AllowedCorrectionalStatusChangeExistsException if allowed
+	 * correctional status change exists
 	 */
 	public AllowedCorrectionalStatusChange create(
 			final PlacementTermChangeAction action,
 			final CorrectionalStatus fromCorrectionalStatus,
 			final CorrectionalStatus toCorrectionalStatus)
-				throws DuplicateEntityFoundException {
+				throws AllowedCorrectionalStatusChangeExistsException {
 		if (this.allowedCorrectionalStatusChangeDao
 				.find(fromCorrectionalStatus, toCorrectionalStatus) != null) {
-			throw new DuplicateEntityFoundException(
+			throw new AllowedCorrectionalStatusChangeExistsException(
 					"Allowed correctional status change exists");
 		}
 		AllowedCorrectionalStatusChange allowedChange

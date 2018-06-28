@@ -13,13 +13,19 @@
 		</td>
 		<td>
 			<fmt:message key="nonResidenceTerm.location.label">
-				<fmt:param value="${nonResidenceTerm.location.organization.name}"/>
+				<c:choose>
+				<c:when test="${not empty nonResidenceTerm.location.organization.name}">
+					<c:set value="${nonResidenceTerm.location.organization.name}" var="location"/>
+				</c:when>
+				<c:otherwise>
+					<c:set value="" var="location"/>
+				</c:otherwise>	
+				</c:choose>
+				<fmt:param value="${location}"/>
 			</fmt:message>
 		</td>
 		<td>
-			<fmt:message key="nonResidenceTerm.status.label">
-				<fmt:param value="${nonResidenceTerm.status.name}"/>
-			</fmt:message>
+			<fmt:message key="nonResidenceTerm.status.label.${nonResidenceTerm.status.name}"/>
 		</td>
 	</tr>
 </fmt:bundle>

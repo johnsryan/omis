@@ -14,7 +14,7 @@ import omis.user.domain.UserAccount;
  * Delegate for task assignments.
  *
  * @author Stephen Abson
- * @author Annie Jacques
+ * @author Annie Wahl
  * @version 0.0.2
  * @since OMIS 3.0
  */
@@ -84,19 +84,22 @@ public class TaskAssignmentDelegate {
 	 * @param taskAssignment task assignment to update
 	 * @param assignedDate assigned date
 	 * @param assigneeAccount assignee account
+	 * @param lastInvokedDate last invoked date
 	 * @return updated task assignment
 	 * @throws DuplicateEntityFoundException if task assignment exists
 	 */
 	public TaskAssignment update(
 			final TaskAssignment taskAssignment,
 			final Date assignedDate,
-			final UserAccount assigneeAccount)
+			final UserAccount assigneeAccount,
+			final Date lastInvokedDate)
 				throws DuplicateEntityFoundException {
 		if (this.taskAssignmentDao.findExcluding(
 				taskAssignment.getTask(), assigneeAccount, assignedDate,
 				taskAssignment) != null) {
 			throw new DuplicateEntityFoundException("Task assignment exists");
 		}
+		taskAssignment.setLastInvokedDate(lastInvokedDate);
 		this.populate(taskAssignment, assignedDate, assigneeAccount);
 		return this.taskAssignmentDao.makePersistent(taskAssignment);
 	}

@@ -23,7 +23,7 @@ import omis.datatype.DateRange;
 import omis.offender.domain.Offender;
 import omis.travelpermit.domain.TravelPermit;
 import omis.travelpermit.domain.TravelPermitPeriodicity;
-import omis.travelpermit.domain.component.OtherTravellers;
+import omis.travelpermit.domain.component.OtherTravelers;
 import omis.travelpermit.domain.component.TravelDestination;
 import omis.travelpermit.domain.component.TravelPermitIssuance;
 import omis.travelpermit.domain.component.TravelTransportation;
@@ -31,6 +31,7 @@ import omis.travelpermit.domain.component.TravelTransportation;
 /**
  * Implementation of travel permit.
  * @author Yidong Li
+ * @author Sheronda Vaughn
  * @version 0.1.0 (May 17, 2018)
  * @since OMIS 3.0 
  */
@@ -40,7 +41,7 @@ public class TravelPermitImpl implements TravelPermit {
 	private Offender offender;
 	private DateRange dateRange;
 	private String purpose;
-	private OtherTravellers otherTravellers;
+	private OtherTravelers otherTravellers;
 	private TravelDestination destination;
 	private TravelPermitPeriodicity periodicity;
 	private TravelPermitIssuance issuance;
@@ -101,13 +102,13 @@ public class TravelPermitImpl implements TravelPermit {
 	}
 
 	@Override
-	public void setOtherTravellers(final OtherTravellers otherTravellers) {
+	public void setOtherTravellers(final OtherTravelers otherTravellers) {
 		this.otherTravellers = otherTravellers;
 		
 	}
 
 	@Override
-	public OtherTravellers getOtherTravellers() {
+	public OtherTravelers getOtherTravellers() {
 		return this.otherTravellers;
 	}
 
@@ -169,22 +170,7 @@ public class TravelPermitImpl implements TravelPermit {
 		}
 		if (this.getDateRange().getStartDate() == null) {
 			throw new IllegalStateException("Start date required.");
-		}
-		if (this.getPurpose() == null) {
-			throw new IllegalStateException("Purpose required.");
-		}
-		if (this.getDestination().getName() == null) {
-			throw new IllegalStateException("Destination name required.");
-		}
-		if (this.getPeriodicity() == null) {
-			throw new IllegalStateException(
-					"Travel permit periodicity required.");
-		}
-		if (this.getIssuance().getIssuer() == null) {
-			throw new IllegalStateException(
-					"Travel permit issuance date required.");
-		}
-	
+		}	
 		if (this.getOffender().equals(that.getOffender())) {
 			return true;
 		}
@@ -202,22 +188,7 @@ public class TravelPermitImpl implements TravelPermit {
 		}
 		if (this.getDateRange().getStartDate() == null) {
 			throw new IllegalStateException("Start date required.");
-		}
-		if (this.getPurpose() == null) {
-			throw new IllegalStateException("Purpose required.");
-		}
-		
-		if (this.getDestination().getName() == null) {
-			throw new IllegalStateException("Destination name required.");
-		}
-		if (this.getPeriodicity() == null) {
-			throw new IllegalStateException(
-					"Travel permit periodicity required.");
-		}
-		if (this.getIssuance().getIssuer() == null) {
-			throw new IllegalStateException(
-					"Travel permit issuance date required.");
-		}
+		} 
 		
 		int hashCode = 14;
 		

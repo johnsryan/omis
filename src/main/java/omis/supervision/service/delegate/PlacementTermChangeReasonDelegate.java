@@ -19,11 +19,11 @@ package omis.supervision.service.delegate;
 
 import java.util.List;
 
-import omis.exception.DuplicateEntityFoundException;
 import omis.instance.factory.InstanceFactory;
 import omis.supervision.dao.PlacementTermChangeReasonDao;
 import omis.supervision.domain.CorrectionalStatus;
 import omis.supervision.domain.PlacementTermChangeReason;
+import omis.supervision.exception.PlacementTermChangeReasonExistsException;
 
 /**
  * Delegate for placement term change reasons.
@@ -79,15 +79,16 @@ public class PlacementTermChangeReasonDelegate {
 	 * @param validStartReason whether valid as start reason
 	 * @param validEndReason whether valid as end reason
 	 * @return placement term change reason
-	 * @throws DuplicateEntityFoundException if placement term change reason
-	 * exists
+	 * @throws PlacementTermChangeReasonExistsException if placement term change
+	 * reason exists
 	 */
 	public PlacementTermChangeReason create(
 			final String name, final Short sortOrder,
 			final Boolean validStartReason, final Boolean validEndReason)
-				throws DuplicateEntityFoundException {
+				throws PlacementTermChangeReasonExistsException {
 		if (this.placementTermChangeReasonDao.find(name) != null) {
-			throw new DuplicateEntityFoundException("Change reason exists");
+			throw new PlacementTermChangeReasonExistsException(
+					"Change reason exists");
 		}
 		PlacementTermChangeReason changeReason
 			= this.placementTermChangeReasonInstanceFactory.createInstance();

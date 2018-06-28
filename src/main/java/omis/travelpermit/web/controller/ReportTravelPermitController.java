@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import omis.beans.factory.PropertyEditorFactory;
 import omis.offender.beans.factory.OffenderPropertyEditorFactory;
 import omis.offender.domain.Offender;
 import omis.offender.web.controller.delegate.OffenderSummaryModelDelegate;
@@ -80,15 +81,18 @@ public class ReportTravelPermitController {
 		= "DOC_ID";
 	
 	private static final String TRAVEL_PERMIT_DETAILS_ID_REPORT_PARAM_NAME 
-		= "TRA_PER_ID";
+		= "TRAVEL_PERMIT_ID";
 	
 	/* Report names. */
 	
 	private static final String TRAVEL_PERMIT_LISTING_REPORT_NAME 
-		= "/?/TravelPermits/Travel_Permit_Listing";
+		= "/CaseManagement/TravelPermits/Travel_Permits_Listing";
+	
+	private static final String TRAVEL_PERMIT_REQUEST_REPORT_NAME 
+	    = "/CaseManagement/TravelPermits/Travel_Permit_Request";
 	
 	private static final String TRAVEL_PERMIT_DETAILS_REPORT_NAME 
-		= "/?/TravelPermits/Travel_Permit_Details";
+		= "/CaseManagement/TravelPermits/Travel_Permit_Details";
 	
 	/* Property editors. */
 	
@@ -96,9 +100,9 @@ public class ReportTravelPermitController {
 	@Qualifier("offenderPropertyEditorFactory")
 	private OffenderPropertyEditorFactory offenderPropertyEditorFactory;
 	
-	/*@Autowired
-	@Qualifier("personPropertyEditorFactory")
-	private PropertyEditorFactory personPropertyEditorFactory;*/
+	@Autowired
+	@Qualifier("travelPermitPropertyEditorFactory")
+	private PropertyEditorFactory travelPermitPropertyEditorFactory;
 	
 	/* Services. */
 	
@@ -216,6 +220,32 @@ public class ReportTravelPermitController {
 				doc, reportFormat);
 	}
 	
+	
+	/**
+	 * Returns the report for the specified offenders travel permit request.
+	 * 
+	 * @param offender offender
+	 * @param reportFormat report format
+	 * @return response entity with report
+	 */
+	@RequestMapping(value = "/travelPermitRequestReport.html",
+			method = RequestMethod.GET)
+	@PreAuthorize("hasRole('TRAVEL_PERMIT_LIST') or hasRole('ADMIN')")
+	public ResponseEntity<byte []> reportTravelPermitRequest(@RequestParam(
+			value = "offender", required = true)
+			final Offender offender,
+			@RequestParam(value = "reportFormat", required = true)
+			final ReportFormat reportFormat) {
+		Map<String, String> reportParamMap = new HashMap<String, String>();
+		reportParamMap.put(TRAVEL_PERMIT_LISTING_ID_REPORT_PARAM_NAME,
+				Long.toString(offender.getOffenderNumber()));
+		byte[] doc = this.reportRunner.runReport(
+				TRAVEL_PERMIT_REQUEST_REPORT_NAME,
+				reportParamMap, reportFormat);
+		return this.reportControllerDelegate.constructReportResponseEntity(
+				doc, reportFormat);
+	}
+	
 	/**
 	 * Returns the report for the specified travel permit.
 	 * 
@@ -250,5 +280,7 @@ public class ReportTravelPermitController {
 	protected void initBinder(final WebDataBinder binder) {
 		binder.registerCustomEditor(Offender.class,
 			this.offenderPropertyEditorFactory.createOffenderPropertyEditor());
+		binder.registerCustomEditor(TravelPermit.class, 
+				this.travelPermitPropertyEditorFactory.createPropertyEditor());
 	}
 }

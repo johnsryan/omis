@@ -22,6 +22,8 @@ import java.util.List;
 
 
 
+
+
 import omis.address.domain.Address;
 //import omis.address.domain.Address;
 import omis.address.domain.ZipCode;
@@ -39,11 +41,13 @@ import omis.travelpermit.domain.TravelMethod;
 import omis.travelpermit.domain.TravelPermit;
 import omis.travelpermit.domain.TravelPermitNote;
 import omis.travelpermit.domain.TravelPermitPeriodicity;
+import omis.travelpermit.domain.component.OtherTravelers;
 import omis.travelpermit.domain.component.TravelDestination;
 import omis.travelpermit.domain.component.TravelPermitIssuance;
 import omis.travelpermit.domain.component.TravelTransportation;
 import omis.travelpermit.exception.TravelPermitExistsException;
 import omis.travelpermit.exception.TravelPermitNoteExistsException;
+import omis.user.domain.UserAccount;
 
 /**
  * Service for travel permit.
@@ -64,13 +68,14 @@ public interface TravelPermitService {
 	 * @param dateRange date range
 	 * @param destination travel destination
 	 * @param purpose purpose
+	 * @param otherTravelers other travelers
 	 * @return TravelPermit
 	 * @throws TravelPermitExistException travel permit already exists
 	 */
 	TravelPermit create(Offender offender, String purpose, DateRange dateRange,
 		TravelPermitPeriodicity periodicity,
 		TravelPermitIssuance issuance, TravelTransportation transportation,
-		TravelDestination destination)
+		TravelDestination destination, OtherTravelers otherTravelers)
 			throws TravelPermitExistsException;
 	
 	/**
@@ -83,6 +88,7 @@ public interface TravelPermitService {
 	 * @param destination travel destination
 	 * @param dateRange date range
 	 * @param purpose purpose
+	 * @param otherTravelers other travelers
 	 * @return TravelPermit
 	 * @throws TravelPermitExistException travel permit already exists
 	 * @return Updated travel permit
@@ -91,7 +97,7 @@ public interface TravelPermitService {
 	TravelPermit update(TravelPermit travelPermit, String purpose, DateRange dateRange,
 			Offender offender, TravelPermitPeriodicity periodicity,
 			TravelPermitIssuance issuance, TravelTransportation transportation,
-			TravelDestination destination)
+			TravelDestination destination, OtherTravelers otherTravelers)
 			throws TravelPermitExistsException;
 	
 	/**
@@ -227,9 +233,9 @@ public interface TravelPermitService {
 	 * Check if country has states.
 	 * @param country country
 	 *
-	 * @return A list of states
+	 * @return true or false
 	 */
-	List<State> hasStates(Country country);
+	boolean hasStates(Country country);
 	
 	/**
 	 * Find cities by state
@@ -260,4 +266,25 @@ public interface TravelPermitService {
 	 * @return home country
 	 */
 	Country findHomeCountry();
+	
+	/**
+	 * Find states by country
+	 *
+	 * @return list of state
+	 */
+	List<State> findStatesByCountry(Country country);
+	
+	/**
+	 * Find user accounts by input query 
+	 *
+	 * @return list of user accounts
+	 */
+	List<UserAccount> searchUserAccounts(String query);
+	
+	/**
+	 * Find cities by country  
+	 *
+	 * @return list of user accounts
+	 */
+	List<City> findCitiesByCountryWithoutState(Country country);
 }

@@ -17,10 +17,10 @@
  */
 package omis.supervision.service.delegate;
 
-import omis.exception.DuplicateEntityFoundException;
 import omis.instance.factory.InstanceFactory;
 import omis.supervision.dao.PlacementTermChangeActionDao;
 import omis.supervision.domain.PlacementTermChangeAction;
+import omis.supervision.exception.PlacementTermChangeActionExistsException;
 
 /**
  * Delegate for placement term change actions.
@@ -58,12 +58,12 @@ public class PlacementTermChangeActionDelegate {
 	 * 
 	 * @param name name
 	 * @return placement term change action
-	 * @throws DuplicateEntityFoundException if change action exists
+	 * @throws PlacementTermChangeActionExistsException if change action exists
 	 */
 	public PlacementTermChangeAction create(final String name)
-			throws DuplicateEntityFoundException {
+			throws PlacementTermChangeActionExistsException {
 		if (this.placementTermChangeActionDao.find(name) != null) {
-			throw new DuplicateEntityFoundException(
+			throw new PlacementTermChangeActionExistsException(
 					"Placement term change action");
 		}
 		PlacementTermChangeAction changeAction

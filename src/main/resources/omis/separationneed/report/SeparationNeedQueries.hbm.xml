@@ -39,7 +39,7 @@
     separationNeed.removal.date,
     case
 		when
-				
+				separationNeed.removal.date is null and
 				((cast(legacy_find_ofndr_cor_status((select firstOffender.offenderNumber
                                     from omis.offender.domain.Offender firstOffender
                                    where firstOffender = firstPerson)) as string) = 'SEC')

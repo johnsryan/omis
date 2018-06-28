@@ -40,6 +40,12 @@ public class VictimAssociationDaoHibernateImpl
 	private static final String FIND_VICTIM_ASSOCIATION_ON_DATE_QUERY_NAME
 		= "findVictimAssociationOnDate";
 	
+	private static final String DELETE_BY_RELATIONSHIP_QUERY_NAME
+		= "deleteVictimAssociationsByRelationship";
+
+	private static final String COUNT_BY_RELATIONSHIP_QUERY_NAME
+		= "countVictimAssociationsByRelationship";
+	
 	/* Parameter names. */
 
 	private static final String OFFENDER_PARAM_NAME = "offender";
@@ -126,5 +132,24 @@ public class VictimAssociationDaoHibernateImpl
 				.setDate(DATE_PARAM_NAME, date)
 				.uniqueResult();
 		return victimAssociation;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public int removeByRelationship(final Relationship relationship) {
+		return this.getSessionFactory().getCurrentSession()
+				.getNamedQuery(DELETE_BY_RELATIONSHIP_QUERY_NAME)
+				.setParameter(RELATIONSHIP_PARAM_NAME, relationship)
+				.executeUpdate();
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public long countByRelationship(final Relationship relationship) {
+		long count = (Long) this.getSessionFactory().getCurrentSession()
+				.getNamedQuery(COUNT_BY_RELATIONSHIP_QUERY_NAME)
+				.setParameter(RELATIONSHIP_PARAM_NAME, relationship)
+				.uniqueResult();
+		return count;
 	}
 }

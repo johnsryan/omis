@@ -5,6 +5,8 @@ import java.util.List;
 
 import omis.address.domain.Address;
 import omis.address.domain.ZipCode;
+import omis.address.exception.AddressExistsException;
+import omis.address.exception.ZipCodeExistsException;
 import omis.audit.domain.VerificationMethod;
 import omis.audit.domain.VerificationSignature;
 import omis.country.domain.Country;
@@ -14,11 +16,17 @@ import omis.employment.domain.EmploymentChangeReason;
 import omis.employment.domain.EmploymentNote;
 import omis.employment.domain.EmploymentTerm;
 import omis.employment.domain.component.Job;
+import omis.employment.exception.EmployerExistsException;
+import omis.employment.exception.EmploymentExistsException;
+import omis.employment.exception.EmploymentNoteExistsException;
 import omis.exception.DuplicateEntityFoundException;
+import omis.location.exception.LocationExistsException;
 import omis.offender.domain.Offender;
 import omis.organization.domain.Organization;
+import omis.organization.exception.OrganizationExistsException;
 import omis.region.domain.City;
 import omis.region.domain.State;
+import omis.region.exception.CityExistsException;
 
 /**
  * Employment Service.
@@ -41,12 +49,12 @@ public interface EmploymentService {
 	 * @param endReason reason of terminating employment
 	 * @param verificationSignature verification signature
 	 * @return employmentTerm, new created employment term 
-	 * @throws DuplicateEntityFoundException if duplicate entity exists
+	 * @throws EmploymentExistsException if duplicate employment exists
 	 */
 	EmploymentTerm create(Offender offender, Employer employer,
 		DateRange dateRange, Job job, Boolean convictedOfEmployerTheft, 
 		EmploymentChangeReason endReason, VerificationSignature
-		verificationSignature) throws DuplicateEntityFoundException;
+		verificationSignature) throws EmploymentExistsException;
 	
 	/** 
 	 * Update an employment term.
@@ -58,13 +66,13 @@ public interface EmploymentService {
 	 * @param endReason reason of terminating employment
 	 * @param verificationSignature verification signature
 	 * @return employmentTerm, new updated employment term 
-	 * @throws DuplicateEntityFoundException if duplicate entity exists
+	 * @throws EmploymentExistsException if duplicate employment exists
 	 */
 	EmploymentTerm update(EmploymentTerm employmentTerm, DateRange dateRange,
 		Job job, Boolean convictedOfEmployerTheft, 
 		EmploymentChangeReason endReason, 
 		VerificationSignature verificationSignature)
-		throws DuplicateEntityFoundException;
+		throws EmploymentExistsException;
 
 	/** 
 	 * Add a note to an employment term.
@@ -73,10 +81,10 @@ public interface EmploymentService {
 	 * @param value value
 	 * @param date date
 	 * @return EmploymentNote employment note 
-	 * @throws DuplicateEntityFoundException if duplicate entity exists
+	 * @throws EmploymentNoteExistsException if duplicate note exists
 	 */
 	EmploymentNote addNote(EmploymentTerm term, String value, Date date)
-		throws DuplicateEntityFoundException;
+		throws EmploymentNoteExistsException;
 	
 	/** 
 	 * Update employment note.
@@ -85,10 +93,10 @@ public interface EmploymentService {
 	 * @param value value 
 	 * @param date date
 	 * @return EmploymentNote employment note
-	 * @throws DuplicateEntityFoundException if duplicate entity exists
+	 * @throws EmploymentNoteExistsException if duplicate note exists
 	 */
 	EmploymentNote updateNote(EmploymentNote note, String value, 
-		Date date )	throws DuplicateEntityFoundException;
+		Date date )	throws EmploymentNoteExistsException;
 	
 	/** 
 	 * Remove employment note.
@@ -103,20 +111,23 @@ public interface EmploymentService {
      * @param name employer name
      * @param telephoneNumber telephone number
      * @param address employer address
-     * @throws DuplicateEntityFoundException if duplicate entity exists 
+     * @throws EmployerExistsException if duplicate employer exists 
+     * @throws OrganizationExistsException 
+     * @throws LocationExistsException 
      */
 	Employer createEmployer(String name, Long telephoneNumber, Address address) 
-		throws DuplicateEntityFoundException;
+		throws EmployerExistsException, OrganizationExistsException, 
+		LocationExistsException;
 	
     /** 
      * Create an address.
      * 
      * @param value value
      * @param zipCode zip code
-     * @throws DuplicateEntityFoundException if duplicate entity exists
+     * @throws AddressExistsException if duplicate address exists
      */
 	Address createAddress(String value, ZipCode zipCode)
-			throws DuplicateEntityFoundException; 
+			throws AddressExistsException; 
     
 	/** 
 	 * Find notes by employment term.
@@ -194,7 +205,7 @@ public interface EmploymentService {
 	 * @return city
 	 */
 	City createCity(String name, State state, Country country)
-		throws DuplicateEntityFoundException;
+		throws CityExistsException;
 	
 	/** 
 	 * Create a zip code.
@@ -205,7 +216,7 @@ public interface EmploymentService {
 	 * @return zip code
 	 */
 	ZipCode createZipCode(String value, String extension, City city)
-		throws DuplicateEntityFoundException;
+		throws ZipCodeExistsException;
 	
 	/** 
 	 * Find zip codes in a specified city.

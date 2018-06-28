@@ -70,7 +70,8 @@ public class ResidenceFormValidator implements Validator {
 			} else {
 				if (residenceForm.getCity() == null) {
 					errors.rejectValue("city", 
-							"residenceTerm.address.city.empty");
+							"r"
+							+ "esidenceTerm.address.city.empty");
 				}
 			}
 			if (residenceForm.getState() == null) {
@@ -97,9 +98,11 @@ public class ResidenceFormValidator implements Validator {
 				errors.rejectValue("state", 
 						"residenceTerm.address.state.empty");
 			}
-			if (residenceForm.getLocationName().isEmpty()) {
-				errors.rejectValue("locationName", 
-						"nonResidenceTerm.location.name.empty");
+			if (!residenceForm.getCreateNewLocation()) {
+				if (residenceForm.getLocation() == null) {
+					errors.rejectValue("location", 
+							"nonResidenceTerm.location.empty");
+				}
 			}
 		} else if (ResidenceStatusOption.HOMELESS
 			.equals(residenceForm.getStatusOption())) {

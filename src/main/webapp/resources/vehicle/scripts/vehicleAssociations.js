@@ -11,10 +11,6 @@ window.onload = function() {
 	// Fetch vehicle models for vehicle make on change
 	applyDatePicker(document.getElementById("startDate"));
 	applyDatePicker(document.getElementById("endDate"));
-	applyPersonSearch(document.getElementById("ownerInput"), 
-			document.getElementById("owner"),
-			document.getElementById("ownerDisplay"), 
-			document.getElementById("clear"));
 	applyFormUpdateChecker(document.getElementById("vehicleAssociationForm"));
 	
 	var vehicleMake = document.getElementById("vehicleMake");

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ - OMIS - Offender Management Information System
+ - Copyright (C) 2011 - 2017 State of Montana
+ -
+ - This program is free software: you can redistribute it and/or modify
+ - it under the terms of the GNU General Public License as published by
+ - the Free Software Foundation, either version 3 of the License, or
+ - (at your option) any later version.
+ -
+ - This program is distributed in the hope that it will be useful,
+ - but WITHOUT ANY WARRANTY; without even the implied warranty of
+ - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ - GNU General Public License for more details.
+ -
+ - You should have received a copy of the GNU General Public License
+ - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="omis.caseload.domain">
+	<class entity-name="omis.caseload.domain.SupervisionLevelCategory"
+		proxy="omis.caseload.domain.SupervisionLevelCategory"
+		name="omis.caseload.domain.impl.SupervisionLevelCategoryImpl"
+		table="`SUPERVISION_LEVEL_CATEGORY`">
+		<id name="id" column="`ID`" type="java.lang.Long">
+			<generator class="sequence">
+				<param name="sequence">`SUPERVISION_LEVEL_CATEGORY_SEQ`</param>
+			</generator>
+		</id>
+		<property name="description" column="`DESCRIPTION`" not-null="true" type="java.lang.String"/>
+		<property name="valid" column="`VALID`" not-null="true" type="yes_no"/>	
+	</class>
+	
+	<query name="findSupervisionLevelCategory"><![CDATA[
+		select slc
+		from
+			omis.caseload.domain.SupervisionLevelCategory slc
+		where
+			slc.description = :description
+	]]></query>
+	<query name="findSupervisionLevelCategoryExcluding"><![CDATA[
+		select slc
+		from
+			omis.caseload.domain.SupervisionLevelCategory slc
+		where
+			slc.description = :description
+		and
+			slc != :excludedSupervisionLevelCategory
+	]]></query>
+	<query name="findSupervisionLevelCategories"><![CDATA[
+		select slc
+		from
+			omis.caseload.domain.SupervisionLevelCategory slc
+		where
+			slc.valid = 'Y'
+	]]></query>
+</hibernate-mapping>

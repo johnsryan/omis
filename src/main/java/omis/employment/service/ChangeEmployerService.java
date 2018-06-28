@@ -4,13 +4,19 @@ import java.util.List;
 
 import omis.address.domain.Address;
 import omis.address.domain.ZipCode;
+import omis.address.exception.AddressExistsException;
+import omis.address.exception.ZipCodeExistsException;
 import omis.country.domain.Country;
 import omis.employment.domain.Employer;
 import omis.employment.domain.EmploymentTerm;
-import omis.exception.DuplicateEntityFoundException;
+import omis.employment.exception.EmployerExistsException;
+import omis.employment.exception.EmploymentExistsException;
+import omis.location.exception.LocationExistsException;
 import omis.organization.domain.Organization;
+import omis.organization.exception.OrganizationExistsException;
 import omis.region.domain.City;
 import omis.region.domain.State;
+import omis.region.exception.CityExistsException;
 
 
 /**
@@ -32,7 +38,7 @@ public interface ChangeEmployerService {
 	 * @return employment term
 	 */
 	EmploymentTerm change(EmploymentTerm employmentTerm, Employer employer) 
-		throws DuplicateEntityFoundException;
+		throws EmploymentExistsException;
 	
 	/** 
 	 * Create an employer.
@@ -41,9 +47,12 @@ public interface ChangeEmployerService {
 	 * @param telephoneNumber telephone number
 	 * @param address address
 	 * @return employer 
+	 * @throws OrganizationExistsException 
+	 * @throws LocationExistsException 
 	 */
 	Employer createEmployer(String name, Long telephoneNumber, Address address) 
-		throws DuplicateEntityFoundException;
+		throws EmployerExistsException, OrganizationExistsException, 
+		LocationExistsException;
 	
 	/** 
 	 * Create a new address.
@@ -53,7 +62,7 @@ public interface ChangeEmployerService {
 	 * @return new created address 
 	 */
 	Address createAddress(String value, ZipCode zipCode)
-		throws DuplicateEntityFoundException;
+		throws AddressExistsException;
 	
 	/** 
 	 * Find all states in a specified country.
@@ -94,7 +103,7 @@ public interface ChangeEmployerService {
 	 * @return city 
 	 */
 	City createCity(String name, State state, Country country)
-		throws DuplicateEntityFoundException;
+		throws CityExistsException;
 	
 	/** 
 	 * Create a zip code.
@@ -105,7 +114,7 @@ public interface ChangeEmployerService {
 	 * @return zip code
 	 */
 	ZipCode createZipCode(String value, String extension, City city)
-		throws DuplicateEntityFoundException;
+		throws ZipCodeExistsException;
 	
 	/** 
 	 * Find zip codes in a specified city.

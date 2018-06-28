@@ -28,6 +28,7 @@ import omis.hearing.dao.HearingDao;
 import omis.hearing.domain.Hearing;
 import omis.hearing.domain.HearingCategory;
 import omis.hearing.domain.component.Subject;
+import omis.hearing.exception.HearingExistsException;
 import omis.instance.factory.InstanceFactory;
 import omis.location.domain.Location;
 import omis.offender.domain.Offender;
@@ -43,7 +44,7 @@ import omis.violationevent.domain.ViolationEvent;
  * @since OMIS 3.0
  */
 public class HearingDelegate {
-	private static final String DUPLICATE_ENTITY_FOUND_MSG =
+	private static final String HEARING_EXISTS_FOUND_MSG =
 			"Hearing exists with specified offender, location, date, and officer.";
 	
 	private final HearingDao hearingDao;
@@ -86,10 +87,10 @@ public class HearingDelegate {
 			final Boolean inAttendance, final Date date,
 			final HearingCategory category,
 			final UserAccount officer)
-			throws DuplicateEntityFoundException{
+			throws HearingExistsException{
 		if(this.hearingDao.find(location, offender, date, officer, category) 
 				!= null){
-			throw new DuplicateEntityFoundException(DUPLICATE_ENTITY_FOUND_MSG);
+			throw new HearingExistsException(HEARING_EXISTS_FOUND_MSG);
 		}
 		
 		Hearing hearing = 
@@ -120,11 +121,11 @@ public class HearingDelegate {
 			final Boolean inAttendance, final Date date,
 			final HearingCategory category,
 			final UserAccount officer)
-			throws DuplicateEntityFoundException{
+			throws HearingExistsException{
 		if(this.hearingDao.findExcluding(location, 
 				hearing.getSubject().getOffender(), date, officer, category, 
 				hearing) != null){
-			throw new DuplicateEntityFoundException(DUPLICATE_ENTITY_FOUND_MSG);
+			throw new HearingExistsException(HEARING_EXISTS_FOUND_MSG);
 		}
 		populateHearing(hearing, location, hearing.getSubject().getOffender(), 
 				inAttendance, date, category, officer);

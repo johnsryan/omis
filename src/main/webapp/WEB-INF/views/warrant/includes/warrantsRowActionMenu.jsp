@@ -68,7 +68,7 @@
 		    </c:if>		    		
 			<c:if test="${not empty warrant and warrant.warrantReason eq 'AUTHORIZATION_TO_PICKUP_AND_HOLD_PROBATIONER'}">
 			<li>
-				<a href="${pageContext.request.contextPath}/warrant/authPickUpHoldReport.html?offender=${warrant.id}&reportFormat=DOCX" class="msWordReportLink"><fmt:message key="authPickUpHoldReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/warrant/authPickUpHoldReport.html?warrant=${warrant.id}&reportFormat=DOCX" class="msWordReportLink"><fmt:message key="authPickUpHoldReportLinkLabel"/></a>
 			</li>
 		    </c:if>
 			<c:if test="${not empty warrantArrest}">

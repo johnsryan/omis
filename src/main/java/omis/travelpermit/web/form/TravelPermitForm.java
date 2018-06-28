@@ -25,11 +25,12 @@ import java.util.List;
 import omis.address.domain.Address;
 import omis.address.domain.ZipCode;
 import omis.address.web.form.AddressFields;
-import omis.country.domain.Country;
 import omis.region.domain.City;
 import omis.region.domain.State;
 import omis.travelpermit.domain.TravelMethod;
 import omis.travelpermit.domain.TravelPermitPeriodicity;
+import omis.travelpermit.web.controller.AddressOption;
+import omis.travelpermit.web.controller.DestinationOption;
 import omis.user.domain.UserAccount;
 
 
@@ -46,31 +47,27 @@ public class TravelPermitForm implements Serializable {
 	private Date startDate;
 	private Date endDate;
 	private String name;
-	private Long phoneNumber;
-	private String destinationOption;
-	private String addressOption;
+	private String phoneNumber;
+	private DestinationOption destinationOption;
+	private AddressOption addressOption;
 	private AddressFields addressFields;
 	private Address address;
 	private String addressQuery;
-	private Country partialAddressCountry;
 	private State partialAddressState;
 	private City partialAddressCity;
 	private ZipCode partialAddressZipCode;
 	private String tripPurpose;
-	private String transportMethod;
 	private String vehicleInfo;
 	private String plateNumber;
-	private String flightNumber;
-	private String busNumber;
-	private String trainNumber;
-	private String person;
-	private String relation;
+	private String persons;
+	private String relationships;
 	private List<TravelPermitNoteItem> travelPermitNoteItems 
 	= new ArrayList<TravelPermitNoteItem>();
 	private Boolean newCity;
 	private Boolean newZipCode;
 	private String newCityName;
 	private String newZipCodeName;
+	private String newZipCodeExtension;
 	private TravelMethod travelMethod;
 	
 	/** Instantiates a travel permit form. */
@@ -80,6 +77,9 @@ public class TravelPermitForm implements Serializable {
 	
 	public TravelPermitPeriodicity getPeriodicity() {
 		return this.periodicity;
+	}
+	public void setPeriodicity(final TravelPermitPeriodicity periodicity) {
+		this.periodicity = periodicity;
 	}
 	public void setIssueDate(final Date issueDate) {
 		this.issueDate = issueDate;
@@ -112,22 +112,22 @@ public class TravelPermitForm implements Serializable {
 	public String getName() {
 		return this.name;
 	}
-	public void setPhoneNumber(final Long phoneNumber) {
+	public void setPhoneNumber(final String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
-	public Long getphoneNumber() {
+	public String getPhoneNumber() {
 		return this.phoneNumber;
 	}
-	public void setDestinationOption(final String destinationOption) {
+	public void setDestinationOption(final DestinationOption destinationOption) {
 		this.destinationOption = destinationOption;
 	}
-	public String getDestinationOption() {
+	public DestinationOption getDestinationOption() {
 		return this.destinationOption;
 	}
-	public void setAddressOption(final String addressOption) {
+	public void setAddressOption(final AddressOption addressOption) {
 		this.addressOption = addressOption;
 	}
-	public String getAddressOption() {
+	public AddressOption getAddressOption() {
 		return this.addressOption;
 	}
 	public void setAddressFields(final AddressFields addressFields) {
@@ -172,12 +172,7 @@ public class TravelPermitForm implements Serializable {
 	public String getTripPurpose() {
 		return this.tripPurpose;
 	}
-	public void setTransportMethod(final String transportMethod) {
-		this.transportMethod = transportMethod;
-	}
-	public String getTransportMethod() {
-		return this.transportMethod;
-	}
+
 	public void setVehicleInfo(final String vehicleInfo) {
 		this.vehicleInfo = vehicleInfo;
 	}
@@ -190,35 +185,17 @@ public class TravelPermitForm implements Serializable {
 	public String getPlateNumber() {
 		return this.plateNumber;
 	}
-	public void setFlightNumber(final String flightNumber) {
-		this.flightNumber = flightNumber;
+	public void setPersons(final String persons) {
+		this.persons = persons;
 	}
-	public String getFlightNumber() {
-		return this.flightNumber;
+	public String getPersons() {
+		return this.persons;
 	}
-	public void setBusNumber(final String busNumber) {
-		this.busNumber = busNumber;
+	public void setRelationships(final String relationships) {
+		this.relationships = relationships;
 	}
-	public String getBusNumber() {
-		return this.busNumber;
-	}
-	public void setTrainNumber(final String trainNumber) {
-		this.trainNumber = trainNumber;
-	}
-	public String getTrainNumber() {
-		return this.trainNumber;
-	}
-	public void setAccompaniedBy(final String person) {
-		this.person = person;
-	}
-	public String getPerson() {
-		return this.person;
-	}
-	public void setRelation(final String relation) {
-		this.relation = relation;
-	}
-	public String getRelation() {
-		return this.relation;
+	public String getRelationships() {
+		return this.relationships;
 	}
 	public void setTravelPermitNoteItems(
 		final List<TravelPermitNoteItem> travelPermitNoteItems) {
@@ -251,12 +228,6 @@ public class TravelPermitForm implements Serializable {
 	public String getNewZipCodeName() {
 		return this.newZipCodeName;
 	}	
-	public void setPartialAddressCountry(final Country partialAddressCountry) {
-		this.partialAddressCountry = partialAddressCountry;
-	}
-	public Country getPartialAddressCountry() {
-		return this.partialAddressCountry;
-	}
 	public void setIssuerInput(final String issuerInput) {
 		this.issuerInput = issuerInput;
 	}
@@ -268,5 +239,11 @@ public class TravelPermitForm implements Serializable {
 	}
 	public TravelMethod getTravelMethod() {
 		return this.travelMethod;
+	}
+	public void setNewZipCodeExtension(final String extension) {
+		this.newZipCodeExtension = extension;
+	}
+	public String getNewZipCodeExtension() {
+		return this.newZipCodeExtension;
 	}
 }

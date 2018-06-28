@@ -1340,7 +1340,7 @@ public class WarrantController {
 	@PreAuthorize("hasRole('WARRANT_VIEW') "
 			+ "or hasRole('ADMIN')")
 	public ResponseEntity<byte []> reportAuthPickUpHold(@RequestParam(
-			value = "offender", required = true)
+			value = "warrant", required = true)
 			final Warrant warrant,
 			@RequestParam(value = "reportFormat", required = true)
 			final ReportFormat reportFormat) {

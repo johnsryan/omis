@@ -99,3 +99,10 @@ form fieldset span.groupButton {
    margin: 5px 0px 5px 0px;
    padding: 5px 0px 5px 0px;
 }
+
+/* Table styling */
+
+table.listTable colgroup col, table.listTable thead tr th {
+	min-width: 100px;
+	padding: 2px 3px 2px 3px;
+}

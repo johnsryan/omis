@@ -276,12 +276,6 @@
     		</a>
     	</li>
     </sec:authorize>
-    <sec:authorize access="hasRole('PAROLE_REVIEW_LIST') or hasRole('ADMIN')">
-    	<li class="moduleLink">
-    		<a href="${pageContext.request.contextPath}/paroleReview/list.html?offender=${offenderSummary.id}">
-    			<fmt:message key="paroleReviewLink"/></a>
-    	</li>
-    </sec:authorize>
     <sec:authorize access="hasRole('OFFENDER_PHOTO_LIST') or hasRole('ADMIN')">
 		<li class="moduleLink">
 			<a href="${pageContext.request.contextPath}/offenderPhoto/list.html?offender=${offenderSummary.id}">
@@ -376,6 +370,12 @@
 				<fmt:message key="specialManagementDesignationsLink"/>
 			</a>
 		</li>
+    </sec:authorize>
+    <sec:authorize access="hasRole('PAROLE_REVIEW_LIST') or hasRole('ADMIN')">
+    	<li class="moduleLink">
+    		<a href="${pageContext.request.contextPath}/paroleReview/list.html?offender=${offenderSummary.id}">
+    			<fmt:message key="paroleReviewLink"/></a>
+    	</li>
     </sec:authorize>
     <sec:authorize access="hasRole('SUBSTANCE_TEST_LIST') or hasRole('ADMIN')">
 		<li class="moduleLink">

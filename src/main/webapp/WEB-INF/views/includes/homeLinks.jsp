@@ -87,7 +87,7 @@
 		<ul class="content foregroundUltraLight">
 			<sec:authorize access="(hasRole('ADMIN') and hasRole('APP_DEV'))">
 			<li>
-				<a href="${pageContext.request.contextPath}/caseload/list.html">								
+				<a href="${pageContext.request.contextPath}/caseload/officerCaseAssignment/list.html">								
 					<span class="banner">
 						<img src="${pageContext.request.contextPath}/resources/common/images/myCaseloads.png" height="90" width="90"/>
 						<span class="label"><fmt:message key="myCaseloadsLabel"/></span>

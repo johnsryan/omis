@@ -25,12 +25,12 @@ import omis.audit.AuditComponentRetriever;
 import omis.audit.domain.CreationSignature;
 import omis.audit.domain.UpdateSignature;
 import omis.datatype.DateRange;
-import omis.exception.DuplicateEntityFoundException;
 import omis.instance.factory.InstanceFactory;
 import omis.offender.domain.Offender;
 import omis.supervision.dao.CorrectionalStatusTermDao;
 import omis.supervision.domain.CorrectionalStatus;
 import omis.supervision.domain.CorrectionalStatusTerm;
+import omis.supervision.exception.CorrectionalStatusTermExistsException;
 
 /**
  * Delegate for correctional status terms.
@@ -98,19 +98,20 @@ public class CorrectionalStatusTermDelegate {
 	 * @param dateRange date range
 	 * @param correctionalStatus correctional status
 	 * @return newly created correctional status term
-	 * @throws DuplicateEntityFoundException if correctional status term exists
+	 * @throws CorrectionalStatusTermExistsException if correctional status term
+	 * exists
 	 */
 	public CorrectionalStatusTerm create(
 			final Offender offender,
 			final DateRange dateRange,
 			final CorrectionalStatus correctionalStatus)
-				 throws DuplicateEntityFoundException {
+				 throws CorrectionalStatusTermExistsException {
 		if (this.correctionalStatusTermDao.find(
 				offender,
 				correctionalStatus,
 				DateRange.getStartDate(dateRange),
 				DateRange.getEndDate(dateRange)) != null) {
-			throw new DuplicateEntityFoundException(
+			throw new CorrectionalStatusTermExistsException(
 					"Correctional status term exists");
 		}
 		CorrectionalStatusTerm correctionalStatusTerm
@@ -132,20 +133,21 @@ public class CorrectionalStatusTermDelegate {
 	 * @param dateRange date range
 	 * @param correctionalStatus correctional status
 	 * @return updated correctional status term
-	 * @throws DuplicateEntityFoundException if correctional status term exists
+	 * @throws CorrectionalStatusTermExistsException if correctional status term
+	 * exists
 	 */
 	public CorrectionalStatusTerm update(
 			final CorrectionalStatusTerm correctionalStatusTerm,
 			final DateRange dateRange,
 			final CorrectionalStatus correctionalStatus)
-				throws DuplicateEntityFoundException {
+				throws CorrectionalStatusTermExistsException {
 		if (this.correctionalStatusTermDao.findExcluding(
 				correctionalStatusTerm.getOffender(),
 				correctionalStatus,
 				DateRange.getStartDate(dateRange),
 				DateRange.getEndDate(dateRange),
 				correctionalStatusTerm) != null) {
-			throw new DuplicateEntityFoundException(
+			throw new CorrectionalStatusTermExistsException(
 					"Correctional status term exists");
 		}
 		this.populateCorrectionalStatusTerm(

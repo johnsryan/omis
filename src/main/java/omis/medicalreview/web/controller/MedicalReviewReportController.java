@@ -17,8 +17,12 @@
  */
 package omis.medicalreview.web.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -28,17 +32,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+
 import omis.beans.factory.PropertyEditorFactory;
 import omis.medicalreview.domain.MedicalReview;
 import omis.medicalreview.report.MedicalReviewSummaryReportService;
 import omis.offender.beans.factory.OffenderPropertyEditorFactory;
 import omis.offender.domain.Offender;
 import omis.offender.web.controller.delegate.OffenderSummaryModelDelegate;
+import omis.report.ReportFormat;
+import omis.report.ReportRunner;
+import omis.report.web.controller.delegate.ReportControllerDelegate;
 
 /**
  * Medical Review Report Controller.
  * 
  *@author Annie Wahl 
+ *@author Sierra Haynes
  *@version 0.1.0 (Feb 1, 2018)
  *@since OMIS 3.0
  *
@@ -66,6 +75,34 @@ public class MedicalReviewReportController {
 	private static final String MEDICAL_REVIEW_MODEL_KEY = "medicalReview";
 	
 	private static final String OFFENDER_MODEL_KEY = "offender";
+	
+	/* Report names. */
+
+	private static final String MEDICAL_REVIEW_LISTING_REPORT_NAME =
+			"/CaseManagement/MedicalReviews/Medical_Reviews_Listing";
+	
+	private static final String MEDICAL_REVIEW_DETAILS_REPORT_NAME =
+			"/CaseManagement/MedicalReviews/Medical_Review_Details";	
+	
+	/* Report parameter names. */
+
+	private static final String MEDICAL_REVIEW_ID_REPORT_PARAM_NAME =
+			"MEDICAL_REVIEW_ID";
+	
+	private static final String DOC_ID_REPORT_PARAM_NAME =
+			"DOC_ID";	
+	
+	/* Report runners. */
+	
+	@Autowired
+	@Qualifier("reportRunner")
+	private ReportRunner reportRunner;
+	
+	/* Controller delegates. */
+	
+	@Autowired
+	@Qualifier("reportControllerDelegate")
+	private ReportControllerDelegate reportControllerDelegate;	
 	
 	/* Controller Model Delegates */
 	
@@ -152,6 +189,58 @@ public class MedicalReviewReportController {
 		map.addAttribute(MEDICAL_REVIEW_MODEL_KEY, medicalReview);
 		
 		return new ModelAndView(MEDICAL_REVIEWS_ROW_ACTION_MENU_VIEW_NAME, map);
+	}
+	
+	/* Reports. */
+	
+	/**
+	 * Returns the report for the specified offender.
+	 * 
+	 * @param offender offender
+	 * @param reportFormat report format
+	 * @return response entity with report
+	 */
+	@RequestMapping(value = "/medicalReviewListingReport.html",
+			method = RequestMethod.GET)
+	@PreAuthorize("hasRole('MEDICAL_REVIEW_VIEW') or hasRole('ADMIN')")
+	public ResponseEntity<byte []> reportMedicalReview(@RequestParam(
+			value = "offender", required = true)
+			final Offender offender,
+			@RequestParam(value = "reportFormat", required = true)
+			final ReportFormat reportFormat) {
+		Map<String, String> reportParamMap = new HashMap<String, String>();
+		reportParamMap.put(DOC_ID_REPORT_PARAM_NAME,
+				Long.toString(offender.getOffenderNumber()));
+		byte[] doc = this.reportRunner.runReport(
+				MEDICAL_REVIEW_LISTING_REPORT_NAME,
+				reportParamMap, reportFormat);
+		return this.reportControllerDelegate.constructReportResponseEntity(
+				doc, reportFormat);
+	}
+	
+	/**
+	 * Returns the report for the specified medical review.
+	 * 
+	 * @param medicalReview - Medical Review
+	 * @param reportFormat report format
+	 * @return response entity with report
+	 */
+	@RequestMapping(value = "/medicalReviewDetailsReport.html",
+			method = RequestMethod.GET)
+	@PreAuthorize("hasRole('MEDICAL_REVIEW_VIEW') or hasRole('ADMIN')")
+	public ResponseEntity<byte []> reportMedicalReviewDetails(@RequestParam(
+			value = "medicalReview", required = true)
+			final MedicalReview medicalReview,
+			@RequestParam(value = "reportFormat", required = true)
+			final ReportFormat reportFormat) {
+		Map<String, String> reportParamMap = new HashMap<String, String>();
+		reportParamMap.put(MEDICAL_REVIEW_ID_REPORT_PARAM_NAME,
+				Long.toString(medicalReview.getId()));
+		byte[] doc = this.reportRunner.runReport(
+				MEDICAL_REVIEW_DETAILS_REPORT_NAME,
+				reportParamMap, reportFormat);
+		return this.reportControllerDelegate.constructReportResponseEntity(
+				doc, reportFormat);
 	}
 	
 	/* Init binder. */

@@ -19,6 +19,13 @@
 			<constructor-arg name="paroleBoardItineraryDelegate" ref="paroleBoardItineraryDelegate" />
 		</bean>
 		
+		<bean id="scheduleHearingService" class="omis.boardhearing.service.impl.ScheduleHearingServiceImpl">
+			<constructor-arg name="boardHearingDelegate" ref="boardHearingDelegate" />
+			<constructor-arg name="boardHearingParticipantDelegate" ref="boardHearingParticipantDelegate" />
+			<constructor-arg name="boardHearingCategoryDelegate" ref="boardHearingCategoryDelegate" />
+			<constructor-arg name="paroleBoardMemberDelegate" ref="paroleBoardMemberDelegate" />
+		</bean>
+		
 		<bean id="boardHearingDocumentService"
 			class="omis.boardhearing.service.impl.BoardHearingDocumentServiceImpl">
 			<constructor-arg name="boardHearingAssociableDocumentDelegate" ref="boardHearingAssociableDocumentDelegate"/>

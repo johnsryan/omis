@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -27,6 +28,8 @@ import omis.address.domain.Address;
 import omis.address.domain.AddressUnitDesignator;
 import omis.address.domain.StreetSuffix;
 import omis.address.domain.ZipCode;
+import omis.address.exception.AddressExistsException;
+import omis.address.exception.ZipCodeExistsException;
 import omis.address.web.controller.delegate.AddressFieldsControllerDelegate;
 import omis.address.web.form.AddressFields;
 import omis.audit.domain.VerificationMethod;
@@ -45,6 +48,8 @@ import omis.employment.domain.WorkShiftFrequency;
 import omis.employment.domain.component.Job;
 import omis.employment.domain.component.Wage;
 import omis.employment.domain.component.WorkShift;
+import omis.employment.exception.EmployerExistsException;
+import omis.employment.exception.EmploymentExistsException;
 import omis.employment.report.EmployerReportService;
 import omis.employment.report.EmployerSummary;
 import omis.employment.report.EmploymentReportService;
@@ -59,26 +64,31 @@ import omis.employment.web.validator.EmploymentFormNoEmployerValidator;
 import omis.employment.web.validator.EmploymentFormValidator;
 import omis.exception.DuplicateEntityFoundException;
 import omis.location.domain.Location;
+import omis.location.exception.LocationExistsException;
 import omis.offender.beans.factory.OffenderPropertyEditorFactory;
 import omis.offender.domain.Offender;
 import omis.offender.report.OffenderReportService;
 import omis.offender.report.OffenderSummary;
 import omis.offender.web.controller.delegate.OffenderSummaryModelDelegate;
 import omis.organization.domain.Organization;
+import omis.organization.exception.OrganizationExistsException;
 import omis.person.domain.Person;
 import omis.region.domain.City;
 import omis.region.domain.State;
+import omis.region.exception.CityExistsException;
 import omis.report.ReportFormat;
 import omis.report.ReportRunner;
 import omis.report.web.controller.delegate.ReportControllerDelegate;
 import omis.user.domain.UserAccount;
 import omis.util.StringUtility;
+import omis.web.controller.delegate.BusinessExceptionHandlerDelegate;
 
 /** 
  * Controller for employment.
  * 
  * @author Yidong Li
  * @author Josh Divine
+ * @author Sheronda Vaughn
  * @versio 0.1.1 (Nov 21, 2017)
  * @since OMIS 3.0 
  */
@@ -252,8 +262,46 @@ public class EmploymentController {
 	private AddressFieldsControllerDelegate addressFieldsControllerDelegate;
 	
 	@Autowired
+	@Qualifier("businessExceptionHandlerDelegate")
+	private BusinessExceptionHandlerDelegate businessExceptionHandlerDelegate;
+	
+	@Autowired
 	@Qualifier("reportControllerDelegate")
 	private ReportControllerDelegate reportControllerDelegate;
+	
+	/* Message keys. */
+	
+	private static final String EMPLOYMENT_EXISTS_MESSAGE_KEY 
+		= "employment.exists";
+	
+	private static final String EMPLOYER_EXISTS_MESSAGE_KEY 
+		= "employer.exists";
+	
+	private static final String CITY_EXISTS_EXCEPTION_MESSAGE_KEY
+		= "city.exists";
+
+	private static final String ZIP_CODE_EXISTS_EXCEPTION_MESSAGE_KEY
+		= "zipCode.exists";
+	
+	private static final String ADDRESS_EXISTS_MESSAGE_KEY
+		= "address.exists";
+	
+	private static final String ORGANIZATION_EXISTS_MESSAGE_KEY
+		= "organization.exists";
+	
+	private static final String LOCATION_EXISTS_MESSAGE_KEY
+		= "location.exists";
+	
+	/* Message bundles. */
+
+	private static final String ERROR_BUNDLE_NAME
+		= "omis.employment.msgs.form";
+
+	private static final String ADDRESS_ERROR_BUNDLE_NAME
+		= "omis.address.msgs.form";
+
+	private static final String LOCATION_ERROR_BUNDLE_NAME
+		= "omis.location.msgs.form";
 
 	/* Report names. */
 	
@@ -319,7 +367,8 @@ public class EmploymentController {
 		final Employer employer) {
 			EmploymentForm employmentForm = new EmploymentForm();
 			EmploymentTerm employmentTerm = null;
-			employmentForm.setEmploymentAddressOperation(EmploymentAddressOperation.EXISTING);
+			employmentForm.setEmploymentAddressOperation(
+					EmploymentAddressOperation.EXISTING);
 			employmentForm.setExistingEmployer(employer);
 			State homeState = this.employmentService.findHomeState();
 			if (homeState != null) {
@@ -468,6 +517,12 @@ public class EmploymentController {
 	 * @param employmentForm employment history edit/create Form
 	 * @param result binding result
 	 * @return redirect to list employment history by offender
+	 * @throws CityExistsException 
+	 * @throws ZipCodeExistsException 
+	 * @throws LocationExistsException 
+	 * @throws OrganizationExistsException 
+	 * @throws EmployerExistsException 
+	 * @throws EmploymentExistsException 
 	 * @throws DuplicateEntityFoundException if the vehicle association exists
 	 */
 	@RequestMapping(value = "/create.html", method = RequestMethod.POST)
@@ -478,7 +533,10 @@ public class EmploymentController {
 		@RequestParam(value = "employmentTerm", required = true)
 		final EmploymentTerm employmentTerm,
 		final EmploymentForm employmentForm,
-		final BindingResult result) throws DuplicateEntityFoundException {
+		final BindingResult result) throws CityExistsException, 
+			ZipCodeExistsException, EmployerExistsException, 
+			OrganizationExistsException, LocationExistsException, 
+			EmploymentExistsException {
 		this.employmentFormValidator.validate(employmentForm,result);
 		if (result.hasErrors()) {
 			return this.prepareRedisplayEditMav(offender, 
@@ -541,7 +599,7 @@ public class EmploymentController {
 						address = this.employmentService.createAddress(
 							employmentForm.getAddressFields().getValue(), 
 							newZipCode);
-					} catch (DuplicateEntityFoundException e){
+					} catch (AddressExistsException e){
 						throw new RuntimeException("Address exist", e);
 					}
 				}
@@ -555,7 +613,7 @@ public class EmploymentController {
 							address = this.employmentService.createAddress(
 								employmentForm.getAddressFields().getValue(), 
 								newZipCode);
-						} catch (DuplicateEntityFoundException e){
+						} catch (AddressExistsException e){
 							throw new RuntimeException("Address exist", e);
 						}
 					}
@@ -564,7 +622,7 @@ public class EmploymentController {
 							address = this.employmentService.createAddress(
 							employmentForm.getAddressFields().getValue(),
 							employmentForm.getAddressFields().getZipCode());
-						} catch (DuplicateEntityFoundException e){
+						} catch (AddressExistsException e){
 							throw new RuntimeException("Address exist", e);
 						}
 					}
@@ -635,6 +693,7 @@ public class EmploymentController {
 	 * @param offender offender
 	 * @param employer employer
 	 * @return redirect to list of employment terms
+	 * @throws EmploymentExistsException 
 	 * @throws DuplicateEntityFoundException
 	 */
 	@RequestMapping(value = "/edit.html", method = RequestMethod.POST)
@@ -647,7 +706,7 @@ public class EmploymentController {
 		@RequestParam(value = "employer", required = true)
 		final Employer employer,
 		final EmploymentForm employmentForm,
-		final BindingResult result) throws DuplicateEntityFoundException {	
+		final BindingResult result) throws EmploymentExistsException {	
 		this.employmentFormNoEmployerValidator.validate(employmentForm, 
 			result);
 		if (result.hasErrors()) {
@@ -1161,6 +1220,12 @@ public class EmploymentController {
 	 * 
 	 * @param offender offender
 	 * @return model and view for employments action menu
+	 * @throws CityExistsException 
+	 * @throws ZipCodeExistsException 
+	 * @throws LocationExistsException 
+	 * @throws OrganizationExistsException 
+	 * @throws EmployerExistsException 
+	 * @throws EmploymentExistsException 
 	 * @throws DuplicateEntityFoundException 
 	 */
 	@RequestMapping(value = "/changeEmployer.html", method = RequestMethod.POST)
@@ -1169,7 +1234,10 @@ public class EmploymentController {
 		@RequestParam(value = "offender", required = true) 
 		final Offender offender,
 		final EmployerChangeForm employerChangeForm,
-		final BindingResult result) throws DuplicateEntityFoundException{
+		final BindingResult result) throws CityExistsException, 
+			ZipCodeExistsException, EmployerExistsException, 
+			OrganizationExistsException, LocationExistsException, 
+			EmploymentExistsException {
 		this.changeEmployerFormValidator.validate(employerChangeForm,result);
 		if (result.hasErrors()) {
 			return this.redisplayChangeEmployer(offender, 
@@ -1219,7 +1287,7 @@ public class EmploymentController {
 					addressFieldsAddress = this.employmentService.createAddress(
 						employerChangeForm.getAddressFields().getValue(),
 						addressFieldsZipCode);
-				} catch (DuplicateEntityFoundException e){
+				} catch (AddressExistsException e){
 					throw new RuntimeException("Address exist", e);
 				}
 						
@@ -1328,6 +1396,111 @@ public class EmploymentController {
 		map.addAttribute(OFFENDER_MODEL_KEY, offender);
 		return new ModelAndView(
 			EMPLOYMENT_ROW_ACTION_MENU_VIEW_NAME, map);
+	}
+	
+	/**
+	 * Employment exists exception.
+	 *
+	 *
+	 * @param employmentExistsException employment exists exception
+	 * @return model and view error message
+	 */
+	@ExceptionHandler(EmploymentExistsException.class)
+	public ModelAndView handleEmploymemtExistsException(
+			final EmploymentExistsException employmentExistsException) {
+		return this.businessExceptionHandlerDelegate.prepareModelAndView(
+				EMPLOYMENT_EXISTS_MESSAGE_KEY, ERROR_BUNDLE_NAME, 
+				employmentExistsException);
+	}
+
+	/**
+	 * Employer exists exception.
+	 *
+	 *
+	 * @param employerExistsException employer exists exception
+	 * @return model and view error message
+	 */
+	@ExceptionHandler(EmployerExistsException.class)
+	public ModelAndView handleEmployerExistsException(
+			final EmployerExistsException employerExistsException) {
+		return this.businessExceptionHandlerDelegate.prepareModelAndView(
+				EMPLOYER_EXISTS_MESSAGE_KEY, ERROR_BUNDLE_NAME, 
+				employerExistsException);
+	}
+	
+	/**
+	 * City exists exception.
+	 *
+	 *
+	 * @param exception exception
+	 * @return exception
+	 */
+	@ExceptionHandler(CityExistsException.class)
+	public ModelAndView handleCityExistsException(
+			final CityExistsException exception) {
+		return this.businessExceptionHandlerDelegate.prepareModelAndView(
+				CITY_EXISTS_EXCEPTION_MESSAGE_KEY, ADDRESS_ERROR_BUNDLE_NAME, 
+				exception);
+	}
+	
+	/**
+	 * Zip code exists exception.
+	 *
+	 *
+	 * @param exception exception
+	 * @return exception
+	 */
+	@ExceptionHandler(ZipCodeExistsException.class)
+	public ModelAndView handleZipCodeExistsException(
+			final ZipCodeExistsException exception) {
+		return this.businessExceptionHandlerDelegate.prepareModelAndView(
+				ZIP_CODE_EXISTS_EXCEPTION_MESSAGE_KEY, 
+				ADDRESS_ERROR_BUNDLE_NAME, exception);
+	}
+	
+	/**
+	 * Address exists exception.
+	 *
+	 *
+	 * @param exception exception
+	 * @return address exception
+	 */
+	@ExceptionHandler(AddressExistsException.class)
+	public ModelAndView handleAddresExistsException(
+			final AddressExistsException exception) {
+		return this.businessExceptionHandlerDelegate.prepareModelAndView(
+				ADDRESS_EXISTS_MESSAGE_KEY, ADDRESS_ERROR_BUNDLE_NAME, 
+				exception);
+	}
+
+	/**
+	 * Organization exists exception.
+	 *
+	 *
+	 * @param exception exception
+	 * @return organization exception
+	 */
+	@ExceptionHandler(OrganizationExistsException.class)
+	public ModelAndView handleOrganizationExistsException(
+			final OrganizationExistsException exception) {
+		return this.businessExceptionHandlerDelegate.prepareModelAndView(
+				ORGANIZATION_EXISTS_MESSAGE_KEY, LOCATION_ERROR_BUNDLE_NAME, 
+				exception);
+	}
+	
+	/**
+	 * Location exists exception.
+	 *
+	 *
+	 * @param exception exception
+	 * @return location exception
+	 */
+	@ExceptionHandler(LocationExistsException.class)
+	public ModelAndView handleLocationExistsException(
+			final LocationExistsException exception) {
+		return this.businessExceptionHandlerDelegate.prepareModelAndView(
+				LOCATION_EXISTS_MESSAGE_KEY, 
+				LOCATION_ERROR_BUNDLE_NAME, exception);
 	}
 
 	/**

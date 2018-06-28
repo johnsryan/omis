@@ -35,12 +35,15 @@ import org.springframework.web.servlet.ModelAndView;
 
 import omis.beans.factory.PropertyEditorFactory;
 import omis.beans.factory.spring.CustomDateEditorFactory;
-import omis.exception.DuplicateEntityFoundException;
+import omis.locationterm.exception.LocationTermExistsException;
 import omis.offender.beans.factory.OffenderPropertyEditorFactory;
 import omis.offender.domain.Offender;
 import omis.offender.web.controller.delegate.OffenderSummaryModelDelegate;
 import omis.supervision.domain.PlacementTerm;
 import omis.supervision.domain.PlacementTermChangeReason;
+import omis.supervision.exception.CorrectionalStatusTermExistsException;
+import omis.supervision.exception.PlacementTermExistsException;
+import omis.supervision.exception.SupervisoryOrganizationTermExistsException;
 import omis.supervision.service.EndPlacementTermService;
 import omis.supervision.web.form.EndPlacementTermForm;
 import omis.supervision.web.validator.EndPlacementTermFormValidator;
@@ -157,8 +160,10 @@ public class EndPlacementTermController {
 	 * @param endPlacementTermForm end placement term form
 	 * @param result result
 	 * @return model and view
-	 * @throws DuplicateEntityFoundException thrown when a duplicate entity is 
-	 * found
+	 * @throws LocationTermExistsException 
+	 * @throws PlacementTermExistsException 
+	 * @throws SupervisoryOrganizationTermExistsException 
+	 * @throws CorrectionalStatusTermExistsException 
 	 */
 	@RequestMapping(value = "/endPlacementTerm.html", 
 			method = RequestMethod.POST)
@@ -169,7 +174,11 @@ public class EndPlacementTermController {
 			@RequestParam(value = "placementTerm", required = true)
 			final PlacementTerm placementTerm,
 			final EndPlacementTermForm endPlacementTermForm,
-			final BindingResult result) throws DuplicateEntityFoundException {
+			final BindingResult result)
+					throws CorrectionalStatusTermExistsException,
+						SupervisoryOrganizationTermExistsException,
+						PlacementTermExistsException,
+						LocationTermExistsException {
 		this.validate(placementTerm, endPlacementTermForm, result);
 		if (result.hasErrors()) {
 			return this.prepareRedisplayMav(offender, placementTerm, 

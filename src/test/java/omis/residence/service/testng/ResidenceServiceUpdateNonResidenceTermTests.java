@@ -131,7 +131,8 @@ public class ResidenceServiceUpdateNonResidenceTermTests
 	public void testUpdateNonResidenceTermDateRange() 
 			throws DuplicateEntityFoundException, 
 			ResidenceStatusConflictException, LocationNotAllowedException, 
-			NonResidenceTermExistsException, AllowedResidentialLocationRuleExistsException {
+			NonResidenceTermExistsException, 
+			AllowedResidentialLocationRuleExistsException {
 		// Arrangements
 		Person person = this.personDelegate.create("Smith", "John", "Jay", 
 				null);
@@ -195,7 +196,8 @@ public class ResidenceServiceUpdateNonResidenceTermTests
 	public void testUpdateNonResidenceTermResidenceStatus() 
 			throws DuplicateEntityFoundException, 
 			ResidenceStatusConflictException, LocationNotAllowedException, 
-			NonResidenceTermExistsException, AllowedResidentialLocationRuleExistsException {
+			NonResidenceTermExistsException, 
+			AllowedResidentialLocationRuleExistsException {
 		// Arrangements
 		Person person = this.personDelegate.create("Smith", "John", "Jay", 
 				null);
@@ -259,7 +261,8 @@ public class ResidenceServiceUpdateNonResidenceTermTests
 	public void testUpdateNonResidenceTermLocation() 
 			throws DuplicateEntityFoundException, 
 			ResidenceStatusConflictException, LocationNotAllowedException, 
-			NonResidenceTermExistsException, AllowedResidentialLocationRuleExistsException {
+			NonResidenceTermExistsException, 
+			AllowedResidentialLocationRuleExistsException {
 		// Arrangements
 		Person person = this.personDelegate.create("Smith", "John", "Jay", 
 				null);
@@ -326,7 +329,8 @@ public class ResidenceServiceUpdateNonResidenceTermTests
 	public void testUpdateNonResidenceTermConfirmed() 
 			throws DuplicateEntityFoundException, 
 			ResidenceStatusConflictException, LocationNotAllowedException, 
-			NonResidenceTermExistsException, AllowedResidentialLocationRuleExistsException {
+			NonResidenceTermExistsException, 
+			AllowedResidentialLocationRuleExistsException {
 		// Arrangements
 		Person person = this.personDelegate.create("Smith", "John", "Jay", 
 				null);
@@ -389,7 +393,8 @@ public class ResidenceServiceUpdateNonResidenceTermTests
 	public void testUpdateNonResidenceTermNotes() 
 			throws DuplicateEntityFoundException, 
 			ResidenceStatusConflictException, LocationNotAllowedException, 
-			NonResidenceTermExistsException, AllowedResidentialLocationRuleExistsException {
+			NonResidenceTermExistsException, 
+			AllowedResidentialLocationRuleExistsException {
 		// Arrangements
 		Person person = this.personDelegate.create("Smith", "John", "Jay", 
 				null);
@@ -452,7 +457,8 @@ public class ResidenceServiceUpdateNonResidenceTermTests
 	public void testUpdateNonResidenceTermVerificationSignature() 
 			throws DuplicateEntityFoundException, 
 			ResidenceStatusConflictException, LocationNotAllowedException, 
-			NonResidenceTermExistsException, AllowedResidentialLocationRuleExistsException {
+			NonResidenceTermExistsException, 
+			AllowedResidentialLocationRuleExistsException {
 		// Arrangements
 		Person person = this.personDelegate.create("Smith", "John", "Jay", 
 				null);
@@ -515,10 +521,11 @@ public class ResidenceServiceUpdateNonResidenceTermTests
 	 * @throws AllowedResidentialLocationRuleExistsException 
 	 */
 	@Test(expectedExceptions = {NonResidenceTermExistsException.class})
-	public void testDuplicateEntityFoundException() 
+	public void testNonResidenceTermExistsException() 
 			throws DuplicateEntityFoundException, 
 			ResidenceStatusConflictException, LocationNotAllowedException, 
-			NonResidenceTermExistsException, AllowedResidentialLocationRuleExistsException {
+			NonResidenceTermExistsException, 
+			AllowedResidentialLocationRuleExistsException {
 		// Arrangements
 		Person person = this.personDelegate.create("Smith", "John", "Jay", 
 				null);
@@ -545,17 +552,40 @@ public class ResidenceServiceUpdateNonResidenceTermTests
 		VerificationSignature verificationSignature = new VerificationSignature(
 				this.accountDelegate.findByUsername("AUDIT"), 
 				this.parseDateText("02/01/2017"), true, method);
-		this.nonResidenceTermDelegate.createNonResidenceTerm(person, dateRange, 
-				status, location, confirmed, notes, verificationSignature);
-		ResidenceStatus secondStatus = ResidenceStatus.GROUP_HOME;
-		NonResidenceTerm nonResidenceTerm = this.nonResidenceTermDelegate
-				.createNonResidenceTerm(person, dateRange, secondStatus, 
-						location, confirmed, notes, verificationSignature);
+		this.nonResidenceTermDelegate
+				.createNonResidenceTerm(person, dateRange, status, location, 
+						confirmed, notes, verificationSignature);
+		VerificationSignature newVerificationSignature = 
+				new VerificationSignature(
+				this.accountDelegate.findByUsername("AUDIT"), 
+				this.parseDateText("02/01/2017"), false, method);
+		DateRange newateRange = new DateRange(this.parseDateText("05/01/2017"), 
+				this.parseDateText("08/01/2017"));
+		Country newCountry = this.countryDelegate
+				.create("nCountry", "nC", true);
+		State newState = this.stateDelegate.create("nState", "nST", 
+				newCountry, true, 
+				true);
+		City newCity = this.cityDelegate.create("nCity", true, newState, 
+				newCountry);
+		ZipCode newZipCode = this.zipCodeDelegate.create(newCity, "n00001", 
+				null,  true);
+		Address newAddress = this.addressDelegate.findOrCreate("n1 A Street", 
+				null, null, null, newZipCode);
+		
+		Location newLocation = this.locationDelegate.create(organization, 
+				newateRange, newAddress);
+		this.allowedResidentialLocationRuleDelegate.create(newLocation, 
+				ResidenceStatus.HOTEL);
+		NonResidenceTerm nonResidenceTerm 
+			= this.nonResidenceTermDelegate.createNonResidenceTerm(
+					person, newateRange, ResidenceStatus.HOTEL, 
+					newLocation, confirmed, notes, newVerificationSignature);
 		
 		// Action
-		this.residenceService.updateNonResidenceTerm(nonResidenceTerm, 
-				dateRange, status, location, confirmed, notes, 
-				verificationSignature);
+		nonResidenceTerm = this.residenceService.updateNonResidenceTerm(
+				nonResidenceTerm, dateRange, status, location, confirmed, 
+				notes, newVerificationSignature);
 	}
 		
 	/**

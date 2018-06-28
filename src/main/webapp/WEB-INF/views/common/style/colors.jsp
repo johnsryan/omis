@@ -533,7 +533,7 @@ tr.disabled {
 	border: 1px solid #aeaeae;
 }*/
 
-a.actionMenuItem:hover, .homeLink:hover, .reportHomeLink:hover, .applicationHelpLink:hover, .identifyingInformation a:hover, a.profileLink:hover, a.moduleLink:hover {
+a.actionMenuItem:hover, .homeLink:hover, .reportHomeLink:hover, .applicationHelpLink:hover, .identifyingInformation a:hover, a.profileLink:hover, a.moduleLink:hover, a.taskListLink:hover {
 
 	box-shadow: inset 0 0 1px 1px  hsla(${accentHue}, ${accentSaturation}%, 80%, 1), inset 0 0 15px 15px  hsla(${accentHue}, ${accentSaturation}%, 100%, 1);
 }

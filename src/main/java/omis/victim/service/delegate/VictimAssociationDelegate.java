@@ -163,6 +163,16 @@ public class VictimAssociationDelegate {
 		this.victimAssociationDao.makeTransient(association);
 	}
 	
+	/**
+	 * Returns count of victim associations by relationship.
+	 * 
+	 * @param relationship relationship
+	 * @return count of victim associations by relationship
+	 */
+	public long countByRelationship(final Relationship relationship) {
+		return this.victimAssociationDao.countByRelationship(relationship);
+	}
+	
 	/* Helper methods. */
 	
 	// Populates victim association

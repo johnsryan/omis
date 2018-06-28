@@ -71,7 +71,7 @@ public class TravelPermitDaoHibernateImpl
 			.getNamedQuery(FIND_EXCLUDED_EXISTING_TRAVEL_PERMIT_QUERY_NAME)
 			.setParameter(PERMIT_PARAMETER_NAME, permit)
 			.setParameter(START_DATE_PARAMETER_NAME, startDate)
-			.setParameter(OFFENDER_PARAMETER_NAME, startDate)
+			.setParameter(OFFENDER_PARAMETER_NAME, offender)
 			.uniqueResult();
 		return travelPermit;
 	}

@@ -10,8 +10,8 @@
 <option value=""><fmt:message key="nullLabel" bundle="${commonBundle}"/></option>
 <c:forEach var="city" items="${partialAddressCities}">
 	<c:choose>
-	<c:when test="${selectedCity eq city}">
-		<option value="${selectedCity.id}" selected="selected"><c:out value="${selectedCity.name}"/></option>
+	<c:when test="${not empty travelPermitForm.partialAddressCity and travelPermitForm.partialAddressCity eq city}">
+		<option value="${city.id}" selected="selected"><c:out value="${city.name}"/></option>
 	</c:when>
 	<c:otherwise>
 		<option value="${city.id}"><c:out value="${city.name}"/></option>

@@ -9,7 +9,8 @@ import omis.user.domain.UserAccount;
  * Task assignment.
  *
  * @author Stephen Abson
- * @version 0.0.1
+ * @author Annie Wahl
+ * @version 0.0.2
  * @since OMIS 3.0
  */
 public interface TaskAssignment
@@ -70,6 +71,18 @@ public interface TaskAssignment
 	 * @return assigned date
 	 */
 	Date getAssignedDate();
+	
+	/**
+	 * Returns the LastInvokedDate for the Task Assignment.
+	 * @return lastInvokedDate - last invoked date
+	 */
+	Date getLastInvokedDate();
+	
+	/**
+	 * Sets the LastInvokedDate for the Task Assignment.
+	 * @param lastInvokedDate - last invoked date
+	 */
+	void setLastInvokedDate(Date lastInvokedDate);
 	
 	/**
 	 * Compares {@code this} and {@code obj} for equality.

@@ -18,7 +18,9 @@
 package omis.travelpermit.web.form;
 
 import java.io.Serializable;
+import java.util.Date;
 
+import omis.audit.domain.UpdateSignature;
 import omis.travelpermit.domain.TravelPermitNote;
 import omis.user.domain.UserAccount;
 
@@ -31,10 +33,12 @@ import omis.user.domain.UserAccount;
  */
 public class TravelPermitNoteItem implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private Long id;
-	private TravelPermitNote note;
+	private String note;
+	private Date date;
 	private UserAccount userAccount;
 	private TravelPermitNoteItemOperation operation;
+	private UpdateSignature updateSignature;
+	private TravelPermitNote travelPermitNote;
 	
 	/**
 	 * Instantiates a default instance of travel permit notes.
@@ -44,39 +48,39 @@ public class TravelPermitNoteItem implements Serializable {
 	}
 
 	/**
-	 * Gets the ID.
-	 *
-	 * @return the id
-	 */
-	public Long getId() {
-		return this.id;
-	}
-
-	/**
-	 * Sets the ID.
-	 *
-	 * @param id id
-	 */
-	public void setId(final Long id) {
-		this.id = id;
-	}
-
-	/**
 	 * Gets the note.
 	 *
 	 * @return the note
 	 */
-	public TravelPermitNote getNote() {
+	public String getNote() {
 		return this.note;
 	}
 
 	/**
 	 * Sets the note.
 	 *
-	 * @param phoneNumber phone number
+	 * @param note note
 	 */
-	public void setNote(final TravelPermitNote note) {
+	public void setNote(final String note) {
 		this.note = note;
+	}
+	
+	/**
+	 * Gets the date.
+	 *
+	 * @return the date
+	 */
+	public Date getDate() {
+		return this.date;
+	}
+
+	/**
+	 * Sets the date.
+	 *
+	 * @param date date
+	 */
+	public void setDate(final Date date) {
+		this.date = date;
 	}
 
 	/**
@@ -98,6 +102,24 @@ public class TravelPermitNoteItem implements Serializable {
 	}
 
 	/**
+	 * Gets the update signature.
+	 *
+	 * @return UpdateSignature UpdateSignature
+	 */
+	public UpdateSignature getUpdateSignature() {
+		return this.updateSignature;
+	}
+
+	/**
+	 * Sets the UpdateSignature Update Signature
+	 *
+	 * @param UpdateSignature UpdateSignature
+	 */
+	public void setUpdateSignature(final UpdateSignature updateSignature) {
+		this.updateSignature = updateSignature;
+	}
+	
+	/**
 	 * Gets the travel permit note item operation.
 	 *
 	 * @return the travel permit note item operation
@@ -113,5 +135,23 @@ public class TravelPermitNoteItem implements Serializable {
 	 */
 	public void setOperation(final TravelPermitNoteItemOperation operation) {
 		this.operation = operation;
+	}
+	
+	/**
+	 * Gets the travel permit note.
+	 *
+	 * @return the travel permit note
+	 */
+	public TravelPermitNote getTravelPermitNote() {
+		return this.travelPermitNote;
+	}
+
+	/**
+	 * Sets the travel permit note.
+	 *
+	 * @param note travel permit note
+	 */
+	public void setTravelPermitNote(final TravelPermitNote note) {
+		this.travelPermitNote = note;
 	}
 }

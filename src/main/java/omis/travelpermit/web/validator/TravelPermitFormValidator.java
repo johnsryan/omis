@@ -1,14 +1,30 @@
+/*
+ * OMIS - Offender Management Information System.
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.travelpermit.web.validator;
-import java.util.List;
+import java.io.Serializable;
 
 import omis.address.web.validator.delegate.AddressFieldsValidatorDelegate;
+import omis.travelpermit.web.controller.AddressOption;
+import omis.travelpermit.web.controller.DestinationOption;
 import omis.travelpermit.web.form.TravelPermitForm;
-import omis.travelpermit.web.validator.delegate.TravelPermitNoteItemValidatorDelegate;
-import omis.web.validator.StringLengthChecks;
-import omis.workassignment.web.form.WorkAssignmentForm;
-import omis.workassignment.web.form.WorkAssignmentNoteItem;
-import omis.workassignment.web.form.WorkAssignmentNoteItemOperation;
-import omis.workassignment.web.validator.delegate.WorkAssignmentNoteItemValidatorDelegate;
+import omis.travelpermit.web.form.TravelPermitNoteItem;
+import omis.travelpermit.web.form.TravelPermitNoteItemOperation;
+import omis.util.EqualityChecker;
 
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -21,61 +37,77 @@ import org.springframework.validation.Validator;
  * @since OMIS 3.0
  */
 public class TravelPermitFormValidator implements Validator {
+	private static final String TELEPHONE_NUMBER_PROPERTY_NAME 
+	= "phoneNumber";
+	private static final String TELEPHONE_NUMBER_WRONG_ERROR_KEY
+	= "TravelPermit.telephonenumber.wrong";
 	private static final String PERIODICITY_PROPERTY_NAME 
-	= "periodicity";
+		= "periodicity";
 	private static final String PERIODICITY_EMPTY_ERROR_KEY
-	= "TravelPermit.periodicity.empty";
+		= "TravelPermit.periodicity.empty";
 	private static final String START_DATE_PROPERTY_NAME 
-	= "startDate";
+		= "startDate";
+	private static final String ADDRESS_QUERY_PROPERTY_NAME
+		="addressQuery";
 	private static final String START_DATE_EMPTY_ERROR_KEY
-	= "TravelPermit.startdate.empty";
+		= "TravelPermit.startdate.empty";
 	private static final String TRIP_PURPOSE_PROPERTY_NAME
-	= "tripPurpose";
+		= "tripPurpose";
 	private static final String TRIP_PURPOSE_EMPTY_ERROR_KEY
-	= "TravelPermit.startdate.empty";
+		= "TravelPermit.trippurpose.empty";
 	private static final String DESTINATION_NAME_PROPERTY_NAME
-	= "name";
+		= "name";
 	private static final String DESTINATION_NAME_EMPTY_ERROR_KEY
-	= "TravelPermit.name.empty";
+		= "TravelPermit.name.empty";
 	private static final String ISSUER_PROPERTY_NAME
-	= "issuer";
+		= "issuer";
 	private static final String ISSUER_EMPTY_ERROR_KEY
-	= "TravelPermit.issuer.empty";
-	
-	
-	
-	private static final String WORK_ASSIGNMENT_DATE_EMPTY_ERROR_KEY
-		= "WorkAssignment.assignedDate.empty";
-	private static final String ASSIGNED_DATE_PROPERTY_NAME = "assignmentDate";
-	private static final String FENCE_RESTRICTION_EMPTY_ERROR_KEY
-		= "WorkAssignment.fenceRestriction.empty";
-	private static final String FENCE_RESTRICTION_PROPERTY_NAME 
-		= "fenceRestriction";
-	private static final String WORK_ASSIGNMENT_CATEGORY_EMPTY_ERROR_KEY
-		= "WorkAssignment.category.empty";
-	private static final String CATEGORY_PROPERTY_NAME 
-		= "workAssignmentCategory";
-	private static final String WORK_ASSIGNMENT_CHANGE_REASON_EMPTY_ERROR_KEY
-		= "WorkAssignment.changeReason.empty";
-	private static final String CHANGE_REASON_PROPERTY_NAME 
-		= "workAssignmentChangeReason";
-	private static final String COMMENTS_PROPERTY_NAME 
-		= "comments";
-	private static final String ASSIGNMENT_DATE_PROPERTY_NAME 
-		= "assignmentDate";
-	private static final String ASSIGNMENT_DATE_GREATER_THAN_EMPTY_ERROR_KEY
-		= "workAssignmentForm.assignmentDate.assignmentDateGreaterThanTerminationDate";
-//	private final TravelPermitNoteItemValidatorDelegate 
-//	travelPermitNoteItemValidatorDelegate;
+		= "TravelPermit.issuer.empty";
+	private static final String NOTE_DATE_EMPTY_ERROR_KEY
+		= "TravelPermit.note.empty";
+	private static final String NOTE_VALUE_EMPTY_ERROR_KEY
+		="TravelPermit.value.empty";
+	private static final String PARTIAL_ADDRESS_STATE_PROPERTY_NAME
+		="partialAddressState";
+	private static final String PARTIAL_ADDRESS_STATE_EMPTY_ERROR_KEY
+		="TravelPermit.partialAddressState.empty";
+	private static final String PARTIAL_ADDRESS_NEW_CITY_PROPERTY_NAME
+		="newCityName";
+	private static final String PARTIAL_ADDRESS_NEW_CITY_EMPTY_ERROR_KEY
+		="TravelPermit.newcity.empty";
+	private static final String PARTIAL_ADDRESS_CITY_PROPERTY_NAME
+		="partialAddressCity";
+	private static final String PARTIAL_ADDRESS_CITY_EMPTY_ERROR_KEY
+		="TravelPermit.city.empty";
+	private static final String PARTIAL_ADDRESS_NEW_ZIP_CODE_PROPERTY_NAME
+		="newZipCodeName";
+	private static final String PARTIAL_ADDRESS_NEW_ZIP_CODE_EMPTY_ERROR_KEY
+		="TravelPermit.newzipcode.empty";
+	private static final String PARTIAL_ADDRESS_NEW_ZIP_CODE_EXTENSION_PROPERTY_NAME
+		="newZipCodeExtension";
+	private static final String PARTIAL_ADDRESS_NEW_ZIP_CODE_EXTENSION_EMPTY_ERROR_KEY
+		="TravelPermit.newzipcodeextension.empty";
+	private static final String PARTIAL_ADDRESS_ZIP_CODE_PROPERTY_NAME
+		="partialAddressZipCode";
+	private static final String PARTIAL_ADDRESS_ZIP_CODE_EMPTY_ERROR_KEY
+		="TravelPermit.zipcode.empty";
+	private static final String ADDRESS_OPTION_PROPERTY_NAME
+		="addressOption";
+	private static final String DESTINATION_OPTION_PROPERTY_NAME
+		="destinationOption";
+	private static final String DESTINATION_OPTION_EMPTY_ERROR_KEY
+		="TravelPermit.destinationoption.empty";
+	private static final String ADDRESS_EMPTY_ERROR_KEY
+		="TravelPermit.address.empty";
+	private static final String TRAVEL_METHOD_PROPERTY_NAME
+		="travelMethod";
+	private static final String TRAVEL_METHOD_EMPTY_ERROR_KEY
+		="TravelPermit.travelmethod.empty";
 	private final AddressFieldsValidatorDelegate addressFieldsValidatorDelegate;
 	
 	/** Instantiates a validator for travel permit form. */
 	public TravelPermitFormValidator(
-//		final TravelPermitNoteItemValidatorDelegate 
-//		travelPermitNoteItemValidatorDelegate,
 		final AddressFieldsValidatorDelegate addressFieldsValidatorDelegate) {
-//		this.travelPermitNoteItemValidatorDelegate 
-//			= travelPermitNoteItemValidatorDelegate;
 		this.addressFieldsValidatorDelegate = addressFieldsValidatorDelegate;
 	}
 
@@ -110,68 +142,137 @@ public class TravelPermitFormValidator implements Validator {
 			errors.rejectValue(DESTINATION_NAME_PROPERTY_NAME,
 			DESTINATION_NAME_EMPTY_ERROR_KEY);
 		}
+		
 		if (travelPermitForm.getIssuer() == null) {
 			errors.rejectValue(ISSUER_PROPERTY_NAME,
 			ISSUER_EMPTY_ERROR_KEY);
 		}
 		
-		if(travelPermitForm.getDestinationOption()
-			.equalsIgnoreCase("Use Full Address")){
-			this.addressFieldsValidatorDelegate.validateAddressFields(
-				travelPermitForm.getAddressFields(), "addressFields", errors);
+		if(travelPermitForm.getTravelMethod()==null){
+			errors.rejectValue(TRAVEL_METHOD_PROPERTY_NAME,
+				TRAVEL_METHOD_EMPTY_ERROR_KEY);
 		}
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		/*if (workAssignmentForm.getAssignmentDate() == null) {
-			errors.rejectValue(ASSIGNED_DATE_PROPERTY_NAME,
-			WORK_ASSIGNMENT_DATE_EMPTY_ERROR_KEY);
-		} 
-		if (workAssignmentForm.getFenceRestriction() == null) {
-			errors.rejectValue(FENCE_RESTRICTION_PROPERTY_NAME, 
-			FENCE_RESTRICTION_EMPTY_ERROR_KEY);
-		}
-		if (workAssignmentForm.getWorkAssignmentCategory() == null) {
-			errors.rejectValue(CATEGORY_PROPERTY_NAME,
-			WORK_ASSIGNMENT_CATEGORY_EMPTY_ERROR_KEY);
-		}
-		if (workAssignmentForm.getWorkAssignmentChangeReason() == null) {
-			errors.rejectValue(CHANGE_REASON_PROPERTY_NAME, 
-			WORK_ASSIGNMENT_CHANGE_REASON_EMPTY_ERROR_KEY);
-		}
-		this.stringLengthChecks.getVeryHugeCheck().check(
-			COMMENTS_PROPERTY_NAME, workAssignmentForm.getComments(), errors);
-		
-		if (workAssignmentForm.getAssignmentDate() != null
-			&& workAssignmentForm.getTerminationDate() != null
-			&& workAssignmentForm.getAssignmentDate().getTime()
-			> workAssignmentForm.getTerminationDate().getTime()) {
-			errors.rejectValue(ASSIGNMENT_DATE_PROPERTY_NAME,
-			ASSIGNMENT_DATE_GREATER_THAN_EMPTY_ERROR_KEY);
-		}
-			
-		int index = 0;
-		if(workAssignmentForm.getWorkAssignmentNoteItems()!=null){
-			List<WorkAssignmentNoteItem> workAssignmentNoteItems 
-				= workAssignmentForm.getWorkAssignmentNoteItems();
-			for(WorkAssignmentNoteItem noteItem : workAssignmentNoteItems){
-				if(noteItem.getOperation()!=null){
-					if(noteItem.getOperation().equals(
-						WorkAssignmentNoteItemOperation.UPDATE)||
-						noteItem.getOperation().equals(
-							WorkAssignmentNoteItemOperation.CREATE)){
-						workAssignmentNoteItemValidatorDelegate.validate(noteItem, 
-							index, errors);
+		if(travelPermitForm.getDestinationOption()!=null){
+			if (DestinationOption.USE_FULL_ADDRESS.equals(
+					travelPermitForm.getDestinationOption())) {
+				if(travelPermitForm.getAddressOption()!=null){
+					if(AddressOption.USE_EXISTING.equals(
+						travelPermitForm.getAddressOption())){
+						if(travelPermitForm.getAddressQuery()==null
+							||travelPermitForm.getAddressQuery().isEmpty()){
+							errors.rejectValue(ADDRESS_QUERY_PROPERTY_NAME,
+								ADDRESS_EMPTY_ERROR_KEY);
+						}
+					} else if(AddressOption.CREATE_NEW.equals(
+						travelPermitForm.getAddressOption())){
+							this.addressFieldsValidatorDelegate
+							.validateAddressFields(
+							travelPermitForm.getAddressFields(),
+							"addressFields",
+							errors);
 					}
-					index = index + 1;
+				}  else {
+					errors.rejectValue(ADDRESS_OPTION_PROPERTY_NAME,
+						ADDRESS_EMPTY_ERROR_KEY);
 				}
 			}
-		}*/
+			if (DestinationOption.USE_PARTIAL_ADDRESS.equals(
+				travelPermitForm.getDestinationOption())) {
+				if(travelPermitForm.getPartialAddressState()==null){
+					errors.rejectValue(PARTIAL_ADDRESS_STATE_PROPERTY_NAME,
+						PARTIAL_ADDRESS_STATE_EMPTY_ERROR_KEY);
+				}
+				if(travelPermitForm.getNewCity()==true
+					&&(travelPermitForm.getNewCityName()==null
+					||travelPermitForm.getNewCityName().isEmpty())){
+					errors.rejectValue(PARTIAL_ADDRESS_NEW_CITY_PROPERTY_NAME,
+						PARTIAL_ADDRESS_NEW_CITY_EMPTY_ERROR_KEY);
+				}
+				if(travelPermitForm.getNewCity()!=true
+					&&travelPermitForm.getPartialAddressCity()==null){
+						errors.rejectValue(PARTIAL_ADDRESS_CITY_PROPERTY_NAME,
+							PARTIAL_ADDRESS_CITY_EMPTY_ERROR_KEY);
+				}
+				if(travelPermitForm.getNewZipCode()==true
+					&&(travelPermitForm.getNewZipCodeName()==null
+					||travelPermitForm.getNewZipCodeName().isEmpty())){
+					errors.rejectValue(
+						PARTIAL_ADDRESS_NEW_ZIP_CODE_PROPERTY_NAME,
+						PARTIAL_ADDRESS_NEW_ZIP_CODE_EMPTY_ERROR_KEY);
+					errors.rejectValue(
+						PARTIAL_ADDRESS_NEW_ZIP_CODE_EXTENSION_PROPERTY_NAME,
+						PARTIAL_ADDRESS_NEW_ZIP_CODE_EXTENSION_EMPTY_ERROR_KEY);
+				} 
+				if(travelPermitForm.getNewZipCode()!=true
+					&&travelPermitForm.getPartialAddressZipCode()==null){
+					errors.rejectValue(PARTIAL_ADDRESS_ZIP_CODE_PROPERTY_NAME,
+						PARTIAL_ADDRESS_ZIP_CODE_EMPTY_ERROR_KEY);
+				}
+			} 
+		}
+		else {
+			errors.rejectValue(DESTINATION_OPTION_PROPERTY_NAME,
+				DESTINATION_OPTION_EMPTY_ERROR_KEY);
+		}
+		
+		if (travelPermitForm.getTravelPermitNoteItems() != null) {
+			for (int index = 0;
+				index < travelPermitForm.getTravelPermitNoteItems().size();
+				index++) {
+				TravelPermitNoteItem item
+					= travelPermitForm.getTravelPermitNoteItems().get(index);
+				
+				if (item.getOperation() != null
+				&& !TravelPermitNoteItemOperation.REMOVE
+					.equals(item.getOperation())) {
+					if(item.getDate()==null){
+						errors.rejectValue(String.format(
+							"travelPermitNoteItems[%d].date", index),
+							NOTE_DATE_EMPTY_ERROR_KEY);
+					}
+					if(item.getNote()==null||item.getNote().isEmpty()){
+						errors.rejectValue(String.format(
+							"travelPermitNoteItems[%d].note", index),
+							NOTE_VALUE_EMPTY_ERROR_KEY);
+					}
+				}
+				
+				for (int innerNoteIndex = 0; innerNoteIndex < index;
+						innerNoteIndex++) {
+					TravelPermitNoteItem innerItem
+						= travelPermitForm.getTravelPermitNoteItems()
+						.get(innerNoteIndex);
+					
+					if (innerItem.getOperation() != null
+							&& !TravelPermitNoteItemOperation.REMOVE
+								.equals(innerItem.getOperation())) {
+						if (EqualityChecker.create(Serializable.class)
+								.add(item.getDate(),
+								innerItem.getDate())
+								.add(item.getUpdateSignature(),
+								innerItem.getUpdateSignature())
+								.add(item.getNote(),
+								innerItem.getNote())
+								.check()) {
+							errors.rejectValue(
+									String.format(
+										"travelPermitNoteItems[%d]"
+										+ ".note", index),
+									"travelPermitNote.duplicate");
+							break;
+						}
+					}
+				}
+			}
+		}
+		if(travelPermitForm.getPhoneNumber()!=null
+			&&!travelPermitForm.getPhoneNumber().isEmpty()){
+			String pattern = "\\d{10}|(?:\\d{3}-){2}\\d{4}|\\(\\d{3}\\)\\d{3}-?\\d{4}|\\d{3}-\\d{7}";
+			if(!travelPermitForm.getPhoneNumber().matches(pattern)){
+				errors.rejectValue(TELEPHONE_NUMBER_PROPERTY_NAME,
+					TELEPHONE_NUMBER_WRONG_ERROR_KEY);
+			}
+		}
 	}
 }

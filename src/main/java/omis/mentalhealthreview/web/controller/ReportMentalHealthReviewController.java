@@ -17,10 +17,13 @@
 */
 package omis.mentalhealthreview.web.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
@@ -31,17 +34,21 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import omis.beans.factory.PropertyEditorFactory;
-import omis.offender.beans.factory.OffenderPropertyEditorFactory;
-import omis.offender.domain.Offender;
-import omis.offender.web.controller.delegate.OffenderSummaryModelDelegate;
 import omis.mentalhealthreview.domain.MentalHealthReview;
 import omis.mentalhealthreview.report.MentalHealthReviewSummary;
 import omis.mentalhealthreview.report.MentalHealthReviewSummaryReportService;
+import omis.offender.beans.factory.OffenderPropertyEditorFactory;
+import omis.offender.domain.Offender;
+import omis.offender.web.controller.delegate.OffenderSummaryModelDelegate;
+import omis.report.ReportFormat;
+import omis.report.ReportRunner;
+import omis.report.web.controller.delegate.ReportControllerDelegate;
 
 /**
  * Controller for reporting mental health reviews.
  * 
  * @author Josh Divine
+ * @author Sierra Haynes
  * @version 0.1.0 (Feb 1, 2018)
  * @since OMIS 3.0
  */
@@ -68,6 +75,34 @@ public class ReportMentalHealthReviewController {
 			"mentalHealthReview";
 	
 	private static final String OFFENDER_MODEL_KEY = "offender";
+	
+	/* Report names. */
+
+	private static final String MENTAL_HEALTH_REVIEW_LISTING_REPORT_NAME =
+			"/CaseManagement/MentalHealthReviews/Mental_Health_Reviews_Listing";
+	
+	private static final String MENTAL_HEALTH_REVIEW_DETAILS_REPORT_NAME =
+			"/CaseManagement/MentalHealthReviews/Mental_Health_Review_Details";	
+	
+	/* Report parameter names. */
+
+	private static final String MENTAL_HEALTH_REVIEW_ID_REPORT_PARAM_NAME =
+			"MENTAL_REVIEW_ID";
+	
+	private static final String DOC_ID_REPORT_PARAM_NAME =
+			"DOC_ID";	
+	
+	/* Report runners. */
+	
+	@Autowired
+	@Qualifier("reportRunner")
+	private ReportRunner reportRunner;
+	
+	/* Controller delegates. */
+	
+	@Autowired
+	@Qualifier("reportControllerDelegate")
+	private ReportControllerDelegate reportControllerDelegate;	
 	
 	/* Property editor factories. */
 	
@@ -150,6 +185,59 @@ public class ReportMentalHealthReviewController {
 		}
 		return mav;
 	}
+	
+	/* Reports. */
+	
+	/**
+	 * Returns the report for the specified offender.
+	 * 
+	 * @param offender offender
+	 * @param reportFormat report format
+	 * @return response entity with report
+	 */
+	@RequestMapping(value = "/mentalReviewListingReport.html",
+			method = RequestMethod.GET)
+	@PreAuthorize("hasRole('MENTAL_HEALTH_REVIEW_VIEW') or hasRole('ADMIN')")
+	public ResponseEntity<byte []> reportMentalHealthReview(@RequestParam(
+			value = "offender", required = true)
+			final Offender offender,
+			@RequestParam(value = "reportFormat", required = true)
+			final ReportFormat reportFormat) {
+		Map<String, String> reportParamMap = new HashMap<String, String>();
+		reportParamMap.put(DOC_ID_REPORT_PARAM_NAME,
+				Long.toString(offender.getOffenderNumber()));
+		byte[] doc = this.reportRunner.runReport(
+				MENTAL_HEALTH_REVIEW_LISTING_REPORT_NAME,
+				reportParamMap, reportFormat);
+		return this.reportControllerDelegate.constructReportResponseEntity(
+				doc, reportFormat);
+	}
+	
+	/**
+	 * Returns the report for the specified mental health review.
+	 * 
+	 * @param mentalHealthReview - Mental Health Review
+	 * @param reportFormat report format
+	 * @return response entity with report
+	 */
+	@RequestMapping(value = "/mentalHealthReviewDetailsReport.html",
+			method = RequestMethod.GET)
+	@PreAuthorize("hasRole('MENTAL_HEALTH_REVIEW_VIEW') or hasRole('ADMIN')")
+	public ResponseEntity<byte []> reportMentalHealthReviewDetails(@RequestParam(
+			value = "mentalHealthReview", required = true)
+			final MentalHealthReview mentalHealthReview,
+			@RequestParam(value = "reportFormat", required = true)
+			final ReportFormat reportFormat) {
+		Map<String, String> reportParamMap = new HashMap<String, String>();
+		reportParamMap.put(MENTAL_HEALTH_REVIEW_ID_REPORT_PARAM_NAME,
+				Long.toString(mentalHealthReview.getId()));
+		byte[] doc = this.reportRunner.runReport(
+				MENTAL_HEALTH_REVIEW_DETAILS_REPORT_NAME,
+				reportParamMap, reportFormat);
+		return this.reportControllerDelegate.constructReportResponseEntity(
+				doc, reportFormat);
+	}
+		
 	
 	/* Init binders. */
 	

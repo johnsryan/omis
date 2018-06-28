@@ -22,6 +22,7 @@ import omis.travelpermit.domain.TravelPermitPeriodicity;
 /**
  * Implementation of travel permit periodicity.
  * @author Yidong Li
+ * @author Sheronda Vaughn
  * @version 0.1.0 (May 17, 2018)
  * @since OMIS 3.0 
  */
@@ -84,11 +85,7 @@ public class TravelPermitPeriodicityImpl implements TravelPermitPeriodicity {
 		
 		if (this.getName() == null) {
 			throw new IllegalStateException("Name required.");
-		}
-		if (this.getSortOrder() == null) {
-			throw new IllegalStateException("Sort order required.");
-		}
-	
+		}	
 		if (this.getName().equals(that.getName())) {
 			return true;
 		}
@@ -101,14 +98,9 @@ public class TravelPermitPeriodicityImpl implements TravelPermitPeriodicity {
 		if (this.getName() == null) {
 			throw new IllegalStateException("Name required.");
 		}
-		if (this.getSortOrder() == null) {
-			throw new IllegalStateException("Sort order required.");
-		}
-		
 		int hashCode = 14;
 		
 		hashCode += 29 * this.getName().hashCode();
-		hashCode += 29 * this.getSortOrder().hashCode();
 		return hashCode;
 	}
 }

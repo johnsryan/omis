@@ -10,6 +10,7 @@ import org.testng.annotations.Test;
 
 import omis.address.domain.Address;
 import omis.address.domain.ZipCode;
+import omis.address.exception.ZipCodeExistsException;
 import omis.address.service.delegate.AddressDelegate;
 import omis.address.service.delegate.ZipCodeDelegate;
 import omis.audit.domain.VerificationMethod;
@@ -22,19 +23,24 @@ import omis.employment.domain.Employer;
 import omis.employment.domain.EmploymentChangeReason;
 import omis.employment.domain.EmploymentTerm;
 import omis.employment.domain.component.Job;
+import omis.employment.exception.EmploymentChangeReasonExistsException;
+import omis.employment.exception.EmploymentExistsException;
 import omis.employment.service.ChangeEmployerService;
 import omis.employment.service.delegate.EmployerDelegate;
 import omis.employment.service.delegate.EmploymentChangeReasonDelegate;
 import omis.employment.service.delegate.EmploymentTermDelegate;
 import omis.exception.DuplicateEntityFoundException;
 import omis.location.domain.Location;
+import omis.location.exception.LocationExistsException;
 import omis.location.service.delegate.LocationDelegate;
 import omis.offender.domain.Offender;
 import omis.offender.service.delegate.OffenderDelegate;
 import omis.organization.domain.Organization;
+import omis.organization.exception.OrganizationExistsException;
 import omis.organization.service.delegate.OrganizationDelegate;
 import omis.region.domain.City;
 import omis.region.domain.State;
+import omis.region.exception.CityExistsException;
 import omis.region.service.delegate.CityDelegate;
 import omis.region.service.delegate.StateDelegate;
 import omis.testng.AbstractHibernateTransactionalTestNGSpringContextTests;
@@ -46,6 +52,7 @@ import omis.util.PropertyValueAsserter;
  * service.
  * 
  * @author Josh Divine
+ * @author Sheronda Vaughn
  * @version 0.0.1 (Dec 14, 2017)
  * @since OMIS 3.0
  */
@@ -117,10 +124,18 @@ public class ChangeEmployerServiceChangeTests
 	/**
 	 * Test changing of an employer on an employment term.
 	 * 
-	 * @throws DuplicateEntityFoundException if duplicate entity exists
+	 * @throws EmploymentChangeReasonExistsException if duplicate entity exists
+	 * @throws CityExistsException 
+	 * @throws ZipCodeExistsException 
+	 * @throws OrganizationExistsException 
+	 * @throws LocationExistsException 
+	 * @throws EmploymentExistsException 
 	 */
 	@Test
-	public void testChange() throws DuplicateEntityFoundException {
+	public void testChange() throws EmploymentChangeReasonExistsException, 
+		CityExistsException, ZipCodeExistsException, 
+		OrganizationExistsException, LocationExistsException, 
+		EmploymentExistsException, DuplicateEntityFoundException {
 		// Arrangements
 		EmploymentChangeReason employmentChangeReason = this
 				.employmentChangeReasonDelegate.create("Fired", (short) 1, 
@@ -178,12 +193,20 @@ public class ChangeEmployerServiceChangeTests
 
 	/**
 	 * Tests that {@code DuplicateEntityFoundException} is thrown.
+	 * @throws CityExistsException 
+	 * @throws ZipCodeExistsException 
+	 * @throws OrganizationExistsException 
+	 * @throws LocationExistsException 
+	 * @throws EmploymentExistsException 
 	 *  
 	 * @throws DuplicateEntityFoundException if duplicate entity exists
 	 */
-	@Test(expectedExceptions = {DuplicateEntityFoundException.class})
-	public void testDuplicateEntityFoundException() 
-			throws DuplicateEntityFoundException {
+	@Test(expectedExceptions = {EmploymentChangeReasonExistsException.class})
+	public void testEmploymentChangeReasonExistsException() 
+			throws EmploymentChangeReasonExistsException, CityExistsException, 
+			ZipCodeExistsException, OrganizationExistsException, 
+			LocationExistsException, EmploymentExistsException, 
+			DuplicateEntityFoundException {
 		// Arrangements
 		EmploymentChangeReason employmentChangeReason = this
 				.employmentChangeReasonDelegate.create("Fired", (short) 1, 
@@ -226,16 +249,23 @@ public class ChangeEmployerServiceChangeTests
 				convictedOfEmployerTheft, employmentChangeReason, 
 				verificationSignature);
 		Long newTelephoneNumber = 8885556661L;
-		Employer newEmployer = this.employerDelegate.create(location, 
+		Organization newOrganization = this.organizationDelegate.create(
+				"Waffle Shack2", "Shack2", null);
+		Location newLocation = this.locationDelegate.create(newOrganization, 
+				dateRange, address);
+		Employer newEmployer = this.employerDelegate.create(newLocation, 
 				newTelephoneNumber);
 		job.setEmployer(newEmployer);
+		EmploymentChangeReason employmentChangeReason2 = this
+				.employmentChangeReasonDelegate.create("Fired", (short) 1, 
+						true);
 		EmploymentTerm employmentTerm = this.employmentTermDelegate.create(
 				offender, dateRange, job, convictedOfEmployerTheft, 
-				employmentChangeReason, verificationSignature);
+				employmentChangeReason2, verificationSignature);
 
 		// Action
 		employmentTerm = this.changeEmployerService.change(employmentTerm, 
-				employer);
+				newEmployer);
 	}
 	
 	// Parses date text - returns result

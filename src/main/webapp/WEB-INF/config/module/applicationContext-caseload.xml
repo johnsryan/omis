@@ -1,4 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+ - OMIS - Offender Management Information System
+ - Copyright (C) 2011 - 2017 State of Montana
+ -
+ - This program is free software: you can redistribute it and/or modify
+ - it under the terms of the GNU General Public License as published by
+ - the Free Software Foundation, either version 3 of the License, or
+ - (at your option) any later version.
+ -
+ - This program is distributed in the hope that it will be useful,
+ - but WITHOUT ANY WARRANTY; without even the implied warranty of
+ - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ - GNU General Public License for more details.
+ -
+ - You should have received a copy of the GNU General Public License
+ - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+
+<!--
+  - Case load application configuration file.
+  -
+  - Author: Josh Divine
+  -->
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:context="http://www.springframework.org/schema/context"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -8,135 +31,81 @@
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context-3.0.xsd">
         
-        <!-- services -->
-        <bean name="caseloadService"
-        	class="omis.caseload.service.impl.CaseloadServiceImpl">
-        	<constructor-arg name="caseloadDelegate" ref="caseloadDelegate"/>
-        	<constructor-arg name="offenderCaseAssignmentDelegate" ref="offenderCaseAssignmentDelegate"/>
-        	<constructor-arg name="caseloadContactDelegate" ref="caseloadContactDelegate"/>
-        	<constructor-arg name="caseWorkerAssignmentDelegate" ref="caseWorkerAssignmentDelegate"/>
+         <!-- Services -->
+        
+        <bean name="officerCaseAssignmentService"
+        	class="omis.caseload.service.impl.OfficerCaseAssignmentServiceImpl">
+        	<constructor-arg name="officerCaseAssignmentDelegate" ref="officerCaseAssignmentDelegate"/>
+        	<constructor-arg name="supervisionLevelCategoryDelegate" ref="supervisionLevelCategoryDelegate"/>
+        	<constructor-arg name="locationDelegate" ref="locationDelegate"/>
+        	<constructor-arg name="supervisoryOrganizationDelegate" ref="supervisoryOrganizationDelegate"/>
         	<constructor-arg name="userAccountDelegate" ref="userAccountDelegate"/>
         </bean> 
         
-        <bean name="caseloadDelegate"
-        	class="omis.caseload.service.delegate.CaseloadDelegate">
-        	<constructor-arg name="caseloadDao" ref="caseloadDao"/>
-        	<constructor-arg name="caseloadInstanceFactory" ref="caseloadInstanceFactory"/>
-        	<constructor-arg name="auditComponentRetriever" ref="auditComponentRetriever"/>
-        </bean>
+        <!-- Delegates -->
         
-        <bean name="caseloadContactDelegate"
-        	class="omis.caseload.service.delegate.CaseloadContactDelegate">
-        	<constructor-arg name="caseloadContactDao" ref="caseloadContactDao"/>
-        	<constructor-arg name="contactCategoryDao" ref="contactCategoryDao"/>
-        	<constructor-arg name="caseloadContactInstanceFactory" ref="caseloadContactInstanceFactory"/>
-        	<constructor-arg name="auditComponentRetriever" ref="auditComponentRetriever"/>
-        </bean>
-        
-        <bean name="offenderCaseAssignmentDelegate" 
-        	class="omis.caseload.service.delegate.OffenderCaseAssignmentDelegate">
-        	<constructor-arg name="offenderCaseAssignmentDao" ref="offenderCaseAssignmentDao"/>
-        	<constructor-arg name="offenderCaseAssignmentInstanceFactory" ref="offenderCaseAssignmentInstanceFactory"/>
+        <bean name="officerCaseAssignmentDelegate" 
+        	class="omis.caseload.service.delegate.OfficerCaseAssignmentDelegate">
+        	<constructor-arg name="officerCaseAssignmentDao" ref="officerCaseAssignmentDao"/>
+        	<constructor-arg name="officerCaseAssignmentInstanceFactory" ref="officerCaseAssignmentInstanceFactory"/>
         	<constructor-arg name="auditComponentRetriever" ref="auditComponentRetriever"/>	
         </bean>
         
-        <bean name="caseWorkerAssignmentDelegate"
-        	class="omis.caseload.service.delegate.CaseWorkerAssignmentDelegate">
-        	<constructor-arg name="caseWorkerAssignmentDao" ref="caseWorkerAssignmentDao"/>
-        	<constructor-arg name="caseWorkerAssignmentInstanceFactory" ref="caseWorkerAssignmentInstanceFactory"/>
-        	<constructor-arg name="auditComponentRetriever" ref="auditComponentRetriever"/>
+        <bean name="supervisionLevelCategoryDelegate"
+        	class="omis.caseload.service.delegate.SupervisionLevelCategoryDelegate">
+        	<constructor-arg name="supervisionLevelCategoryDao" ref="supervisionLevelCategoryDao"/>
+        	<constructor-arg name="supervisionLevelCategoryInstanceFactory" ref="supervisionLevelCategoryInstanceFactory"/>
         </bean>
         
-        <!--  Report services -->
-        <bean name="caseloadReportService"
-        	class="omis.caseload.report.impl.hibernate.CaseloadReportServiceHibernateImpl">
+        <!-- Report services -->
+        
+        <bean name="officerCaseAssignmentSummaryReportService"
+        	class="omis.caseload.report.impl.hibernate.OfficerCaseAssignmentSummaryReportServiceHibernateImpl">
         	<constructor-arg name="sessionFactory" ref="sessionFactory"/>
-        	<constructor-arg name="caseWorkerAssignmentDelegate" ref="caseWorkerAssignmentDelegate"/>
-        	<constructor-arg name="userAccountDelegate" ref="userAccountDelegate"/>
         </bean>
         
-        <!--  Data Access Objects -->
-        <bean id="caseloadDao"
-	  		class="omis.caseload.dao.impl.hibernate.CaseloadDaoHibernateImpl">
+        <!-- Data Access Objects -->
+        
+        <bean id="officerCaseAssignmentDao"
+	  		class="omis.caseload.dao.impl.hibernate.OfficerCaseAssignmentDaoHibernateImpl">
 	  		<constructor-arg name="sessionFactory" ref="sessionFactory"/>
-	  		<constructor-arg name="entityName" value="omis.caseload.domain.Caseload"/>
+	  		<constructor-arg name="entityName" value="omis.caseload.domain.OfficerCaseAssignment"/>
  		</bean>
- 		<bean id="caseWorkerAssignmentDao"
-	  		class="omis.caseload.dao.impl.hibernate.CaseWorkerAssignmentDaoHibernateImpl">
+ 		
+ 		<bean id="supervisionLevelCategoryDao"
+	  		class="omis.caseload.dao.impl.hibernate.SupervisionLevelCategoryDaoHibernateImpl">
 	  		<constructor-arg name="sessionFactory" ref="sessionFactory"/>
-	  		<constructor-arg name="entityName" value="omis.caseload.domain.CaseWorkerAssignment"/>
- 		</bean>
- 		<bean id="contactCategoryDao"
-	  		class="omis.caseload.dao.impl.hibernate.ContactCategoryDaoHibernateImpl">
-	  		<constructor-arg name="sessionFactory" ref="sessionFactory"/>
-	  		<constructor-arg name="entityName" value="omis.caseload.domain.ContactCategory"/>
- 		</bean>
- 		<bean id="caseloadContactDao"
-	  		class="omis.caseload.dao.impl.hibernate.CaseloadContactDaoHibernateImpl">
-	  		<constructor-arg name="sessionFactory" ref="sessionFactory"/>
-	  		<constructor-arg name="entityName" value="omis.caseload.domain.CaseloadContact"/>
- 		</bean>
-        <bean id="offenderCaseAssignmentDao"
-	  		class="omis.caseload.dao.impl.hibernate.OffenderCaseAssignmentDaoHibernateImpl">
-	  		<constructor-arg name="sessionFactory" ref="sessionFactory"/>
-	  		<constructor-arg name="entityName" value="omis.caseload.domain.OffenderCaseAssignment"/>
+	  		<constructor-arg name="entityName" value="omis.caseload.domain.SupervisionLevelCategory"/>
  		</bean>
  		 
- 		 
-        <!--   Instance factories -->
-    	<bean id="caseloadInstanceFactory"
+        <!-- Instance factories -->
+        
+  		<bean id="officerCaseAssignmentInstanceFactory"
 	        class="omis.instance.factory.hibernate.impl.InstanceFactoryHibernateImpl">
 	    	<constructor-arg name="instanceFactoryDelegate" ref="instanceFactoryDelegate"/>
-	    	<constructor-arg name="entityName" value="omis.caseload.domain.Caseload"/>
+	    	<constructor-arg name="entityName" value="omis.caseload.domain.OfficerCaseAssignment"/>
   		</bean>
-  		 <bean id="caseWorkerAssignmentInstanceFactory"
+  		
+  		<bean id="supervisionLevelCategoryInstanceFactory"
 	        class="omis.instance.factory.hibernate.impl.InstanceFactoryHibernateImpl">
 	    	<constructor-arg name="instanceFactoryDelegate" ref="instanceFactoryDelegate"/>
-	    	<constructor-arg name="entityName" value="omis.caseload.domain.CaseWorkerAssignment"/>
-  		</bean>
-  		<bean id="offenderCaseAssignmentInstanceFactory"
-	        class="omis.instance.factory.hibernate.impl.InstanceFactoryHibernateImpl">
-	    	<constructor-arg name="instanceFactoryDelegate" ref="instanceFactoryDelegate"/>
-	    	<constructor-arg name="entityName" value="omis.caseload.domain.OffenderCaseAssignment"/>
-  		</bean>
-  		<bean id="caseloadContactInstanceFactory"
-	        class="omis.instance.factory.hibernate.impl.InstanceFactoryHibernateImpl">
-	    	<constructor-arg name="instanceFactoryDelegate" ref="instanceFactoryDelegate"/>
-	    	<constructor-arg name="entityName" value="omis.caseload.domain.CaseloadContact"/>
+	    	<constructor-arg name="entityName" value="omis.caseload.domain.SupervisionLevelCategory"/>
   		</bean>
     	
-		<!--   Property editors -->
-		<bean id="caseloadPropertyEditorFactory"
+		<!-- Property editors -->
+		
+		<bean id="officerCaseAssignmentPropertyEditorFactory"
 	        class="omis.beans.factory.impl.hibernate.PropertyEditorFactoryHibernateImpl">
-		    <constructor-arg name="dao" ref="caseloadDao"/>
-		    <constructor-arg name="entityName" value="omis.caseload.domain.Caseload"/>
+		    <constructor-arg name="dao" ref="officerCaseAssignmentDao"/>
+		    <constructor-arg name="entityName" value="omis.caseload.domain.OfficerCaseAssignment"/>
 		    <constructor-arg name="configuration" ref="hibernateConfiguration"/>
-	  	</bean>  
-		<bean id="offenderCaseAssignmentPropertyEditorFactory"
-	        class="omis.beans.factory.impl.hibernate.PropertyEditorFactoryHibernateImpl">
-		    <constructor-arg name="dao" ref="offenderCaseAssignmentDao"/>
-		    <constructor-arg name="entityName" value="omis.caseload.domain.OffenderCaseAssignment"/>
-		    <constructor-arg name="configuration" ref="hibernateConfiguration"/>
-	  	</bean>  
+	  	</bean>
 	  	
-	  	<bean id="caseloadContactPropertyEditorFactory"
+	  	<bean id="supervisionLevelCategoryPropertyEditorFactory"
 	        class="omis.beans.factory.impl.hibernate.PropertyEditorFactoryHibernateImpl">
-		    <constructor-arg name="dao" ref="caseloadContactDao"/>
-		    <constructor-arg name="entityName" value="omis.caseload.domain.CaseloadContact"/>
+		    <constructor-arg name="dao" ref="supervisionLevelCategoryDao"/>
+		    <constructor-arg name="entityName" value="omis.caseload.domain.SupervisionLevelCategory"/>
 		    <constructor-arg name="configuration" ref="hibernateConfiguration"/>
-	  	</bean>    
+	  	</bean>
 	  	
-	  	<bean id="caseWorkerAssignmentPropertyEditorFactory"
-	        class="omis.beans.factory.impl.hibernate.PropertyEditorFactoryHibernateImpl">
-		    <constructor-arg name="dao" ref="caseWorkerAssignmentDao"/>
-		    <constructor-arg name="entityName" value="omis.caseload.domain.CaseWorkerAssignment"/>
-		    <constructor-arg name="configuration" ref="hibernateConfiguration"/>
-	  	</bean>  
-	  	
-	  	<bean id="contactCategoryPropertyEditorFactory"
-	        class="omis.beans.factory.impl.hibernate.PropertyEditorFactoryHibernateImpl">
-		    <constructor-arg name="dao" ref="contactCategoryDao"/>
-		    <constructor-arg name="entityName" value="omis.caseload.domain.ContactCategory"/>
-		    <constructor-arg name="configuration" ref="hibernateConfiguration"/>
-	  	</bean>  
 </beans>

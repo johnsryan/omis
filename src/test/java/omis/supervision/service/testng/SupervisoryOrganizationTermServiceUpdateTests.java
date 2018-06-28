@@ -27,7 +27,6 @@ import org.testng.annotations.Test;
 import omis.beans.factory.spring.CustomDateEditorFactory;
 import omis.datatype.DateRange;
 import omis.exception.DateRangeOutOfBoundsException;
-import omis.exception.DuplicateEntityFoundException;
 import omis.offender.domain.Offender;
 import omis.offender.service.delegate.OffenderDelegate;
 import omis.supervision.domain.CorrectionalStatus;
@@ -35,7 +34,13 @@ import omis.supervision.domain.CorrectionalStatusTerm;
 import omis.supervision.domain.PlacementTermChangeReason;
 import omis.supervision.domain.SupervisoryOrganization;
 import omis.supervision.domain.SupervisoryOrganizationTerm;
+import omis.supervision.exception.CorrectionalStatusExistsException;
+import omis.supervision.exception.CorrectionalStatusTermExistsException;
+import omis.supervision.exception.PlacementTermChangeReasonExistsException;
+import omis.supervision.exception.PlacementTermExistsException;
+import omis.supervision.exception.SupervisoryOrganizationExistsException;
 import omis.supervision.exception.SupervisoryOrganizationTermConflictException;
+import omis.supervision.exception.SupervisoryOrganizationTermExistsException;
 import omis.supervision.service.SupervisoryOrganizationTermService;
 import omis.supervision.service.delegate.CorrectionalStatusDelegate;
 import omis.supervision.service.delegate.CorrectionalStatusTermDelegate;
@@ -50,6 +55,7 @@ import omis.util.PropertyValueAsserter;
  * Tests method to update supervisory organization terms.
  *
  * @author Josh Divine
+ * @author Stephen Abson
  * @version 0.0.1
  * @since OMIS 3.0
  */
@@ -106,16 +112,21 @@ public class SupervisoryOrganizationTermServiceUpdateTests
 	/**
 	 * Tests the update of a supervisory organization term.
 	 * 
-	 * @throws DuplicateEntityFoundException thrown if entity already exists
+	 * @throws SupervisoryOrganizationTermExistsException thrown if supervisory
+	 * organiztion term exists
 	 * @throws SupervisoryOrganizationTermConflictException thrown if two or 
 	 * more supervisory organization terms conflict
 	 * @throws DateRangeOutOfBoundsException thrown if the associated placement 
 	 * terms are not within the date range
+	 * @throws SupervisoryOrganizationExistsException thrown if supervisory
+	 * organization exists
 	 */
 	@Test
-	public void testUpdate() throws DuplicateEntityFoundException, 
-			SupervisoryOrganizationTermConflictException, 
-			DateRangeOutOfBoundsException {
+	public void testUpdate()
+			throws SupervisoryOrganizationTermExistsException, 
+				SupervisoryOrganizationTermConflictException, 
+				DateRangeOutOfBoundsException,
+				SupervisoryOrganizationExistsException {
 		// Arrangements
 		Offender offender = this.offenderDelegate.createWithoutIdentity("Smith",
 				"John", "Bob", null);
@@ -145,19 +156,24 @@ public class SupervisoryOrganizationTermServiceUpdateTests
 	}
 	
 	/**
-	 * Tests the {@code DuplicateEntityFoundException} is thrown.
+	 * Tests the {@code SupervisoryOrganizationTermExistsException} is thrown.
 	 * 
-	 * @throws DuplicateEntityFoundException thrown if entity already exists
+	 * @throws SupervisoryOrganizationTermExistsException thrown if supervisory
+	 * organization term exists - asserted
 	 * @throws SupervisoryOrganizationTermConflictException thrown if two or 
 	 * more supervisory organization terms conflict
 	 * @throws DateRangeOutOfBoundsException thrown if the associated placement 
 	 * terms are not within the date range
+	 * @throws SupervisoryOrganizationExistsException thrown if supervisory
+	 * organization exists
 	 */
-	@Test(expectedExceptions = {DuplicateEntityFoundException.class})
+	@Test(
+		expectedExceptions = {SupervisoryOrganizationTermExistsException.class})
 	public void testDuplicateEntityFoundException() 
-			throws DuplicateEntityFoundException, 
+			throws SupervisoryOrganizationTermExistsException, 
 			SupervisoryOrganizationTermConflictException,
-			DateRangeOutOfBoundsException {
+			DateRangeOutOfBoundsException,
+			SupervisoryOrganizationExistsException {
 		// Arrangements
 		Offender offender = this.offenderDelegate.createWithoutIdentity("Smith",
 				"John", "Bob", null);
@@ -185,18 +201,22 @@ public class SupervisoryOrganizationTermServiceUpdateTests
 	/**
 	 * Tests the {@code SupervisoryOrganizationTermConflictException} is thrown.
 	 * 
-	 * @throws DuplicateEntityFoundException thrown if entity already exists
+	 * @throws SupervisoryOrganizationTermExistsException thrown if
+	 * supervisory organization term exists
 	 * @throws SupervisoryOrganizationTermConflictException thrown if two or 
-	 * more supervisory organization terms conflict
+	 * more supervisory organization terms conflict - asserted
 	 * @throws DateRangeOutOfBoundsException thrown if the associated placement 
 	 * terms are not within the date range
+	 * @throws SupervisoryOrganizationExistsException thrown if supervisory
+	 * organization exists
 	 */
 	@Test(expectedExceptions = 
 			{SupervisoryOrganizationTermConflictException.class})
 	public void testSupervisoryOrganizationTermConflictException() 
-			throws DuplicateEntityFoundException, 
-			SupervisoryOrganizationTermConflictException, 
-			DateRangeOutOfBoundsException {
+			throws SupervisoryOrganizationTermExistsException, 
+				SupervisoryOrganizationTermConflictException, 
+				DateRangeOutOfBoundsException,
+				SupervisoryOrganizationExistsException {
 		// Arrangements
 		Offender offender = this.offenderDelegate.createWithoutIdentity("Smith",
 				"John", "Bob", null);
@@ -224,17 +244,32 @@ public class SupervisoryOrganizationTermServiceUpdateTests
 	/**
 	 * Tests the {@code DateRangeOutOfBoundsException} is thrown.
 	 * 
-	 * @throws DuplicateEntityFoundException thrown if entity already exists
+	 * @throws SupervisoryOrganizationTermExistsException thrown if supervisory
+	 * organization term exists
 	 * @throws SupervisoryOrganizationTermConflictException thrown if two or 
 	 * more supervisory organization terms conflict
 	 * @throws DateRangeOutOfBoundsException thrown if the associated placement 
-	 * terms are not within the date range
+	 * terms are not within the date range - asserted
+	 * @throws SupervisoryOrganizationExistsException thrown if supervisory
+	 * organization exists
+	 * @throws CorrectionalStatusExistsException thrown if correctional status
+	 * exists
+	 * @throws CorrectionalStatusTermExistsException thrown if correctional
+	 * status term exists
+	 * @throws PlacementTermChangeReasonExistsException thrown if placement
+	 * term change reason exists
+	 * @throws PlacementTermExistsException thrown if placement term exists
 	 */
 	@Test(expectedExceptions = {DateRangeOutOfBoundsException.class})
 	public void testDateRangeOutOfBoundsException() 
-			throws DuplicateEntityFoundException, 
+			throws SupervisoryOrganizationTermExistsException, 
 			SupervisoryOrganizationTermConflictException,
-			DateRangeOutOfBoundsException {
+			DateRangeOutOfBoundsException,
+			SupervisoryOrganizationExistsException,
+			CorrectionalStatusExistsException,
+			CorrectionalStatusTermExistsException,
+			PlacementTermChangeReasonExistsException,
+			PlacementTermExistsException {
 		// Arrangements
 		Offender offender = this.offenderDelegate.createWithoutIdentity("Smith",
 				"John", "Bob", null);

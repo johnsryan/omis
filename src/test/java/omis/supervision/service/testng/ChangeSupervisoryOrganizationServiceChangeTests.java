@@ -26,7 +26,6 @@ import org.testng.annotations.Test;
 
 import omis.beans.factory.spring.CustomDateEditorFactory;
 import omis.datatype.DateRange;
-import omis.exception.DuplicateEntityFoundException;
 import omis.offender.domain.Offender;
 import omis.offender.service.delegate.OffenderDelegate;
 import omis.supervision.domain.CorrectionalStatus;
@@ -35,8 +34,14 @@ import omis.supervision.domain.PlacementTerm;
 import omis.supervision.domain.PlacementTermChangeReason;
 import omis.supervision.domain.SupervisoryOrganization;
 import omis.supervision.domain.SupervisoryOrganizationTerm;
+import omis.supervision.exception.CorrectionalStatusExistsException;
+import omis.supervision.exception.CorrectionalStatusTermExistsException;
 import omis.supervision.exception.OffenderNotUnderSupervisionException;
 import omis.supervision.exception.OffenderSupervisedByOrganizationException;
+import omis.supervision.exception.PlacementTermChangeReasonExistsException;
+import omis.supervision.exception.PlacementTermExistsException;
+import omis.supervision.exception.SupervisoryOrganizationExistsException;
+import omis.supervision.exception.SupervisoryOrganizationTermExistsException;
 import omis.supervision.service.ChangeSupervisoryOrganizationService;
 import omis.supervision.service.delegate.CorrectionalStatusDelegate;
 import omis.supervision.service.delegate.CorrectionalStatusTermDelegate;
@@ -107,16 +112,31 @@ public class ChangeSupervisoryOrganizationServiceChangeTests
 	/**
 	 * Tests the change placement term method.
 	 * 
-	 * @throws DuplicateEntityFoundException thrown if placement term exists
 	 * @throws OffenderNotUnderSupervisionException thrown if offender is not 
 	 * currently under supervision
 	 * @throws OffenderSupervisedByOrganizationException thrown if the 
 	 * supervisory organization matches the currently supervised organization
+	 * @throws SupervisoryOrganizationExistsException if supervisory
+	 * organization exists
+	 * @throws PlacementTermChangeReasonExistsException if placement term
+	 * exists 
+	 * @throws SupervisoryOrganizationTermExistsException if supervisory
+	 * organization term exists
+	 * @throws CorrectionalStatusExistsException if correctional status exists 
+	 * @throws CorrectionalStatusTermExistsException if correctional status
+	 * term exists
+	 * @throws PlacementTermExistsException if placement term exists 
 	 */
 	@Test
-	public void testChange() throws DuplicateEntityFoundException, 
-			OffenderNotUnderSupervisionException, 
-			OffenderSupervisedByOrganizationException {
+	public void testChange()
+			throws OffenderNotUnderSupervisionException, 
+				OffenderSupervisedByOrganizationException,
+				SupervisoryOrganizationExistsException,
+				PlacementTermChangeReasonExistsException,
+				SupervisoryOrganizationTermExistsException,
+				CorrectionalStatusExistsException,
+				CorrectionalStatusTermExistsException,
+				PlacementTermExistsException {
 		// Arrangements
 		Offender offender = this.offenderDelegate.createWithoutIdentity("Smith",
 				"John", "Bob", null);
@@ -166,17 +186,21 @@ public class ChangeSupervisoryOrganizationServiceChangeTests
 	/**
 	 * Tests the {@code OffenderNotUnderSupervisionException} is thrown.
 	 * 
-	 * @throws DuplicateEntityFoundException thrown if placement term exists
 	 * @throws OffenderNotUnderSupervisionException thrown if offender is not 
 	 * currently under supervision
 	 * @throws OffenderSupervisedByOrganizationException thrown if the 
 	 * supervisory organization matches the currently supervised organization
+	 * @throws SupervisoryOrganizationExistsException if supervisory
+	 * organization exists
+	 * @throws PlacementTermChangeReasonExistsException if placement term
+	 * change reason exists 
 	 */
 	@Test(expectedExceptions = {OffenderNotUnderSupervisionException.class})
-	public void testOffenderNotUnderSupervisionException() 
-			throws DuplicateEntityFoundException, 
-			OffenderNotUnderSupervisionException, 
-			OffenderSupervisedByOrganizationException {
+	public void testOffenderNotUnderSupervisionException()
+			throws OffenderNotUnderSupervisionException, 
+				OffenderSupervisedByOrganizationException,
+				SupervisoryOrganizationExistsException,
+				PlacementTermChangeReasonExistsException {
 		// Arrangements
 		Offender offender = this.offenderDelegate.createWithoutIdentity("Smith",
 				"John", "Bob", null);
@@ -196,18 +220,33 @@ public class ChangeSupervisoryOrganizationServiceChangeTests
 	/**
 	 * Tests the {@code OffenderSupervisedByOrganizationException} is thrown.
 	 * 
-	 * @throws DuplicateEntityFoundException thrown if placement term exists
 	 * @throws OffenderNotUnderSupervisionException thrown if offender is not 
 	 * currently under supervision
 	 * @throws OffenderSupervisedByOrganizationException thrown if the 
 	 * supervisory organization matches the currently supervised organization
+	 * @throws SupervisoryOrganizationExistsException if supervisory
+	 * organization exists
+	 * @throws PlacementTermChangeReasonExistsException if placement term
+	 * change reason exists 
+	 * @throws SupervisoryOrganizationTermExistsException if supervisory
+	 * organization term exists 
+	 * @throws CorrectionalStatusExistsException if correctional status
+	 * exists
+	 * @throws CorrectionalStatusTermExistsException if correctional status
+	 * term exists 
+	 * @throws PlacementTermExistsException if placement term exists 
 	 */
 	@Test(expectedExceptions = 
 			{OffenderSupervisedByOrganizationException.class})
 	public void testOffenderSupervisedByOrganizationException() 
-			throws DuplicateEntityFoundException, 
-			OffenderNotUnderSupervisionException, 
-			OffenderSupervisedByOrganizationException {
+			throws OffenderNotUnderSupervisionException,
+				OffenderSupervisedByOrganizationException,
+				SupervisoryOrganizationExistsException,
+				PlacementTermChangeReasonExistsException,
+				SupervisoryOrganizationTermExistsException,
+				CorrectionalStatusExistsException,
+				CorrectionalStatusTermExistsException,
+				PlacementTermExistsException {
 		// Arrangements
 		Offender offender = this.offenderDelegate.createWithoutIdentity("Smith",
 				"John", "Bob", null);

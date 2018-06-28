@@ -8,19 +8,28 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <fmt:bundle basename="omis.travelpermit.msgs.travelPermit">
 	<ul>
-		<li>
-			<a class="createLink" href="${pageContext.request.contextPath}/travelPermit/create.html?offender=${offender.id}">
-				<span class="visibleLinkLabel">
-					<fmt:message key="createTravelPermitTitle"/>
-				</span>
-			</a>
-		</li>
-		<sec:authorize access="hasRole('TRAVEL_PERMITE_LIST') or hasRole('ADMIN')">
+		<sec:authorize access="hasRole('TRAVEL_PERMIT_CREATE') or hasRole('ADMIN')">
+			<li>
+				<a class="createLink" href="${pageContext.request.contextPath}/travelPermit/create.html?offender=${offender.id}">
+					<span class="visibleLinkLabel">
+						<fmt:message key="createTravelPermitTitle"/>
+					</span>
+				</a>
+			</li>	
+		</sec:authorize>
+		<sec:authorize access="hasRole('TRAVEL_PERMIT_LIST') or hasRole('ADMIN')">
 			<c:if test="${not empty offender}">
 			<li>
-				<a href="${pageContext.request.contextPath}/travelPermit/travelPermitListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab reportLink"><fmt:message key="travelPermitListingReportLinkLabel"/></a>
+				<a href="${pageContext.request.contextPath}/travelPermit/travelPermitListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="travelPermitListingReportLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>
+		<sec:authorize access="hasRole('TRAVEL_PERMIT_LIST') or hasRole('ADMIN')">
+			<c:if test="${not empty offender}">
+			<li>
+				<a href="${pageContext.request.contextPath}/travelPermit/travelPermitRequestReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab adobeReportLink"><fmt:message key="travelPermitRequestReportLinkLabel"/></a>
+			</li>
+			</c:if>
+		</sec:authorize>				
 	</ul>
 </fmt:bundle>

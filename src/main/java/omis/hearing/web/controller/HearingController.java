@@ -23,6 +23,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +38,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+
 import omis.beans.factory.PropertyEditorFactory;
 import omis.beans.factory.spring.CustomDateEditorFactory;
 import omis.exception.DuplicateEntityFoundException;
@@ -51,6 +53,11 @@ import omis.hearing.domain.LocationType;
 import omis.hearing.domain.ResolutionClassificationCategory;
 import omis.hearing.domain.UserAttendance;
 import omis.hearing.domain.component.Resolution;
+import omis.hearing.exception.HearingExistsException;
+import omis.hearing.exception.HearingNoteExistsException;
+import omis.hearing.exception.HearingStatusExistsException;
+import omis.hearing.exception.InfractionExistsException;
+import omis.hearing.exception.UserAttendanceExistsException;
 import omis.hearing.service.HearingService;
 import omis.hearing.web.form.GoToOption;
 import omis.hearing.web.form.HearingForm;
@@ -143,6 +150,21 @@ public class HearingController {
 		
 	private static final String ENTITY_EXISTS_MESSAGE_KEY =
 			"entity.exists";
+	
+	private static final String USER_ATTENDANCE_EXISTS_MESSAGE_KEY
+		= "userAttendance.exists";
+	
+	private static final String HEARING_EXISTS_MESSAGE_KEY
+		= "hearing.exists";
+	
+	private static final String INFRACTION_EXISTS_MESSAGE_KEY
+		= "infraction.exists";
+	
+	private static final String HEARING_STATUS_EXISTS_MESSAGE_KEY
+		= "hearingStatus.exists";
+	
+	private static final String HEARING_NOTE_EXISTS_MESSAGE_KEY
+		= "hearingNote.exists";
 	
 /* Report names. */
 	
@@ -942,6 +964,41 @@ public class HearingController {
 			final DuplicateEntityFoundException exception) {
 		return this.businessExceptionHandlerDelegate.prepareModelAndView(
 				ENTITY_EXISTS_MESSAGE_KEY, ERROR_BUNDLE_NAME,  exception);
+	}
+	
+	@ExceptionHandler(HearingExistsException.class)
+	public ModelAndView handleDuplicateEntityFoundException(
+			final HearingExistsException exception) {
+		return this.businessExceptionHandlerDelegate.prepareModelAndView(
+				HEARING_EXISTS_MESSAGE_KEY, ERROR_BUNDLE_NAME,  exception);
+	}
+	
+	@ExceptionHandler(HearingStatusExistsException.class)
+	public ModelAndView handleDuplicateEntityFoundException(
+			final HearingStatusExistsException exception) {
+		return this.businessExceptionHandlerDelegate.prepareModelAndView(
+				HEARING_STATUS_EXISTS_MESSAGE_KEY, ERROR_BUNDLE_NAME,  exception);
+	}
+	
+	@ExceptionHandler(InfractionExistsException.class)
+	public ModelAndView handleDuplicateEntityFoundException(
+			final InfractionExistsException exception) {
+		return this.businessExceptionHandlerDelegate.prepareModelAndView(
+				INFRACTION_EXISTS_MESSAGE_KEY, ERROR_BUNDLE_NAME,  exception);
+	}
+	
+	@ExceptionHandler(HearingNoteExistsException.class)
+	public ModelAndView handleDuplicateEntityFoundException(
+			final HearingNoteExistsException exception) {
+		return this.businessExceptionHandlerDelegate.prepareModelAndView(
+				HEARING_NOTE_EXISTS_MESSAGE_KEY, ERROR_BUNDLE_NAME,  exception);
+	}
+	
+	@ExceptionHandler(UserAttendanceExistsException.class)
+	public ModelAndView handleDuplicateEntityFoundException(
+			final UserAttendanceExistsException exception) {
+		return this.businessExceptionHandlerDelegate.prepareModelAndView(
+				USER_ATTENDANCE_EXISTS_MESSAGE_KEY, ERROR_BUNDLE_NAME,  exception);
 	}
 	
 	/* InitBinder */

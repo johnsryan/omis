@@ -25,7 +25,6 @@ import omis.audit.domain.CreationSignature;
 import omis.audit.domain.UpdateSignature;
 import omis.datatype.DateRange;
 import omis.exception.DateRangeOutOfBoundsException;
-import omis.exception.DuplicateEntityFoundException;
 import omis.instance.factory.InstanceFactory;
 import omis.offender.domain.Offender;
 import omis.supervision.dao.CorrectionalStatusDao;
@@ -35,6 +34,7 @@ import omis.supervision.domain.CorrectionalStatus;
 import omis.supervision.domain.CorrectionalStatusTerm;
 import omis.supervision.domain.PlacementTerm;
 import omis.supervision.exception.CorrectionalStatusTermConflictException;
+import omis.supervision.exception.CorrectionalStatusTermExistsException;
 import omis.supervision.exception.PlacementTermExistsException;
 import omis.supervision.service.CorrectionalStatusTermService;
 
@@ -107,14 +107,14 @@ public class CorrectionalStatusTermServiceImpl
 	public CorrectionalStatusTerm create(final Offender offender,
 			final CorrectionalStatus correctionalStatus,
 			final DateRange dateRange)
-					throws DuplicateEntityFoundException,
-						CorrectionalStatusTermConflictException {
+					throws CorrectionalStatusTermConflictException,
+						CorrectionalStatusTermExistsException{
 		
 		// Throws exception if duplicate is found
 		if (this.correctionalStatusTermDao.find(offender, correctionalStatus,
 				DateRange.getStartDate(dateRange),
 				DateRange.getEndDate(dateRange)) != null) {
-			throw new DuplicateEntityFoundException(
+			throw new CorrectionalStatusTermExistsException(
 					"Correctional status term exists");
 		}
 		
@@ -151,7 +151,7 @@ public class CorrectionalStatusTermServiceImpl
 			final CorrectionalStatusTerm correctionalStatusTerm,
 			final CorrectionalStatus correctionalStatus,
 			final DateRange dateRange)
-					throws DuplicateEntityFoundException,
+					throws CorrectionalStatusTermExistsException,
 						CorrectionalStatusTermConflictException,
 						DateRangeOutOfBoundsException {
 		
@@ -161,7 +161,7 @@ public class CorrectionalStatusTermServiceImpl
 				DateRange.getStartDate(dateRange),
 				DateRange.getEndDate(dateRange), correctionalStatusTerm)
 					!= null) {
-			throw new DuplicateEntityFoundException(
+			throw new CorrectionalStatusTermExistsException(
 					"Correctional status term exists");
 		}
 		

@@ -19,13 +19,13 @@ package omis.supervision.service.delegate;
 
 import java.util.List;
 
-import omis.exception.DuplicateEntityFoundException;
 import omis.instance.factory.InstanceFactory;
 import omis.organization.domain.Organization;
 import omis.region.domain.State;
 import omis.supervision.dao.SupervisoryOrganizationDao;
 import omis.supervision.domain.CorrectionalStatus;
 import omis.supervision.domain.SupervisoryOrganization;
+import omis.supervision.exception.SupervisoryOrganizationExistsException;
 
 /**
  * Delegate for supervisory organizations.
@@ -82,9 +82,9 @@ public class SupervisoryOrganizationDelegate {
 	 */
 	public SupervisoryOrganization create(
 			final String name, final String alias, final Organization parent)
-				throws DuplicateEntityFoundException {
+				throws SupervisoryOrganizationExistsException {
 		if (this.supervisoryOrganizationDao.find(name) != null) {
-			throw new DuplicateEntityFoundException(
+			throw new SupervisoryOrganizationExistsException(
 					"Supervisory organization exists");
 		}
 		SupervisoryOrganization supervisoryOrganization

@@ -103,7 +103,9 @@ public class NonResidenceTermDelegate {
 			final VerificationSignature verificationSignature)
 			throws NonResidenceTermExistsException {
 		if (this.nonResidenceTermDao.find(
-				person, location, status) != null) {
+				person, dateRange, location, 
+				location.getAddress().getZipCode().getCity().getState(),
+				location.getAddress().getZipCode().getCity(), status) != null) {
 			throw new NonResidenceTermExistsException(
 					"Duplicate non residence term found");
 		}		
@@ -147,7 +149,9 @@ public class NonResidenceTermDelegate {
 			final VerificationSignature verificationSignature)
 			throws NonResidenceTermExistsException {		
 		if (this.nonResidenceTermDao.findExcluding(nonResidenceTerm.getPerson(),
-				location, status, nonResidenceTerm) != null) {
+				dateRange, location, nonResidenceTerm.getState(),
+				nonResidenceTerm.getCity(), status, 
+				nonResidenceTerm) != null) {
 			throw new NonResidenceTermExistsException(
 					"Duplicate non residence term found");
 		}		
@@ -181,7 +185,8 @@ public class NonResidenceTermDelegate {
 			final String notes, final Boolean confirmed) 
 					throws NonResidenceTermExistsException {
 		if (this.nonResidenceTermDao.find(person, 
-				null, ResidenceStatus.HOMELESS) != null) {
+				dateRange, null, state, city, 
+				ResidenceStatus.HOMELESS) != null) {
 			throw new NonResidenceTermExistsException(
 					"Duplicate non residence term found");
 		}		
@@ -222,7 +227,8 @@ public class NonResidenceTermDelegate {
 			final Boolean confirmed) 
 					throws NonResidenceTermExistsException {
 		if (this.nonResidenceTermDao.findExcluding(nonResidenceTerm.getPerson(),
-				null, nonResidenceTerm.getStatus(), nonResidenceTerm) != null) {
+				dateRange, null, state, city, 
+				nonResidenceTerm.getStatus(), nonResidenceTerm) != null) {
 			throw new NonResidenceTermExistsException(
 					"Duplicate non residence term found");
 		}

@@ -38,7 +38,7 @@
 	<jsp:include page="/WEB-INF/views/common/includes/toolsResources.jsp"/>
 	<jsp:include page="/WEB-INF/views/common/includes/linksResources.jsp"/>
 	<jsp:include page="/WEB-INF/views/common/includes/messageResolverResources.jsp"/>
-	<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/chronologicalnote/style/chronologicalNotes.css?VERSION=1.1"/>
+	<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/chronologicalnote/style/chronologicalNotes.css?VERSION=1.2"/>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/chronologicalnote/scripts/listChronologicalNote.js"> </script>
 </head>
  <body>

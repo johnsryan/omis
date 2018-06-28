@@ -45,12 +45,16 @@ body {
 	content: url("../images/omis3_17.png");
 }
 
+#taskListLink:before {
+	content: url("../images/list.png");
+}
+
 #offenderSearch, img.offenderSearchIcon {
 	padding-top: 5px;
 	padding-bottom: 1px;
 }
 
-#multiMenu, .homeLink, #reportHomeLink, #applicationHelpLink, #offenderSearch, img.offenderSearchIcon  {
+#multiMenu, .homeLink, #reportHomeLink, #applicationHelpLink, #offenderSearch, img.offenderSearchIcon, #taskListLink  {
 	float:left;
 	padding-left: 3px;
 	padding-right: 3px;
@@ -66,7 +70,7 @@ body {
 	margin-right:15px;
 }
 
-#multiMenu, .homeLink, #applicationHelpLink, #reportHomeLink {
+#multiMenu, .homeLink, #applicationHelpLink, #reportHomeLink, #taskListLink {
 	padding-bottom: 1px;
 	padding-top: 2px;
 }

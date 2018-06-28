@@ -10,8 +10,8 @@
 <option value=""><fmt:message key="nullLabel" bundle="${commonBundle}"/></option>
 <c:forEach var="zipCode" items="${partialAddressZipCodes}">
 	<c:choose>
-	<c:when test="${selectedZipCode eq zipCode}">
-		<option value="${selectedZipCode.id}" selected="selected"><c:out value="${selectedZipCode.value}"/> <c:out value="${selectedZipCode.extension}"/></option>
+	<c:when test="${not empty travelPermitForm.partialAddressZipCode and travelPermitForm.partialAddressZipCode eq zipCode}">
+		<option value="${zipCode.id}" selected="selected"><c:out value="${zipCode.value}"/> <c:out value="${zipCode.extension}"/></option>
 	</c:when>
 	<c:otherwise>
 		<option value="${zipCode.id}"><c:out value="${zipCode.value}"/> <c:out value="${zipCode.extension}"/></option>

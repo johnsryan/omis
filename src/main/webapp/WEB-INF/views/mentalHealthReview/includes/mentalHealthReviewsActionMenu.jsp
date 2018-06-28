@@ -37,6 +37,13 @@
 				</li>
 			</c:if>
 		</sec:authorize>
+		<sec:authorize access="hasRole('MENTAL_HEALTH_REVIEW_VIEW') or hasRole('ADMIN')">		
+		<c:if test="${not empty offender}">
+			<li>
+				<a href="${pageContext.request.contextPath}/mentalHealthReview/mentalReviewListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="mentalHealthReviewListingReportLinkLabel"/></a>
+			</li>
+		</c:if>	
+		</sec:authorize>		
 		<sec:authorize access="hasRole('MENTAL_HEALTH_REVIEW_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty mentalHealthReview}">
 				<li>
@@ -59,5 +66,12 @@
 				</li>
 			</c:if>
 		</sec:authorize>
+		<sec:authorize access="hasRole('MENTAL_HEALTH_REVIEW_VIEW') or hasRole('ADMIN')">			
+		<c:if test="${not empty mentalHealthReview}">
+			<li>
+				<a href="${pageContext.request.contextPath}/mentalHealthReview/mentalHealthReviewDetailsReport.html?mentalHealthReview=${mentalHealthReview.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="mentalHealthReviewDetailsReportLinkLabel"/></a>
+			</li>
+		</c:if>	
+		</sec:authorize>		
 	</ul>
 </fmt:bundle>

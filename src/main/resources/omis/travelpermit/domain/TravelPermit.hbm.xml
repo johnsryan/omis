@@ -78,4 +78,14 @@
 		travelpermit.offender = :offender
 		order by travelpermit.dateRange.startDate
 	]]></query>
+	
+	<query name="findTravelPermitCountByOffenderAndDate"><![CDATA[
+		select count(travelpermit.id)
+	      from omis.travelpermit.domain.TravelPermit travelpermit
+	      where travelpermit.offender = :offender
+	       	and ((travelpermit.dateRange.startDate <= :date
+		       or travelpermit.dateRange.startDate is null)
+		    and (travelpermit.dateRange.endDate > :date
+		       or travelpermit.dateRange.endDate is null))
+	]]></query>
 </hibernate-mapping>	

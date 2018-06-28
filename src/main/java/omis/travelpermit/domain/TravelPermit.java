@@ -22,7 +22,7 @@ import omis.audit.domain.Updatable;
 import omis.datatype.DateRange;
 import omis.offender.domain.Offender;
 import omis.offender.domain.OffenderAssociable;
-import omis.travelpermit.domain.component.OtherTravellers;
+import omis.travelpermit.domain.component.OtherTravelers;
 import omis.travelpermit.domain.component.TravelDestination;
 import omis.travelpermit.domain.component.TravelPermitIssuance;
 import omis.travelpermit.domain.component.TravelTransportation;
@@ -89,13 +89,13 @@ public interface TravelPermit
 	 * Sets other travellers.
 	 * @param otherTravellers other travellers
 	 */
-	void setOtherTravellers(OtherTravellers otherTravellers);
+	void setOtherTravellers(OtherTravelers otherTravellers);
 	
 	/**
 	 * Returns OtherTravellers.
 	 * @return otherTravellers other travellers
 	 */
-	OtherTravellers getOtherTravellers();
+	OtherTravelers getOtherTravellers();
 	
 	/**
 	 * Sets destination destination.

@@ -270,4 +270,11 @@
 			<constructor-arg name="fileLocator" ref="victimDocumentLocator"/>
 		</bean>
 	
+	<!-- Operations -->
+	
+	<bean class="omis.victim.service.delegate.impl.VictimAssociationRemovalByRelationshipOperationImpl">
+		<constructor-arg name="registry" ref="relationshipAssociatedRemovalOperationRegistry"/>
+		<constructor-arg name="victimAssociationDao" ref="victimAssociationDao"/>
+	</bean>
+	
 </beans>

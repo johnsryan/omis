@@ -15,5 +15,12 @@
 				<a class="removeLink" href="${pageContext.request.contextPath}/medicalReview/remove.html?medicalReview=${medicalReview.id}"><span class="visibleLinkLabel"><fmt:message key="removeLink" bundle="${commonBundle}"/></span></a>
 			</li>
 		</sec:authorize>
+		<sec:authorize access="hasRole('MEDICAL_REVIEW_VIEW') or hasRole('ADMIN')">			
+		<c:if test="${not empty medicalReview}">
+			<li>
+				<a href="${pageContext.request.contextPath}/medicalReview/medicalReviewDetailsReport.html?medicalReview=${medicalReview.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="medicalReviewDetailsReportLinkLabel"/></a>
+			</li>
+		</c:if>	
+		</sec:authorize>	
 	</ul>
 </fmt:bundle>

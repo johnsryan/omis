@@ -33,7 +33,7 @@ select new omis.employment.report.EmploymentSummary(
     	left outer join city.state state
     	left outer join city.country country
     where employmentTerm.offender = :offender
-    order by employmentTerm.offender.name.lastName, employmentTerm.offender.name.firstName, employmentTerm.dateRange.startDate, employmentTerm.dateRange.endDate, employer.location.organization.name
+    order by employmentTerm.dateRange.startDate desc, employmentTerm.dateRange.endDate
 	]]></query>
 	
 	<query name="findLatestEmploymentSummaryByOffender"><![CDATA[

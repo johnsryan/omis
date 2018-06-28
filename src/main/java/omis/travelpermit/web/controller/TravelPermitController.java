@@ -1,80 +1,77 @@
+/*
+ * OMIS - Offender Management Information System.
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.travelpermit.web.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import omis.address.domain.Address;
-import omis.address.domain.ZipCode;
-import omis.address.service.delegate.ZipCodeDelegate;
-import omis.address.web.controller.delegate.AddressFieldsControllerDelegate;
-import omis.beans.factory.PropertyEditorFactory;
-import omis.beans.factory.spring.CustomDateEditorFactory;
-import omis.country.domain.Country;
-import omis.country.service.delegate.CountryDelegate;
-import omis.exception.DuplicateEntityFoundException;
-import omis.family.domain.FamilyAssociation;
-import omis.offender.beans.factory.OffenderPropertyEditorFactory;
-import omis.offender.domain.Offender;
-import omis.offender.report.OffenderReportService;
-import omis.offender.report.OffenderSummary;
-import omis.offender.web.controller.delegate.OffenderSummaryModelDelegate;
-import omis.offenderrelationship.web.form.OffenderRelationshipNoteItem;
-import omis.offenderrelationship.web.form.OffenderRelationshipNoteItemOperation;
-import omis.region.domain.City;
-import omis.region.domain.State;
-import omis.region.service.delegate.CityDelegate;
-import omis.region.service.delegate.StateDelegate;
-import omis.relationship.domain.RelationshipNote;
-import omis.relationship.domain.RelationshipNoteCategory;
-import omis.report.ReportFormat;
-import omis.report.ReportRunner;
-import omis.report.web.controller.delegate.ReportControllerDelegate;
-import omis.travelpermit.domain.TravelMethod;
-import omis.travelpermit.domain.TravelPermitNote;
-import omis.travelpermit.domain.TravelPermitPeriodicity;
-import omis.travelpermit.service.TravelPermitService;
-import omis.travelpermit.web.form.TravelPermitForm;
-import omis.travelpermit.web.form.TravelPermitNoteItem;
-import omis.travelpermit.web.form.TravelPermitNoteItemOperation;
-import omis.user.domain.UserAccount;
-import omis.user.service.delegate.UserAccountDelegate;
-import omis.util.StringUtility;
-import omis.vehicle.domain.VehicleMake;
-import omis.vehicle.domain.VehicleModel;
-import omis.workassignment.domain.FenceRestriction;
-import omis.workassignment.domain.WorkAssignment;
-import omis.workassignment.domain.WorkAssignmentCategory;
-import omis.workassignment.domain.WorkAssignmentChangeReason;
-import omis.workassignment.domain.WorkAssignmentGroup;
-import omis.workassignment.domain.WorkAssignmentNote;
-import omis.workassignment.report.WorkAssignmentReportService;
-import omis.workassignment.report.WorkAssignmentSummary;
-import omis.workassignment.service.WorkAssignmentService;
-import omis.workassignment.web.form.WorkAssignmentForm;
-import omis.workassignment.web.form.WorkAssignmentNoteItem;
-import omis.workassignment.web.form.WorkAssignmentNoteItemOperation;
-import omis.workassignment.web.validator.WorkAssignmentFormValidator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+
+import omis.address.domain.Address;
+import omis.address.domain.ZipCode;
+import omis.address.web.controller.delegate.AddressFieldsControllerDelegate;
+import omis.beans.factory.PropertyEditorFactory;
+import omis.beans.factory.spring.CustomDateEditorFactory;
+import omis.country.domain.Country;
+import omis.datatype.DateRange;
+import omis.exception.DuplicateEntityFoundException;
+import omis.offender.beans.factory.OffenderPropertyEditorFactory;
+import omis.offender.domain.Offender;
+import omis.offender.web.controller.delegate.OffenderSummaryModelDelegate;
+import omis.person.domain.PersonName;
+import omis.region.domain.City;
+import omis.region.domain.State;
+import omis.report.ReportRunner;
+import omis.report.web.controller.delegate.ReportControllerDelegate;
+import omis.travelpermit.domain.TravelMethod;
+import omis.travelpermit.domain.TravelPermit;
+import omis.travelpermit.domain.TravelPermitNote;
+import omis.travelpermit.domain.TravelPermitPeriodicity;
+import omis.travelpermit.domain.component.OtherTravelers;
+import omis.travelpermit.domain.component.TravelDestination;
+import omis.travelpermit.domain.component.TravelPermitIssuance;
+import omis.travelpermit.domain.component.TravelTransportation;
+import omis.travelpermit.exception.TravelPermitExistsException;
+import omis.travelpermit.exception.TravelPermitNoteExistsException;
+import omis.travelpermit.service.TravelPermitService;
+import omis.travelpermit.web.form.TravelPermitForm;
+import omis.travelpermit.web.form.TravelPermitNoteItem;
+import omis.travelpermit.web.form.TravelPermitNoteItemOperation;
+import omis.travelpermit.web.validator.TravelPermitFormValidator;
+import omis.user.domain.UserAccount;
+import omis.util.StringUtility;
+import omis.web.controller.delegate.BusinessExceptionHandlerDelegate;
 
 /** Controller for travel permit.
  * @author Yidong Li
@@ -100,10 +97,10 @@ public class TravelPermitController {
 	= "address/json/addresses";
 	private static final String USER_ACCOUNTS_VIEW_NAME 
 	= "user/json/userAccounts";
-	private static final String TRAVEL_PERMIT_ACTION_MENU_VIEW_NAME
-	= "travelPermit/includes/travelPermitActionMenu";
 	private static final String TRAVEL_METHOD_VIEW_NAME
 	= "travelPermit/includes/travelMethod";
+	private static final String TRAVEL_PERMIT_ACTION_MENU_VIEW_NAME
+	= "travelPermit/includes/travelPermitActionMenu";
 	
 	/* Redirects. */
 	private static final String LIST_REDIRECT
@@ -134,6 +131,26 @@ public class TravelPermitController {
 	@Qualifier("travelMethodPropertyEditorFactory")
 	private PropertyEditorFactory travelMethodPropertyEditorFactory;
 	
+	@Autowired
+	@Qualifier("travelPermitPeriodicityPropertyEditorFactory")
+	private PropertyEditorFactory travelPermitPeriodicityPropertyEditorFactory;
+	
+	@Autowired
+	@Qualifier("userAccountPropertyEditorFactory")
+	private PropertyEditorFactory userAccountPropertyEditorFactory;
+	
+	@Autowired
+	@Qualifier("addressPropertyEditorFactory")
+	private PropertyEditorFactory addressPropertyEditorFactory;
+	
+	@Autowired
+	@Qualifier("travelPermitPropertyEditorFactory")
+	private PropertyEditorFactory travelPermitPropertyEditorFactory;
+	
+	@Autowired
+	@Qualifier("travelPermitNotePropertyEditorFactory")
+	private PropertyEditorFactory travelPermitNotePropertyEditorFactory;
+	
 	@Autowired 
 	private CustomDateEditorFactory customDateEditorFactory;
 		
@@ -147,29 +164,33 @@ public class TravelPermitController {
 	private static final String TRANSPORT_METHODS_MODEL_KEY
 	= "transportMethods";
 	private static final String ADDRESS_OPTIONS_MODEL_KEY
-	="addressOptions";
+	="addressOption";
 	private static final String PARTIAL_ADDRESS_COUNTRIES_MODEL_KEY 
 	= "partialAddressCountries";
 	private static final String PARTIAL_ADDRESS_STATES_MODEL_KEY
 	="partialAddressStates";
 	private static final String PARTIAL_ADDRESS_CITIES_MODEL_KEY
 	="partialAddressCities";
-	private static final String PARTIAL_ADDRESS_ZIPCODEES_MODEL_KEY
+	private static final String PARTIAL_ADDRESS_ZIPCODES_MODEL_KEY
 	="partialAddressZipCodes";
-	private static final String STATES_MODEL_KEY 
-	= "states";
 	private static final String TRAVEL_PERMIT_NOTE_INDEX_MODEL_KEY
 	= "travelPermitNoteItemIndex";
-	private static final String ORIGINAL_TRAVEL_PERMIT_NOTE_INDEX_MODEL_KEY
-	="originalTravelPermitNoteIndex";
 	private static final String ADDRESS_FIELDS_PROPERTY_NAME = "addressFields";
 	private static final String CREATE_TRAVEL_PERMIT_MODEL_KEY 
 	= "createTravelPermit";
 	private static final String TRAVEL_PERMIT_NOTE_ITEM_MODEL_KEY
-	= "traelPermitNoteIndex";
+	= "travelPermitNoteItem";
 	private static final String ADDRESSES_MODEL_KEY = "addresses";
 	private static final String OFFENDER_MODEL_KEY = "offender";
 	private static final String TRAVEL_METHOD_MODEL_KEY = "travelMethod";
+	private static final String TRAVEL_PERMIT_FIELDS_MODEL_KEY 
+	= "travelPermit";
+	private static final String TRAVEL_PERMIT_NOTE_ITEMS_MODEL_KEY
+	="travelPermitNoteItems";
+	private static final String TRAVEL_PERMIT_EXISTS_EXCEPTION_MESSAGE_KEY
+	= "travelpermit.Exists";
+	private static final String TRAVEL_PERMIT_NOTE_EXISTS_EXCEPTION_MESSAGE_KEY
+	= "travelpermitnote.Exists";
 	
 	/* Services. */
 	@Autowired
@@ -178,52 +199,29 @@ public class TravelPermitController {
 	
 	/* Delegate */
 	@Autowired
-	@Qualifier("userAccountDelegate")
-	private UserAccountDelegate userAccountDelegate;
-	
-	@Autowired
-	@Qualifier("stateDelegate")
-	private StateDelegate stateDelegate;
-	
-	@Autowired
-	@Qualifier("cityDelegate")
-	private CityDelegate cityDelegate;
-	
-	@Autowired
-	@Qualifier("countryDelegate")
-	private CountryDelegate countryDelegate;
-	
-	@Autowired
-	@Qualifier("zipCodeDelegate")
-	private ZipCodeDelegate zipCodeDelegate;
-	
-	@Autowired
 	@Qualifier("addressFieldsControllerDelegate")
 	private AddressFieldsControllerDelegate addressFieldsControllerDelegate;
+	
+	@Autowired
+	@Qualifier("businessExceptionHandlerDelegate")
+	private BusinessExceptionHandlerDelegate businessExceptionHandlerDelegate;
 	
 	/* Validator */
 	@Autowired
 	@Qualifier("offenderSummaryModelDelegate")
 	private OffenderSummaryModelDelegate offenderSummaryModelDelegate;
 	
+	@Autowired
+	@Qualifier("travelPermitFormValidator")
+	private TravelPermitFormValidator travelPermitFormValidator;
+	
+	/* Message bundles. */
+	private static final String ERROR_BUNDLE_NAME
+	= "omis.travelpermit.msgs.form";
+	
 	/* Report names. */
-	
-	private static final String OFFENDER_WORK_ASSIGNMENT_HISTORY_REPORT_NAME 
-		= "/Placement/WorkAssignments/Offender_Work_Assignment_History";
-	
-	private static final String WORK_ASSIGNMENTS_LISTING_REPORT_NAME 
-		= "/Placement/WorkAssignments/Work_Assignments_Listing";	
-
-	private static final String WORK_ASSIGNMENTS_DETAILS_REPORT_NAME 
-		= "/Placement/WorkAssignments/Work_Assignments_Details";
 
 	/* Report parameter names. */
-	
-	private static final String WORK_ASSIGNMENTS_LISTING_ID_REPORT_PARAM_NAME 
-		= "DOC_ID";
-
-	private static final String WORK_ASSIGNMENTS_DETAILS_ID_REPORT_PARAM_NAME 
-		= "WORK_ASSIGNMENT_ID";
 	
 	/* Report runners. */
 	
@@ -246,283 +244,366 @@ public class TravelPermitController {
 	
 	/**
 	 * Displays screen to create new a travel permit.
-	 * @param offender offender for whom to create vehicle association
+	 * @param offender offender for whom to create travel permit
 	 * @return model and view to create a new travel permit 
 	 */
 	@RequestMapping(value = "/create.html", method = RequestMethod.GET)
-	@PreAuthorize("hasRole('TRAVEL_PERMIT_ASSIGNMENT_CREATE') or hasRole('ADMIN')")
+	@PreAuthorize("hasRole('TRAVEL_PERMIT_CREATE') or hasRole('ADMIN')")
 	public ModelAndView create(
 		@RequestParam(value = "offender", required = true)
-			final Offender offender) {
-				TravelPermitForm travelPermitForm 
-					= new TravelPermitForm();
-				boolean createTravelPermit = true; 
-				List<TravelPermitNoteItem> travelPermitNoteItems 
-					= new ArrayList<TravelPermitNoteItem>();
-				int travelPermitNoteItemsIndex = travelPermitNoteItems.size();
-				return this.prepareEditMav(travelPermitForm, offender, 
-					createTravelPermit, travelPermitNoteItems, 
-					travelPermitNoteItemsIndex, 0);
+			final Offender offender, @RequestParam(value = "travelPermit", required = false)
+			final TravelPermit travelPermit) {
+			TravelPermitForm travelPermitForm 
+				= new TravelPermitForm();
+			if(travelPermit != null) {
+				this.populateTravelPermitForm(travelPermitForm, travelPermit, true);
+			}
+			boolean createTravelPermit = true; 
+			List<TravelPermitNoteItem> travelPermitNoteItems 
+				= new ArrayList<TravelPermitNoteItem>();
+			int travelPermitNoteItemsIndex = travelPermitNoteItems.size();
+			return this.prepareEditMav(travelPermitForm, offender, 
+				createTravelPermit, travelPermitNoteItems, 
+				travelPermitNoteItemsIndex);
 	}
 	
 	/**
 	 * Saves a new created travel permit.
 	 * 
 	 * @param offender offender
-	 * @param workAssignmentForm work assignment form
+	 * @param travelPermitForm travel permit form
 	 * @param result binding result
-	 * @return redirect to list vehicle association by offender
+	 * @return redirect to list travel permit by offender
 	 * @throws DuplicateEntityFoundException 
+	 * @throws TravelPermitExistsException
+	 * @throws TravelPermitNoteExistsException
 	 */
-	/*@RequestMapping(value = "/create.html", method = RequestMethod.POST)
-	@PreAuthorize("hasRole('WORK_ASSIGNMENT_CREATE') or hasRole('ADMIN')")
+	@RequestMapping(value = "/create.html", method = RequestMethod.POST)
+	@PreAuthorize("hasRole('TRAVEL_PERMIT_CREATE') or hasRole('ADMIN')")
 	public ModelAndView save(
 		@RequestParam(value = "offender", required = true)
-			final Offender offender,
-			final TravelPermitForm travelPermitForm,
-			final BindingResult result) throws DuplicateEntityFoundException {
-			this.workAssignmentFormValidator.validate(travelPermitForm, result);
-			if (result.hasErrors()) {
-				return this.prepareRedisplayEditMav(
-					offender, workAssignmentForm, result, true, 
-					workAssignmentForm.getWorkAssignmentNoteItems(),0);
-			} 
-			
-			WorkAssignment workAssignment = this.workAssignmentService.create(
-				offender, workAssignmentForm.getFenceRestriction(), 
-				workAssignmentForm.getWorkAssignmentCategory(), 
-				workAssignmentForm.getWorkAssignmentChangeReason(), 
-				workAssignmentForm.getAssignmentDate(), 
-				workAssignmentForm.getTerminationDate(), 
-				workAssignmentForm.getComments(),
-				workAssignmentForm.getEndExistingWorkAssignment());
-			
-			for (WorkAssignmentNoteItem noteItem : 
-				workAssignmentForm.getWorkAssignmentNoteItems()){
-				if(noteItem.getOperation().equals(
-					WorkAssignmentNoteItemOperation.CREATE)){
-					this.workAssignmentService.addNote(workAssignment, 
-						noteItem.getDate(), noteItem.getNote());
-				}
-			}
-		return new ModelAndView(String.format(LIST_REDIRECT, offender.getId()));
-	}	*/
-	
-	/** Edit work assignment. 
-	 * @param vehicleAssociation vehicle association.
-	 * @return edited vehicle association view. */
-	/*@RequestMapping(value = "/edit.html", method = RequestMethod.GET)
-	@PreAuthorize("hasRole('WORK_ASSIGNMENT_VIEW') or hasRole('ADMIN')")
-	public ModelAndView edit(
-		@RequestParam(value = "workAssignment", required = true)
-		final WorkAssignment workAssignment) {
-			WorkAssignmentForm workAssignmentForm 
-				= new WorkAssignmentForm();
-			workAssignmentForm.setAssignmentDate(
-				workAssignment.getAssignedDate());
-			workAssignmentForm.setFenceRestriction(
-				workAssignment.getFenceRestriction());
-			workAssignmentForm.setComments(workAssignment.getComments());
-			workAssignmentForm.setTerminationDate(
-				workAssignment.getTerminationDate());
-			workAssignmentForm.setWorkAssignmentCategory(
-				workAssignment.getCategory());
-			workAssignmentForm.setWorkAssignmentChangeReason(
-				workAssignment.getChangeReason());
-			List<WorkAssignmentNote> workAssignmentNotes 
-				= this.workAssignmentService.findNotes(workAssignment);
-			List<WorkAssignmentNoteItem> workAssignmentNoteItems 
-			= new ArrayList<WorkAssignmentNoteItem>();
-			for(WorkAssignmentNote note : workAssignmentNotes)
-			{
-				WorkAssignmentNoteItem item = new WorkAssignmentNoteItem();
-				item.setDate(note.getDate());
-				item.setNote(note.getValue());
-				item.setOperation(WorkAssignmentNoteItemOperation.UPDATE);
-				workAssignmentNoteItems.add(item);
-			}
-			workAssignmentForm.setWorkAssignmentNoteItems(workAssignmentNoteItems);
-			int workAssignmentNoteIndex = workAssignmentNoteItems.size();
-			int originalWorkAssignmentNoteIndex = this.workAssignmentService
-					.findNotes(workAssignment).size();
-					
-			ModelAndView mav = prepareEditMav(workAssignmentForm, 
-				workAssignment.getOffender(), false, workAssignmentNoteItems,
-				workAssignmentNoteIndex, originalWorkAssignmentNoteIndex); 
-			mav.addObject(WORK_ASSIGNMENT_MODEL_KEY, workAssignment);
-			return mav; 
-	}*/
-	
-	/**
-	 * Updates an existing work assignment.
-	 * 
-	 * @param workAssignment work assignment
-	 * @param workAssignmentForm work assignment form
-	 * @param result binding result
-	 * @return redirect to list vehicle association
-	 * @throws DuplicateEntityFoundException
-	 */
-	/*@RequestMapping(value = "/edit.html", method = RequestMethod.POST)
-	@PreAuthorize("hasRole('WORK_ASSIGNMENT_EDIT') or hasRole('ADMIN')")
-	public ModelAndView update(
-		@RequestParam(value = "workAssignment", required = true)
-			final WorkAssignment workAssignment,
-			final WorkAssignmentForm workAssignmentForm,
-			final BindingResult result) throws DuplicateEntityFoundException {	
-		this.workAssignmentFormValidator.validate(
-			workAssignmentForm, result);
+		final Offender offender,
+		final TravelPermitForm travelPermitForm,
+		final BindingResult result) throws TravelPermitExistsException,
+		TravelPermitNoteExistsException, DuplicateEntityFoundException {
+		this.travelPermitFormValidator.validate(travelPermitForm, result);
 		if (result.hasErrors()) {
-			ModelAndView mav = this.prepareRedisplayEditMav(
-				workAssignment.getOffender(), workAssignmentForm, result, false,
-				workAssignmentForm.getWorkAssignmentNoteItems(),
-				this.workAssignmentService.findNotes(workAssignment).size());
-				return mav;
+			return this.prepareRedisplayEditMav(travelPermitForm, 
+			offender, true,
+			travelPermitForm.getTravelPermitNoteItems(),
+			travelPermitForm.getTravelPermitNoteItems().size(),
+			result);		
 		}
 
-		this.workAssignmentService.update(workAssignment, 
-			workAssignmentForm.getFenceRestriction(), 
-			workAssignmentForm.getWorkAssignmentCategory(), 
-			workAssignmentForm.getWorkAssignmentChangeReason(), 
-			workAssignmentForm.getAssignmentDate(), 
-			workAssignmentForm.getTerminationDate(), 
-			workAssignmentForm.getComments(),
-			workAssignmentForm.getEndExistingWorkAssignment());
-		
-		 Update/add work assignment notes 
-		List<WorkAssignmentNote> originalWorkAssignmentNotes 
-			= this.workAssignmentService.findNotes(workAssignment);
-		int originalWorkAssignmentNoteIndex 
-			= originalWorkAssignmentNotes.size();	
-		List<WorkAssignmentNoteItem> workAssignmentNoteItems 
-			= workAssignmentForm.getWorkAssignmentNoteItems();
-		int newWorkAssignmentNoteIndex = workAssignmentNoteItems.size()-1;
-		
-		for (int index = 0; index < originalWorkAssignmentNoteIndex; index++) {
-			if(WorkAssignmentNoteItemOperation.UPDATE.equals(
-					workAssignmentNoteItems.get(index).getOperation())){
-					this.workAssignmentService.updateNote(
-						originalWorkAssignmentNotes.get(index), 
-						workAssignmentNoteItems.get(index).getDate(), 
-						workAssignmentNoteItems.get(index).getNote());
+		Address address = null;
+		State state = null;
+		City city = null;
+		ZipCode zipCode = null;
+		TravelDestination destination = new TravelDestination();
+		if(DestinationOption.USE_FULL_ADDRESS.equals(
+			travelPermitForm.getDestinationOption())){
+			if(AddressOption.USE_EXISTING.equals(
+				travelPermitForm.getAddressOption())){
+				address = travelPermitForm.getAddress();
+				zipCode = address.getZipCode();
 			}
-			if(WorkAssignmentNoteItemOperation.REMOVE.equals(
-				workAssignmentNoteItems.get(index).getOperation())){
-				this.workAssignmentService.removeNote(
-					originalWorkAssignmentNotes.get(index));
+			if(AddressOption.CREATE_NEW.equals(
+				travelPermitForm.getAddressOption())){
+				if(travelPermitForm.getAddressFields().getNewCity()){    // New city, new zip code
+					city = this.travelPermitService.createCity(
+						travelPermitForm.getAddressFields().getState(),
+						travelPermitForm.getAddressFields().getValue(),
+						travelPermitForm.getAddressFields().getCountry());
+					zipCode = this.travelPermitService.createZipCode(city,
+						travelPermitForm.getAddressFields().getZipCodeValue(),
+						travelPermitForm.getAddressFields()
+						.getZipCodeExtension());
+					address = this.travelPermitService.createAddress(
+						travelPermitForm.getAddressFields().getValue(),
+						zipCode);
+				}
+				if(!travelPermitForm.getAddressFields().getNewCity()      // Existing city, new zip code
+					&&travelPermitForm.getAddressFields().getNewZipCode()){
+					zipCode = this.travelPermitService.createZipCode(
+						travelPermitForm.getAddressFields().getCity(),
+						travelPermitForm.getAddressFields().getZipCodeValue(),
+						travelPermitForm.getAddressFields()
+						.getZipCodeExtension());
+					address = this.travelPermitService.createAddress(
+						travelPermitForm.getAddressFields().getValue(),
+						zipCode);
+				}
+				if(!travelPermitForm.getAddressFields().getNewCity()
+					&&!travelPermitForm.getAddressFields().getNewZipCode()){      // Existing city and zip code
+					address = this.travelPermitService.createAddress(
+						travelPermitForm.getAddressFields().getValue(),
+						travelPermitForm.getAddressFields().getZipCode());
+					zipCode = travelPermitForm.getAddressFields().getZipCode();
+				}
+				state = travelPermitForm.getAddressFields().getState();
+			}
+			destination.setAddress(address);
+		}
+		if(DestinationOption.USE_PARTIAL_ADDRESS.equals(
+			travelPermitForm.getDestinationOption())){
+			if(travelPermitForm.getNewCity()){
+				Country country = this.travelPermitService.findHomeCountry();
+				city = this.travelPermitService.createCity(
+					travelPermitForm.getPartialAddressState(),
+					travelPermitForm.getNewCityName(), country);
+				zipCode = this.travelPermitService.createZipCode(city,
+					travelPermitForm.getNewZipCodeName(),
+					travelPermitForm.getNewZipCodeExtension());
+			}
+			if(!travelPermitForm.getNewCity()){
+				city = travelPermitForm.getPartialAddressCity();
+				if(travelPermitForm.getNewZipCode()){
+					zipCode = this.travelPermitService.createZipCode(city,
+					travelPermitForm.getNewZipCodeName(),
+					travelPermitForm.getNewZipCodeExtension());
+				}
+				 else {
+					zipCode = travelPermitForm.getPartialAddressZipCode();
+				}
+			}
+			state = travelPermitForm.getPartialAddressState();
+			destination.setCity(city);
+			destination.setState(state);
+			destination.setZipCode(zipCode);
+		}
+		destination.setName(travelPermitForm.getName());
+		if(travelPermitForm.getPhoneNumber().length()!=0){
+			String updatedTelephoneNumber
+				= travelPermitForm.getPhoneNumber().replace("(", "")
+				.replace(")", "").replace("-", "");
+			destination.setTelephoneNumber(Long.valueOf(updatedTelephoneNumber));
+		}
+		DateRange dateRange = new DateRange();
+		dateRange.setStartDate(travelPermitForm.getStartDate());
+		dateRange.setEndDate(travelPermitForm.getEndDate());
+		TravelPermitIssuance issuance = new TravelPermitIssuance(
+			travelPermitForm.getIssueDate(), travelPermitForm.getIssuer());
+		
+		TravelTransportation transportation = new TravelTransportation();
+		if(travelPermitForm.getTravelMethod().getDescriptionRequired()){
+			transportation.setDescription(travelPermitForm.getVehicleInfo());
+		}
+		transportation.setMethod(travelPermitForm.getTravelMethod());
+		transportation.setNumber(travelPermitForm.getPlateNumber());
+		
+		OtherTravelers otherTravelers = new OtherTravelers();
+		otherTravelers.setPersons(travelPermitForm.getPersons());
+		otherTravelers.setRelationships(travelPermitForm.getRelationships());
+		
+		TravelPermit travelPermit = this.travelPermitService.create(offender,
+			travelPermitForm.getTripPurpose(), dateRange,
+			travelPermitForm.getPeriodicity(), issuance, transportation,
+			destination, otherTravelers);
+		
+		if(travelPermitForm.getTravelPermitNoteItems()!=null){
+			for(TravelPermitNoteItem item : travelPermitForm
+				.getTravelPermitNoteItems()){
+				if(item.getOperation()!=null){
+					if(TravelPermitNoteItemOperation.CREATE.equals(
+						item.getOperation())){
+						this.travelPermitService.createNote(travelPermit,
+							item.getDate(),	item.getNote());
+					} else {
+						throw new UnsupportedOperationException(
+							String.format("Unsupported operation: %s",
+							item.getOperation()));
+					}
+				}
 			}
 		}
-		
-		for (int index = originalWorkAssignmentNoteIndex; 
-			index <= newWorkAssignmentNoteIndex; index++) {
-			if(WorkAssignmentNoteItemOperation.CREATE.equals(
-				workAssignmentNoteItems.get(index).getOperation())){
-				this.workAssignmentService.addNote(workAssignment, 
-				workAssignmentNoteItems.get(index).getDate(), 
-				workAssignmentNoteItems.get(index).getNote());
-			}
-		}
-		
-		return new ModelAndView(String.format(LIST_REDIRECT,
-			workAssignment.getOffender().getId()));
-	}*/
-	
-	/**
-	 * Removes an existing work assignment.
-	 * 
-	 * @param workAssignment work assignment to remove
-	 * @return redirect to list religious preferences
-	 */
-	@RequestMapping("/remove.html")
-	@PreAuthorize("hasRole('WORK_ASSIGNMENT_REMOVE') or hasRole('ADMIN')")
-	public ModelAndView remove(
-		@RequestParam(value = "itemIndex", required = true)
-			final Integer itemIndex,
-		@RequestParam(value = "offender", required = true)
-			final Offender offender) {
-		/*List<WorkAssignmentNote> workAssignmentNotes 
-			= this.workAssignmentService.findNotes(workAssignment);
-		Offender offender = workAssignment.getOffender();
-		for(WorkAssignmentNote workAssignmentNote : workAssignmentNotes){
-			this.workAssignmentService.removeNote(workAssignmentNote);
-		}
-		this.workAssignmentService.remove(workAssignment);*/
 		
 		return new ModelAndView(String.format(LIST_REDIRECT, offender.getId()));
+	}	
+	
+	/** Edit an existing travel permit. 
+	 * @param travelPermit travel permit.
+	 * @return edited travel permit view. */
+	@RequestMapping(value = "/edit.html", method = RequestMethod.GET)
+	@PreAuthorize("hasRole('TRAVEL_PERMIT_VIEW') or hasRole('ADMIN')")
+	public ModelAndView edit(
+		@RequestParam(value = "travelPermit", required = true)
+		final TravelPermit travelPermit) {
+			TravelPermitForm travelPermitForm = new TravelPermitForm();
+			this.populateTravelPermitForm(travelPermitForm, travelPermit, false);
+			return prepareEditMav(travelPermitForm, travelPermit.getOffender(),
+				false,	travelPermitForm.getTravelPermitNoteItems(),
+				travelPermitForm.getTravelPermitNoteItems().size()); 
 	}
 	
 	/**
-	 * Returns a view for an action menu on list screen
+	 * Updates/saves an existing travel permit.
 	 * 
-	 * @param offender offender
-	 * @return model and view for an action menu
+	 * @param travelPermit travel permit
+	 * @param travelPermitForm travel permit form
+	 * @param result binding result
+	 * @return redirect to list travel permits
+	 * @throws DuplicateEntityFoundException
+	 * @throws TravelPermitExistsException 
+	 * @throws TravelPermitNoteExistsException 
 	 */
-	/*@RequestMapping(value = "/workAssignmentListActionMenu.html",
-			method = RequestMethod.GET)
-	public ModelAndView workAssignmentListActionMenu(@RequestParam(value = "offender",
-		required = true) final Offender offender) {
-		ModelMap map = new ModelMap();
-		map.addAttribute(OFFENDER_MODEL_KEY, offender);
-		return new ModelAndView(WORK_ASSIGNMENT_LIST_ACTION_MENU_VIEW_NAME, map);
-	}*/
+	@RequestMapping(value = "/edit.html", method = RequestMethod.POST)
+	@PreAuthorize("hasRole('TRAVEL_PERMIT_EDIT') or hasRole('ADMIN')")
+	public ModelAndView update(
+		@RequestParam(value = "travelPermit", required = true)
+			final TravelPermit travelPermit,
+			final TravelPermitForm travelPermitForm,
+			final BindingResult result) throws DuplicateEntityFoundException,
+			TravelPermitExistsException, TravelPermitNoteExistsException {	
+		this.travelPermitFormValidator.validate(travelPermitForm, result);
+		if (result.hasErrors()) {
+			return this.prepareRedisplayEditMav(
+				travelPermitForm, travelPermit.getOffender(), false, 
+				travelPermitForm.getTravelPermitNoteItems(),
+				travelPermitForm.getTravelPermitNoteItems().size(),
+				result);
+		} 
+		
+		Address address = null;
+		State state = null;
+		City city = null;
+		ZipCode zipCode = null;
+		TravelDestination destination = new TravelDestination();
+		if(DestinationOption.USE_FULL_ADDRESS.equals(
+			travelPermitForm.getDestinationOption())){
+			if(AddressOption.USE_EXISTING.equals(
+				travelPermitForm.getAddressOption())){
+				address = travelPermitForm.getAddress();
+				zipCode = address.getZipCode();
+			}
+			if(AddressOption.CREATE_NEW.equals(
+				travelPermitForm.getAddressOption())){
+				if(travelPermitForm.getAddressFields().getNewCity()){    // New city, new zip code
+					city = this.travelPermitService.createCity(
+						travelPermitForm.getAddressFields().getState(),
+						travelPermitForm.getAddressFields().getValue(),
+						travelPermitForm.getAddressFields().getCountry());
+					zipCode = this.travelPermitService.createZipCode(city,
+						travelPermitForm.getAddressFields().getZipCodeValue(),
+						travelPermitForm.getAddressFields()
+						.getZipCodeExtension());
+					address = this.travelPermitService.createAddress(
+						travelPermitForm.getAddressFields().getValue(),
+						zipCode);
+				}
+				if(!travelPermitForm.getAddressFields().getNewCity()      // Existing city, new zip code
+					&&travelPermitForm.getAddressFields().getNewZipCode()){
+					zipCode = this.travelPermitService.createZipCode(
+						travelPermitForm.getAddressFields().getCity(),
+						travelPermitForm.getAddressFields().getZipCodeValue(),
+						travelPermitForm.getAddressFields()
+						.getZipCodeExtension());
+					address = this.travelPermitService.createAddress(
+						travelPermitForm.getAddressFields().getValue(),
+						zipCode);
+				}
+				if(!travelPermitForm.getAddressFields().getNewCity()
+					&&!travelPermitForm.getAddressFields().getNewZipCode()){      // Existing city and zip code
+					address = this.travelPermitService.createAddress(
+						travelPermitForm.getAddressFields().getValue(),
+						travelPermitForm.getAddressFields().getZipCode());
+					zipCode = travelPermitForm.getAddressFields().getZipCode();
+				}
+				state = travelPermitForm.getAddressFields().getState();
+			}
+			destination.setAddress(address);
+		}
+		if(DestinationOption.USE_PARTIAL_ADDRESS.equals(
+			travelPermitForm.getDestinationOption())){
+			if(travelPermitForm.getNewCity()){
+				Country country = this.travelPermitService.findHomeCountry();
+				city = this.travelPermitService.createCity(
+					travelPermitForm.getPartialAddressState(),
+					travelPermitForm.getNewCityName(), country);
+				zipCode = this.travelPermitService.createZipCode(city,
+					travelPermitForm.getNewZipCodeName(),
+					travelPermitForm.getNewZipCodeExtension());
+			}
+			if(!travelPermitForm.getNewCity()){
+				city = travelPermitForm.getPartialAddressCity();
+				if(travelPermitForm.getNewZipCode()){
+					zipCode = this.travelPermitService.createZipCode(city,
+					travelPermitForm.getNewZipCodeName(),
+					travelPermitForm.getNewZipCodeExtension());
+				}
+				 else {
+					zipCode = travelPermitForm.getPartialAddressZipCode();
+				}
+			}
+			state = travelPermitForm.getPartialAddressState();
+			
+			destination.setCity(city);
+			destination.setState(state);
+			destination.setZipCode(zipCode);
+		}
+		destination.setName(travelPermitForm.getName());
+		if(travelPermitForm.getPhoneNumber().length()!=0){
+			String updatedTelephoneNumber
+			= travelPermitForm.getPhoneNumber().replace("(", "")
+			.replace(")", "").replace("-", "");
+			destination.setTelephoneNumber(Long.valueOf(updatedTelephoneNumber));
+		}
+				
+		DateRange dateRange = new DateRange();
+		dateRange.setStartDate(travelPermitForm.getStartDate());
+		dateRange.setEndDate(travelPermitForm.getEndDate());
+		TravelPermitIssuance issuance = new TravelPermitIssuance(
+			travelPermitForm.getIssueDate(), travelPermitForm.getIssuer());
+		
+		TravelTransportation transportation = new TravelTransportation();
+		if(travelPermitForm.getTravelMethod().getDescriptionRequired()){
+			transportation.setDescription(travelPermitForm.getVehicleInfo());
+		}
+		transportation.setMethod(travelPermitForm.getTravelMethod());
+		transportation.setNumber(travelPermitForm.getPlateNumber());
+		
+		OtherTravelers otherTravelers = new OtherTravelers();
+		otherTravelers.setPersons(travelPermitForm.getPersons());
+		otherTravelers.setRelationships(travelPermitForm.getRelationships());
+		
+		TravelPermit updatedTravelPermit = this.travelPermitService.update(
+			travelPermit, travelPermitForm.getTripPurpose(), dateRange,
+			travelPermit.getOffender(), travelPermitForm.getPeriodicity(),
+			issuance, transportation, destination, otherTravelers);
+		
+		if(travelPermitForm.getTravelPermitNoteItems()!=null){
+			for(TravelPermitNoteItem item : travelPermitForm.getTravelPermitNoteItems()){
+				if(item.getOperation()!=null){
+					if(TravelPermitNoteItemOperation.CREATE.equals(
+						item.getOperation())){
+						this.travelPermitService.createNote(updatedTravelPermit,
+							item.getDate(),	item.getNote());
+					} else if(TravelPermitNoteItemOperation.EDIT.equals(
+							item.getOperation())){
+						this.travelPermitService.updateNote(
+							item.getTravelPermitNote(), item.getDate(),
+							item.getNote());
+					} else if(TravelPermitNoteItemOperation.REMOVE.equals(
+							item.getOperation())){
+						this.travelPermitService.removeNote(
+							item.getTravelPermitNote());
+					} else {
+						throw new UnsupportedOperationException(
+							String.format("Unsupported operation: %s",
+							item.getOperation()));
+					}
+				}
+			}
+		}
+		return new ModelAndView(String.format(LIST_REDIRECT,
+			travelPermit.getOffender().getId()));
+	}
 	
-	/**
-	 * Returns a view for an action menu on edit/create screen
-	 * 
-	 * @param offender offender
-	 * @return model and view for an action menu
-	 */
-	/*@RequestMapping(value = "/workAssignmentEditActionMenu.html",
-			method = RequestMethod.GET)
-	public ModelAndView workAssignmentEditActionMenu(@RequestParam(value = "offender",
-		required = true) final Offender offender) {
-		ModelMap map = new ModelMap();
-		map.addAttribute(OFFENDER_MODEL_KEY, offender);
-		return new ModelAndView(WORK_ASSIGNMENT_EDIT_ACTION_MENU_VIEW_NAME, map);
-	}*/
-	
-	/**
-	 * Returns a view for an action menu
-	 * 
-	 * @param offender offender
-	 * @return model and view for an action menu
-	 */
-	/*@RequestMapping(value = "/workAssignmentNoteActionMenu.html",
-			method = RequestMethod.GET)
-	public ModelAndView workAssignmentNoteActionMenu(@RequestParam(value = "offender",
-		required = true) final Offender offender) {
-		ModelMap map = new ModelMap();
-		map.addAttribute(OFFENDER_MODEL_KEY, offender);
-		return new ModelAndView(WORK_ASSIGNMENT_NOTE_ACTION_MENU_VIEW_NAME, map);
-	}*/
-	
-	/**
-	 * Adds a work assignment note
-	 * 
-	 * @param noteItemIndex work assignment note index
-	 * @return model and view for a new work assignment note
-	 */
-	/*@RequestMapping(value = "/addWorkAssignmentNoteItem.html", 
-		method = RequestMethod.GET)
-	public ModelAndView addFamilyAssociationNoteItem(@RequestParam(
-			value = "noteItemIndex", required = true)
-			final int noteItemIndex) {
-		ModelMap map = new ModelMap();
-		WorkAssignmentNoteItem workAssignmentNoteItem 
-			= new WorkAssignmentNoteItem();
-		workAssignmentNoteItem.setOperation(
-			WorkAssignmentNoteItemOperation.CREATE); 
-		map.addAttribute(WORK_ASSIGNMENT_NOTE_ITEM_MODEL_KEY, 
-			workAssignmentNoteItem);
-//		map.addAttribute(WORK_ASSIGNMENT_NOTE_INDEX_MODEL_KEY, noteItemIndex);
-		return new ModelAndView(WORK_ASSIGNMENT_NOTE_ITEM_VIEW_NAME, map);
-	}*/
-	
+	// Returns a model and view for editing the specified travel permit
 	private ModelAndView prepareEditMav(
 		final TravelPermitForm travelPermitForm, 
 		final Offender offender, final Boolean createTravelPermit,
 		final List<TravelPermitNoteItem> travelPermitNoteItems,
-		final int travelPermitNoteIndex,
-		final int originalTravelPermitNoteIndex) {
+		final int travelPermitNoteIndex) {
 			ModelAndView mav = new ModelAndView(EDIT_VIEW_NAME);
 			ModelMap map = mav.getModelMap();
 			mav.addObject(TRAVEL_PERMIT_FORM_MODEL_KEY, 
@@ -530,230 +611,68 @@ public class TravelPermitController {
 			List<TravelPermitPeriodicity> periodicities 
 			= this.travelPermitService.findPeriodicity();
 			mav.addObject(PERIODICITIES_MODEL_KEY, periodicities);
-			/*List<UserAccount> userAccounts
-			= this.userAccountDelegate.findAll();
-			mav.addObject(USER_ACCOUNTS_MODEL_KEY, userAccounts);*/
-			List<String> destinationOptions = new ArrayList<String>();
-			destinationOptions.add("Use Full Address");
-			destinationOptions.add("Use Partial Address");
+			DestinationOption[] destinationOptions
+				= DestinationOption.values(); 
 			mav.addObject(DESTINATION_OPTIONS_MODEL_KEY, destinationOptions);
-			List<String> addressOptions = new ArrayList<String>();
-			addressOptions.add("Use Existing");
-			addressOptions.add("Create New");
+			AddressOption[] addressOptions
+			= AddressOption.values(); 
 			mav.addObject(ADDRESS_OPTIONS_MODEL_KEY, addressOptions);
-			
-			
-			
-			
-			
-			/*List<String> transportMethods = new ArrayList<String>();
-			transportMethods.add("Private Vehicle");
-			transportMethods.add("Airplane");
-			transportMethods.add("Bus");
-			transportMethods.add("Train");
-			mav.addObject(TRANSPORT_METHODS_MODEL_KEY, transportMethods);*/
+
 			List<TravelMethod> transportMethods
 			= this.travelPermitService.findTravelMethods();
 			mav.addObject(TRANSPORT_METHODS_MODEL_KEY, transportMethods);
 			
-			
-			
-			
 			mav.addObject(CREATE_TRAVEL_PERMIT_MODEL_KEY, createTravelPermit);
-			List<Country> countries = this.countryDelegate.findAll();
+			List<Country> countries = this.travelPermitService.findCountries();
 			mav.addObject(PARTIAL_ADDRESS_COUNTRIES_MODEL_KEY, countries);
 			mav.addObject(TRAVEL_PERMIT_NOTE_INDEX_MODEL_KEY,
 				travelPermitNoteIndex);
-			mav.addObject(ORIGINAL_TRAVEL_PERMIT_NOTE_INDEX_MODEL_KEY,
-				originalTravelPermitNoteIndex);
 			List<State> states 
-				= this.stateDelegate.findByCountry(null);
+				= this.travelPermitService.findStates();
 			List<City> cities 
-				= this.cityDelegate.findByState(null);
+				= this.travelPermitService.findCitiesByState(null);
 			List<ZipCode> zipCodes 
-				= this.zipCodeDelegate.findByCity(null);
+				= this.travelPermitService.findZipCodes(null);
 				this.addressFieldsControllerDelegate.prepareEditAddressFields(
 					map, countries, states, cities, zipCodes, 
 					ADDRESS_FIELDS_PROPERTY_NAME);
 				
-			Country contryUS = this.countryDelegate.findOrCreate(
-				"United States", "US", true);
+			Country country = this.travelPermitService.findHomeCountry();
 			List<State> partialAddressStates 
-				= this.stateDelegate.findByCountry(contryUS);
+				= this.travelPermitService.findStatesByCountry(country);
 			mav.addObject(PARTIAL_ADDRESS_STATES_MODEL_KEY, partialAddressStates);
-
-			/*if(createTravelPermit){
-				Country defaultCountry = this.countryDelegate.findOrCreate(
-				"United States", "US", true);
-				List<State> states = new ArrayList<State>();
-				states = this.stateDelegate.findByCountry(defaultCountry);
-				mav.addObject(STATES_MODEL_KEY,	states);
-			}*/
-			
-			
-			
-			
-			
-			
-			
-			/*List<WorkAssignmentCategory> workAssignmentCategories 
-				= this.workAssignmentService.findCategories();
-			mav.addObject(WORK_ASSIGNMENT_CATEGORIES_MODEL_KEY, 
-				workAssignmentCategories);
-			List<WorkAssignmentChangeReason> workAssignmentChangeReasons 
-				= this.workAssignmentService.findChangeReasons();
-			mav.addObject(WORK_ASSIGNMENT_CHANGE_REASONS_MODEL_KEY, 
-				workAssignmentChangeReasons);
-			List<FenceRestriction> fenceRestrictions 
-				= this.workAssignmentService.findFenceRestrictions();
-			mav.addObject(FENCE_RESTRICTIONS_MODEL_KEY, 
-				fenceRestrictions);
-			mav.addObject(CREATE_WORK_ASSIGNMENT_MODEL_KEY, createWorkAssignment);
-			mav.addObject(WORK_ASSIGNMENT_NOTE_ITEMS_MODEL_KEY, 
-				workAssignmentNoteItems);
-			mav.addObject(WORK_ASSIGNMENT_NOTE_INDEX_MODEL_KEY, workAssignmentNoteIndex); 
-			mav.addObject(ORIGINAL_WORK_ASSIGNMENT_NOTE_INDEX_MODEL_KEY, 
-				originalWorkAssignmentNoteIndex); */
+			mav.addObject(OFFENDER_MODEL_KEY, offender);
+			mav.addObject(TRAVEL_PERMIT_NOTE_ITEMS_MODEL_KEY,
+				travelPermitNoteItems);
 			this.offenderSummaryModelDelegate.add(mav.getModelMap(), offender);
+			if(travelPermitForm.getStartDate()!=null){
+				List<City> partialAddressCities 
+				= this.travelPermitService.findCitiesByState(
+					travelPermitForm.getPartialAddressState());
+				mav.addObject(PARTIAL_ADDRESS_CITIES_MODEL_KEY,
+					partialAddressCities);
+				List<ZipCode> partialAddressZipCodes 
+				= this.travelPermitService.findZipCodes(
+					travelPermitForm.getPartialAddressCity());
+				mav.addObject(PARTIAL_ADDRESS_ZIPCODES_MODEL_KEY,
+					partialAddressZipCodes);
+			}
 			return mav;
 	}
 	
 	// Prepares redisplay edit/create screen
-	/*private ModelAndView prepareRedisplayEditMav(
-		final Offender offender,
-		final WorkAssignmentForm workAssignmentForm,
-		final BindingResult result,
-		final boolean createNew,
-		final List<WorkAssignmentNoteItem> workAssignmentNoteItems,
-		final int originalWorkAssignmentNoteItems) {
-		int workAssignmentNoteIndex = workAssignmentNoteItems.size();
-		ModelAndView mav = this.prepareEditMav(workAssignmentForm, offender,
-			createNew, workAssignmentNoteItems, workAssignmentNoteIndex,
-			originalWorkAssignmentNoteItems);
+	private ModelAndView prepareRedisplayEditMav(
+		final TravelPermitForm travelPermitForm, 
+		final Offender offender, final Boolean createTravelPermit,
+		final List<TravelPermitNoteItem> travelPermitNoteItems,
+		final int travelPermitNoteIndex,
+		final  BindingResult result) {
+		ModelAndView mav = this.prepareEditMav(travelPermitForm, offender, 
+			createTravelPermit,	travelPermitNoteItems, travelPermitNoteIndex);
 		mav.addObject(BindingResult.MODEL_KEY_PREFIX
-			+ WORK_ASSIGNMENT_MODEL_KEY, result);
+			+ TRAVEL_PERMIT_FIELDS_MODEL_KEY, result);
 		return mav;
-	}	*/
-	
-	/**
-	 * Returns a view for work assignment action menu pertaining
-	 * 
-	 * @param offender offender
-	 * @return view for employment action menu
-	 */
-	/*@RequestMapping(value = "/workAssignmentRowActionMenu.html",method =RequestMethod.GET)
-	public ModelAndView employmentActionMenu(@RequestParam(value = "offender",
-		required = true) final Offender offender,
-		@RequestParam(value = "workAssignment",
-		required = true) final WorkAssignment workAssignment) {
-		ModelMap map = new ModelMap();
-		map.addAttribute(OFFENDER_MODEL_KEY, offender);
-		map.addAttribute(WORK_ASSIGNMENT_MODEL_KEY, workAssignment);
-		return new ModelAndView(WORK_ASSIGNMENT_ROW_ACTION_MENU_VIEW_NAME, map);
-	}*/
-	
-
-	/* Reports. */
-
-	/**
-	 * Returns the report for the specified offenders work assignments for offender distribution.
-	 * 
-	 * @param offender offender
-	 * @param reportFormat report format
-	 * @return response entity with report
-	 */
-	@RequestMapping(value = "/offenderWorkAssignmentHistoryReport.html",
-			method = RequestMethod.GET)
-	@PreAuthorize("hasRole('WORK_ASSIGNMENT_VIEW') or hasRole('ADMIN')")
-	public ResponseEntity<byte []> reportOffenderWorkAssignmentsHistory(@RequestParam(
-			value = "offender", required = true)
-			final Offender offender,
-			@RequestParam(value = "reportFormat", required = true)
-			final ReportFormat reportFormat) {
-		Map<String, String> reportParamMap = new HashMap<String, String>();
-		reportParamMap.put(WORK_ASSIGNMENTS_LISTING_ID_REPORT_PARAM_NAME,
-				Long.toString(offender.getOffenderNumber()));
-		byte[] doc = this.reportRunner.runReport(
-				OFFENDER_WORK_ASSIGNMENT_HISTORY_REPORT_NAME,
-				reportParamMap, reportFormat);
-		return this.reportControllerDelegate.constructReportResponseEntity(
-				doc, reportFormat);
-	}
-	
-	/**
-	 * Returns the report for the specified offenders work assignments.
-	 * 
-	 * @param offender offender
-	 * @param reportFormat report format
-	 * @return response entity with report
-	 */
-	@RequestMapping(value = "/workAssignmentsListingReport.html",
-			method = RequestMethod.GET)
-	@PreAuthorize("hasRole('WORK_ASSIGNMENT_VIEW') or hasRole('ADMIN')")
-	public ResponseEntity<byte []> reportWorkAssignmentsListing(@RequestParam(
-			value = "offender", required = true)
-			final Offender offender,
-			@RequestParam(value = "reportFormat", required = true)
-			final ReportFormat reportFormat) {
-		Map<String, String> reportParamMap = new HashMap<String, String>();
-		reportParamMap.put(WORK_ASSIGNMENTS_LISTING_ID_REPORT_PARAM_NAME,
-				Long.toString(offender.getOffenderNumber()));
-		byte[] doc = this.reportRunner.runReport(
-				WORK_ASSIGNMENTS_LISTING_REPORT_NAME,
-				reportParamMap, reportFormat);
-		return this.reportControllerDelegate.constructReportResponseEntity(
-				doc, reportFormat);
-	}
-	
-	/**
-	 * Returns the report for the specified work assignment.
-	 * 
-	 * @param workAssignment work assignment
-	 * @param reportFormat report format
-	 * @return response entity with report
-	 */
-	@RequestMapping(value = "/workAssignmentsDetailsReport.html",
-			method = RequestMethod.GET)
-	@PreAuthorize("hasRole('WORK_ASSIGNMENT_VIEW') or hasRole('ADMIN')")
-	public ResponseEntity<byte []> reportWorkAssignmentsDetails(@RequestParam(
-			value = "workAssignment", required = true)
-			final WorkAssignment workAssignment,
-			@RequestParam(value = "reportFormat", required = true)
-			final ReportFormat reportFormat) {
-		Map<String, String> reportParamMap = new HashMap<String, String>();
-		reportParamMap.put(WORK_ASSIGNMENTS_DETAILS_ID_REPORT_PARAM_NAME,
-				Long.toString(workAssignment.getId()));
-		byte[] doc = this.reportRunner.runReport(
-				WORK_ASSIGNMENTS_DETAILS_REPORT_NAME,
-				reportParamMap, reportFormat);
-		return this.reportControllerDelegate.constructReportResponseEntity(
-				doc, reportFormat);
-	}
-	
-	/**
-	 * Sets up and registers property editors.
-	 * 
-	 * @param binder web binder
-	 */
-	@InitBinder
-	protected void initBinder(final WebDataBinder binder) {
-		binder.registerCustomEditor(Offender.class,
-			this.offenderPropertyEditorFactory.createOffenderPropertyEditor());
-		binder.registerCustomEditor(Date.class, 
-			this.customDateEditorFactory.createCustomDateOnlyEditor(true));
-		binder.registerCustomEditor(Date.class, 
-				this.customDateEditorFactory.createCustomDateOnlyEditor(true));
-		binder.registerCustomEditor(State.class,
-				this.statePropertyEditorFactory.createPropertyEditor());
-		binder.registerCustomEditor(Country.class,
-				this.countryPropertyEditorFactory.createPropertyEditor());
-		binder.registerCustomEditor(City.class,
-				this.cityPropertyEditorFactory.createPropertyEditor());
-		binder.registerCustomEditor(ZipCode.class,
-				this.zipCodePropertyEditorFactory.createPropertyEditor());
-		binder.registerCustomEditor(TravelMethod.class,
-				this.travelMethodPropertyEditorFactory.createPropertyEditor());
-	}
+	}	
 	
 	/**
 	 * List city options by state 
@@ -768,10 +687,10 @@ public class TravelPermitController {
 		ModelMap map = new ModelMap();
 		
 		if(state!=null){
-			List<City> cities = this.cityDelegate.findByState(state);
+			List<City> cities = this.travelPermitService.findCitiesByState(
+				state);
 			map.addAttribute(PARTIAL_ADDRESS_CITIES_MODEL_KEY, cities); 
 		} 
-			
 		return new ModelAndView(TRAVEL_PERMIT_PARTIAL_ADDRESS_CITY_VIEW_NAME,
 				map); 
 	}
@@ -789,44 +708,17 @@ public class TravelPermitController {
 		ModelMap map = new ModelMap();
 		
 		if(city!=null){
-			List<ZipCode> zipCodes = this.zipCodeDelegate.findByCity(city);
-			map.addAttribute(PARTIAL_ADDRESS_ZIPCODEES_MODEL_KEY, zipCodes); 
+			List<ZipCode> zipCodes = this.travelPermitService.findZipCodes(
+				city);
+			map.addAttribute(PARTIAL_ADDRESS_ZIPCODES_MODEL_KEY, zipCodes); 
 		} 
-			
 		return new ModelAndView(TRAVEL_PERMIT_PARTIAL_ADDRESS_ZIP_CODE_VIEW_NAME,
 				map); 
 	}
 	
 	/**
-	 * List zip codes by city 
-	 * 
-	 * @param city city
-	 * @return redirect to list cities corresponding to state
-	 */
-	/*@RequestMapping("listZipCodesByCity.html")
-	public ModelAndView listZipCodesByCity(
-		@RequestParam(value = "city", required = false)
-		final City city){
-		ModelMap map = new ModelMap();
-		
-		if(city!=null){
-			List<ZipCode> zipCodes = this.zipCodeDelegate.findByCity(city);
-			map.addAttribute(PARTIAL_ADDRESS_ZIPCODEES_MODEL_KEY, zipCodes); 
-		} 
-			
-		return new ModelAndView(TRAVEL_PERMIT_MODELS_VIEW_NAME, map); 
-	}*/
-	
-	
-	
-	
-	
-	
-	
-	
-	/**
 	 * Returns the state options view with a collections of state for the
-	 * specified country for person, address and po box fields snippet.
+	 * specified country for address fields snippet.
 	 * 
 	 * @param country country
 	 * @param fieldsName fields name
@@ -840,14 +732,14 @@ public class TravelPermitController {
 		@RequestParam(value = "addressFieldsPropertyName", required = true)
 			final String addressFieldsPropertyName) {
 		List<State> states 
-			= this.stateDelegate.findByCountry(country);
+			= this.travelPermitService.findStatesByCountry(country);
 		return this.addressFieldsControllerDelegate.showStateOptions(states, 
 				addressFieldsPropertyName);
 	}
 
 	/**
 	 * Returns the city options view with a collection of cities for the
-	 * specified state for address fields snippet.
+	 * specified address fields snippet.
 	 * 
 	 * @param state state
 	 * @param addressFieldsPropertyName address fields property name
@@ -867,13 +759,13 @@ public class TravelPermitController {
 				this.travelPermitService.findCitiesByState(state),
 				addressFieldsPropertyName);
 		} else {
-			if (this.travelPermitService.hasStates(country) != null) {
+			if (this.travelPermitService.hasStates(country)) {
 				return this.addressFieldsControllerDelegate.showCityOptions(
-					this.travelPermitService.findCitiesByCountry(country), 
-					addressFieldsPropertyName);
+				this.travelPermitService.findCitiesByCountryWithoutState(country),
+				addressFieldsPropertyName);
 			} else {
 				return this.addressFieldsControllerDelegate.showCityOptions(
-					this.travelPermitService.findCitiesByCountry(country), 
+				this.travelPermitService.findCitiesByCountry(country), 
 					addressFieldsPropertyName);
 			}
 		}
@@ -908,13 +800,13 @@ public class TravelPermitController {
 			method = RequestMethod.GET)
 	public ModelAndView travelPermitNotesActionMenu() {
 		return new ModelAndView(
-				TRAVEL_PERMIT_NOTE_ITEMS_ACTION_MENU_VIEW_NAME);
+			TRAVEL_PERMIT_NOTE_ITEMS_ACTION_MENU_VIEW_NAME);
 	}	
 	
 	/**
-	 * Adds a family association note.
+	 * Adds a travel permit note.
 	 * 
-	 * @param noteItemIndex family association note index
+	 * @param noteItemIndex travel permit note index
 	 * @return model and view for a new family association
 	 */
 	@RequestMapping(value = "/addTravelPermitNoteItem.html", 
@@ -938,12 +830,12 @@ public class TravelPermitController {
 	 * @param searchCriteria search criteria
 	 * @return view of...address, ..
 	 * @throws IOException  */
-	@RequestMapping(value = "/findOffenderRelationshipAddress.json", 
+	@RequestMapping(value = "/findAddress.json", 
 		method = RequestMethod.GET)
 	@ResponseBody
 	public ModelAndView searchAddressByCriteria(
 		  @RequestParam(value = "term", required = false) 
-		 	final String searchCriteria) throws IOException {
+		 	final String searchCriteria) {
 		List<Address> addresses;
 		if (StringUtility.hasContent(searchCriteria)) {
 			addresses = this.travelPermitService.findAddresses(searchCriteria);
@@ -967,34 +859,16 @@ public class TravelPermitController {
 			@RequestParam(value = "term", required = true)
 				final String query) {
 		List<UserAccount> userAccounts
-			= this.userAccountDelegate.search(query.toUpperCase());
+			= this.travelPermitService.searchUserAccounts(query.toUpperCase( ));
 		ModelAndView mav = new ModelAndView(USER_ACCOUNTS_VIEW_NAME);
 		mav.addObject(USER_ACCOUNTS_MODEL_KEY, userAccounts);
 		return mav;
 	}
 	
 	/**
-	 * Returns a view for family association action menu pertaining to the 
-	 * specified offender.
-	 * 
-	 * @param offender offender
-	 * @return model and view for family associations action menu
-	 */
-	/*@RequestMapping(value = "/travelPermitEditActionMenu.html",
-		method = RequestMethod.GET)
-	public ModelAndView travelPermitEditActionMenu(@RequestParam(
-		value = "offender",	required = true) final Offender offender) {
-		TravelMethod travelMethod = 
-		ModelMap map = new ModelMap();
-		map.addAttribute(OFFENDER_MODEL_KEY, offender);
-		return new ModelAndView(TRAVEL_PERMIT_ACTION_MENU_VIEW_NAME, map);
-	}*/
-	
-	/**
 	 * Returns a view for travel permit transport method.
 	 * 
-	 * @param travelMethod travel method
-	 * @return 
+	 * @param travelMethod travel method 
 	 * @return model and view for travel method
 	 */
 	@RequestMapping(value = "/transportMethod.html",
@@ -1005,32 +879,203 @@ public class TravelPermitController {
 		ModelMap map = new ModelMap();
 		map.addAttribute(TRAVEL_METHOD_MODEL_KEY, travelMethod);
 		return new ModelAndView(TRAVEL_METHOD_VIEW_NAME, map);
-//			return new ModelAndView(TRAVEL_PERMIT_ACTION_MENU_VIEW_NAME, map);
-//		return travelMethod;
-			
 	}
 	
 	/**
-	 * Removes an existing travel permit note.
+	 * Returns a view for travel permit create screen action menu pertaining to
+	 * the specified offender.
 	 * 
-	 * @param familyAssociation family association
 	 * @param offender offender
-	 * @return redirect to list religious preferences
+	 * @return model and view for travel permit action menu
 	 */
-	/*@RequestMapping("/remove.html")
-	@PreAuthorize("hasRole('FAMILY_ASSOCIATION_REMOVE') or hasRole('ADMIN')")
+	@RequestMapping(value = "/travelPermitEditActionMenu.html",
+			method = RequestMethod.GET)
+	public ModelAndView travelPermitActionMenu(@RequestParam(
+		value = "offender",	required = true) final Offender offender) {
+		ModelMap map = new ModelMap();
+		map.addAttribute(OFFENDER_MODEL_KEY, offender);
+		return new ModelAndView(TRAVEL_PERMIT_ACTION_MENU_VIEW_NAME, map);
+	}
+	
+	/**
+	 * Removes an existing travel permit.
+	 * 
+	 * @param travelPermit travel permit
+	 * @return redirect to list
+	 */
+	@RequestMapping("/remove.html")
+	@PreAuthorize("hasRole('TRAVEL_PERMIT_REMOVE') or hasRole('ADMIN')")
 	public ModelAndView remove(
-		@RequestParam(value = "familyAssociation", required = true)
-			final FamilyAssociation familyAssociation,
-			@RequestParam(value = "offender", required = true)
-			final Offender offender) {
-		List<RelationshipNote> familyAssociationNotes 
-			= this.familyAssociationService.findNotesByRelationship(
-				familyAssociation.getRelationship());
-		for (RelationshipNote note : familyAssociationNotes) {
-			this.familyAssociationService.removeRelationshipNote(note);
+		@RequestParam(value = "travelPermit", required = true)
+			final TravelPermit travelPermit) {
+		List<TravelPermitNote> travelPermitNotes 
+			= this.travelPermitService.findNotes(travelPermit);
+		Offender offender = travelPermit.getOffender();
+		for(TravelPermitNote travelPermitNote : travelPermitNotes){
+			this.travelPermitService.removeNote(travelPermitNote);
 		}
-		this.familyAssociationService.remove(familyAssociation);
+		this.travelPermitService.remove(travelPermit);
 		return new ModelAndView(String.format(LIST_REDIRECT, offender.getId()));
-	}*/
+	}
+	
+	/**
+	 * Handles {@code TravelPermitExistsException}.
+	 * 
+	 * @param TravelPermitExistsException exception thrown when a same travel
+	 * permit already exists
+	 * @return screen to handle {@code TravelPermitExistsException}
+	 */
+	@ExceptionHandler(TravelPermitExistsException.class)
+	public ModelAndView handleTravelPermitExistsException(
+		final TravelPermitExistsException travelPermitExistsException) {
+		return this.businessExceptionHandlerDelegate.prepareModelAndView(
+			TRAVEL_PERMIT_EXISTS_EXCEPTION_MESSAGE_KEY,
+			ERROR_BUNDLE_NAME, travelPermitExistsException);
+	}
+	
+	
+	/**
+	 * Handles {@code TravelPermitNoteExistsException}.
+	 * 
+	 * @param TravelPermitNoteExistsException exception thrown a same travel
+	 * permit note already exists
+	 * @return screen to handle {@code TravelPermitNoteExistsException}
+	 */
+	@ExceptionHandler(TravelPermitNoteExistsException.class)
+	public ModelAndView handleTravelPermitNoteExistsException(
+		final TravelPermitNoteExistsException travelPermitNoteExistsException) {
+		return this.businessExceptionHandlerDelegate.prepareModelAndView(
+			TRAVEL_PERMIT_NOTE_EXISTS_EXCEPTION_MESSAGE_KEY,
+			ERROR_BUNDLE_NAME, travelPermitNoteExistsException);
+	}
+	
+	/* Helper methods. */
+	
+	/*
+	 * Populates a travel permit form with values from the specified travel permit.
+	 * 
+	 * @param form travel permit form
+	 * @param permit travel permit
+	 * @param copy whether this form is for copying the specified travel permit
+	 * @return populated travel permit form
+	 */
+	TravelPermitForm populateTravelPermitForm(final TravelPermitForm form, TravelPermit permit, final Boolean copy) {
+		if(permit.getDestination().getAddress()!=null){   // Full address
+			Address address = permit.getDestination().getAddress();
+			form.setAddressOption(AddressOption.USE_EXISTING);
+			form.setDestinationOption(
+				DestinationOption.USE_FULL_ADDRESS);
+			if(address.getValue()==null){
+				form.setAddressQuery(String.format("%s %s %s",
+				address.getZipCode().getCity().getName(),
+				address.getZipCode().getCity().getState().getAbbreviation(),
+				address.getZipCode().getValue()));
+			} else {
+				form.setAddressQuery(String.format("%s %s %s %s",
+				address.getValue(),
+				address.getZipCode().getCity().getName(),
+				address.getZipCode().getCity().getState().getAbbreviation(),
+				address.getZipCode().getValue()));
+			}
+			form.setAddress(address);
+		} else {  // Partial address
+			form.setDestinationOption(
+				DestinationOption.USE_PARTIAL_ADDRESS);
+			form.setPartialAddressState(
+				permit.getDestination().getState());
+			form.setPartialAddressCity(
+				permit.getDestination().getCity());
+			form.setPartialAddressZipCode(
+				permit.getDestination().getZipCode());
+		}
+		if(!copy) {
+			//If this form is not being populated for the purpose of a "copy", then
+			//populate the dates, and notes associated with the specified permit. - JN
+			form.setEndDate(
+				permit.getDateRange().getEndDate());
+			form.setStartDate(
+				permit.getDateRange().getStartDate());
+			form.setIssueDate(permit.getIssuance().getDate());
+			form.setTravelMethod(permit.getTransportation()
+				.getMethod());
+			form.setPlateNumber(permit.getTransportation()
+				.getNumber());
+			form.setVehicleInfo(permit.getTransportation()
+				.getDescription());
+			List<TravelPermitNoteItem> noteItems
+			= new ArrayList<TravelPermitNoteItem>();
+			List<TravelPermitNote> notes = this.travelPermitService.findNotes(
+				permit);
+			for(TravelPermitNote note : notes){
+				TravelPermitNoteItem item = new TravelPermitNoteItem();
+				item.setDate(note.getDate());
+				item.setNote(note.getValue());
+				item.setOperation(TravelPermitNoteItemOperation.EDIT);
+				item.setTravelPermitNote(note);
+				item.setUpdateSignature(note.getUpdateSignature());
+				noteItems.add(item);
+			}
+			form.setTravelPermitNoteItems(noteItems);
+		}
+		UserAccount issuer = permit.getIssuance().getIssuer();
+		form.setIssuer(permit.getIssuance().getIssuer());
+		PersonName name = issuer.getUser().getName();
+		form.setIssuerInput(String.format("(%s) %s %s",
+			issuer.getUsername(), name.getFirstName(),
+			name.getLastName()));
+		
+		form.setName(permit.getDestination().getName());
+		form.setPartialAddressCity(permit
+			.getDestination().getCity());
+		form.setPartialAddressState(permit
+			.getDestination().getState());
+		form.setPartialAddressZipCode(permit
+			.getDestination().getZipCode());
+		form.setPeriodicity(permit.getPeriodicity());
+		if(permit.getOtherTravellers()!=null){
+			form.setPersons(
+			permit.getOtherTravellers().getPersons());
+			form.setRelationships(
+			permit.getOtherTravellers().getRelationships());
+		}
+		if(permit.getDestination().getTelephoneNumber()!=null)
+			form.setPhoneNumber(permit.getDestination()
+				.getTelephoneNumber().toString());
+		form.setTripPurpose(permit.getPurpose());
+		return form;
+	}
+	
+	/**
+	 * Sets up and registers property editors.
+	 * 
+	 * @param binder web binder
+	 */
+	@InitBinder
+	protected void initBinder(final WebDataBinder binder) {
+		binder.registerCustomEditor(Offender.class,
+			this.offenderPropertyEditorFactory.createOffenderPropertyEditor());
+		binder.registerCustomEditor(Date.class, 
+			this.customDateEditorFactory.createCustomDateOnlyEditor(true));
+		binder.registerCustomEditor(State.class,
+			this.statePropertyEditorFactory.createPropertyEditor());
+		binder.registerCustomEditor(Country.class,
+			this.countryPropertyEditorFactory.createPropertyEditor());
+		binder.registerCustomEditor(City.class,
+			this.cityPropertyEditorFactory.createPropertyEditor());
+		binder.registerCustomEditor(ZipCode.class,
+			this.zipCodePropertyEditorFactory.createPropertyEditor());
+		binder.registerCustomEditor(TravelMethod.class,
+			this.travelMethodPropertyEditorFactory.createPropertyEditor());
+		binder.registerCustomEditor(TravelPermitPeriodicity.class,
+			this.travelPermitPeriodicityPropertyEditorFactory
+			.createPropertyEditor());
+		binder.registerCustomEditor(UserAccount.class,
+			this.userAccountPropertyEditorFactory.createPropertyEditor());
+		binder.registerCustomEditor(Address.class,
+			this.addressPropertyEditorFactory.createPropertyEditor());
+		binder.registerCustomEditor(TravelPermit.class,
+			this.travelPermitPropertyEditorFactory.createPropertyEditor());
+		binder.registerCustomEditor(TravelPermitNote.class,
+			this.travelPermitNotePropertyEditorFactory.createPropertyEditor());
+	}
 }

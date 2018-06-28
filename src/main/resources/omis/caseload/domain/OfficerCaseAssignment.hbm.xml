@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ - OMIS - Offender Management Information System
+ - Copyright (C) 2011 - 2017 State of Montana
+ -
+ - This program is free software: you can redistribute it and/or modify
+ - it under the terms of the GNU General Public License as published by
+ - the Free Software Foundation, either version 3 of the License, or
+ - (at your option) any later version.
+ -
+ - This program is distributed in the hope that it will be useful,
+ - but WITHOUT ANY WARRANTY; without even the implied warranty of
+ - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ - GNU General Public License for more details.
+ -
+ - You should have received a copy of the GNU General Public License
+ - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="omis.caseload.domain">
+	<class entity-name="omis.caseload.domain.OfficerCaseAssignment"
+		proxy="omis.caseload.domain.OfficerCaseAssignment"
+		name="omis.caseload.domain.impl.OfficerCaseAssignmentImpl"
+		table="`OFFICER_CASE_ASSIGNMENT`">
+		<id name="id" column="`ID`" type="java.lang.Long">
+			<generator class="sequence">
+				<param name="sequence">`OFFICER_CASE_ASSIGNMENT_SEQ`</param>
+			</generator>
+		</id>
+		<many-to-one name="officer" column="`USER_ACCOUNT_ID`" not-null="true" entity-name="omis.user.domain.UserAccount"/>
+		<many-to-one name="offender" column="`OFFENDER_ID`"  not-null="true" entity-name="omis.offender.domain.Offender"/>
+		<many-to-one name="supervisionLevel" column="`SUPERVISION_LEVEL_CATEGORY_ID`" not-null="false" entity-name="omis.caseload.domain.SupervisionLevelCategory"/>
+		<many-to-one name="supervisionOffice" column="`LOCATION_ID`"  not-null="false" entity-name="omis.location.domain.Location"/>
+		<component name="dateRange">
+				<property name="startDate" column="`START_DATE`" not-null="true" type="java.util.Date"/>
+				<property name="endDate" column="`END_DATE`" not-null="false" type="java.util.Date"/>
+		</component>	
+		<component name="creationSignature">
+			<many-to-one name="userAccount" column="`CREATE_ACCOUNT_ID`" not-null="true"/>
+			<property name="date" column="`CREATE_DATE`" not-null="true"/>
+		</component>
+		<component name="updateSignature">
+			<many-to-one name="userAccount" column="`UPDATE_ACCOUNT_ID`" not-null="true"/>
+			<property name="date" column="`UPDATE_DATE`" not-null="true"/>
+		</component>	
+	</class>
+	
+	<query name="findOfficerCaseAssignment"><![CDATA[
+		select oca
+		from
+			omis.caseload.domain.OfficerCaseAssignment oca
+		where
+			oca.offender = :offender
+		and 
+			oca.officer = :officer
+		and
+			oca.dateRange.startDate = :startDate
+		and
+			(oca.dateRange.endDate = :endDate or
+			(oca.dateRange.endDate is null and :endDate is null))
+	]]></query>
+	<query name="findOfficerCaseAssignmentExcluding"><![CDATA[
+		select oca
+		from
+			omis.caseload.domain.OfficerCaseAssignment oca
+		where
+			oca.offender = :offender
+		and 
+			oca.officer = :officer
+		and
+			oca.dateRange.startDate = :startDate
+		and
+			(oca.dateRange.endDate = :endDate or
+			(oca.dateRange.endDate is null and :endDate is null))
+		and
+			oca != :excludedOfficerCaseAssignment
+	]]></query>
+	<query name="findOfficerCaseAssignmentWithinDateRange"><![CDATA[
+		select oca
+		from
+			omis.caseload.domain.OfficerCaseAssignment oca
+		where
+			oca.offender = :offender
+		and 
+			((oca.dateRange.startDate >= :startDate
+		and
+			(oca.dateRange.startDate <= :endDate
+			or 
+			:endDate is null))
+			or
+				((oca.dateRange.startDate <= :startDate)
+			and
+				(:startDate <= oca.dateRange.endDate
+				or
+				oca.dateRange.endDate is null)))	
+	]]></query>
+	<query name="findOfficerCaseAssignmentWithinDateRangeExcluding"><![CDATA[
+		select oca
+		from
+			omis.caseload.domain.OfficerCaseAssignment oca
+		where
+			oca.offender = :offender
+		and 
+			((oca.dateRange.startDate >= :startDate
+		and
+			(oca.dateRange.startDate <= :endDate
+			or 
+			:endDate is null))
+			or
+			((oca.dateRange.startDate <= :startDate)
+		and
+			(:startDate <= oca.dateRange.endDate
+			or
+			oca.dateRange.endDate is null)))
+			and oca != :excludedOfficerCaseAssignment	
+	]]></query>
+</hibernate-mapping>

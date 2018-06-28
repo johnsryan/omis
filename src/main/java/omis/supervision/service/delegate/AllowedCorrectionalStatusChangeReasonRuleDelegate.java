@@ -17,12 +17,12 @@
  */
 package omis.supervision.service.delegate;
 
-import omis.exception.DuplicateEntityFoundException;
 import omis.instance.factory.InstanceFactory;
 import omis.supervision.dao.AllowedCorrectionalStatusChangeReasonRuleDao;
 import omis.supervision.domain.AllowedCorrectionalStatusChangeReasonRule;
 import omis.supervision.domain.CorrectionalStatus;
 import omis.supervision.domain.PlacementTermChangeReason;
+import omis.supervision.exception.AllowedCorrectionalStatusChangeReasonRuleExistsException;
 
 /**
  * Delegate for allowed correctional status change reason rules.
@@ -83,18 +83,19 @@ public class AllowedCorrectionalStatusChangeReasonRuleDelegate {
 	 * @param toCorrectionalStatus to correctional status
 	 * @param changeReason change reason
 	 * @return allowed correctional status change reason rule
-	 * @throws DuplicateEntityFoundException if allowed correctional status
-	 * change reason rule exists
+	 * @throws AllowedCorrectionalStatusChangeReasonRuleExistsException if
+	 * allowed correctional status change reason rule exists
 	 */
 	public AllowedCorrectionalStatusChangeReasonRule create(
 			final CorrectionalStatus fromCorrectionalStatus,
 			final CorrectionalStatus toCorrectionalStatus,
 			final PlacementTermChangeReason changeReason)
-				throws DuplicateEntityFoundException {
+				throws
+					AllowedCorrectionalStatusChangeReasonRuleExistsException {
 		if (this.allowedCorrectionalStatusChangeReasonRuleDao
 				.find(fromCorrectionalStatus, toCorrectionalStatus,
 						changeReason) != null) {
-			throw new DuplicateEntityFoundException(
+			throw new AllowedCorrectionalStatusChangeReasonRuleExistsException(
 					"Allowed correctional status change reason rule");
 		}
 		AllowedCorrectionalStatusChangeReasonRule rule

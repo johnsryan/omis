@@ -309,15 +309,17 @@ public class PresentenceInvestigationTaskServiceUpdateTests
 		final UserAccount assigneeAccount = this.userAccountDelegate.create(
 				person, "xXDarkKnightXx", "!robinLaysAnEgg12",
 				this.parseDateText("12/12/2299"), 0, true);
+		Date lastInvokedDate = this.parseDateText("01/03/2018");
 		
 		taskAssignment = this.presentenceInvestigationTaskService
 				.updateTaskAssignment(taskAssignment, assignedDate,
-						assigneeAccount);
+						assigneeAccount, lastInvokedDate);
 		
 		PropertyValueAsserter.create()
 			.addExpectedValue("task", task)
 			.addExpectedValue("assignedDate", assignedDate)
 			.addExpectedValue("assigneeAccount", assigneeAccount)
+			.addExpectedValue("lastInvokedDate", lastInvokedDate)
 			.performAssertions(taskAssignment);
 	}
 	

@@ -25,7 +25,6 @@ import omis.audit.domain.CreationSignature;
 import omis.audit.domain.UpdateSignature;
 import omis.datatype.DateRange;
 import omis.exception.DateRangeOutOfBoundsException;
-import omis.exception.DuplicateEntityFoundException;
 import omis.instance.factory.InstanceFactory;
 import omis.offender.domain.Offender;
 import omis.supervision.dao.PlacementTermDao;
@@ -36,6 +35,7 @@ import omis.supervision.domain.SupervisoryOrganization;
 import omis.supervision.domain.SupervisoryOrganizationTerm;
 import omis.supervision.exception.PlacementTermExistsException;
 import omis.supervision.exception.SupervisoryOrganizationTermConflictException;
+import omis.supervision.exception.SupervisoryOrganizationTermExistsException;
 import omis.supervision.service.SupervisoryOrganizationTermService;
 
 /**
@@ -109,14 +109,14 @@ public class SupervisoryOrganizationTermServiceImpl
 	public SupervisoryOrganizationTerm create(final Offender offender,
 			final SupervisoryOrganization supervisoryOrganization,
 			final DateRange dateRange)
-					throws DuplicateEntityFoundException,
+					throws SupervisoryOrganizationTermExistsException,
 						SupervisoryOrganizationTermConflictException {
 		
 		// Throws exception if duplicate supervisory organization term exists
 		if (this.supervisoryOrganizationTermDao.find(offender,
 				supervisoryOrganization, DateRange.getStartDate(dateRange),
 				DateRange.getEndDate(dateRange)) != null) {
-			throw new DuplicateEntityFoundException(
+			throw new SupervisoryOrganizationTermExistsException(
 					"Supervisory organization term exists");
 		}
 		
@@ -154,7 +154,7 @@ public class SupervisoryOrganizationTermServiceImpl
 			final SupervisoryOrganizationTerm supervisoryOrganizationTerm,
 			final SupervisoryOrganization supervisoryOrganization,
 			final DateRange dateRange)
-					throws DuplicateEntityFoundException,
+					throws SupervisoryOrganizationTermExistsException,
 						SupervisoryOrganizationTermConflictException,
 						DateRangeOutOfBoundsException {
 		
@@ -164,7 +164,7 @@ public class SupervisoryOrganizationTermServiceImpl
 				supervisoryOrganization, DateRange.getStartDate(dateRange),
 				DateRange.getEndDate(dateRange), supervisoryOrganizationTerm)
 					!= null) {
-			throw new DuplicateEntityFoundException(
+			throw new SupervisoryOrganizationTermExistsException(
 					"Supervisory organization term exists");
 		}
 		

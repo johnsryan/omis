@@ -238,7 +238,7 @@ public class HearingAnalysisTaskController {
 					item.getTaskItemOperation())) {
 				this.hearingAnalysisTaskService.updateTaskAssignment(
 						item.getTaskAssignment(), item.getAssigneeAccount(),
-						item.getAssignedDate());
+						item.getAssignedDate(), new Date());
 			}
 			else if(TaskItemOperation.REMOVE.equals(
 					item.getTaskItemOperation())) {

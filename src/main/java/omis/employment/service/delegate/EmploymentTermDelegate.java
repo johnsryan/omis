@@ -12,6 +12,7 @@ import omis.employment.domain.Employer;
 import omis.employment.domain.EmploymentChangeReason;
 import omis.employment.domain.EmploymentTerm;
 import omis.employment.domain.component.Job;
+import omis.employment.exception.EmploymentExistsException;
 import omis.exception.DuplicateEntityFoundException;
 import omis.instance.factory.InstanceFactory;
 import omis.offender.domain.Offender;
@@ -59,17 +60,17 @@ public class EmploymentTermDelegate {
 	 * @param convictedOfEmployerTheft, if this person is convicted of theft
 	 * @param endReason the reason of termination of employment 
 	 * @return created employer
-	 * @throws DuplicateEntityFoundException if duplicate entity exists
+	 * @throws EmploymentExistsException if duplicate entity exists
 	 */
 	public EmploymentTerm create(final Offender offender, 
 		final DateRange dateRange, final Job job, 
 		final Boolean convictedOfEmployerTheft, 
 		final EmploymentChangeReason endReason, 
 		final VerificationSignature	verificationSignature) 
-				throws DuplicateEntityFoundException {
+				throws EmploymentExistsException {
 		if (this.employmentTermDao.find(offender, job.getEmployer(), dateRange,
 				job, endReason) != null) {
-			throw new DuplicateEntityFoundException(
+			throw new EmploymentExistsException(
 					"Employment term already exists.");
 		}
 		EmploymentTerm employmentTerm = this.employmentTermInstanceFactory
@@ -93,17 +94,17 @@ public class EmploymentTermDelegate {
 	 * @param endReason employment end reason
 	 * @param verificationSignature verification signature
 	 * @return updated employment term
-	 * @throws DuplicateEntityFoundException if duplicate entity exists
+	 * @throws EmploymentExistsException if duplicate entity exists
 	 */
 	public EmploymentTerm update(final EmploymentTerm employmentTerm, 
 		final DateRange dateRange, final Job job, 
 		final Boolean convictedOfEmployerTheft,	
 		final EmploymentChangeReason endReason, 
 		final VerificationSignature	verificationSignature) 
-				throws DuplicateEntityFoundException {
+				throws EmploymentExistsException {
 		if (this.employmentTermDao.findExcluding(employmentTerm, dateRange,
 				job, endReason) != null) {
-			throw new DuplicateEntityFoundException(
+			throw new EmploymentExistsException(
 					"Employment term already exists.");
 		}
 		populateEmploymentTerm(employmentTerm, dateRange, job, 
@@ -117,13 +118,13 @@ public class EmploymentTermDelegate {
 	 * @param employmentTerm employment term to be updated
 	 * @param employer employer
 	 * @return updated employment term
-	 * @throws DuplicateEntityFoundException if duplicate entity exists
+	 * @throws EmploymentExistsException if duplicate entity exists
 	 */
 	public EmploymentTerm change(final EmploymentTerm employmentTerm, 
-		final Employer employer) throws DuplicateEntityFoundException {
+		final Employer employer) throws EmploymentExistsException {
 		if (this.employmentTermDao.findEmploymentTermByEmployer(employmentTerm, 
 				employer) != null) {
-			throw new DuplicateEntityFoundException(
+			throw new EmploymentExistsException(
 					"Employment term already exists.");
 		}
 		employmentTerm.getJob().setEmployer(employer);

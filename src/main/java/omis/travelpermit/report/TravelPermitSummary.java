@@ -63,6 +63,12 @@ public class TravelPermitSummary implements Serializable {
 	private final String transportationNumber;
 	private final String transportationDescription;
 	private final String transportationMethodName;
+	private final Long createdById;
+	private final String createdByUsername;
+	private final String createdByLastName;
+	private final String createdByFirstName;
+	private final String createdByMiddleName;
+	private final String createdBySuffix;
 
 	/**
 	 * Instantiates an implementation of Travel Permit Summary.
@@ -88,7 +94,10 @@ public class TravelPermitSummary implements Serializable {
 			final String issuerSuffix, final String issuerUsername, 
 			final String transportationNumber, 
 			final String transportationDescription, 
-			final String transportationMethodName) {
+			final String transportationMethodName, 
+			final Long createdById, final String createdByUsername,
+			final String createdByLastName, final String createdByFirstName,
+			final String createdByMiddleName, final String createdBySuffix) {
 		
 		this.id = id;
 		this.offenderLastName = offenderLastName;
@@ -122,6 +131,12 @@ public class TravelPermitSummary implements Serializable {
 		this.transportationNumber = transportationNumber;
 		this.transportationDescription = transportationDescription;
 		this.transportationMethodName = transportationMethodName;
+		this.createdById = createdById;
+		this.createdByUsername = createdByUsername;
+		this.createdByLastName = createdByLastName;
+		this.createdByFirstName = createdByFirstName;
+		this.createdByMiddleName = createdByMiddleName;
+		this.createdBySuffix = createdBySuffix;
 	}
 	
 	/**
@@ -143,7 +158,7 @@ public class TravelPermitSummary implements Serializable {
 	}
 
 	/**
-	 * Returns the offender first name.
+	 * Returns the offender first name.	 
 	 *
 	 * @return the offenderFirstName
 	 */
@@ -410,5 +425,59 @@ public class TravelPermitSummary implements Serializable {
 	 */
 	public String getTransportationMethodName() {
 		return this.transportationMethodName;
+	}
+
+	/**
+	 * Returns the created by ID.
+	 *
+	 * @return the createdById
+	 */
+	public Long getcreatedById() {
+		return this.createdById;
+	}
+
+	/**
+	 * Returns the created by username.
+	 *
+	 * @return the createdByUsername
+	 */
+	public String getCreatedByUsername() {
+		return this.createdByUsername;
+	}
+
+	/**
+	 * Returns the created by last name.
+	 *
+	 * @return the createdByLastName
+	 */
+	public String getCreatedByLastName() {
+		return this.createdByLastName;
+	}
+
+	/**
+	 * Returns the created by first name.
+	 *
+	 * @return the createdByFirstName
+	 */
+	public String getCreatedByFirstName() {
+		return this.createdByFirstName;
+	}
+
+	/**
+	 * Returns the created by middle name.
+	 *
+	 * @return the createdByMiddleName
+	 */
+	public String getCreatedByMiddleName() {
+		return this.createdByMiddleName;
+	}
+
+	/**
+	 * Returns the created by suffix.
+	 *
+	 * @return the createdBySuffix
+	 */
+	public String getCreatedBySuffix() {
+		return this.createdBySuffix;
 	}	
 }

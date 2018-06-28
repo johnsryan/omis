@@ -18,7 +18,7 @@
 <body>
 	<jsp:include page="/WEB-INF/views/offender/includes/offenderHeader.jsp"/>
 	<h1>
-		<a class="actionMenuItem" id="actionMenuLink" href="${pageContext.request.contextPath}/travelPermit/travelPermitsActionMenu.html?offender=${offender.id}"></a><fmt:message key="travelPermitHeader"/>
+		<a class="actionMenuItem" id="actionMenuLink" href="${pageContext.request.contextPath}/travelPermit/travelPermitsActionMenu.html?offender=${offender.id}"></a><fmt:message key="travelPermitsHeader"/>
 	</h1>
 	<jsp:include page="includes/listTable.jsp"/>	
 </body>

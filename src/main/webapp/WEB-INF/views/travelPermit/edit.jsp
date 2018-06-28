@@ -27,14 +27,19 @@
 		</title>
 		<jsp:include page="/WEB-INF/views/common/includes/headerOffenderFormResources.jsp"/>
 		<jsp:include page="/WEB-INF/views/common/includes/messageResolverResources.jsp"/>
+		<jsp:include page="/WEB-INF/views/common/includes/serverConfigResources.jsp"/>
 		<jsp:include page="/WEB-INF/views/common/includes/linksResources.jsp"/>
 		<jsp:include page="/WEB-INF/views/common/includes/toolsResources.jsp"/>
+		<jsp:include page="/WEB-INF/views/common/includes/searchResources.jsp"/>
 		<jsp:include page="/WEB-INF/views/address/includes/addressFieldsResources.jsp"/>
-		<jsp:include page="/WEB-INF/views/common/includes/contactSummaryResources.jsp"/> 
+		<jsp:include page="/WEB-INF/views/common/includes/contactSummaryResources.jsp"/>
+		<script type="text/javascript" src="${pageContext.request.contextPath}/resources/user/scripts/searchUserAccount.js?VERSION=1"> </script>
+		<script type="text/javascript" src="${pageContext.request.contextPath}/resources/common/scripts/SessionConfig.js"> </script>
+		<script type="text/javascript" src="${pageContext.request.contextPath}/resources/common/scripts/search.js"></script>
 		<script type="text/javascript" src="${pageContext.request.contextPath}/resources/travelPermit/scripts/travelPermit.js"></script>
 		<script type="text/javascript">
   			var travelPermitNoteItemIndex= ${travelPermitNoteItemIndex};
-  			var originalTravelPermitNoteIndex= ${originalTravelPermitNoteIndex};
+  			var createTravelPermit= ${createTravelPermit};
 	  	</script>
 	</head>
 	<body>

@@ -6,20 +6,25 @@ import org.testng.annotations.Test;
 
 import omis.address.domain.Address;
 import omis.address.domain.ZipCode;
+import omis.address.exception.ZipCodeExistsException;
 import omis.address.service.delegate.AddressDelegate;
 import omis.address.service.delegate.ZipCodeDelegate;
 import omis.country.domain.Country;
 import omis.country.service.delegate.CountryDelegate;
 import omis.employment.domain.Employer;
+import omis.employment.exception.EmployerExistsException;
 import omis.employment.service.EmploymentService;
 import omis.employment.service.delegate.EmployerDelegate;
 import omis.exception.DuplicateEntityFoundException;
 import omis.location.domain.Location;
+import omis.location.exception.LocationExistsException;
 import omis.location.service.delegate.LocationDelegate;
 import omis.organization.domain.Organization;
+import omis.organization.exception.OrganizationExistsException;
 import omis.organization.service.delegate.OrganizationDelegate;
 import omis.region.domain.City;
 import omis.region.domain.State;
+import omis.region.exception.CityExistsException;
 import omis.region.service.delegate.CityDelegate;
 import omis.region.service.delegate.StateDelegate;
 import omis.testng.AbstractHibernateTransactionalTestNGSpringContextTests;
@@ -29,6 +34,7 @@ import omis.util.PropertyValueAsserter;
  * Tests for creating employers using employment service.
  * 
  * @author Josh Divine
+ * @author Sheronda Vaughn
  * @version 0.0.1 (Dec 14, 2017)
  * @since OMIS 3.0
  */
@@ -80,10 +86,16 @@ public class EmploymentServiceCreateEmployerTests
 	/**
 	 * Tests the creation of an employer.
 	 * 
-	 * @throws DuplicateEntityFoundException if duplicate entity exists
+	 * @throws EmployerExistsException if duplicate entity exists
+	 * @throws CityExistsException 
+	 * @throws ZipCodeExistsException 
+	 * @throws LocationExistsException 
+	 * @throws OrganizationExistsException 
 	 */
 	@Test
-	public void testCreateEmployer() throws DuplicateEntityFoundException {
+	public void testCreateEmployer() throws EmployerExistsException, 
+		CityExistsException, ZipCodeExistsException, 
+		OrganizationExistsException, LocationExistsException {
 		// Arrangements
 		String name = "Employer";
 		Long telephoneNumber = 1234567890L;
@@ -111,12 +123,18 @@ public class EmploymentServiceCreateEmployerTests
 
 	/**
 	 * Tests that {@code DuplicateEntityFoundException} is thrown.
+	 * @throws CityExistsException 
+	 * @throws ZipCodeExistsException 
+	 * @throws OrganizationExistsException 
+	 * @throws LocationExistsException 
 	 *  
 	 * @throws DuplicateEntityFoundException if duplicate entity exists
 	 */
-	@Test(expectedExceptions = {DuplicateEntityFoundException.class})
-	public void testDuplicateEntityFoundException() 
-			throws DuplicateEntityFoundException {
+	@Test(expectedExceptions = {EmployerExistsException.class})
+	public void testEmployerExistsException() 
+			throws EmployerExistsException, CityExistsException, 
+			ZipCodeExistsException, OrganizationExistsException, 
+			LocationExistsException {
 		// Arrangements
 		String name = "Employer";
 		Long telephoneNumber = 1234567890L;
@@ -138,5 +156,4 @@ public class EmploymentServiceCreateEmployerTests
 		// Action
 		this.employmentService.createEmployer(name, telephoneNumber, address);
 	}
-
 }

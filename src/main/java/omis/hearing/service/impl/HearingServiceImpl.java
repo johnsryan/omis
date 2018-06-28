@@ -27,7 +27,6 @@ import omis.asrc.domain.AssessmentSanctionRevocationCenter;
 import omis.asrc.service.delegate.AssessmentSanctionRevocationCenterDelegate;
 import omis.communitysupervision.domain.CommunitySupervisionOffice;
 import omis.communitysupervision.service.delegate.CommunitySupervisionOfficeDelegate;
-import omis.exception.DuplicateEntityFoundException;
 import omis.facility.domain.Facility;
 import omis.facility.service.delegate.FacilityDelegate;
 import omis.hearing.domain.Hearing;
@@ -40,6 +39,11 @@ import omis.hearing.domain.Infraction;
 import omis.hearing.domain.InfractionPlea;
 import omis.hearing.domain.UserAttendance;
 import omis.hearing.domain.component.Resolution;
+import omis.hearing.exception.HearingExistsException;
+import omis.hearing.exception.HearingNoteExistsException;
+import omis.hearing.exception.HearingStatusExistsException;
+import omis.hearing.exception.InfractionExistsException;
+import omis.hearing.exception.UserAttendanceExistsException;
 import omis.hearing.service.HearingService;
 import omis.hearing.service.delegate.HearingDelegate;
 import omis.hearing.service.delegate.HearingNoteDelegate;
@@ -178,7 +182,7 @@ public class HearingServiceImpl implements HearingService {
 			final Offender offender, final Boolean inAttendance,
 			final Date date, final HearingCategory category,
 			final UserAccount officer)
-					throws DuplicateEntityFoundException {
+					throws HearingExistsException {
 		return this.hearingDelegate.create(location, offender, inAttendance,
 				date, category, officer);
 	}
@@ -188,7 +192,7 @@ public class HearingServiceImpl implements HearingService {
 	public Hearing updateHearing(final Hearing hearing, final Location location,
 			final Boolean inAttendance, final Date date,
 			final HearingCategory category, final UserAccount officer)
-					throws DuplicateEntityFoundException {
+					throws HearingExistsException {
 		return this.hearingDelegate.update(hearing, location, inAttendance,
 				date, category, officer);
 	}
@@ -203,7 +207,7 @@ public class HearingServiceImpl implements HearingService {
 	@Override
 	public HearingNote createHearingNote(final Hearing hearing,
 			final String description, final Date date)
-					throws DuplicateEntityFoundException {
+					throws HearingNoteExistsException {
 		return this.hearingNoteDelegate.create(hearing, description, date);
 	}
 
@@ -211,7 +215,7 @@ public class HearingServiceImpl implements HearingService {
 	@Override
 	public HearingNote updateHearingNote(final HearingNote hearingNote,
 			final String description, final Date date)
-					throws DuplicateEntityFoundException {
+					throws HearingNoteExistsException {
 		return this.hearingNoteDelegate.update(
 				hearingNote, description, date);
 	}
@@ -232,7 +236,7 @@ public class HearingServiceImpl implements HearingService {
 	@Override
 	public UserAttendance createUserAttendance(final Hearing hearing,
 			final UserAccount userAccount)
-			throws DuplicateEntityFoundException {
+			throws UserAttendanceExistsException {
 		return this.userAttendanceDelegate.create(hearing, userAccount);
 	}
 
@@ -240,7 +244,7 @@ public class HearingServiceImpl implements HearingService {
 	@Override
 	public UserAttendance updateUserAttendance(
 			final UserAttendance userAttendance, final UserAccount userAccount)
-					throws DuplicateEntityFoundException {
+					throws UserAttendanceExistsException {
 		return this.userAttendanceDelegate.update(userAttendance, 
 				userAttendance.getHearing(), userAccount);
 	}
@@ -285,7 +289,7 @@ public class HearingServiceImpl implements HearingService {
 	public HearingStatus createHearingStatus(final Hearing hearing,
 			final String description, final Date date,
 			final HearingStatusCategory category)
-					throws DuplicateEntityFoundException {
+					throws HearingStatusExistsException {
 		return this.hearingStatusDelegate.create(hearing, description, date,
 				category);
 	}
@@ -295,7 +299,7 @@ public class HearingServiceImpl implements HearingService {
 	public HearingStatus updateHearingStatus(final HearingStatus hearingStatus,
 			final String description, final Date date,
 			final HearingStatusCategory category)
-					throws DuplicateEntityFoundException {
+					throws HearingStatusExistsException {
 		return this.hearingStatusDelegate.update(hearingStatus, description,
 				date, category);
 	}
@@ -312,7 +316,7 @@ public class HearingServiceImpl implements HearingService {
 			final ConditionViolation conditionViolation,
 			final DisciplinaryCodeViolation disciplinaryCodeViolation,
 			final Resolution resolution, final InfractionPlea plea)
-					throws DuplicateEntityFoundException {
+					throws InfractionExistsException {
 		return this.infractionDelegate.create(hearing, conditionViolation,
 				disciplinaryCodeViolation, resolution, plea);
 	}
@@ -323,7 +327,7 @@ public class HearingServiceImpl implements HearingService {
 			final ConditionViolation conditionViolation,
 			final DisciplinaryCodeViolation disciplinaryCodeViolation,
 			final Resolution resolution, final InfractionPlea plea)
-					throws DuplicateEntityFoundException {
+					throws InfractionExistsException {
 		return this.infractionDelegate.update(infraction, conditionViolation,
 				disciplinaryCodeViolation, resolution, plea);
 	}
