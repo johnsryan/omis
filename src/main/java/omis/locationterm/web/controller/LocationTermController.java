@@ -53,6 +53,7 @@ import omis.locationterm.domain.LocationTermChangeAction;
 import omis.locationterm.exception.LocationReasonTermConflictException;
 import omis.locationterm.exception.LocationReasonTermExistsAfterException;
 import omis.locationterm.exception.LocationReasonTermExistsException;
+import omis.locationterm.exception.LocationTermChangeActionAssociationExistsException;
 import omis.locationterm.exception.LocationTermConflictException;
 import omis.locationterm.exception.LocationTermExistsAfterException;
 import omis.locationterm.exception.LocationTermExistsException;
@@ -208,6 +209,10 @@ public class LocationTermController {
 
 	private static final String LOCATION_TERM_EXISTS_MESSAGE_KEY
 		= "locationTerm.exists";
+	
+	private static final String
+	LOCATION_TERM_CHANGE_ACTION_ASSOCIATION_EXISTS_MESSAGE_KEY
+		= "locationTermChangeActionAssociation.exists";
 	
 	/* Report names. */
 	
@@ -371,12 +376,15 @@ public class LocationTermController {
 	/**
 	 * Shows form to create new location term for offender.
 	 * 
+	 * <p>Change action is required until supervisory organization is supported.
+	 * 
 	 * @param offender offender
 	 * @param organization organization
 	 * @param defaultStartDate default start date
 	 * @param defaultStartTime default start time
 	 * @param toLocation location to which to send
-	 * @param changeAction change action
+	 * @param changeAction change action - required until supervisory
+	 * organization is supported
 	 * @return form to create new location term for offender
 	 */
 	@RequestMapping(value = "/create.html", method = RequestMethod.GET)
@@ -390,7 +398,7 @@ public class LocationTermController {
 				final String defaultStartTime,
 			@RequestParam(value = "toLocation", required = false)
 				final Location toLocation,
-			@RequestParam(value = "changeAction", required = false)
+			@RequestParam(value = "changeAction", required = true)
 				final LocationTermChangeAction changeAction) {
 		Date effectiveDate;
 		if (defaultStartDate != null) {
@@ -632,6 +640,8 @@ public class LocationTermController {
 	 * supervision on the specified start date
 	 * @throws LocationTermExistsException if location term exists
 	 * @throws LocationReasonTermExistsException if reason term exists
+	 * @throws LocationTermChangeActionAssociationExistsException if association
+	 * between location term and change action exists
 	 */
 	@RequestMapping(value = "/create.html", method = RequestMethod.POST)
 	@PreAuthorize("hasRole('LOCATION_TERM_CREATE') or hasRole('ADMIN')")
@@ -652,7 +662,8 @@ public class LocationTermController {
 						LocationReasonTermExistsAfterException, 
 						OffenderNotUnderSupervisionException,
 						LocationTermExistsException,
-						LocationReasonTermExistsException {
+						LocationReasonTermExistsException,
+						LocationTermChangeActionAssociationExistsException {
 		this.locationTermFormValidator.validate(locationTermForm, result);
 		if (result.hasErrors()) {
 			Date effectiveDate;
@@ -769,6 +780,10 @@ public class LocationTermController {
 			// Thrown when neither single or multiple reason terms are allowed
 			throw new UnsupportedOperationException(
 					"Must do something with reasons");
+		}
+		if (changeAction != null) {
+			this.locationTermService.associateChangeAction(
+					locationTerm, changeAction);
 		}
 		
 		// Checks for redirect URLs, if found, returns it
@@ -1234,6 +1249,25 @@ public class LocationTermController {
 				OFFENDER_NOT_UNDER_SUPERVISION_MESSAGE_KEY,
 				ERROR_BUNDLE_NAME,
 				offenderNotUnderSupervisionException);
+	}
+	
+	/**
+	 * Handles {@code LocationTermChangeActionAssociationExistsException}.
+	 * 
+	 * @param locationTermChangeActionAssociationExistsException exception
+	 * thrown
+	 * @return model and view to handle
+	 * {@code LocationTermChangeActionAssociationExistsException}
+	 */
+	@ExceptionHandler(LocationTermChangeActionAssociationExistsException.class)
+	public ModelAndView
+	handleLocationTermChangeActionAssociationExistsException(
+			final LocationTermChangeActionAssociationExistsException
+				locationTermChangeActionAssociationExistsException) {
+		return this.businessExceptionHandlerDelegate.prepareModelAndView(
+				LOCATION_TERM_CHANGE_ACTION_ASSOCIATION_EXISTS_MESSAGE_KEY,
+				ERROR_BUNDLE_NAME,
+				locationTermChangeActionAssociationExistsException);
 	}
 	
 	/* Action menus. */

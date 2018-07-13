@@ -33,10 +33,20 @@
 			class="omis.boardhearing.web.validator.BoardHearingDocumentFormValidator">
 		</bean>
 		
+		<bean id="scheduleHearingsFormValidator"
+			class="omis.boardhearing.web.validator.ScheduleHearingsFormValidator">
+		</bean>
+		
 		<aop:config>
 			<aop:pointcut id="boardHearingControllerOperation"
 				expression="execution(* omis.boardhearing.web.controller.BoardHearingController.*(..))"/>
 			<aop:advisor advice-ref="transactionAdvice" pointcut-ref="boardHearingControllerOperation"/>	
+		</aop:config>
+		
+		<aop:config>
+			<aop:pointcut id="scheduleHearingsControllerOperation"
+				expression="execution(* omis.boardhearing.web.controller.ScheduleHearingsController.*(..))"/>
+			<aop:advisor advice-ref="transactionAdvice" pointcut-ref="scheduleHearingsControllerOperation"/>	
 		</aop:config>
 		
 		<aop:config>

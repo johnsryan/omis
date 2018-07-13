@@ -1,3 +1,20 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.dao;
 
 import java.io.Serializable;
@@ -6,8 +23,11 @@ import java.util.List;
 /**
  * Generic data access object.
  * 
+ * <p>Parts based on example in <i>Java Persistence with Hibernate, First
+ * Edition</i>, Bauer <i>et al</i>.
+ * 
  * @author Stephen Abson
- * @version 0.1.1 (June 12, 2013)
+ * @version 0.1.2 (July 12, 2018)
  * @since OMIS 3.0
  *
  * @param <T> type of entity object
@@ -36,15 +56,6 @@ public interface GenericDao<T extends Serializable> {
 	 * @return all persisted entities
 	 */
 	List<T> findAll();
-	
-	/**
-	 * Returns all entities that match the given example.
-	 * 
-	 * @param exampleInstance example entity to match
-	 * @param excludeProperty properties to exclude
-	 * @return all entities matching the example
-	 */
-	List<T> findByExample(T exampleInstance, String[] excludeProperty);
 	
 	/**
 	 * Makes an entity persistent.

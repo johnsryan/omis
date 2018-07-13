@@ -53,11 +53,11 @@ public class AbstractAssociatedEntityOperationRegistry
 	/** {@inheritDoc} */
 	@Override
 	public void register(
-			final AssociatedEntityOperation<T> delegate) {
-		if (delegate == null) {
+			final AssociatedEntityOperation<T> operation) {
+		if (operation == null) {
 			throw new NullPointerException();
 		}
-		this.operations.add(delegate);
+		this.operations.add(operation);
 	}
 
 	/** {@inheritDoc} */

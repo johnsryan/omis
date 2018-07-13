@@ -173,6 +173,16 @@ public class VictimAssociationDelegate {
 		return this.victimAssociationDao.countByRelationship(relationship);
 	}
 	
+	/**
+	 * Removes victim associations by relationship.
+	 * 
+	 * @param relationship relationship
+	 * @return number of victim associations removed by relationship
+	 */
+	public int removeByRelationship(final Relationship relationship) {
+		return this.victimAssociationDao.removeByRelationship(relationship);
+	}
+	
 	/* Helper methods. */
 	
 	// Populates victim association

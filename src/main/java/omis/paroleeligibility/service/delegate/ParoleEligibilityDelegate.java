@@ -26,6 +26,7 @@ import omis.audit.domain.UpdateSignature;
 import omis.exception.DuplicateEntityFoundException;
 import omis.instance.factory.InstanceFactory;
 import omis.offender.domain.Offender;
+import omis.paroleboarditinerary.domain.ParoleBoardItinerary;
 import omis.paroleeligibility.dao.ParoleEligibilityDao;
 import omis.paroleeligibility.domain.AppearanceCategory;
 import omis.paroleeligibility.domain.ParoleEligibility;
@@ -36,7 +37,7 @@ import omis.paroleeligibility.domain.component.ParoleEligibilityStatus;
  *
  * @author Trevor Isles
  * @author Annie Wahl
- * @version 0.1.1 (May 24, 2018)
+ * @version 0.1.2 (Jul 3, 2018)
  * @since OMIS 3.0
  */
 public class ParoleEligibilityDelegate {
@@ -150,6 +151,41 @@ public class ParoleEligibilityDelegate {
 			Offender offender, Date date) {
 		return this.paroleEligibilityDao
 				.findByOffenderAfterDate(offender, date);
+	}
+	
+	/**
+	 * Returns a list of Parole Eligibilities by the specified Parole Board
+	 * Itinerary.
+	 * 
+	 * @param itinerary - Parole Board Itinerary
+	 * @return List of Parole Eligibilities by the specified Parole Board
+	 * Itinerary.
+	 */
+	public List<ParoleEligibility> findByItinerary(
+			final ParoleBoardItinerary itinerary) {
+		return this.paroleEligibilityDao.findByItinerary(itinerary);
+	}
+	
+	/**
+	 * Returns a list of Parole Eligibilities that have no scheduled hearing.
+	 * 
+	 * @return List of Parole Eligibilities that have no scheduled hearing.
+	 */
+	public List<ParoleEligibility> findUnscheduled() {
+		return this.paroleEligibilityDao.findUnscheduled();
+	}
+	
+	/**
+	 * Returns a list of unscheduled Parole Eligibilities as well as
+	 * Parole Eligibilities by the the specified Parole Board Itinerary.
+	 * 
+	 * @param including - Parole Board Itinerary
+	 * @return List of unscheduled Parole Eligibilities as well as
+	 * Parole Eligibilities by the the specified Parole Board Itinerary.
+	 */
+	public List<ParoleEligibility> findUnscheduledIncluding(
+			final ParoleBoardItinerary including) {
+		return this.paroleEligibilityDao.findUnscheduledIncluding(including);
 	}
 	
 	/**

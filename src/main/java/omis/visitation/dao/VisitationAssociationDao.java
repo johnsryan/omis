@@ -6,6 +6,7 @@ import java.util.List;
 import omis.dao.GenericDao;
 import omis.datatype.DateRange;
 import omis.offender.domain.Offender;
+import omis.person.domain.Person;
 import omis.relationship.domain.Relationship;
 import omis.visitation.domain.VisitationAssociation;
 
@@ -14,6 +15,7 @@ import omis.visitation.domain.VisitationAssociation;
  * 
  * @author Joel Norris
  * @author Yidong Li
+ * @author Stephen Abson
  * @version 0.1.1 (June 1, 2016)
  * @since OMIS 3.0
  */
@@ -132,4 +134,29 @@ public interface VisitationAssociationDao
 	 */
 	long findDateRangeOverLapExcluding(Relationship relationship,
 			DateRange dateRange, VisitationAssociation association);
+
+	/**
+	 * Returns all visitation associations for the specified person.
+	 * 
+	 * @param person person
+	 * @return visitation associations
+	 */
+	List<VisitationAssociation> findByPerson(Person person);
+
+	/**
+	 * Returns count of visitation associations by relationship.
+	 * 
+	 * @param relationship relationship by which to return count
+	 * @return count of visitation associations by relationship
+	 */
+	long countByRelationship(Relationship relationship);
+
+	/**
+	 * Removes visitation associations by relationship.
+	 * 
+	 * @param relationship relationship by which to remove visitation
+	 * associations
+	 * @return count of visitation associations removed
+	 */
+	int removeByRelationship(Relationship relationship);
 }

@@ -19,10 +19,10 @@ package omis.locationterm.service.delegate;
 
 import java.util.List;
 
-import omis.exception.DuplicateEntityFoundException;
 import omis.instance.factory.InstanceFactory;
 import omis.locationterm.dao.LocationTermChangeActionDao;
 import omis.locationterm.domain.LocationTermChangeAction;
+import omis.locationterm.exception.LocationTermChangeActionExistsException;
 
 /**
  * Delegate for location term change actions.
@@ -68,13 +68,13 @@ public class LocationTermChangeActionDelegate {
 	 * 
 	 * @param name name
 	 * @return newly created location term change action
-	 * @throws DuplicateEntityFoundException if location term change action
-	 * exists
+	 * @throws LocationTermChangeActionExistsException if location term change
+	 * action exists
 	 */
 	public LocationTermChangeAction create(final String name)
-			throws DuplicateEntityFoundException {
+			throws LocationTermChangeActionExistsException {
 		if (this.locationTermChangeActionDao.find(name) != null) {
-			throw new DuplicateEntityFoundException(
+			throw new LocationTermChangeActionExistsException(
 					"Location term change action exists");
 		}
 		LocationTermChangeAction changeAction

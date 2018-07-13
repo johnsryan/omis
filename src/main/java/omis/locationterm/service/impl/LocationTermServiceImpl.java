@@ -35,9 +35,11 @@ import omis.locationterm.domain.LocationReason;
 import omis.locationterm.domain.LocationReasonTerm;
 import omis.locationterm.domain.LocationTerm;
 import omis.locationterm.domain.LocationTermChangeAction;
+import omis.locationterm.domain.LocationTermChangeActionAssociation;
 import omis.locationterm.exception.LocationReasonTermConflictException;
 import omis.locationterm.exception.LocationReasonTermExistsAfterException;
 import omis.locationterm.exception.LocationReasonTermExistsException;
+import omis.locationterm.exception.LocationTermChangeActionAssociationExistsException;
 import omis.locationterm.exception.LocationTermConflictException;
 import omis.locationterm.exception.LocationTermExistsAfterException;
 import omis.locationterm.exception.LocationTermExistsException;
@@ -47,6 +49,7 @@ import omis.locationterm.service.delegate.AllowedLocationChangeDelegate;
 import omis.locationterm.service.delegate.AllowedLocationChangeReasonRuleDelegate;
 import omis.locationterm.service.delegate.LocationReasonDelegate;
 import omis.locationterm.service.delegate.LocationReasonTermDelegate;
+import omis.locationterm.service.delegate.LocationTermChangeActionAssociationDelegate;
 import omis.locationterm.service.delegate.LocationTermChangeActionDelegate;
 import omis.offender.domain.Offender;
 import omis.organization.domain.Organization;
@@ -88,6 +91,9 @@ public class LocationTermServiceImpl
 	private final AllowedLocationChangeReasonRuleDelegate
 	allowedLocationChangeReasonRuleDelegate;
 	
+	private final LocationTermChangeActionAssociationDelegate
+	locationTermChangeActionAssociationDelegate;
+	
 	private final PlacementTermDelegate placementTermDelegate;
 	
 	private final SupervisoryOrganizationDelegate
@@ -114,6 +120,8 @@ public class LocationTermServiceImpl
 	 * changes
 	 * @param allowedLocationChangeReasonRuleDelegate delegate for allowed
 	 * location change reason rules
+	 * @param locationTermChangeActionAssociationDelegate delegate for
+	 * association of location term to change action
 	 * @param placementTermDelegate delegate for placement terms
 	 * @param supervisoryOrganizationDelegate delegate for supervisory
 	 * organizations
@@ -131,6 +139,8 @@ public class LocationTermServiceImpl
 			final AllowedLocationChangeDelegate allowedLocationChangeDelegate,
 			final AllowedLocationChangeReasonRuleDelegate
 				allowedLocationChangeReasonRuleDelegate,
+			final LocationTermChangeActionAssociationDelegate
+				locationTermChangeActionAssociationDelegate,
 			final PlacementTermDelegate placementTermDelegate,
 			final SupervisoryOrganizationDelegate
 				supervisoryOrganizationDelegate,
@@ -146,6 +156,8 @@ public class LocationTermServiceImpl
 		this.allowedLocationChangeReasonRuleDelegate
 			= allowedLocationChangeReasonRuleDelegate;
 		this.allowedLocationChangeDelegate = allowedLocationChangeDelegate;
+		this.locationTermChangeActionAssociationDelegate
+			= locationTermChangeActionAssociationDelegate;
 		this.placementTermDelegate = placementTermDelegate;
 		this.supervisoryOrganizationDelegate = supervisoryOrganizationDelegate;
 		this.locationDelegate = locationDelegate;
@@ -180,6 +192,10 @@ public class LocationTermServiceImpl
 	/** {@inheritDoc} */
 	@Override
 	public void remove(final LocationTerm locationTerm) {
+		
+		// Removes change action association
+		this.locationTermChangeActionAssociationDelegate.removeByLocationTerm(
+				locationTerm);
 		
 		// Removes term reasons
 		this.locationReasonTermDelegate.removeByLocationTerm(locationTerm);
@@ -406,8 +422,17 @@ public class LocationTermServiceImpl
 		return this.locationTermDao.makePersistent(locationTerm);
 	}
 
-	/** {@inheritDoc} 
-	 * @throws DateRangeOutOfBoundsException */
+	/** {@inheritDoc} */
+	@Override
+	public LocationTermChangeActionAssociation associateChangeAction(
+				final LocationTerm locationTerm,
+				final LocationTermChangeAction changeAction)
+			throws LocationTermChangeActionAssociationExistsException {
+		return this.locationTermChangeActionAssociationDelegate
+				.create(locationTerm, changeAction);
+	}
+	
+	/** {@inheritDoc} */
 	@Override
 	public LocationReasonTerm createReasonTerm(
 			final LocationTerm locationTerm, final DateRange dateRange,

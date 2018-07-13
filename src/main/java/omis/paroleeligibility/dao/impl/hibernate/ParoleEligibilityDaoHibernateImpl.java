@@ -24,6 +24,7 @@ import org.hibernate.SessionFactory;
 
 import omis.dao.impl.hibernate.GenericHibernateDaoImpl;
 import omis.offender.domain.Offender;
+import omis.paroleboarditinerary.domain.ParoleBoardItinerary;
 import omis.paroleeligibility.dao.ParoleEligibilityDao;
 import omis.paroleeligibility.domain.ParoleEligibility;
 
@@ -32,7 +33,7 @@ import omis.paroleeligibility.domain.ParoleEligibility;
  *
  * @author Trevor Isles
  * @author Annie Wahl
- * @version 0.1.1 (May 24, 2018)
+ * @version 0.1.2 (Jul 3, 2018)
  * @since OMIS 3.0
  */
 public class ParoleEligibilityDaoHibernateImpl 
@@ -49,6 +50,15 @@ public class ParoleEligibilityDaoHibernateImpl
 	
 	private static final String FINE_BY_OFFENDER_AFTER_DATE_QUERY_NAME =
 			"findParoleEligibilitiesByOffenderAfterDate";
+
+	private static final String FIND_BY_ITINERARY_QUERY_NAME =
+			"findParoleEligibilitiesByParoleBoardItinerary";
+
+	private static final String FIND_UNSCHEDULED_QUERY_NAME =
+			"findUnscheduledParoleEligibilities";
+	
+	private static final String FIND_UNSCHEDULED_INCLUDING_QUERY_NAME =
+			"findUnscheduledParoleEligibilitiesIncluding";
 	
 	/* Parameter names. */
 	
@@ -61,6 +71,9 @@ public class ParoleEligibilityDaoHibernateImpl
 		= "excludedEligibility";
 	
 	private static final String DATE_PARAM_NAME = "date";
+
+	private static final String PAROLE_BOARD_ITINERARY_PARAM_NAME =
+			"paroleBoardItinerary";
 	
 	/* Constructor */
 	
@@ -119,6 +132,43 @@ public class ParoleEligibilityDaoHibernateImpl
 				.getNamedQuery(FINE_BY_OFFENDER_AFTER_DATE_QUERY_NAME)
 				.setParameter(OFFENDER_PARAM_NAME, offender)
 				.setTimestamp(DATE_PARAM_NAME, date)
+				.list();
+		return paroleEligibilities;
+	}
+
+	/**{@inheritDoc} */
+	@Override
+	public List<ParoleEligibility> findByItinerary(
+			ParoleBoardItinerary itinerary) {
+		@SuppressWarnings("unchecked")
+		List<ParoleEligibility> paroleEligibilities =
+				this.getSessionFactory().getCurrentSession()
+				.getNamedQuery(FIND_BY_ITINERARY_QUERY_NAME)
+				.setParameter(PAROLE_BOARD_ITINERARY_PARAM_NAME, itinerary)
+				.list();
+		return paroleEligibilities;
+	}
+
+	/**{@inheritDoc} */
+	@Override
+	public List<ParoleEligibility> findUnscheduled() {
+		@SuppressWarnings("unchecked")
+		List<ParoleEligibility> paroleEligibilities =
+				this.getSessionFactory().getCurrentSession()
+				.getNamedQuery(FIND_UNSCHEDULED_QUERY_NAME)
+				.list();
+		return paroleEligibilities;
+	}
+
+	/**{@inheritDoc} */
+	@Override
+	public List<ParoleEligibility> findUnscheduledIncluding(
+			final ParoleBoardItinerary including) {
+		@SuppressWarnings("unchecked")
+		List<ParoleEligibility> paroleEligibilities =
+				this.getSessionFactory().getCurrentSession()
+				.getNamedQuery(FIND_UNSCHEDULED_INCLUDING_QUERY_NAME)
+				.setParameter(PAROLE_BOARD_ITINERARY_PARAM_NAME, including)
 				.list();
 		return paroleEligibilities;
 	}

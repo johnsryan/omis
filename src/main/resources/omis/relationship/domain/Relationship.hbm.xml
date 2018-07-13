@@ -35,4 +35,10 @@
 		  from omis.relationship.domain.Relationship relationship
 		 where relationship.firstPerson = :offender
 	]]></query>
+	<query name="findRelationshipsByPerson"><![CDATA[
+		select relationship
+		from omis.relationship.domain.Relationship relationship
+		where relationship.firstPerson = :person
+			or relationship.secondPerson = :person
+	]]></query>
 </hibernate-mapping>

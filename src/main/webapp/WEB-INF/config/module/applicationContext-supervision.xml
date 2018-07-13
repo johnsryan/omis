@@ -154,6 +154,12 @@
     <constructor-arg name="placementTermNoteDao" ref="placementTermNoteDao"/>
     <constructor-arg name="auditComponentRetriever" ref="auditComponentRetriever"/>
   </bean>
+  
+  <bean id="allowedSupervisoryOrganizationRuleDelegate"
+        class="omis.supervision.service.delegate.AllowedSupervisoryOrganizationRuleDelegate">
+    <constructor-arg name="allowedSupervisoryOrganizationRuleInstanceFactory" ref="allowedSupervisoryOrganizationRuleInstanceFactory"/>
+    <constructor-arg name="allowedSupervisoryOrganizationRuleDao" ref="allowedSupervisoryOrganizationRuleDao"/>
+  </bean>
 
   <!-- Data access objects -->
     
@@ -295,6 +301,12 @@
         class="omis.instance.factory.hibernate.impl.InstanceFactoryHibernateImpl">
     <constructor-arg name="instanceFactoryDelegate" ref="instanceFactoryDelegate"/>
     <constructor-arg name="entityName" value="omis.supervision.domain.PlacementTermNote"/>
+  </bean>
+
+  <bean id="allowedSupervisoryOrganizationRuleInstanceFactory"
+        class="omis.instance.factory.hibernate.impl.InstanceFactoryHibernateImpl">
+    <constructor-arg name="instanceFactoryDelegate" ref="instanceFactoryDelegate"/>
+    <constructor-arg name="entityName" value="omis.supervision.domain.AllowedSupervisoryOrganizationRule"/>
   </bean>
 
   <!-- Property editor factories. -->

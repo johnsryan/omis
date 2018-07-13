@@ -38,6 +38,18 @@
 				</li>
 			</c:if>
 		</sec:authorize>
+		<sec:authorize access="hasRole('BOARD_HEARING_CREATE') or hasRole('ADMIN')">
+			<c:if test="${not empty paroleBoardItinerary}">
+				<li>
+					<a class="viewEditLink" href="${pageContext.request.contextPath}/boardHearing/schedule/edit.html?paroleBoardItinerary=${paroleBoardItinerary.id}">
+						<span class="visibleLinkLabel">
+							<fmt:message key="scheduleOffendersLink"/>
+						</span>
+					</a>
+				</li>
+			</c:if>
+		</sec:authorize>
+		
 		<sec:authorize access="hasRole('PAROLE_BOARD_ITINERARY_REMOVE') or hasRole('ADMIN')">
 			<c:if test="${not empty paroleBoardItinerary}">
 				<li>

@@ -64,6 +64,8 @@ public class OffenderRelationshipSummary
 	
 	private final TelephoneNumberSummaryDelegate telephoneNumberSummaryDelegate;
 	
+	private final Long relationshipCount;
+	
 	/**
 	 * Instantiates an offender relationship summary.
 	 * 
@@ -86,7 +88,8 @@ public class OffenderRelationshipSummary
 			final Long victimCount,
 			final Long visitorCount,
 			final Address address,
-			final TelephoneNumber telephoneNumber) {
+			final TelephoneNumber telephoneNumber,
+			final Long relationshipCount) {
 		this.id = relation.getId();
 		this.lastName = relation.getName().getLastName();
 		this.firstName = relation.getName().getFirstName();
@@ -128,6 +131,7 @@ public class OffenderRelationshipSummary
 		} else {
 			this.telephoneNumber = false;
 		}
+		this.relationshipCount = relationshipCount;
 	}
 	
 	/**
@@ -161,7 +165,8 @@ public class OffenderRelationshipSummary
 			final Long victimCount,
 			final Long visitorCount,
 			final Address address,
-			final TelephoneNumber telephoneNumber) {
+			final TelephoneNumber telephoneNumber,
+			final Long relationshipCount) {
 		this.id = id;
 		this.lastName = lastName;
 		this.firstName = firstName;
@@ -195,8 +200,9 @@ public class OffenderRelationshipSummary
 		} else {
 			this.telephoneNumber = false;
 		}
+		this.relationshipCount = relationshipCount;
 	}
-	
+
 	/**
 	 * Returns ID.
 	 * 
@@ -341,6 +347,15 @@ public class OffenderRelationshipSummary
 	 */
 	public Boolean getTelephoneNumber() {
 		return this.telephoneNumber;
+	}
+
+	/**
+	 * Returns relationship count.
+	 * 
+	 * @return relationship count
+	 */
+	public Long getRelationshipCount() {
+		return this.relationshipCount;
 	}
 
 	/** {@inheritDoc} */

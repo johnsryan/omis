@@ -30,7 +30,8 @@ import omis.hearing.domain.ResolutionClassificationCategory;
  * 
  * @author Annie Wahl 
  * @author Josh Divine
- * @version 0.1.2 (May 7, 2018)
+ * @author Ryan Johns
+ * @version 0.1.3 (July 6, 2018)
  * @since OMIS 3.0
  */
 public class ResolutionForm {
@@ -43,6 +44,8 @@ public class ResolutionForm {
 	private HearingStatusCategory category;
 	
 	private Date date;
+	
+	private Date time;
 	
 	private String statusDescription;
 	
@@ -118,6 +121,12 @@ public class ResolutionForm {
 	public Date getDate() {
 		return date;
 	}
+	
+	/** Returns the time.
+	 * @return time - time */
+	public Date getTime() {
+		return this.time;
+	}
 
 	/**
 	 * Sets the date.
@@ -125,6 +134,12 @@ public class ResolutionForm {
 	 */
 	public void setDate(final Date date) {
 		this.date = date;
+	}
+	
+	/** Sets the time.
+	 * @param time - time. */
+	public void setTime(final Date time) {
+		this.time = time;
 	}
 
 	/**

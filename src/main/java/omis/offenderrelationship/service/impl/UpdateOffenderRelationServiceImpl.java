@@ -46,6 +46,7 @@ import omis.contact.service.delegate.TelephoneNumberDelegate;
 import omis.country.domain.Country;
 import omis.country.service.delegate.CountryDelegate;
 import omis.demographics.domain.Sex;
+import omis.family.service.delegate.FamilyAssociationDelegate;
 import omis.offender.domain.Offender;
 import omis.offender.service.delegate.OffenderDelegate;
 import omis.offenderrelationship.service.UpdateOffenderRelationService;
@@ -69,6 +70,9 @@ import omis.relationship.exception.RelationshipNoteExistsException;
 import omis.relationship.service.delegate.RelationshipDelegate;
 import omis.relationship.service.delegate.RelationshipNoteCategoryDesignatorDelegate;
 import omis.relationship.service.delegate.RelationshipNoteDelegate;
+import omis.victim.service.delegate.VictimAssociationDelegate;
+import omis.victim.service.delegate.VictimNoteDelegate;
+import omis.visitation.service.delegate.VisitationAssociationDelegate;
 
 /**
  * Update offender relation service implementation.
@@ -103,6 +107,10 @@ public class UpdateOffenderRelationServiceImpl
 	private final RelationshipNoteCategoryDesignatorDelegate
 		relationshipNoteCategoryDesignatorDelegate;
 	private final OffenderDelegate offenderDelegate;
+	private final FamilyAssociationDelegate familyAssociationDelegate;
+	private final VictimNoteDelegate victimNoteDelegate;
+	private final VictimAssociationDelegate victimAssociationDelegate;
+	private final VisitationAssociationDelegate visitationAssociationDelegate;
 	
 	/**
 	 * Instantiates implementation of service to update offender relations.
@@ -126,6 +134,10 @@ public class UpdateOffenderRelationServiceImpl
 	 * @param relationshipNoteCategoryDesignatorDelegate delegate for
 	 * relationship note category designators
 	 * @param offenderDelegate delegate for offenders
+	 * @param familyAssociationDelegate delegate for family associations
+	 * @param victimNoteDelegate delegate for victim notes
+	 * @param victimAssociationDelegate delegate for victim associations
+	 * @param visitationAssociationDelegate delegate for visitation associations
 	 */
 	public UpdateOffenderRelationServiceImpl(
 			final AddressDelegate addressDelegate,
@@ -146,7 +158,11 @@ public class UpdateOffenderRelationServiceImpl
 			final RelationshipNoteDelegate relationshipNoteDelegate,
 			final RelationshipNoteCategoryDesignatorDelegate
 			relationshipNoteCategoryDesignatorDelegate,
-			final OffenderDelegate offenderDelegate) {
+			final OffenderDelegate offenderDelegate,
+			final FamilyAssociationDelegate familyAssociationDelegate,
+			final VictimNoteDelegate victimNoteDelegate,
+			final VictimAssociationDelegate victimAssociationDelegate,
+			final VisitationAssociationDelegate visitationAssociationDelegate) {
 		this.addressDelegate = addressDelegate;
 		this.personDelegate = personDelegate;
 		this.personIdentityDelegate = personIdentityDelegate;
@@ -166,6 +182,10 @@ public class UpdateOffenderRelationServiceImpl
 		this.relationshipNoteCategoryDesignatorDelegate
 				= relationshipNoteCategoryDesignatorDelegate;
 		this.offenderDelegate = offenderDelegate;
+		this.familyAssociationDelegate = familyAssociationDelegate;
+		this.victimNoteDelegate = victimNoteDelegate;
+		this.victimAssociationDelegate = victimAssociationDelegate;
+		this.visitationAssociationDelegate = visitationAssociationDelegate;
 	}
 	
 	/** {@inheritDoc} */
@@ -441,6 +461,10 @@ public class UpdateOffenderRelationServiceImpl
 			final Person relation) {
 		Relationship relationship = this.relationshipDelegate.find(offender, 
 				relation);
+		this.familyAssociationDelegate.removeByRelationship(relationship);
+		this.victimNoteDelegate.removeByRelationship(relationship);
+		this.victimAssociationDelegate.removeByRelationship(relationship);
+		this.visitationAssociationDelegate.removeByRelationship(relationship);
 		this.relationshipNoteDelegate.removeByRelationship(relationship);
 		this.relationshipDelegate.remove(relationship);
 	}

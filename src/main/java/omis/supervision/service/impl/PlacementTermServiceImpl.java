@@ -651,13 +651,15 @@ public class PlacementTermServiceImpl
 		// the dateRange parameter
 		SupervisoryOrganizationTerm supervisoryOrganizationTerm 
 				= placementTerm.getSupervisoryOrganizationTerm();
-		supervisoryOrganizationTerm = this.updateSupervisoryOrganizationTerm(
-				supervisoryOrganizationTerm, supervisoryOrganizationTerm
-				.getSupervisoryOrganization(), new DateRange(
-				DateRange.getStartDate(supervisoryOrganizationTerm
-						.getDateRange()), startDate));
-		this.supervisoryOrganizationTermDao.makePersistent(
-				supervisoryOrganizationTerm);
+		if (supervisoryOrganizationTerm != null) {
+			supervisoryOrganizationTerm = this.updateSupervisoryOrganizationTerm(
+					supervisoryOrganizationTerm, supervisoryOrganizationTerm
+					.getSupervisoryOrganization(), new DateRange(
+					DateRange.getStartDate(supervisoryOrganizationTerm
+							.getDateRange()), startDate));
+			this.supervisoryOrganizationTermDao.makePersistent(
+					supervisoryOrganizationTerm);
+		}
 		
 		// Update existing active placement term to end on the effective date of 
 		// the dateRange parameter

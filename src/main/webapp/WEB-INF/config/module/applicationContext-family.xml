@@ -152,4 +152,12 @@
  			<constructor-arg name="configuration" ref="hibernateConfiguration"/>
   			<constructor-arg name="dao" ref="familyAssociationNoteCategoryDesignatorDao"/>
 		</bean>
+		
+	<!-- Operations -->
+	
+	<bean class="omis.family.service.delegate.impl.FamilyAssociationRemovalByRelationshipOperationImpl">
+		<constructor-arg name="registry" ref="relationshipAssociatedRemovalOperationRegistry"/>
+		<constructor-arg name="familyAssociationDao" ref="familyAssociationDao"/>
+	</bean>
+	
 </beans>

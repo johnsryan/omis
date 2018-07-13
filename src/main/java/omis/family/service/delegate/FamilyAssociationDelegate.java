@@ -32,6 +32,7 @@ import omis.family.exception.FamilyAssociationConflictException;
 import omis.family.exception.FamilyAssociationExistsException;
 import omis.instance.factory.InstanceFactory;
 import omis.offender.domain.Offender;
+import omis.person.domain.Person;
 import omis.relationship.domain.Relationship;
 
 /**
@@ -40,6 +41,7 @@ import omis.relationship.domain.Relationship;
  * @author Joel Norris
  * @author Yidong Li
  * @author Sheronda Vaughn
+ * @author Stephen Abson
  * @version 0.1.1 (June 2, 2015)
  * @since OMIS 3.0
  */
@@ -178,6 +180,61 @@ public class FamilyAssociationDelegate {
 		this.familyAssociationDao.makeTransient(associaiton);
 	}
 	
+	/**
+	 * Find if there is existing familyAssociation whose date range has overlap 
+	 * with the input parameter "dateRange".
+	 * 
+	 * @param dateRange date range
+	 * @param relationship relationship
+	 * @return count of overlap
+	 */
+	public long findDateRangeOverlap(final Relationship relationship,
+		final DateRange dateRange) {
+		long overlaps = this.familyAssociationDao.findDateRangeOverLap(
+			relationship, dateRange);
+		return overlaps;
+	}
+	
+	/**
+	 * Find specific offender's family associations.
+	 * 
+	 * @param offender offender
+	 * @return A list of family associations
+	 */
+	public List<FamilyAssociation> findByOffender(final Offender offender) {
+		return this.familyAssociationDao.findByOffender(offender);
+	}
+
+	/**
+	 * Finds all family associations for the specified person.
+	 * 
+	 * @param person person
+	 * @return list of family associations
+	 */
+	public List<FamilyAssociation> findByPerson(final Person person) {
+		return this.familyAssociationDao.findByPerson(person);
+	}
+	
+	/**
+	 * Returns count of family associations by relationship.
+	 * 
+	 * @param relationship relationship
+	 * @return count of family associations by relationship
+	 */
+	public long countByRelationship(final Relationship relationship) {
+		return this.familyAssociationDao.countByRelationship(relationship);
+	}
+	
+	/**
+	 * Removes family associations by relationship.
+	 * 
+	 * @param relationship relationship
+	 * @return number of family associations removed by relationship
+	 */
+	public int removeByRelationship(final Relationship relationship) {
+		return this.familyAssociationDao.removeByRelationship(relationship);
+	}
+	
 	/* Helper methods. */
 	
 	/*
@@ -211,29 +268,4 @@ public class FamilyAssociationDelegate {
 				this.auditComponentRetriever.retrieveDate()));
 		return association;
 	}
-	
-	/**
-	 * Find if there is existing familyAssociation whose date range has overlap 
-	 * with the input parameter "dateRange".
-	 * 
-	 * @param dateRange date range
-	 * @param relationship relationship
-	 * @return count of overlap
-	 */
-	public long findDateRangeOverlap(final Relationship relationship,
-		final DateRange dateRange) {
-		long overlaps = this.familyAssociationDao.findDateRangeOverLap(
-			relationship, dateRange);
-		return overlaps;
-	}
-	
-	/**
-	 * Find specific offender's family associations.
-	 * 
-	 * @param offender offender
-	 * @return A list of family associations
-	 */
-	public List<FamilyAssociation> findByOffender(final Offender offender) {
-		return this.familyAssociationDao.findByOffender(offender);
-	}	
 }

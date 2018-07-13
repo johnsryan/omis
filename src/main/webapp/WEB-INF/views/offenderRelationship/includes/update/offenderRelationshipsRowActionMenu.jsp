@@ -20,11 +20,9 @@
 			</li>
 		</sec:authorize>
 		<sec:authorize access="hasRole('OFFENDER_RELATIONSHIP_REMOVE') or hasRole('ADMIN')">
-			<c:if test="${not hasRelationshipAssociations}">
-				<li>
-					<a class="removeLink" href="${pageContext.request.contextPath}/offenderRelationship/update/remove.html?relationship=${relationship.id}"><span class="visibleLinkLabel"><fmt:message key="removeRelationshipLink" /></span></a>
-				</li>
-			</c:if>
+			<li>
+				<a class="removeLink" href="${pageContext.request.contextPath}/offenderRelationship/update/remove.html?relationship=${relationship.id}"><span class="visibleLinkLabel"><fmt:message key="removeRelationshipLink" /></span></a>
+			</li>
 		</sec:authorize>
 		<sec:authorize access="hasRole('OFFENDER_RELATIONSHIP_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty familyAssociation}">

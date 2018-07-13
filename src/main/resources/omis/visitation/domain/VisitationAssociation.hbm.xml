@@ -244,4 +244,25 @@
 					and (:endDate>=visitationAssociation.dateRange.startDate
 						or visitationAssociation.dateRange.endDate>=:startDate)))
 		]]></query>
+		<query name="findVisitationAssociationsByPerson"><![CDATA[
+			select
+				association
+			from
+				omis.visitation.domain.VisitationAssociation association
+			inner join
+				association.relationship relationship
+			where
+					relationship.firstPerson = :person
+				or
+					relationship.secondPerson = :person
+	]]></query>
+	<query name="countVisitationAssociationsByRelationship"><![CDATA[
+		select count(visitationAssociation)
+		from omis.visitation.domain.VisitationAssociation visitationAssociation
+		where visitationAssociation.relationship = :relationship
+	]]></query>
+	<query name="deleteVisitationAssociationsByRelationship"><![CDATA[
+		delete from omis.visitation.domain.VisitationAssociation visitationAssociation
+		where visitationAssociation.relationship = :relationship
+	]]></query>
 </hibernate-mapping>

@@ -26,6 +26,8 @@ import omis.boardhearing.domain.BoardHearingParticipant;
 import omis.boardhearing.exception.BoardHearingExistsException;
 import omis.boardhearing.exception.BoardHearingParticipantExistsException;
 import omis.exception.DuplicateEntityFoundException;
+import omis.hearinganalysis.domain.HearingAnalysis;
+import omis.paroleboarditinerary.domain.BoardAttendee;
 import omis.paroleboarditinerary.domain.ParoleBoardItinerary;
 import omis.paroleboardmember.domain.ParoleBoardMember;
 import omis.paroleeligibility.domain.AppearanceCategory;
@@ -142,6 +144,15 @@ public interface ScheduleHearingService {
 			ParoleEligibility paroleEligibility);
 	
 	/**
+	 * Returns the hearing analysis for the specified parole eligibility.
+	 * 
+	 * @param eligibility parole eligibility
+	 * @return hearing analysis
+	 */
+	HearingAnalysis findHearingAnalysisByParoleEligibility(
+			ParoleEligibility eligibility);
+	
+	/**
 	 * Returns a list of Board Hearing Participants for the specified
 	 * Board Hearing.
 	 * 
@@ -170,4 +181,43 @@ public interface ScheduleHearingService {
 	 * @return list of all parole board members
 	 */
 	List<ParoleBoardMember> findBoardMembersByDate(Date effectiveDate);
+	
+	/**
+	 * Returns a list of board attendees that match the specified parole 
+	 * board itinerary.
+	 * 
+	 * @param boardItinerary parole board itinerary
+	 * @return list of board attendees
+	 */
+	List<BoardAttendee> findBoardAttendeesByBoardItinerary(
+			ParoleBoardItinerary boardItinerary);
+	
+	/**
+	 * Returns a list of Parole Eligibilities by the specified Parole Board
+	 * Itinerary.
+	 * 
+	 * @param itinerary - Parole Board Itinerary
+	 * @return List of Parole Eligibilities by the specified Parole Board
+	 * Itinerary.
+	 */
+	List<ParoleEligibility> findParoleEligibilitiesByItinerary(
+			ParoleBoardItinerary itinerary);
+	
+	/**
+	 * Returns a list of Parole Eligibilities that have no scheduled hearing.
+	 * 
+	 * @return List of Parole Eligibilities that have no scheduled hearing.
+	 */
+	List<ParoleEligibility> findParoleEligibilitiesUnscheduled();
+	
+	/**
+	 * Returns a list of unscheduled Parole Eligibilities as well as
+	 * Parole Eligibilities by the the specified Parole Board Itinerary.
+	 * 
+	 * @param including - Parole Board Itinerary
+	 * @return List of unscheduled Parole Eligibilities as well as
+	 * Parole Eligibilities by the the specified Parole Board Itinerary.
+	 */
+	List<ParoleEligibility> findUnscheduledParoleEligibilitiesIncluding(
+			ParoleBoardItinerary including);
 }

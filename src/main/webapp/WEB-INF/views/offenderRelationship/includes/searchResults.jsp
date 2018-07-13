@@ -30,6 +30,7 @@
 	<c:forEach var="offenderRelationshipSummary" items="${offenderRelationshipSummaries}">
 		<tr>
 			<td>
+			<c:set var="relationshipCount" value="${offenderRelaitonshipSummary.relationshipCount}"/>
 			<c:forEach var="option" items="${options}">
 			<c:choose>
 				<c:when test="${option.name eq 'CRIMINAL'}">

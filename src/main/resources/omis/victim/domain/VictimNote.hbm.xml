@@ -16,9 +16,9 @@
 			<many-to-one name="victim" entity-name="omis.person.domain.Person" not-null="true" column="`VICTIM_ID`"/>
 			<many-to-one name="category" entity-name="omis.victim.domain.VictimNoteCategory" not-null="true" column="`CATEGORY_ID`"/>
 			<property name="date" type="java.util.Date" not-null="true" column="`DATE`"/>
+			<property name="value" type="string" not-null="true" column="`VALUE`"/>
 		</properties>
 		<many-to-one name="association" entity-name="omis.victim.domain.VictimAssociation" not-null="false" column="`ASSOCIATION_ID`"/>
-		<property name="value" type="string" not-null="true" column="`VALUE`"/>
 		<component name="creationSignature" class="omis.audit.domain.CreationSignature">
 			<many-to-one name="userAccount" column="`CREATE_ACCOUNT_ID`" not-null="true"/>
 			<property name="date" column="`CREATE_DATE`" not-null="true" type="java.util.Date"/>
@@ -34,6 +34,7 @@
 	  where note.victim = :victim
 	    and note.category = :category
 	    and note.date = :date
+	    and note.value = :value
 	]]></query>
 	<query name="findVictimNoteExcluding"><![CDATA[
 	  select note
@@ -41,13 +42,13 @@
 	  where note.victim = :victim
 	    and note.category = :category
 	    and note.date = :date
+	    and note.value = :value
 	    and note not in (:excludedNotes)
 	]]></query>
-	<query name="findVictimNoteByVictim"><![CDATA[
+	<query name="findVictimNotesByVictim"><![CDATA[
 	  select note
 	  from omis.victim.domain.VictimNote note
 	  where note.victim = :victim
-	  order by note.date desc
 	]]></query>
 	<query name="findVictimNotesByAssociation"><![CDATA[
 	  select note
@@ -60,5 +61,24 @@
 	  from omis.victim.domain.VictimNote note
 	    inner join note.association association
 	  where association = :association
+	]]></query>
+	<query name="deleteVictimNotesByAssociation"><![CDATA[
+	  delete from omis.victim.domain.VictimNote note
+	  where note.association = :association
+	]]></query>
+	<query name="countVictimNotesByVictim"><![CDATA[
+	  select count(note)
+	    from omis.victim.domain.VictimNote note
+	  where note.victim = :victim
+	]]></query>
+	<query name="deleteVictimNotesByRelationship"><![CDATA[
+	  delete from omis.victim.domain.VictimNote note
+	  where note in (
+	    select innerNote
+	    from omis.victim.domain.VictimNote innerNote
+	      inner join innerNote.association association
+	      inner join association.relationship relationship
+	    where relationship = :relationship
+	  )
 	]]></query>
 </hibernate-mapping>

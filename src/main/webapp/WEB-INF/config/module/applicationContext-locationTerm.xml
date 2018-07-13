@@ -58,6 +58,12 @@
     <constructor-arg name="entityName" value="omis.locationterm.domain.LocationTermChangeAction"/>    
   </bean>
 
+  <bean id="locationTermChangeActionAssociationInstanceFactory"
+        class="omis.instance.factory.hibernate.impl.InstanceFactoryHibernateImpl">
+    <constructor-arg name="instanceFactoryDelegate" ref="instanceFactoryDelegate"/>
+    <constructor-arg name="entityName" value="omis.locationterm.domain.LocationTermChangeActionAssociation"/>    
+  </bean>
+
   <!-- Services -->
 
   <bean id="locationTermService"
@@ -73,6 +79,7 @@
     <constructor-arg name="supervisoryOrganizationDelegate" ref="supervisoryOrganizationDelegate"/>
     <constructor-arg name="locationDelegate" ref="locationDelegate"/>
     <constructor-arg name="stateDelegate" ref="stateDelegate"/>
+    <constructor-arg name="locationTermChangeActionAssociationDelegate" ref="locationTermChangeActionAssociationDelegate"/>
     <constructor-arg name="auditComponentRetriever" ref="auditComponentRetriever"/>
   </bean>
 
@@ -133,6 +140,12 @@
     <constructor-arg name="entityName" value="omis.locationterm.domain.AllowedLocationChangeReasonRule"/>
   </bean>
   
+  <bean id="locationTermChangeActionAssociationDao"
+        class="omis.locationterm.dao.impl.hibernate.LocationTermChangeActionAssociationDaoHibernateImpl">
+  	<constructor-arg name="sessionFactory" ref="sessionFactory"/>
+  	<constructor-arg name="entityName" value="omis.locationterm.domain.LocationTermChangeActionAssociation"/>
+  </bean>
+  
   <!-- Report delegates -->
   
   <bean id="locationTermSummaryDelegate" class="omis.locationterm.report.delegate.LocationTermSummaryDelegate">
@@ -170,6 +183,12 @@
   
   <bean id="allowedLocationChangeReasonRuleDelegate" class="omis.locationterm.service.delegate.AllowedLocationChangeReasonRuleDelegate">
   	<constructor-arg name="allowedLocationChangeReasonRuleDao" ref="allowedLocationChangeReasonRuleDao"/>
+  </bean>
+  
+  <bean id="locationTermChangeActionAssociationDelegate" class="omis.locationterm.service.delegate.LocationTermChangeActionAssociationDelegate">
+  	<constructor-arg name="locationTermChangeActionAssociationInstanceFactory" ref="locationTermChangeActionAssociationInstanceFactory"/>
+  	<constructor-arg name="locationTermChangeActionAssociationDao" ref="locationTermChangeActionAssociationDao"/>
+  	<constructor-arg name="auditComponentRetriever" ref="auditComponentRetriever"/>
   </bean>
   
   <!-- Profile specific services -->

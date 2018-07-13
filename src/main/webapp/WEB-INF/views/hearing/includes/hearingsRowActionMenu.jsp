@@ -32,12 +32,12 @@
 		</c:if>
 		</sec:authorize>	
 		<sec:authorize access="hasRole('HEARING_VIEW') or hasRole('ADMIN')">
-		<c:if test="${not empty hearing and not empty hearing.category and hearing.category eq 'DISCIPLINARY'}">
+		<c:if test="${not empty hearing}">
 			<li>
-				<omis:reportPro reportPath="/Compliance/Hearings/Summary_of_Disciplinary_Hearing&HEARING_ID=${hearing.id}" decorate="no" title="" className="newTab reportLink"><fmt:message key="summaryDisciplinaryHearingReportLinkLabel"/></omis:reportPro>
+				<a href="${pageContext.request.contextPath}/hearing/summaryOfHearingReport.html?hearing=${hearing.id}&reportFormat=PDF" class="newTab adobeReportLink"><fmt:message key="summaryDisciplinaryHearingReportLinkLabel"/></a>
 			</li>
 		</c:if>
-		</sec:authorize>
+		</sec:authorize>		
 		<sec:authorize access="hasRole('HEARING_VIEW') or hasRole('ADMIN')">
 		<c:if test="${not empty hearing}">
 			<li>

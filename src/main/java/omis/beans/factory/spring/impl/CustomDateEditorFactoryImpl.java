@@ -24,18 +24,23 @@ public class CustomDateEditorFactoryImpl
 	
 	private final String dateTimePattern;
 	
+	private final boolean lenient;
+	
 	/**
 	 * Instantiates a date editor factory with the specified patterns.
 	 * 
 	 * @param dateOnlyPattern date only pattern
 	 * @param timeOnlyPattern time only pattern
 	 * @param dateTimePattern date and time pattern
+	 * @param lenient whether lenient
 	 */
 	public CustomDateEditorFactoryImpl(final String dateOnlyPattern,
-			final String timeOnlyPattern, final String dateTimePattern) {
+			final String timeOnlyPattern, final String dateTimePattern,
+			final boolean lenient) {
 		this.dateOnlyPattern = dateOnlyPattern;
 		this.timeOnlyPattern = timeOnlyPattern;
 		this.dateTimePattern = dateTimePattern;
+		this.lenient = lenient;
 	}
 
 	/** {@inheritDoc} */
@@ -70,6 +75,7 @@ public class CustomDateEditorFactoryImpl
 	private CustomDateEditor createImpl(
 			final String pattern, final boolean allowEmpty) {
 		DateFormat dateFormat = new SimpleDateFormat(pattern);
+		dateFormat.setLenient(this.lenient);
 		return new CustomDateEditor(dateFormat, allowEmpty);
 	}
 }

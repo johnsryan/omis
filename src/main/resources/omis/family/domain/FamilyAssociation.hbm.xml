@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+  - Mapping and queries for family association.
+  -
+  - Author: Yidong Li
+  - Author: Joel Norris
+  - Author: Stephen Abson
+  -->
 <!DOCTYPE hibernate-mapping PUBLIC
        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
@@ -169,5 +177,16 @@
 		where
 			firstPerson = :offender
 		order by familyAssociation.dateRange.startDate
+	]]></query>
+	
+	<query name="deleteFamilyAssociationsByRelationship"><![CDATA[
+		delete from omis.family.domain.FamilyAssociation familyAssociation
+		where familyAssociation.relationship = :relationship
+	]]></query>
+	
+	<query name="countFamilyAssociationsByRelationship"><![CDATA[
+		select count(familyAssociation)
+		from omis.family.domain.FamilyAssociation familyAssociation
+		where familyAssociation.relationship = :relationship
 	]]></query>
 </hibernate-mapping>

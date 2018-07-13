@@ -15,7 +15,8 @@ import omis.violationevent.domain.DisciplinaryCodeViolation;
  * InfractionDaoHibernateImpl.java
  * 
  *@author Annie Jacques 
- *@version 0.1.0 (Apr 17, 2017)
+ *@author Ryan Johns
+ *@version 0.1.1 (July 6, 2018)
  *@since OMIS 3.0
  *
  */
@@ -58,10 +59,14 @@ public class InfractionDaoHibernateImpl
 		Infraction infraction = (Infraction) this.getSessionFactory()
 				.getCurrentSession()
 				.getNamedQuery(FIND_INFRACTION_QUERY_NAME)
-				.setParameter(HEARING_PARAM_NAME, hearing)
-				.setParameter(CONDITION_VIOLATION_PARAM_NAME, conditionViolation)
+				.setParameter(HEARING_PARAM_NAME, hearing, 
+						this.getEntityPropertyType(HEARING_PARAM_NAME))
+				.setParameter(CONDITION_VIOLATION_PARAM_NAME, 
+						conditionViolation, 
+						this.getEntityPropertyType(CONDITION_VIOLATION_PARAM_NAME))
 				.setParameter(DISCIPLINARY_CODE_VIOLATION_PARAM_NAME,
-						disciplinaryCodeViolation)
+						disciplinaryCodeViolation, 
+						this.getEntityPropertyType(DISCIPLINARY_CODE_VIOLATION_PARAM_NAME))
 				.uniqueResult();
 		
 		return infraction;
@@ -76,10 +81,14 @@ public class InfractionDaoHibernateImpl
 		Infraction infraction = (Infraction) this.getSessionFactory()
 				.getCurrentSession()
 				.getNamedQuery(FIND_INFRACTION_EXCLUDING_QUERY_NAME)
-				.setParameter(HEARING_PARAM_NAME, hearing)
-				.setParameter(CONDITION_VIOLATION_PARAM_NAME, conditionViolation)
+				.setParameter(HEARING_PARAM_NAME, hearing, 
+						this.getEntityPropertyType(HEARING_PARAM_NAME))
+				.setParameter(CONDITION_VIOLATION_PARAM_NAME, conditionViolation, 
+						this.getEntityPropertyType(CONDITION_VIOLATION_PARAM_NAME))
 				.setParameter(DISCIPLINARY_CODE_VIOLATION_PARAM_NAME,
-						disciplinaryCodeViolation)
+						disciplinaryCodeViolation, 
+						this.getEntityPropertyType(
+								DISCIPLINARY_CODE_VIOLATION_PARAM_NAME))
 				.setParameter(INFRACTION_PARAM_NAME, infractionExcluded)
 				.uniqueResult();
 		

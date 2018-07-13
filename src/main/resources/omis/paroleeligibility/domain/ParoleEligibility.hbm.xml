@@ -74,4 +74,39 @@
 		and
 			eligibility.hearingEligibilityDate > :date
 	]]></query>
+	<query name="findParoleEligibilitiesByParoleBoardItinerary"><![CDATA[
+		select eligibility
+		from
+			omis.hearinganalysis.domain.HearingAnalysis hearingAnalysis
+		inner join
+			hearingAnalysis.eligibility eligibility
+		inner join
+			hearingAnalysis.paroleBoardItinerary paroleBoardItinerary
+		where
+			paroleBoardItinerary = :paroleBoardItinerary
+		order by
+			eligibility.hearingEligibilityDate asc
+	]]></query>
+	<query name="findUnscheduledParoleEligibilities"><![CDATA[
+		select eligibility
+		from
+			omis.paroleeligibility.domain.ParoleEligibility eligibility
+		order by
+			eligibility.hearingEligibilityDate asc
+	]]></query>
+	<query name="findUnscheduledParoleEligibilitiesIncluding"><![CDATA[
+		select eligibility
+		from
+			omis.hearinganalysis.domain.HearingAnalysis hearingAnalysis
+		inner join
+			hearingAnalysis.eligibility eligibility
+		inner join
+			hearingAnalysis.paroleBoardItinerary paroleBoardItinerary
+		where
+			paroleBoardItinerary = :paroleBoardItinerary
+		or
+			(eligibility.status.category = 'APPEARING')
+		order by
+			eligibility.hearingEligibilityDate asc
+	]]></query>
 </hibernate-mapping>

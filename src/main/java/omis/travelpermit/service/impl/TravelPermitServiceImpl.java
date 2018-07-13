@@ -20,17 +20,9 @@ package omis.travelpermit.service.impl;
 import java.util.Date;
 import java.util.List;
 
-
-
-
-
-
-
 import omis.address.domain.Address;
-//import omis.address.domain.Address;
 import omis.address.domain.ZipCode;
 import omis.address.exception.AddressExistsException;
-//import omis.address.exception.AddressExistsException;
 import omis.address.exception.ZipCodeExistsException;
 import omis.address.service.delegate.AddressDelegate;
 import omis.address.service.delegate.ZipCodeDelegate;
@@ -272,7 +264,11 @@ public class TravelPermitServiceImpl implements TravelPermitService {
 	/** {@inheritDoc} */
 	@Override
 	public Country findHomeCountry(){
-		return this.stateDelegate.findHomeState().getCountry();
+		if(this.stateDelegate.findHomeState()!=null){
+			return this.stateDelegate.findHomeState().getCountry();
+		} else {
+			return null;
+		}
 	}
 	
 	/** {@inheritDoc} */

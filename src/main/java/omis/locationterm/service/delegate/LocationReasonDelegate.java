@@ -19,10 +19,10 @@ package omis.locationterm.service.delegate;
 
 import java.util.List;
 
-import omis.exception.DuplicateEntityFoundException;
 import omis.instance.factory.InstanceFactory;
 import omis.locationterm.dao.LocationReasonDao;
 import omis.locationterm.domain.LocationReason;
+import omis.locationterm.exception.LocationReasonExistsException;
 
 /**
  * Delegate for location reasons.
@@ -82,7 +82,10 @@ public class LocationReasonDelegate {
 	 */
 	public LocationReason create(
 			final String name, final Short sortOrder, final Boolean valid)
-				throws DuplicateEntityFoundException {
+				throws LocationReasonExistsException {
+		if (this.locationReasonDao.find(name) != null) {
+			throw new LocationReasonExistsException("Location reason exists");
+		}
 		LocationReason reason = this.locationReasonInstanceFactory
 				.createInstance();
 		reason.setName(name);

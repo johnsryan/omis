@@ -29,11 +29,16 @@ import omis.boardhearing.service.ScheduleHearingService;
 import omis.boardhearing.service.delegate.BoardHearingCategoryDelegate;
 import omis.boardhearing.service.delegate.BoardHearingDelegate;
 import omis.boardhearing.service.delegate.BoardHearingParticipantDelegate;
+import omis.hearinganalysis.domain.HearingAnalysis;
+import omis.hearinganalysis.service.delegate.HearingAnalysisDelegate;
+import omis.paroleboarditinerary.domain.BoardAttendee;
 import omis.paroleboarditinerary.domain.ParoleBoardItinerary;
+import omis.paroleboarditinerary.service.delegate.BoardAttendeeDelegate;
 import omis.paroleboardmember.domain.ParoleBoardMember;
 import omis.paroleboardmember.service.delegate.ParoleBoardMemberDelegate;
 import omis.paroleeligibility.domain.AppearanceCategory;
 import omis.paroleeligibility.domain.ParoleEligibility;
+import omis.paroleeligibility.service.delegate.ParoleEligibilityDelegate;
 
 /**
  * Schedule Hearing Service Implementation.
@@ -52,7 +57,13 @@ public class ScheduleHearingServiceImpl implements ScheduleHearingService {
 	
 	private final BoardHearingCategoryDelegate boardHearingCategoryDelegate;
 	
+	private final BoardAttendeeDelegate boardAttendeeDelegate;
+	
 	private final ParoleBoardMemberDelegate paroleBoardMemberDelegate;
+	
+	private final ParoleEligibilityDelegate paroleEligibilityDelegate;
+	
+	private final HearingAnalysisDelegate hearingAnalysisDelegate;
 	
 	/**
 	 * @param boardHearingDelegate
@@ -62,13 +73,19 @@ public class ScheduleHearingServiceImpl implements ScheduleHearingService {
 	 */
 	public ScheduleHearingServiceImpl(
 			final BoardHearingDelegate boardHearingDelegate,
+			final ParoleEligibilityDelegate paroleEligibilityDelegate,
 			final BoardHearingParticipantDelegate boardHearingParticipantDelegate,
 			final BoardHearingCategoryDelegate boardHearingCategoryDelegate,
-			final ParoleBoardMemberDelegate paroleBoardMemberDelegate) {
+			final BoardAttendeeDelegate boardAttendeeDelegate,
+			final ParoleBoardMemberDelegate paroleBoardMemberDelegate,
+			final HearingAnalysisDelegate hearingAnalysisDelegate) {
 		this.boardHearingDelegate = boardHearingDelegate;
+		this.paroleEligibilityDelegate = paroleEligibilityDelegate;
 		this.boardHearingParticipantDelegate = boardHearingParticipantDelegate;
 		this.boardHearingCategoryDelegate = boardHearingCategoryDelegate;
+		this.boardAttendeeDelegate = boardAttendeeDelegate;
 		this.paroleBoardMemberDelegate = paroleBoardMemberDelegate;
+		this.hearingAnalysisDelegate = hearingAnalysisDelegate;
 	}
 	
 	/**{@inheritDoc} */
@@ -134,6 +151,14 @@ public class ScheduleHearingServiceImpl implements ScheduleHearingService {
 		return this.boardHearingDelegate.findByParoleEligibility(
 				paroleEligibility);
 	}
+	
+	/**{@inheritDoc} */
+	@Override
+	public HearingAnalysis findHearingAnalysisByParoleEligibility(
+			final ParoleEligibility eligibility) {
+		return this.hearingAnalysisDelegate.findByParoleEligibility(
+				eligibility);
+	}
 
 	/**{@inheritDoc} */
 	@Override
@@ -157,5 +182,34 @@ public class ScheduleHearingServiceImpl implements ScheduleHearingService {
 			final Date effectiveDate) {
 		return this.paroleBoardMemberDelegate.findBoardMembersByDate(
 				effectiveDate);
+	}
+
+	/**{@inheritDoc} */
+	@Override
+	public List<BoardAttendee> findBoardAttendeesByBoardItinerary(
+			final ParoleBoardItinerary boardItinerary) {
+		return this.boardAttendeeDelegate.findBoardAttendeesByBoardItinerary(
+				boardItinerary);
+	}
+
+	/**{@inheritDoc} */
+	@Override
+	public List<ParoleEligibility> findParoleEligibilitiesByItinerary(
+			final ParoleBoardItinerary itinerary) {
+		return this.paroleEligibilityDelegate.findByItinerary(itinerary);
+	}
+
+	/**{@inheritDoc} */
+	@Override
+	public List<ParoleEligibility> findParoleEligibilitiesUnscheduled() {
+		return this.paroleEligibilityDelegate.findUnscheduled();
+	}
+
+	/**{@inheritDoc} */
+	@Override
+	public List<ParoleEligibility> findUnscheduledParoleEligibilitiesIncluding(
+			final ParoleBoardItinerary including) {
+		return this.paroleEligibilityDelegate.findUnscheduledIncluding(
+				including);
 	}
 }

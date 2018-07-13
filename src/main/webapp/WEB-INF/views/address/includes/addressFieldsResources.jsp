@@ -14,6 +14,6 @@
 	<jsp:include page="/WEB-INF/views/common/includes/messageResolverResources.jsp"/>
 	<c:if test="${empty addressFieldsLIB}">
 		<c:set var="addressFieldsLIB" value="true" scope="request"/>
-		<script type="text/javascript" src="${pageContext.request.contextPath}/resources/address/scripts/JQuery/jquery.omis.addressFields.js"> </script>
-		<script type="text/javascript" src="${pageContext.request.contextPath}/resources/address/scripts/addressFields.js"> </script>
+		<script type="text/javascript" src="${pageContext.request.contextPath}/resources/address/scripts/JQuery/jquery.omis.addressFields.js?VERSION=1.1"> </script>
+		<script type="text/javascript" src="${pageContext.request.contextPath}/resources/address/scripts/addressFields.js?VERSION=1.1"> </script>
 	</c:if>

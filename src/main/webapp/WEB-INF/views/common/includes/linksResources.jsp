@@ -9,5 +9,5 @@
 	<jsp:include page="/WEB-INF/views/common/includes/messageResolverResources.jsp"/>
 	<c:if test="${empty linksResources}">
 		<c:set var="linkResources" value="true" scope="request"/>
-		<script type="text/javascript" src="${pageContext.request.contextPath}/resources/common/scripts/links.js?VERSION=2"> </script>
+		<script type="text/javascript" src="${pageContext.request.contextPath}/resources/common/scripts/links.js?VERSION=3"> </script>
 	</c:if>

@@ -13,9 +13,11 @@
 		</span>
 		<span class="fieldGroup">
 			<form:label path="targetOffender" class="fieldLabel"><fmt:message key="targetOffenderLabel"/></form:label>
-			<form:hidden path="targetOffender"/>
-			<input type="text" id="targetOffenderInput"/>
-			<a id="targetOffenderClear" class="clearLink"></a>
+			<form:hidden path="targetOffender"/>		
+			<c:if test="${separationNeedForm.createTargetOffender}">
+				<input type="text" id="targetOffenderInput"/>
+				<a id="targetOffenderClear" class="clearLink"></a>
+			</c:if>	
 			<span id="targetOffenderDisplay">
 				<c:if test="${not empty separationNeedForm.targetOffender}">
 					<fmt:message key="offenderLastFirstName">
@@ -26,8 +28,8 @@
 						<fmt:message key="offenderMiddleInitial">
 							<fmt:param value="${separationNeedForm.targetOffender.name.middleName}"/>
 						</fmt:message>
-					</c:if>
-					<c:out value="#${separationNeedForm.targetOffender.offenderNumber}"/>
+					</c:if>					
+						<c:out value="#${separationNeedForm.targetOffender.offenderNumber}"/>
 				</c:if>
 			</span>
 			<form:errors cssClass="error" path="targetOffender"/>

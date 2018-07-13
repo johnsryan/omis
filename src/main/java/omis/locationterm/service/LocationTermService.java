@@ -27,9 +27,11 @@ import omis.locationterm.domain.LocationReason;
 import omis.locationterm.domain.LocationReasonTerm;
 import omis.locationterm.domain.LocationTerm;
 import omis.locationterm.domain.LocationTermChangeAction;
+import omis.locationterm.domain.LocationTermChangeActionAssociation;
 import omis.locationterm.exception.LocationReasonTermConflictException;
 import omis.locationterm.exception.LocationReasonTermExistsAfterException;
 import omis.locationterm.exception.LocationReasonTermExistsException;
+import omis.locationterm.exception.LocationTermChangeActionAssociationExistsException;
 import omis.locationterm.exception.LocationTermConflictException;
 import omis.locationterm.exception.LocationTermExistsAfterException;
 import omis.locationterm.exception.LocationTermExistsException;
@@ -124,6 +126,19 @@ public interface LocationTermService {
 						LocationTermExistsAfterException,
 						LocationTermLockedException,
 						OffenderNotUnderSupervisionException;
+	
+	/**
+	 * Associations change action to location term.
+	 * 
+	 * @param locationTerm location term
+	 * @param changeAction change action to association
+	 * @return association of change action to location term
+	 * @throws LocationTermChangeActionAssociationExistsException if location
+	 * term is already associated with change action
+	 */
+	LocationTermChangeActionAssociation associateChangeAction(
+			LocationTerm locationTerm, LocationTermChangeAction changeAction)
+				throws LocationTermChangeActionAssociationExistsException;
 	
 	/**
 	 * Removes a location term.

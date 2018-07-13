@@ -1,5 +1,5 @@
 /**
- * Offender relationships list screen java script.
+ * Offender relationships list screen behavior.
  * 
  * Author: Joel Norris
  * Author: Yidong Li
@@ -11,6 +11,10 @@ window.onload = function() {
 	applyRemoveLinkConfirmation();
 	var relationshipRows = document.getElementsByClassName("rowActionMenuItem");
 	for(var x =0; x < relationshipRows.length; x++) {
-		applyActionMenu(relationshipRows[x], function() {applyRemoveLinkConfirmation();});
+		applyActionMenu(relationshipRows[x],
+			function() {
+				applyLinkConfirmation("removeLink", "removeRelationshipLinkConfirmation", "omis.offenderrelationship.msgs.offenderRelationship");
+			}
+		);
 	}
 }

@@ -30,5 +30,11 @@ import omis.locationterm.domain.LocationReason;
 public interface LocationReasonDao
 		extends GenericDao<LocationReason> {
 
-	// No additional functionality
+	/**
+	 * Returns location reason.
+	 * 
+	 * @param name name
+	 * @return location reason
+	 */
+	LocationReason find(String name);
 }

@@ -53,6 +53,13 @@
 					<form:errors path="date" cssClass="error"/>
 				</span>
 				<span class="fieldGroup">
+					<form:label path="time" class="fieldLabel">
+						<fmt:message key="timeLabel"/>
+					</form:label>
+					<form:input path="time" class="time"/>
+					<form:errors path="time" cssClass="error"/>
+				</span>
+				<span class="fieldGroup">
 					<form:label path="inAttendance" class="fieldLabel">
 						<fmt:message key="offenderPresentLabel"/>
 					</form:label>

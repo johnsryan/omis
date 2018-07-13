@@ -24,5 +24,5 @@
 					<a class="createLink" href="${pageContext.request.contextPath}/family/create.html?familyMember=${familyMember.id}&amp;offender=${offender.id}" ><span class="invisibleLinkLabel"><fmt:message key="createFamilyAssociationLink" bundle="${familyBundle}"/></span></a>
 				</c:otherwise>	
 			</c:choose>
-		</li>	
+		</li>
 	</ul>

@@ -45,6 +45,13 @@
 	<query name="findLocationReasons"><![CDATA[
 	  select reason
 	  from omis.locationterm.domain.LocationReason reason
-	  order by reason.name
+	  order by reason.sortOrder, reason.name
+	]]></query>
+	
+	<!-- Find location reason -->
+	<query name="findLocationReason"><![CDATA[
+	  select reason
+	  from omis.locationterm.domain.LocationReason reason
+	  where reason.name = :name
 	]]></query>
 </hibernate-mapping>

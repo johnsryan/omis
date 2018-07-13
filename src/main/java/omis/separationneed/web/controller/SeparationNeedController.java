@@ -338,6 +338,7 @@ public class SeparationNeedController {
 			map.addAttribute(BindingResult.MODEL_KEY_PREFIX 
 					+ SEPARATION_NEED_FORM_MODEL_KEY, result);
 			map.addAttribute(SEPARATION_NEED_MODEL_KEY, separationNeed);
+			form.setCreateTargetOffender(false);
 			return prepareEditMav(map, form, offender);
 		}
 		this.separationNeedService.update(separationNeed,
@@ -370,6 +371,7 @@ public class SeparationNeedController {
 		required = true) final Offender offender) {
 		ModelMap map = new ModelMap();
 		SeparationNeedForm form = new SeparationNeedForm();
+		form.setCreateTargetOffender(true);
 		return this.prepareEditMav(map, form, offender);
 	}
 	
@@ -402,6 +404,7 @@ public class SeparationNeedController {
 			ModelMap map = new ModelMap();
 			map.addAttribute(BindingResult.MODEL_KEY_PREFIX 
 					+ SEPARATION_NEED_FORM_MODEL_KEY, result);
+			form.setCreateTargetOffender(true);
 			return prepareEditMav(map, form, offender);
 		}
 		Relationship relationship = this.separationNeedService.findRelationship(
@@ -687,6 +690,7 @@ public class SeparationNeedController {
 		form.setDate(separationNeed.getDate());
 		form.setReportingStaff(separationNeed.getReportingStaff());
 		form.setCreationComment(separationNeed.getCreationComment());
+		form.setCreateTargetOffender(false);
 		SeparationNeedRemoval removal = separationNeed.getRemoval();
 		if (removal != null) {
 			form.setRemovalDate(removal.getDate());

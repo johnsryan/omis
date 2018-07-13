@@ -445,7 +445,7 @@ public class PlacementTermController {
 			placementTermForm.setState(this.placementTermService
 					.findHomeState());
 		}
-		placementTermForm.setAllowSendToLocation(true);
+		placementTermForm.setAllowSendToLocation(false);
 		placementTermForm.setSendToLocation(true);
 		return this.prepareCreateMav(placementTermForm, offender,
 				effectiveDate);

@@ -6,6 +6,7 @@ import java.util.List;
 import omis.dao.impl.hibernate.GenericHibernateDaoImpl;
 import omis.datatype.DateRange;
 import omis.offender.domain.Offender;
+import omis.person.domain.Person;
 import omis.relationship.domain.Relationship;
 import omis.visitation.dao.VisitationAssociationDao;
 import omis.visitation.domain.VisitationAssociation;
@@ -17,6 +18,7 @@ import org.hibernate.SessionFactory;
  * 
  * @author Joel Norris
  * @author Yidong Li
+ * @author Stephen Abson
  * @version 0.1.2 (June 1, 2016)
  * @since OMIS 3.0
  */
@@ -62,6 +64,15 @@ public class VisitationAssociationDaoHibernateImpl
 	private static final String FIND_DATE_RANGE_OVERLAP_EXCLUDING_QUERY_NAME
 		= "findVisitationAssociationDateRangeOverlapExcluding";
 	
+	private static final String FIND_BY_PERSON_QUERY_NAME
+		= "findVisitationAssociationsByPerson";
+	
+	private static final String COUNT_BY_RELATIONSHIP_QUERY_NAME
+		= "countVisitationAssociationsByRelationship";
+
+	private static final String DELETE_BY_RELATIONSHIP_QUERY_NAME
+		= "deleteVisitationAssociationsByRelationship";
+	
 	/* Parameter names. */
 	
 	private static final String RELATIONSHIP_PARAMETER_NAME = "relationship";
@@ -80,6 +91,7 @@ public class VisitationAssociationDaoHibernateImpl
 	private static final String START_DATE_PARAM_NAME = "startDate";
 	private static final String END_DATE_PARAM_NAME = "endDate";
 	private static final String RELATIONSHIP_PARAM_NAME = "relationship";
+	private static final String PERSON_PARAM_NAME = "person";
 	
 	/**
 	 * Instantiates a data access object for visitation association with 
@@ -245,5 +257,36 @@ public class VisitationAssociationDaoHibernateImpl
 			.setParameter(VISITATION_ASSOCIATION_PARAM_NAME, association)
 			.uniqueResult();
 		return overlaps;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public List<VisitationAssociation> findByPerson(Person person) {
+		@SuppressWarnings("unchecked")
+		List<VisitationAssociation> associations = this.getSessionFactory()
+				.getCurrentSession()
+				.getNamedQuery(FIND_BY_PERSON_QUERY_NAME)
+				.setParameter(PERSON_PARAM_NAME, person)
+				.list();
+		return associations;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public long countByRelationship(final Relationship relationship) {
+		long count = (Long) this.getSessionFactory().getCurrentSession()
+				.getNamedQuery(COUNT_BY_RELATIONSHIP_QUERY_NAME)
+				.setParameter(RELATIONSHIP_PARAM_NAME, relationship)
+				.uniqueResult();
+		return count;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public int removeByRelationship(final Relationship relationship) {
+		return this.getSessionFactory().getCurrentSession()
+				.getNamedQuery(DELETE_BY_RELATIONSHIP_QUERY_NAME)
+				.setParameter(RELATIONSHIP_PARAM_NAME, relationship)
+				.executeUpdate();
 	}
 }

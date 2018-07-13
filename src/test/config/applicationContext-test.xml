@@ -50,6 +50,7 @@
    <constructor-arg><value>MM/dd/yyyy</value></constructor-arg>
    <constructor-arg><value>h:mm a</value></constructor-arg>
    <constructor-arg><value>MM/dd/yyyy k:mm</value></constructor-arg>
+   <constructor-arg><value>true</value></constructor-arg>
   </bean>
   
   <!--

@@ -174,6 +174,9 @@ public class HearingController {
 	private static final String HEARING_DETAILS_REPORT_NAME 
 		= "/Compliance/Hearings/Hearing_Details";
 	
+	private static final String SUMMARY_OF_HEARING_REPORT_NAME 
+	    = "/Compliance/Hearings/Summary_of_Disciplinary_Hearing";
+	
 	private static final String ADJUDICATE_HEARING_REPORT_NAME 
 		= "/Compliance/Hearings/Adjudicate_Hearing";
 
@@ -184,6 +187,9 @@ public class HearingController {
 
 	private static final String HEARING_DETAILS_ID_REPORT_PARAM_NAME 
 		= "HEARING_ID";
+	
+	private static final String SUMMARY_OF_HEARING_ID_REPORT_PARAM_NAME 
+	    = "HEARING_ID";
 
 	private static final String ADJUDICATE_HEARING_ID_REPORT_PARAM_NAME 
 		= "HEARING_ID";
@@ -738,6 +744,31 @@ public class HearingController {
 				Long.toString(hearing.getId()));
 		byte[] doc = this.reportRunner.runReport(
 				HEARING_DETAILS_REPORT_NAME,
+				reportParamMap, reportFormat);
+		return this.reportControllerDelegate.constructReportResponseEntity(
+				doc, reportFormat);
+	}
+	
+	/**
+	 * Returns the report for the summary of specified hearing.
+	 * 
+	 * @param hearing hearing
+	 * @param reportFormat report format
+	 * @return response entity with report
+	 */
+	@RequestMapping(value = "/summaryOfHearingReport.html",
+			method = RequestMethod.GET)
+	@PreAuthorize("hasRole('HEARING_VIEW') or hasRole('ADMIN')")
+	public ResponseEntity<byte []> reportSummaryOfHearing(@RequestParam(
+			value = "hearing", required = true)
+			final Hearing hearing,
+			@RequestParam(value = "reportFormat", required = true)
+			final ReportFormat reportFormat) {
+		Map<String, String> reportParamMap = new HashMap<String, String>();
+		reportParamMap.put(SUMMARY_OF_HEARING_ID_REPORT_PARAM_NAME,
+				Long.toString(hearing.getId()));
+		byte[] doc = this.reportRunner.runReport(
+				SUMMARY_OF_HEARING_REPORT_NAME,
 				reportParamMap, reportFormat);
 		return this.reportControllerDelegate.constructReportResponseEntity(
 				doc, reportFormat);

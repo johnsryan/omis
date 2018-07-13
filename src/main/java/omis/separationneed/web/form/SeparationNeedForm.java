@@ -43,6 +43,8 @@ public class SeparationNeedForm implements Serializable {
 	
 	private List<SeparationNeedNoteItem> separationNeedNoteItems =
 			new ArrayList<SeparationNeedNoteItem>();
+	
+	private Boolean createTargetOffender;
 
 	/** Instantiates a default instance of separation need form. */
 	public SeparationNeedForm() {
@@ -211,5 +213,23 @@ public class SeparationNeedForm implements Serializable {
 	public void setSeparationNeedNoteItems(
 			final List<SeparationNeedNoteItem> separationNeedNoteItems) {
 		this.separationNeedNoteItems = separationNeedNoteItems;
+	}
+
+	/**
+	 * Returns whether creating or editing target offender.
+	 *
+	 * @return the createTargetOffender
+	 */
+	public Boolean getCreateTargetOffender() {
+		return this.createTargetOffender;
+	}
+
+	/**
+	 * Sets whether creating or editing target offender.
+	 *
+	 * @param createTargetOffender create target offender
+	 */
+	public void setCreateTargetOffender(final Boolean createTargetOffender) {
+		this.createTargetOffender = createTargetOffender;
 	}
 }

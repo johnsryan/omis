@@ -153,6 +153,13 @@
 				<constructor-arg name="configuration" ref="hibernateConfiguration"/>
 		</bean>
 		
+		<!-- Operations -->
+		
+		<bean class="omis.visitation.service.delegate.impl.VisitationAssociationRemovalByRelationshipOperationImpl">
+			<constructor-arg name="registry" ref="relationshipAssociatedRemovalOperationRegistry"/>
+			<constructor-arg name="visitationAssociationDao" ref="visitationAssociationDao"/>
+		</bean>
+		
 		<!-- Profile specific services -->
 		
 		<beans profile="prod">
@@ -199,5 +206,5 @@
         		<constructor-arg name="visitDelegate" ref="visitDelegate"/>
         	</bean>
 		</beans>
-		
+	
 </beans>

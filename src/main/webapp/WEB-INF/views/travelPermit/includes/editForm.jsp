@@ -175,6 +175,7 @@
 					<form:errors cssClass="error" path="newCity"/>
 				</span>
 				<span id="existingCityFieldGroup" class="${existingCityDisplayClass}">
+				<c:set var="partialAddressCities" value="${partialAddressCities}" scope="request"/>
 					<form:select path = "partialAddressCity" id="partialAddressCityID">
 						<jsp:include page="/WEB-INF/views/travelPermit/includes/partialAddressCityOptions.jsp"/>
 					</form:select>

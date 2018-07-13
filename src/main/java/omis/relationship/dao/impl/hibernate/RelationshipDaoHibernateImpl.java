@@ -1,5 +1,7 @@
 package omis.relationship.dao.impl.hibernate;
 
+import java.util.List;
+
 import org.hibernate.SessionFactory;
 
 import omis.dao.impl.hibernate.GenericHibernateDaoImpl;
@@ -18,6 +20,17 @@ public class RelationshipDaoHibernateImpl
 		extends GenericHibernateDaoImpl<Relationship>
 		implements RelationshipDao {
 
+	/* Query names. */
+	
+	private static final String FIND_BY_PEOPLE_QUERY_NAME = "findRelationshipByPeople";
+	private static final String FIND_BY_PERSON_QUERY_NAME = "findRelationshipsByPerson";
+	
+	/* Parameter names. */
+	
+	private static final String FIRST_PERSON_PARAM_NAME = "firstPerson";
+	private static final String SECOND_PERSON_PARAM_NAME = "secondPerson";
+	private static final String PERSON_PARAM_NAME = "person";
+	
 	/* Constructor. */
 	
 	/**
@@ -41,10 +54,22 @@ public class RelationshipDaoHibernateImpl
 			final Person secondPerson) {
 		Relationship relationship = (Relationship) getSessionFactory()
 				.getCurrentSession()
-				.getNamedQuery("findRelationshipByPeople")
-				.setParameter("firstPerson", firstPerson)
-				.setParameter("secondPerson", secondPerson)
+				.getNamedQuery(FIND_BY_PEOPLE_QUERY_NAME)
+				.setParameter(FIRST_PERSON_PARAM_NAME, firstPerson)
+				.setParameter(SECOND_PERSON_PARAM_NAME, secondPerson)
 				.uniqueResult();
 		return relationship;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public List<Relationship> findByPerson(Person person) {
+		@SuppressWarnings("unchecked")
+		List<Relationship> relationships = this.getSessionFactory()
+				.getCurrentSession()
+				.getNamedQuery(FIND_BY_PERSON_QUERY_NAME)
+				.setParameter(PERSON_PARAM_NAME, person)
+				.list();
+		return relationships;
 	}
 }

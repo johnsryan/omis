@@ -35,7 +35,7 @@
 		</sec:authorize>
 	</c:if>
 	<c:if test="${not empty person}">
-		<sec:authorize access="hasRole('OFFENSE_TERM_VIEW') or hasRole('ADMIN')">
+		<sec:authorize access="hasRole('OFFENSE_TERM_LIST') or hasRole('ADMIN')">
 			<li>
 				<a href="${pageContext.request.contextPath}/offenseTerm/currentCourtCaseListingReport.html?person=${person.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="courtCaseCurrentListingReportLinkLabel" bundle="${offenseTermBundle}"/></a>
 			</li>

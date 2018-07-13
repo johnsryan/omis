@@ -28,6 +28,7 @@ import omis.exception.DateConflictException;
 import omis.exception.DuplicateEntityFoundException;
 import omis.instance.factory.InstanceFactory;
 import omis.offender.domain.Offender;
+import omis.person.domain.Person;
 import omis.relationship.domain.Relationship;
 import omis.visitation.dao.VisitationAssociationDao;
 import omis.visitation.domain.VisitationApproval;
@@ -41,6 +42,7 @@ import omis.visitation.exception.VisitationExistsException;
  * 
  * @author Joel Norris
  * @author Yidong Li
+ * @author Stephen Abson
  * @version 0.1.0 (May 11, 2015)
  * @since OMIS 3.0
  */
@@ -217,6 +219,53 @@ public class VisitationAssociationDelegate {
 						date);
 	}
 	
+	/**
+	 * Returns all visitation associations for the specified person.
+	 * 
+	 * @param person person
+	 * @return
+	 */
+	public List<VisitationAssociation>
+		findByPerson(final Person person) {
+		return this.visitationAssociationDao.findByPerson(person);
+	}
+	
+	/**
+	 * Find out how many existing visitationAssociation whose date range has 
+	 * overlap with the input parameter "dateRange"
+	 * 
+	 * @param dateRange date range
+	 * @param relationship relationship
+	 * @return count of overlap
+	 */
+	public long countForOverlapBetweenDate(final Relationship relationship,
+		final DateRange dateRange) {
+		long overlaps = this.visitationAssociationDao.findDateRangeOverLap(
+			relationship, dateRange);
+		return overlaps;
+	}
+	
+	/**
+	 * Returns count of visitation associations by relationship.
+	 * 
+	 * @param relationship relationship by which to count by relationships
+	 * @return count of visitation associations by relationship
+	 */
+	public long countByRelationship(final Relationship relationship) {
+		return this.visitationAssociationDao.countByRelationship(relationship);
+	}
+	
+	/**
+	 * Removes visitation associations by relationship.
+	 * 
+	 * @param relationship relationship by which to remove visitation
+	 * associations
+	 * @return number of visitation associations removed
+	 */
+	public int removeByRelationship(final Relationship relationship) {
+		return this.visitationAssociationDao.removeByRelationship(relationship);
+	}
+	
 	/* Helper methods. */
 	
 	/*
@@ -249,20 +298,5 @@ public class VisitationAssociationDelegate {
 				this.auditComponentRetriever.retrieveUserAccount(),
 				this.auditComponentRetriever.retrieveDate()));
 		return association;
-	}
-	
-	/*
-	 * Find out how many existing visitationAssociation whose date range has 
-	 * overlap with the input parameter "dateRange"
-	 * 
-	 * @param dateRange date range
-	 * @param relationship relationship
-	 * @return count of overlap
-	 */
-	public long countForOverlapBetweenDate(final Relationship relationship,
-		final DateRange dateRange) {
-		long overlaps = this.visitationAssociationDao.findDateRangeOverLap(
-			relationship, dateRange);
-		return overlaps;
 	}
 }

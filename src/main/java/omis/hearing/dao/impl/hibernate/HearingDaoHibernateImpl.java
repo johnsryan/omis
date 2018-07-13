@@ -36,7 +36,8 @@ import omis.violationevent.domain.ViolationEvent;
  * 
  * @author Annie Wahl 
  * @author Josh Divine
- * @version 0.1.3 (May 17, 2018)
+ * @author Ryan Johns
+ * @version 0.1.4 (July 6, 2018)
  * @since OMIS 3.0
  */
 public class HearingDaoHibernateImpl
@@ -88,11 +89,14 @@ public class HearingDaoHibernateImpl
 		Hearing hearing = (Hearing) this.getSessionFactory()
 				.getCurrentSession()
 				.getNamedQuery(FIND_HEARING_QUERY_NAME)
-				.setParameter(LOCATION_PARAM_NAME, location)
+				.setParameter(LOCATION_PARAM_NAME, location,
+						this.getEntityPropertyType(LOCATION_PARAM_NAME))
 				.setParameter(OFFENDER_PARAM_NAME, offender)
 				.setTimestamp(DATE_PARAM_NAME, date)
-				.setParameter(OFFICER_PARAM_NAME, officer)
-				.setParameter(CATEGORY_PARAM_NAME, category)
+				.setParameter(OFFICER_PARAM_NAME, officer,
+						this.getEntityPropertyType(OFFICER_PARAM_NAME))
+				.setParameter(CATEGORY_PARAM_NAME, category,
+						this.getEntityPropertyType(CATEGORY_PARAM_NAME))
 				.uniqueResult();
 		
 		return hearing;
@@ -107,11 +111,14 @@ public class HearingDaoHibernateImpl
 		Hearing hearingExcluding = (Hearing) this.getSessionFactory()
 				.getCurrentSession()
 				.getNamedQuery(FIND_HEARING_EXCLUDING_QUERY_NAME)
-				.setParameter(LOCATION_PARAM_NAME, location)
+				.setParameter(LOCATION_PARAM_NAME, location, 
+						this.getEntityPropertyType(LOCATION_PARAM_NAME))
 				.setParameter(OFFENDER_PARAM_NAME, offender)
 				.setTimestamp(DATE_PARAM_NAME, date)
-				.setParameter(OFFICER_PARAM_NAME, officer)
-				.setParameter(CATEGORY_PARAM_NAME, category)
+				.setParameter(OFFICER_PARAM_NAME, officer,
+						this.getEntityPropertyType(OFFICER_PARAM_NAME))
+				.setParameter(CATEGORY_PARAM_NAME, category,
+						this.getEntityPropertyType(CATEGORY_PARAM_NAME))
 				.setParameter(HEARING_PARAM_NAME, hearing)
 				.uniqueResult();
 		

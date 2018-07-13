@@ -40,7 +40,7 @@ public class AllowedSupervisoryOrganizationRuleDaoHibernateImpl
 	/* Queries. */
 	
 	private static final String FIND_QUERY_NAME
-		= "findAllowedSupervisoryOrganization";
+		= "findAllowedSupervisoryOrganizationRule";
 	
 	/* Parameter names. */
 	

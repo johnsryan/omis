@@ -366,7 +366,8 @@ public interface UpdateOffenderRelationService {
 	/**
 	 * Removes relationship of offender to relation.
 	 * 
-	 * <p>Removes associated notes.
+	 * <p>Removes associated notes, victim associations, victim notes,
+	 * visitation associations and family associations.
 	 * 
 	 * @param offender offender
 	 * @param relation relation

@@ -1,5 +1,7 @@
 package omis.relationship.dao;
 
+import java.util.List;
+
 import omis.dao.GenericDao;
 import omis.person.domain.Person;
 import omis.relationship.domain.Relationship;
@@ -27,4 +29,12 @@ public interface RelationshipDao
 	 * returned)
 	 */
 	Relationship findByPeople(Person firstPerson, Person secondPerson);
+
+	/**
+	 * Returns relationships for the specified person.
+	 * 
+	 * @param person person
+	 * @return list of relationships
+	 */
+	List<Relationship> findByPerson(Person person);
 }

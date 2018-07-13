@@ -22,6 +22,7 @@ import java.util.List;
 
 import omis.dao.GenericDao;
 import omis.offender.domain.Offender;
+import omis.paroleboarditinerary.domain.ParoleBoardItinerary;
 import omis.paroleeligibility.domain.ParoleEligibility;
 
 /**
@@ -29,7 +30,7 @@ import omis.paroleeligibility.domain.ParoleEligibility;
  *
  * @author Trevor Isles
  * @author Annie Wahl
- * @version 0.1.1 (May 24, 2018)
+ * @version 0.1.2 (Jul 3, 2018)
  * @since OMIS 3.0
  */
 public interface ParoleEligibilityDao extends GenericDao<ParoleEligibility> {
@@ -66,5 +67,33 @@ public interface ParoleEligibilityDao extends GenericDao<ParoleEligibility> {
 	 */
 	List<ParoleEligibility> findByOffenderAfterDate(
 			Offender offender, Date date);
+	
+	/**
+	 * Returns a list of Parole Eligibilities by the specified Parole Board
+	 * Itinerary.
+	 * 
+	 * @param itinerary - Parole Board Itinerary
+	 * @return List of Parole Eligibilities by the specified Parole Board
+	 * Itinerary.
+	 */
+	List<ParoleEligibility> findByItinerary(ParoleBoardItinerary itinerary);
+	
+	/**
+	 * Returns a list of Parole Eligibilities that have no scheduled hearing.
+	 * 
+	 * @return List of Parole Eligibilities that have no scheduled hearing.
+	 */
+	List<ParoleEligibility> findUnscheduled();
+	
+	/**
+	 * Returns a list of unscheduled Parole Eligibilities as well as
+	 * Parole Eligibilities by the the specified Parole Board Itinerary.
+	 * 
+	 * @param including - Parole Board Itinerary
+	 * @return List of unscheduled Parole Eligibilities as well as
+	 * Parole Eligibilities by the the specified Parole Board Itinerary.
+	 */
+	List<ParoleEligibility> findUnscheduledIncluding(
+			ParoleBoardItinerary including);
 	
 }

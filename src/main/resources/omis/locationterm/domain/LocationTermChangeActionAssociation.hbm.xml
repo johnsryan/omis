@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ - OMIS - Offender Management Information System
+ - Copyright (C) 2011 - 2017 State of Montana
+ -
+ - This program is free software: you can redistribute it and/or modify
+ - it under the terms of the GNU General Public License as published by
+ - the Free Software Foundation, either version 3 of the License, or
+ - (at your option) any later version.
+ -
+ - This program is distributed in the hope that it will be useful,
+ - but WITHOUT ANY WARRANTY; without even the implied warranty of
+ - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ - GNU General Public License for more details.
+ -
+ - You should have received a copy of the GNU General Public License
+ - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+
+<!--
+  - Mapping and queries for association of location term to change action.
+  -
+  - Author: Stephen Abson
+  -->
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="omis.locationterm.domain">
+
+	<!-- Maps location term change action association -->
+	<class entity-name="omis.locationterm.domain.LocationTermChangeActionAssociation"
+	       proxy="omis.locationterm.domain.LocationTermChangeActionAssociation"
+	       name="omis.locationterm.domain.impl.LocationTermChangeActionAssociationImpl"
+		   table="`LOC_TERM_CNG_ACT_ASSOC`">
+	  <id name="id" column="`ID`" type="java.lang.Long">
+        <generator class="sequence">
+          <param name="sequence">`LOC_TERM_CNG_ACT_ASSOC_SEQ`</param>
+        </generator>
+	  </id>
+      <component name="creationSignature" class="omis.audit.domain.CreationSignature">
+      	<many-to-one name="userAccount" entity-name="omis.user.domain.UserAccount" not-null="true" column="`CREATE_ACCOUNT_ID`"/>
+      	<property name="date" type="java.util.Date" not-null="true" column="`CREATE_DATE`"/>
+      </component>
+      <component name="updateSignature" class="omis.audit.domain.UpdateSignature">
+      	<many-to-one name="userAccount" entity-name="omis.user.domain.UserAccount" not-null="true" column="`UPDATE_ACCOUNT_ID`"/>
+      	<property name="date" type="java.util.Date" not-null="true" column="`UPDATE_DATE`"/>
+      </component>
+      <many-to-one name="locationTerm" entity-name="omis.locationterm.domain.LocationTerm" column="`LOCATION_TERM_ID`" not-null="true" unique="true"/>
+      <many-to-one name="changeAction" entity-name="omis.locationterm.domain.LocationTermChangeAction" column="`CHANGE_ACTION_ID`" not-null="true"/>
+	</class>
+	
+	<!-- Returns association for location term. -->
+	<query name="findLocationTermChangeActionAssociation"><![CDATA[
+	  select association
+	  from omis.locationterm.domain.LocationTermChangeActionAssociation association
+	  where association.locationTerm = :locationTerm
+	]]></query>
+	
+	<!-- Returns association for location term with associations excluded. -->
+	<query name="findLocationTermChangeActionAssociationExcluding"><![CDATA[
+	  select association
+	  from omis.locationterm.domain.LocationTermChangeActionAssociation association
+	  where association.locationTerm = :locationTerm
+	    and association not in (:excludedAssociations)
+	]]></query>
+	
+	<!-- Deletes association by location term. -->
+	<query name="deleteLocationTermChangeActionAssociationsByLocationTerm"><![CDATA[
+	  delete from omis.locationterm.domain.LocationTermChangeActionAssociation
+	  where locationTerm = :locationTerm
+	]]></query>
+</hibernate-mapping>

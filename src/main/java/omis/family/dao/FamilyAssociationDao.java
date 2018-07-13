@@ -7,6 +7,7 @@ import omis.dao.GenericDao;
 import omis.datatype.DateRange;
 import omis.family.domain.FamilyAssociation;
 import omis.offender.domain.Offender;
+import omis.person.domain.Person;
 import omis.relationship.domain.Relationship;
 
 /**
@@ -21,7 +22,7 @@ import omis.relationship.domain.Relationship;
  * @since OMIS 3.0
  */
 public interface FamilyAssociationDao
-	extends GenericDao<FamilyAssociation> {
+		extends GenericDao<FamilyAssociation> {
 
 	/**
 	 * Returns the family association with the specified relationship.
@@ -104,4 +105,28 @@ public interface FamilyAssociationDao
 	 * @return A list of family associations
 	 */
 	List<FamilyAssociation> findByOffender(Offender offender);
+
+	/**
+	 * Returns all family associations for the specified person.
+	 * 
+	 * @param person person
+	 * @return list of family associations
+	 */
+	List<FamilyAssociation> findByPerson(Person person);
+
+	/**
+	 * Returns count of family associations by relationship.
+	 * 
+	 * @param relationship relationship
+	 * @return count of family associations by relationship
+	 */
+	long countByRelationship(Relationship relationship);
+
+	/**
+	 * Removes family associations by relationship.
+	 * 
+	 * @param relationship relationship
+	 * @return number of family associations removed
+	 */
+	int removeByRelationship(Relationship relationship);
 }

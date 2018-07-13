@@ -17,6 +17,8 @@
  */
 package omis.relationship.service.delegate;
 
+import java.util.List;
+
 import omis.audit.AuditComponentRetriever;
 import omis.audit.domain.CreationSignature;
 import omis.instance.factory.InstanceFactory;
@@ -149,5 +151,15 @@ public class RelationshipDelegate {
 	 */
 	public void remove(final Relationship relationship) {
 		this.relationshipDao.makeTransient(relationship);
+	}
+
+	/**
+	 * Returns relationships for the specified person.
+	 * 
+	 * @param person person
+	 * @return list of relationships
+	 */
+	public List<Relationship> findByPerson(final Person person) {
+		return this.relationshipDao.findByPerson(person);
 	}
 }

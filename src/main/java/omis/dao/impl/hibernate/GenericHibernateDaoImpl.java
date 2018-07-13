@@ -1,18 +1,34 @@
+/*
+ * OMIS - Offender Management Information System
+ * Copyright (C) 2011 - 2017 State of Montana
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package omis.dao.impl.hibernate;
 
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
-import omis.dao.GenericDao;
-
 import org.hibernate.Criteria;
 import org.hibernate.LockOptions;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Example;
 import org.hibernate.type.Type;
+
+import omis.dao.GenericDao;
 
 /**
  * Hibernate implementation of generic data access object.
@@ -21,8 +37,11 @@ import org.hibernate.type.Type;
  * stated explicitly in the constructor for the entity name property or
  * can be inferred from the parameter {@code <T>}.
  * 
+ * <p>Parts based on example in <i>Java Persistence with Hibernate, First
+ * Edition</i>, Bauer <i>et al</i>.
+ * 
  * @author Stephen Abson
- * @version 0.1.2 (June 19, 2013)
+ * @version 0.1.3 (July 12, 2018)
  * @since OMIS 3.0
  * @see GenericDao
  * @param <T> type of entity object
@@ -103,24 +122,6 @@ public abstract class GenericHibernateDaoImpl<T extends Serializable>
 		return findByCriteria();
 	}
 	
-	/** {@inheritDoc} */
-	@Override
-	public List<T> findByExample(final T exampleInstance,
-			final String[] excludeProperty) {
-		Session session = this.getSessionFactory().getCurrentSession();
-		Criteria crit = session.createCriteria(this.getEntityName());
-		Example example = Example.create(exampleInstance);
-		if (excludeProperty != null) {
-			for (String exclude : excludeProperty) {
-				example.excludeProperty(exclude);
-			}
-		}
-		crit.add(example);
-		@SuppressWarnings("unchecked")
-		List<T> result = crit.list();
-		return result;
-	}
-	
 	/**
 	 * Finds by criteria.
 	 * 
@@ -129,7 +130,6 @@ public abstract class GenericHibernateDaoImpl<T extends Serializable>
 	 */
 	protected List<T> findByCriteria(final Criterion... criterion) {
 		Session session = this.getSessionFactory().getCurrentSession();
-
 		Criteria crit = session.createCriteria(this.getEntityName());
 		for (Criterion c : criterion) {
 			crit.add(c);
@@ -152,18 +152,6 @@ public abstract class GenericHibernateDaoImpl<T extends Serializable>
 	public void makeTransient(final T entity) {
 		Session session = this.getSessionFactory().getCurrentSession();
 		session.delete(this.getEntityName(), entity);
-	}
-	
-	/** Flush the persistence context. */
-	public void flush() {
-		Session session = this.getSessionFactory().getCurrentSession();
-		session.flush();
-	}
-	
-	/** Clear to persistence context. */
-	public void clear() {
-		Session session = this.getSessionFactory().getCurrentSession();
-		session.clear();
 	}
 	
 	/**

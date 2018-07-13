@@ -32,8 +32,9 @@
 			<li><a class="createLink" href="${pageContext.request.contextPath}/supervision/placementTerm/create.html?offender=${offender.id}&amp;allowCorrectionalStatusChange=true"><span class="visibleLinkLabel"><c:choose><c:when test="${not empty effectivePlacementTerm}"><fmt:message key="changePlacementLink"/></c:when><c:otherwise><fmt:message key="createPlacementTermLink"/></c:otherwise></c:choose></span></a></li>
 		</sec:authorize>
 	</c:if>
+	<%-- Disable link until supervisory organizations are activated - SA --%>
 	<c:if test="${not empty effectivePlacementTerm and effectivePlacementTerm.correctionalStatusTerm.correctionalStatus.locationRequired}">
-		<sec:authorize access="hasRole('PLACEMENT_TERM_CREATE') or hasRole('ADMIN')">
+		<sec:authorize access="hasRole('DISABLED') and (hasRole('PLACEMENT_TERM_CREATE') or hasRole('ADMIN'))">
 			<li><a class="createLink" href="${pageContext.request.contextPath}/supervision/placementTerm/create.html?offender=${offender.id}&amp;allowCorrectionalStatusChange=false"><span class="visibleLinkLabel"><fmt:message key="facilityTransferLink"/></span></a></li>
 		</sec:authorize>
 	</c:if>

@@ -56,7 +56,7 @@ import omis.web.profile.ProfileItemRegistry;
  * @author Ryan Johns
  * @author Josh Divine
  * @author Annie Wahl
- * @author Sierra Rosales
+ * @author Sierra Haynes
  * @version 0.1.4 (Feb 8, 2018)
  * @since OMIS 3.0
  */
@@ -188,6 +188,9 @@ public class OffenderProfileController {
 	
 	private static final String TRANSITIONAL_CASE_PLAN_REPORT_NAME 
 		= "/CaseManagement/Transitional_Case_Plan_Header";	
+	
+	private static final String OFFENDER_FINANCIAL_SUMMARY_REPORT_NAME 
+	    = "/CaseManagement/FinancialProfile/Offender_Financial_Summary";
 	
 	private static final String CLINICAL_SERVICES_REFFERAL_FORM_REPORT_NAME 
 		= "/Health/Clinical_Services_Referral_Form_OMIS_Version";
@@ -901,6 +904,32 @@ public class OffenderProfileController {
 		return this.reportControllerDelegate.constructReportResponseEntity(
 				doc, reportFormat);
 	}	
+	
+	/**
+	 * Returns the financial summary report for the specified offender.
+	 * 
+	 * @param offender offender
+	 * @param reportFormat report format
+	 * @return response entity with report
+	 */
+	@RequestMapping(value = "/offenderFinancialSummaryReport.html",
+			method = RequestMethod.GET)
+	@PreAuthorize("hasRole('OFFENDER_VIEW') or hasRole('ADMIN')")
+	public ResponseEntity<byte []> reportOffenderFinancialSummary(@RequestParam(
+			value = "offender", required = true)
+			final Offender offender,
+			@RequestParam(value = "reportFormat", required = true)
+			final ReportFormat reportFormat) {
+		Map<String, String> reportParamMap = new HashMap<String, String>();
+		reportParamMap.put(DOC_ID_REPORT_PARAM_NAME,
+				Long.toString(offender.getOffenderNumber()));
+		byte[] doc = this.reportRunner.runReport(
+				OFFENDER_FINANCIAL_SUMMARY_REPORT_NAME,
+				reportParamMap, reportFormat);
+		return this.reportControllerDelegate.constructReportResponseEntity(
+				doc, reportFormat);
+	}
+	
 	/**
 	 * Returns the clinical services referral form for the specified offender.
 	 * 

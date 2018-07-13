@@ -21,9 +21,12 @@
 		
 		<bean id="scheduleHearingService" class="omis.boardhearing.service.impl.ScheduleHearingServiceImpl">
 			<constructor-arg name="boardHearingDelegate" ref="boardHearingDelegate" />
+			<constructor-arg name="paroleEligibilityDelegate" ref="paroleEligibilityDelegate" />
 			<constructor-arg name="boardHearingParticipantDelegate" ref="boardHearingParticipantDelegate" />
 			<constructor-arg name="boardHearingCategoryDelegate" ref="boardHearingCategoryDelegate" />
+			<constructor-arg name="boardAttendeeDelegate" ref="boardAttendeeDelegate" />
 			<constructor-arg name="paroleBoardMemberDelegate" ref="paroleBoardMemberDelegate" />
+			<constructor-arg name="hearingAnalysisDelegate" ref="hearingAnalysisDelegate" />
 		</bean>
 		
 		<bean id="boardHearingDocumentService"

@@ -161,4 +161,14 @@ public class RelationshipNoteDelegate {
 				this.auditComponentRetriever.retrieveUserAccount(),
 				this.auditComponentRetriever.retrieveDate()));
 	}
+
+	/**
+	 * Returns count of notes by relationship.
+	 * 
+	 * @param relationship relationship
+	 * @return count of notes by relationship
+	 */
+	public long countByRelationship(Relationship relationship) {
+		return this.relationshipNoteDao.countByRelationship(relationship);
+	}
 }

@@ -63,7 +63,8 @@ import omis.web.controller.delegate.BusinessExceptionHandlerDelegate;
  *
  * @author Josh Divine
  * @author Annie Wahl
- * @version 0.1.3 (May 29, 2018)
+ * @author Ryan Johns
+ * @version 0.1.4 (July 6, 2018)
  * @since OMIS 3.0
  */
 @Controller
@@ -517,5 +518,9 @@ public class ManageHearingAnalysisController {
 		binder.registerCustomEditor(Offender.class, 
 				this.offenderPropertyEditorFactory
 				.createOffenderPropertyEditor());
+		binder.registerCustomEditor(
+				Date.class, "time",
+				this.customDateEditorFactory
+				.createCustomTimeOnlyEditor(true));
 	}
 }

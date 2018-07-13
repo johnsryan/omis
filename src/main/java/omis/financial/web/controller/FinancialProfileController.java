@@ -65,6 +65,7 @@ import omis.report.web.controller.delegate.ReportControllerDelegate;
  * @author Josh Divine
  * @author Yidong Li
  * @author Trevor Isles
+ * @author Sierra Haynes
  * @versio 0.1.1 (November 22, 2016)
  * @since OMIS 3.0 */
 @Controller
@@ -239,6 +240,9 @@ public class FinancialProfileController {
 	
 	private static final String FINANCIAL_PROFILE_DETAILS_REPORT_NAME 
 		= "/CaseManagement/FinancialProfile/Financial_Profile";
+	
+	private static final String OFFENDER_FINANCIAL_SUMMARY_REPORT_NAME 
+	= "/CaseManagement/FinancialProfile/Offender_Financial_Summary";	
 
 	/* Report parameter names. */
 	
@@ -592,7 +596,31 @@ public class FinancialProfileController {
 		return this.reportControllerDelegate.constructReportResponseEntity(
 				doc, reportFormat);
 	}
-	
+	/**
+	 * Returns the financial summary report for the specified offender.
+	 * 
+	 * @param offender offender
+	 * @param reportFormat report format
+	 * @return response entity with report
+	 */
+	@RequestMapping(value = "/offenderFinancialSummaryReport.html",
+			method = RequestMethod.GET)
+	@PreAuthorize("hasRole('FINANCIAL_PROFILE_VIEW') or hasRole('ADMIN')")
+	public ResponseEntity<byte []> reportOffenderFinancialSummary(@RequestParam(
+			value = "offender", required = true)
+			final Offender offender,
+			@RequestParam(value = "reportFormat", required = true)
+			final ReportFormat reportFormat) {
+		Map<String, String> reportParamMap = new HashMap<String, String>();
+		reportParamMap.put(FINANCIAL_PROFILE_DETAILS_ID_REPORT_PARAM_NAME,
+				Long.toString(offender.getOffenderNumber()));
+		byte[] doc = this.reportRunner.runReport(
+				OFFENDER_FINANCIAL_SUMMARY_REPORT_NAME,
+				reportParamMap, reportFormat);
+		return this.reportControllerDelegate.constructReportResponseEntity(
+				doc, reportFormat);
+	}
+		
 	/* Helper methods. */
 	
 	/*

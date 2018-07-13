@@ -200,7 +200,7 @@ public class ReportCurrentOffenseTermController {
 	 */
 	@RequestMapping(value = "/currentCourtCaseListingReport.html",
 			method = RequestMethod.GET)
-	@PreAuthorize("hasRole('LIST_COURT_CASE') or hasRole('ADMIN')")
+	@PreAuthorize("hasRole('OFFENSE_TERM_LIST') or hasRole('ADMIN')")
 	public ResponseEntity<byte []> reportCourtCaseListing(@RequestParam(
 			value = "person", required = true)
 			final Person person,

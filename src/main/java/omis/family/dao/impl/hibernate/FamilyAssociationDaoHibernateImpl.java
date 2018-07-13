@@ -1,6 +1,5 @@
 package omis.family.dao.impl.hibernate;
 
-/*import java.util.Date;*/
 import java.util.Date;
 import java.util.List;
 
@@ -9,6 +8,7 @@ import omis.datatype.DateRange;
 import omis.family.dao.FamilyAssociationDao;
 import omis.family.domain.FamilyAssociation;
 import omis.offender.domain.Offender;
+import omis.person.domain.Person;
 import omis.relationship.domain.Relationship;
 
 import org.hibernate.SessionFactory;
@@ -19,12 +19,13 @@ import org.hibernate.SessionFactory;
  * @author Joel Norris
  * @author Yidong Li
  * @author Sheronda Vaughn
- * @version 0.1.1 (nov 21, 2017)
+ * @author Stephen Abson
+ * @version 0.1.2 (June 29, 2018)
  * @since OMIS 3.0
  */
 public class FamilyAssociationDaoHibernateImpl 
-	extends GenericHibernateDaoImpl<FamilyAssociation>
-	implements FamilyAssociationDao {
+		extends GenericHibernateDaoImpl<FamilyAssociation>
+		implements FamilyAssociationDao {
 
 	/* Query names. */
 	private static final String FIND_BY_RELATIONSHIP_AND_DATERANGE_QUERY_NAME
@@ -36,19 +37,21 @@ public class FamilyAssociationDaoHibernateImpl
 		= "findFamilyAssociationOnDate";
 	private static final String FIND_DATE_RANGE_OVERLAP_QUERY_NAME
 		= "findFamilyAssociationDateRangeOverlap";
-	
 	private static final String FIND_ALL_ASSOCIATIONS_QUERY_NAME
 		= "findAllFamilyAssociations";
-	
 	private static final String FIND_CONFLICTING_ASSOCIATIONS_COUNT_QUERY_NAME
 		= "findConflictingFamilyAssociationsCount";
-	
 	private static final String 
 		FIND_CONFLICTING_ASSOCIATIONS_EXCLUDING_COUNT_QUERY_NAME
 		= "findConflictingFamilyAssociationsExcludingCount";
-	
 	private static final String FIND_ALL_ASSOCIATIONS_BY_OFFENDER_QUERY_NAME
 		= "findAllAssociationsByOffender";
+	private static final String FIND_BY_PERSON_QUERY_NAME
+		= "findFamilyAssociationsByPerson";
+	private static final String DELETE_BY_RELATIONSHIP_QUERY_NAME
+		= "deleteFamilyAssociationsByRelationship";
+	private static final String COUNT_BY_RELATIONSHIP_QUERY_NAME
+		= "countFamilyAssociationsByRelationship";
 		
 	/* Parameter names. */
 	private static final String RELATIONSHIP_PARAM_NAME = "relationship";
@@ -59,8 +62,9 @@ public class FamilyAssociationDaoHibernateImpl
 	private static final String EXCLUDED_FAMILY_ASSOCIATION_PARAM_NAME 
 		= "excludedFamilyAssociation";
 	private static final String OFFENDER_PARAM_NAME = "offender";
-			
-	/* Property names. */
+	private static final String PERSON_PARAM_NAME = "person";
+	
+	/* Constructors. */
 	
 	/**
 	 * Instantiates a default instance of family association data access object.
@@ -74,12 +78,14 @@ public class FamilyAssociationDaoHibernateImpl
 		super(sessionFactory, entityName);
 	}
 	
+	/* Method implementations. */
+	
 	/** {@inheritDoc} */
 	@Override
 	public FamilyAssociation find(
 			final Relationship relationship, final DateRange dateRange) {
-		Date startDate = dateRange.getStartDate();
-		Date endDate = dateRange.getEndDate();
+		Date startDate = DateRange.getStartDate(dateRange);
+		Date endDate = DateRange.getEndDate(dateRange);
 		FamilyAssociation association = (FamilyAssociation) 
 			this.getSessionFactory().getCurrentSession()
 			.getNamedQuery(FIND_BY_RELATIONSHIP_AND_DATERANGE_QUERY_NAME)
@@ -95,8 +101,8 @@ public class FamilyAssociationDaoHibernateImpl
 	public FamilyAssociation findExcluding(
 			final FamilyAssociation association, 
 			final Relationship relationship, final DateRange dateRange) {
-		Date startDate = dateRange.getStartDate();
-		Date endDate = dateRange.getEndDate();
+		Date startDate = DateRange.getStartDate(dateRange);
+		Date endDate = DateRange.getEndDate(dateRange);
 		FamilyAssociation familyAssociation = (FamilyAssociation) 
 			this.getSessionFactory().getCurrentSession()
 			.getNamedQuery(
@@ -130,8 +136,10 @@ public class FamilyAssociationDaoHibernateImpl
 		long overlaps = (long) this.getSessionFactory()
 			.getCurrentSession()
 			.getNamedQuery(FIND_DATE_RANGE_OVERLAP_QUERY_NAME)
-			.setDate(START_DATE_PARAM_NAME, dateRange.getStartDate())
-			.setDate(END_DATE_PARAM_NAME, dateRange.getEndDate())
+			.setTimestamp(START_DATE_PARAM_NAME,
+					DateRange.getStartDate(dateRange))
+			.setTimestamp(END_DATE_PARAM_NAME,
+					DateRange.getEndDate(dateRange))
 			.setParameter(RELATIONSHIP_PARAM_NAME, relationship)
 			.uniqueResult();
 		return overlaps;
@@ -141,43 +149,45 @@ public class FamilyAssociationDaoHibernateImpl
 	@Override
 	public List<FamilyAssociation> findAll() {
 		@SuppressWarnings("unchecked")
-		List<FamilyAssociation> associations = (List<FamilyAssociation>) 
+		List<FamilyAssociation> associations = 
 			this.getSessionFactory().getCurrentSession()
-			.getNamedQuery(FIND_ALL_ASSOCIATIONS_QUERY_NAME)
-			.list();
+				.getNamedQuery(FIND_ALL_ASSOCIATIONS_QUERY_NAME)
+				.list();
 		return associations;
-	};
+	}
 	
 	/** {@inheritDoc} */
 	@Override
 	public Long findConflicting(final Relationship relationship,
 		final DateRange dateRange) {
-		Long count = (long) 0;
-		count = (Long) this.getSessionFactory().getCurrentSession()
+		Long count = (long) this.getSessionFactory().getCurrentSession()
 			.getNamedQuery(FIND_CONFLICTING_ASSOCIATIONS_COUNT_QUERY_NAME)
-			.setDate(START_DATE_PARAM_NAME, dateRange.getStartDate())
-			.setDate(END_DATE_PARAM_NAME, dateRange.getEndDate())
+			.setTimestamp(START_DATE_PARAM_NAME,
+					DateRange.getStartDate(dateRange))
+			.setTimestamp(END_DATE_PARAM_NAME,
+					DateRange.getEndDate(dateRange))
 			.setParameter(RELATIONSHIP_PARAM_NAME, relationship)
 			.uniqueResult();
 		return count;
-	};
+	}
 	
 	/** {@inheritDoc} */
 	@Override
 	public Long findConflictingExcluding(final Relationship relationship,
 		final DateRange dateRange, final FamilyAssociation familyAssociation) {
-		Long count = (long) 0;
-		count = (Long) this.getSessionFactory().getCurrentSession()
+		Long count = (long) this.getSessionFactory().getCurrentSession()
 			.getNamedQuery(
 					FIND_CONFLICTING_ASSOCIATIONS_EXCLUDING_COUNT_QUERY_NAME)
-			.setDate(START_DATE_PARAM_NAME, dateRange.getStartDate())
-			.setDate(END_DATE_PARAM_NAME, dateRange.getEndDate())
+			.setTimestamp(START_DATE_PARAM_NAME,
+					DateRange.getStartDate(dateRange))
+			.setTimestamp(END_DATE_PARAM_NAME,
+					DateRange.getEndDate(dateRange))
 			.setParameter(RELATIONSHIP_PARAM_NAME, relationship)
 			.setParameter(
 					EXCLUDED_FAMILY_ASSOCIATION_PARAM_NAME, familyAssociation)
 			.uniqueResult();
 		return count;
-	};
+	}
 	
 	/** {@inheritDoc} */
 	@Override
@@ -189,5 +199,38 @@ public class FamilyAssociationDaoHibernateImpl
 			.setParameter(OFFENDER_PARAM_NAME, offender)
 			.list();
 		return associations;
-	};
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public List<FamilyAssociation> findByPerson(final Person person) {
+		@SuppressWarnings("unchecked")
+		List<FamilyAssociation> associations = this.getSessionFactory()
+				.getCurrentSession()
+				.getNamedQuery(FIND_BY_PERSON_QUERY_NAME)
+				.setParameter(PERSON_PARAM_NAME, person)
+				.list();
+		return associations;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public long countByRelationship(
+			final Relationship relationship) {
+		long count = (Long) this.getSessionFactory().getCurrentSession()
+				.getNamedQuery(COUNT_BY_RELATIONSHIP_QUERY_NAME)
+				.setParameter(RELATIONSHIP_PARAM_NAME, relationship)
+				.uniqueResult();
+		return count;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public int removeByRelationship(
+			final Relationship relationship) {
+		return this.getSessionFactory().getCurrentSession()
+				.getNamedQuery(DELETE_BY_RELATIONSHIP_QUERY_NAME)
+				.setParameter(RELATIONSHIP_PARAM_NAME, relationship)
+				.executeUpdate();
+	}
 }

@@ -41,6 +41,7 @@ import org.springframework.web.servlet.ModelAndView;
 import omis.address.domain.Address;
 import omis.address.domain.ZipCode;
 import omis.address.web.controller.delegate.AddressFieldsControllerDelegate;
+import omis.address.web.form.AddressFields;
 import omis.beans.factory.PropertyEditorFactory;
 import omis.beans.factory.spring.CustomDateEditorFactory;
 import omis.country.domain.Country;
@@ -251,12 +252,19 @@ public class TravelPermitController {
 	@PreAuthorize("hasRole('TRAVEL_PERMIT_CREATE') or hasRole('ADMIN')")
 	public ModelAndView create(
 		@RequestParam(value = "offender", required = true)
-			final Offender offender, @RequestParam(value = "travelPermit", required = false)
+			final Offender offender, @RequestParam(value = "travelPermit",
+			required = false)
 			final TravelPermit travelPermit) {
 			TravelPermitForm travelPermitForm 
 				= new TravelPermitForm();
 			if(travelPermit != null) {
-				this.populateTravelPermitForm(travelPermitForm, travelPermit, true);
+				this.populateTravelPermitForm(travelPermitForm, travelPermit,
+				true);
+			} else {
+				AddressFields addressFields = new AddressFields();
+				addressFields.setCountry(this.travelPermitService
+				.findHomeCountry());
+				travelPermitForm.setAddressFields(addressFields);
 			}
 			boolean createTravelPermit = true; 
 			List<TravelPermitNoteItem> travelPermitNoteItems 
@@ -598,81 +606,7 @@ public class TravelPermitController {
 			travelPermit.getOffender().getId()));
 	}
 	
-	// Returns a model and view for editing the specified travel permit
-	private ModelAndView prepareEditMav(
-		final TravelPermitForm travelPermitForm, 
-		final Offender offender, final Boolean createTravelPermit,
-		final List<TravelPermitNoteItem> travelPermitNoteItems,
-		final int travelPermitNoteIndex) {
-			ModelAndView mav = new ModelAndView(EDIT_VIEW_NAME);
-			ModelMap map = mav.getModelMap();
-			mav.addObject(TRAVEL_PERMIT_FORM_MODEL_KEY, 
-				travelPermitForm);
-			List<TravelPermitPeriodicity> periodicities 
-			= this.travelPermitService.findPeriodicity();
-			mav.addObject(PERIODICITIES_MODEL_KEY, periodicities);
-			DestinationOption[] destinationOptions
-				= DestinationOption.values(); 
-			mav.addObject(DESTINATION_OPTIONS_MODEL_KEY, destinationOptions);
-			AddressOption[] addressOptions
-			= AddressOption.values(); 
-			mav.addObject(ADDRESS_OPTIONS_MODEL_KEY, addressOptions);
-
-			List<TravelMethod> transportMethods
-			= this.travelPermitService.findTravelMethods();
-			mav.addObject(TRANSPORT_METHODS_MODEL_KEY, transportMethods);
-			
-			mav.addObject(CREATE_TRAVEL_PERMIT_MODEL_KEY, createTravelPermit);
-			List<Country> countries = this.travelPermitService.findCountries();
-			mav.addObject(PARTIAL_ADDRESS_COUNTRIES_MODEL_KEY, countries);
-			mav.addObject(TRAVEL_PERMIT_NOTE_INDEX_MODEL_KEY,
-				travelPermitNoteIndex);
-			List<State> states 
-				= this.travelPermitService.findStates();
-			List<City> cities 
-				= this.travelPermitService.findCitiesByState(null);
-			List<ZipCode> zipCodes 
-				= this.travelPermitService.findZipCodes(null);
-				this.addressFieldsControllerDelegate.prepareEditAddressFields(
-					map, countries, states, cities, zipCodes, 
-					ADDRESS_FIELDS_PROPERTY_NAME);
-				
-			Country country = this.travelPermitService.findHomeCountry();
-			List<State> partialAddressStates 
-				= this.travelPermitService.findStatesByCountry(country);
-			mav.addObject(PARTIAL_ADDRESS_STATES_MODEL_KEY, partialAddressStates);
-			mav.addObject(OFFENDER_MODEL_KEY, offender);
-			mav.addObject(TRAVEL_PERMIT_NOTE_ITEMS_MODEL_KEY,
-				travelPermitNoteItems);
-			this.offenderSummaryModelDelegate.add(mav.getModelMap(), offender);
-			if(travelPermitForm.getStartDate()!=null){
-				List<City> partialAddressCities 
-				= this.travelPermitService.findCitiesByState(
-					travelPermitForm.getPartialAddressState());
-				mav.addObject(PARTIAL_ADDRESS_CITIES_MODEL_KEY,
-					partialAddressCities);
-				List<ZipCode> partialAddressZipCodes 
-				= this.travelPermitService.findZipCodes(
-					travelPermitForm.getPartialAddressCity());
-				mav.addObject(PARTIAL_ADDRESS_ZIPCODES_MODEL_KEY,
-					partialAddressZipCodes);
-			}
-			return mav;
-	}
 	
-	// Prepares redisplay edit/create screen
-	private ModelAndView prepareRedisplayEditMav(
-		final TravelPermitForm travelPermitForm, 
-		final Offender offender, final Boolean createTravelPermit,
-		final List<TravelPermitNoteItem> travelPermitNoteItems,
-		final int travelPermitNoteIndex,
-		final  BindingResult result) {
-		ModelAndView mav = this.prepareEditMav(travelPermitForm, offender, 
-			createTravelPermit,	travelPermitNoteItems, travelPermitNoteIndex);
-		mav.addObject(BindingResult.MODEL_KEY_PREFIX
-			+ TRAVEL_PERMIT_FIELDS_MODEL_KEY, result);
-		return mav;
-	}	
 	
 	/**
 	 * List city options by state 
@@ -959,7 +893,8 @@ public class TravelPermitController {
 	 * @param copy whether this form is for copying the specified travel permit
 	 * @return populated travel permit form
 	 */
-	TravelPermitForm populateTravelPermitForm(final TravelPermitForm form, TravelPermit permit, final Boolean copy) {
+	private TravelPermitForm populateTravelPermitForm(final TravelPermitForm form,
+			final TravelPermit permit, final Boolean copy) {
 		if(permit.getDestination().getAddress()!=null){   // Full address
 			Address address = permit.getDestination().getAddress();
 			form.setAddressOption(AddressOption.USE_EXISTING);
@@ -1044,6 +979,110 @@ public class TravelPermitController {
 		form.setTripPurpose(permit.getPurpose());
 		return form;
 	}
+	
+	/*
+	 * Returns a model and view for editing the specified travel permit.
+	 *  
+	 * @param form travel permit form
+	 * @param offender offender
+	 * @param createTravelPermit whether create travel permit applies
+	 * @param travelPermitNoteItems travel permit not items
+	 * @param travelPermitNoteIndex travel permit note index
+	 * @return
+	 */
+	private ModelAndView prepareEditMav(
+		final TravelPermitForm form, 
+		final Offender offender,
+		final Boolean createTravelPermit,
+		final List<TravelPermitNoteItem> travelPermitNoteItems,
+		final int travelPermitNoteIndex) {
+			//ModelAndView mav = new ModelAndView(EDIT_VIEW_NAME);
+			ModelMap map = new ModelMap();
+			
+			map.addAttribute(TRAVEL_PERMIT_FORM_MODEL_KEY, 
+				form);
+			List<TravelPermitPeriodicity> periodicities 
+				= this.travelPermitService.findPeriodicity();
+			List<TravelMethod> transportMethods
+				= this.travelPermitService.findTravelMethods();
+			List<Country> countries = this.travelPermitService.findCountries();
+			final List<State> states; 
+			final List<City> cities;
+			final List<ZipCode> zipCodes;
+			if (form.getAddressFields() != null) {
+				//If country is selected
+				if (form.getAddressFields().getCountry() != null) {
+					states = this.travelPermitService
+							.findStatesByCountry(form.getAddressFields().getCountry());
+					if (form.getAddressFields().getState() == null) {
+						cities = this.travelPermitService.findCitiesByCountryWithoutState(
+								form.getAddressFields().getCountry());
+					} else if (form.getAddressFields().getState() != null){
+						cities = this.travelPermitService
+								.findCitiesByState(form.getAddressFields().getState());
+					} else {
+						cities = Collections.emptyList();
+					}
+				} else {
+					states = Collections.emptyList();
+					cities = Collections.emptyList();
+				}
+				if (form.getAddressFields().getCity() != null) {
+					zipCodes = this.travelPermitService
+							.findZipCodes(form.getAddressFields().getCity());
+				} else {
+					zipCodes = Collections.emptyList();
+				}
+			}
+			else {
+				states = Collections.emptyList();
+				cities = Collections.emptyList();;
+				zipCodes = Collections.emptyList();;
+			}
+			this.addressFieldsControllerDelegate.prepareEditAddressFields(
+				map, countries, states, cities, zipCodes, 
+				ADDRESS_FIELDS_PROPERTY_NAME);
+			Country country = this.travelPermitService.findHomeCountry();
+			List<State> partialAddressStates 
+				= this.travelPermitService.findStatesByCountry(country);
+			this.offenderSummaryModelDelegate.add(map, offender);
+			List<City> partialAddressCities 
+				= this.travelPermitService.findCitiesByState(form.getPartialAddressState());
+			List<ZipCode> partialAddressZipCodes 
+				= this.travelPermitService.findZipCodes(form.getPartialAddressCity());
+			map.addAttribute(DESTINATION_OPTIONS_MODEL_KEY, DestinationOption.values());
+			map.addAttribute(ADDRESS_OPTIONS_MODEL_KEY, AddressOption.values());
+			map.addAttribute(PERIODICITIES_MODEL_KEY, periodicities);
+			map.addAttribute(TRANSPORT_METHODS_MODEL_KEY, transportMethods);
+			map.addAttribute(CREATE_TRAVEL_PERMIT_MODEL_KEY, createTravelPermit);
+			map.addAttribute(PARTIAL_ADDRESS_COUNTRIES_MODEL_KEY, countries);
+			map.addAttribute(TRAVEL_PERMIT_NOTE_INDEX_MODEL_KEY,
+				travelPermitNoteIndex);
+			map.addAttribute(PARTIAL_ADDRESS_STATES_MODEL_KEY, partialAddressStates);
+			map.addAttribute(OFFENDER_MODEL_KEY, offender);
+			map.addAttribute(TRAVEL_PERMIT_NOTE_ITEMS_MODEL_KEY,
+				travelPermitNoteItems);
+			map.addAttribute(PARTIAL_ADDRESS_CITIES_MODEL_KEY,
+					partialAddressCities);
+			map.addAttribute(PARTIAL_ADDRESS_ZIPCODES_MODEL_KEY,
+				partialAddressZipCodes);
+			//return mav;
+			return new ModelAndView(EDIT_VIEW_NAME, map);
+	}
+	
+	// Prepares redisplay edit/create screen
+	private ModelAndView prepareRedisplayEditMav(
+		final TravelPermitForm travelPermitForm, 
+		final Offender offender, final Boolean createTravelPermit,
+		final List<TravelPermitNoteItem> travelPermitNoteItems,
+		final int travelPermitNoteIndex,
+		final  BindingResult result) {
+		ModelAndView mav = this.prepareEditMav(travelPermitForm, offender, 
+			createTravelPermit,	travelPermitNoteItems, travelPermitNoteIndex);
+		mav.addObject(BindingResult.MODEL_KEY_PREFIX
+			+ TRAVEL_PERMIT_FIELDS_MODEL_KEY, result);
+		return mav;
+	}	
 	
 	/**
 	 * Sets up and registers property editors.

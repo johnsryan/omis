@@ -27,8 +27,9 @@
 <fmt:setBundle basename="omis.locationterm.msgs.profile" var="profileBundle"/>
 <fmt:bundle basename="omis.locationterm.msgs.locationTerm">
 <ul>
+	<%-- Disable link until supervisory organizations are activated - SA --%>
 	<c:if test="${not empty offender}">
-		<sec:authorize access="hasRole('LOCATION_TERM_CREATE') or hasRole('ADMIN')">
+		<sec:authorize access="hasRole('DISABLED') and (hasRole('LOCATION_TERM_CREATE') or hasRole('ADMIN'))">
 			<li><a class="createLink" href="${pageContext.request.contextPath}/locationTerm/create.html?offender=${offender.id}"><span class="visibleLinkLabel"><fmt:message key="createLocationTermTitle"/></span></a></li>
 		</sec:authorize>
 	</c:if>

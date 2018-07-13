@@ -55,6 +55,10 @@
 				<constructor-arg name="relationshipNoteDelegate" ref="relationshipNoteDelegate"/>
 				<constructor-arg name="relationshipNoteCategoryDesignatorDelegate" ref="relationshipNoteCategoryDesignatorDelegate"/>
 				<constructor-arg name="offenderDelegate" ref="offenderDelegate"/>
+				<constructor-arg name="familyAssociationDelegate" ref="familyAssociationDelegate"/>
+				<constructor-arg name="victimNoteDelegate" ref="victimNoteDelegate"/>
+				<constructor-arg name="victimAssociationDelegate" ref="victimAssociationDelegate"/>
+				<constructor-arg name="visitationAssociationDelegate" ref="visitationAssociationDelegate"/>
 		</bean>
 		
 	<!--  Report Services -->	

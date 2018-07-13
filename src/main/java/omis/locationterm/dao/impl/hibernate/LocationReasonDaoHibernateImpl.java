@@ -17,6 +17,8 @@
  */
 package omis.locationterm.dao.impl.hibernate;
 
+import java.util.List;
+
 import org.hibernate.SessionFactory;
 
 import omis.dao.impl.hibernate.GenericHibernateDaoImpl;
@@ -34,6 +36,18 @@ public class LocationReasonDaoHibernateImpl
 		extends GenericHibernateDaoImpl<LocationReason>
 		implements LocationReasonDao {
 	
+	/* Query names. */
+	
+	private static final String FIND_QUERY_NAME = "findLocationReason";
+	
+	private static final String FIND_ALL_QUERY_NAME = "findLocationReasons";
+	
+	/* Parameter names. */
+	
+	private static final String NAME_PARAM_NAME = "name";
+	
+	/* Constructors. */
+	
 	/**
 	 * Instantiates an Hibernate implementation of data access object for
 	 * location reasons.
@@ -45,5 +59,27 @@ public class LocationReasonDaoHibernateImpl
 			final SessionFactory sessionFactory,
 			final String entityName) {
 		super(sessionFactory, entityName);
+	}
+
+	/* Method implementations. */
+	
+	/** {@inheritDoc} */
+	@Override
+	public LocationReason find(final String name) {
+		LocationReason reason = (LocationReason) this.getSessionFactory()
+				.getCurrentSession().getNamedQuery(FIND_QUERY_NAME)
+				.setParameter(NAME_PARAM_NAME, name)
+				.uniqueResult();
+		return reason;
+	}
+	
+	/** {@inheritDoc} */
+	@Override
+	public List<LocationReason> findAll() {
+		@SuppressWarnings("unchecked")
+		List<LocationReason> reasons = this.getSessionFactory()
+				.getCurrentSession().getNamedQuery(FIND_ALL_QUERY_NAME)
+				.list();
+		return reasons;
 	}
 }

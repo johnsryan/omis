@@ -15,7 +15,7 @@
 				<omis:reportPro reportPath="/CaseManagement/Contact_Letter&DOC_ID=${offender.offenderNumber}" decorate="no" title="" className="newTab reportLink"><fmt:message key="contactLetterLinkLabel"/></omis:reportPro>
 			</li>
 			</c:if>
-		</sec:authorize>
+		</sec:authorize>		
 		<sec:authorize access="hasRole('OFFENDER_PROFILE_VIEW') or hasRole('ADMIN')">
 			<c:if test="${not empty offender}">
 			<li>
@@ -27,6 +27,13 @@
 			<c:if test="${not empty offender}">
 			<li>
 				<a href="${pageContext.request.contextPath}/offender/profileOffenderContactReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab adobeReportLink"><fmt:message key="offenderContactReportLinkLabel"/></a>
+			</li>
+			</c:if>
+		</sec:authorize>
+		<sec:authorize access="hasRole('OFFENDER_PROFILE_VIEW') or hasRole('ADMIN')">
+			<c:if test="${not empty offender}">
+			<li>
+				<a href="${pageContext.request.contextPath}/offender/offenderFinancialSummaryReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab adobeReportLink"><fmt:message key="offenderFinancialSummaryReportLinkLabel"/></a>
 			</li>
 			</c:if>
 		</sec:authorize>

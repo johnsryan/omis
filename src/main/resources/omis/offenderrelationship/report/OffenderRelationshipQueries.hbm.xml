@@ -161,6 +161,14 @@
 				inner join telephoneNumber.contact contact
 				where contact.person = person
 				  and telephoneNumber.primary = true
+			),
+			(
+				select count(relationship)
+				from omis.relationship.domain.Relationship as relationship
+				inner join relationship.firstPerson firstPerson
+				inner join relationship.secondPerson secondPerson
+				where firstPerson = person
+				or secondPerson = person
 			)
 		)
 		from omis.person.domain.Person as person
@@ -235,6 +243,14 @@
 				inner join telephoneNumber.contact contact
 				where contact.person = offender
 				  and telephoneNumber.primary = true
+			),
+			(
+				select count(relationship)
+				from omis.relationship.domain.Relationship as relationship
+				inner join relationship.firstPerson firstPerson
+				inner join relationship.secondPerson secondPerson
+				where firstPerson = offender
+				or secondPerson = offender
 			)
 		)
 		from omis.offender.domain.Offender as offender
@@ -314,6 +330,14 @@
 				inner join telephoneNumber.contact contact
 				where contact.person = person
 				  and telephoneNumber.primary = true
+			),
+			(
+				select count(relationship)
+				from omis.relationship.domain.Relationship as relationship
+				inner join relationship.firstPerson firstPerson
+				inner join relationship.secondPerson secondPerson
+				where firstPerson = person
+				or secondPerson = person
 			)
 		)
 		from omis.person.domain.Person as person
@@ -393,6 +417,14 @@
 				inner join telephoneNumber.contact contact
 				where contact.person = person
 				  and telephoneNumber.primary = true
+			),
+			(
+				select count(relationship)
+				from omis.relationship.domain.Relationship as relationship
+				inner join relationship.firstPerson firstPerson
+				inner join relationship.secondPerson secondPerson
+				where firstPerson = person
+				or secondPerson = person
 			)
 		)
 		from omis.person.domain.Person as person
@@ -536,6 +568,14 @@
 				inner join telephoneNumber.contact contact
 				where contact.person = person
 				  and telephoneNumber.primary = true
+			),
+			(
+				select count(relationship)
+				from omis.relationship.domain.Relationship as relationship
+				inner join relationship.firstPerson firstPerson
+				inner join relationship.secondPerson secondPerson
+				where firstPerson = person
+				or secondPerson = person
 			)
 		)
 		from omis.person.domain.Person as person
@@ -645,6 +685,14 @@
 				inner join telephoneNumber.contact contact
 				where contact.person = person
 				  and telephoneNumber.primary = true
+			),
+			(
+				select count(relationship)
+				from omis.relationship.domain.Relationship as relationship
+				inner join relationship.firstPerson firstPerson
+				inner join relationship.secondPerson secondPerson
+				where firstPerson = person
+				or secondPerson = person
 			)
 		)
 		from omis.person.domain.Person as person
@@ -725,6 +773,14 @@
 				inner join telephoneNumber.contact contact
 				where contact.person = person
 				  and telephoneNumber.primary = true
+			),
+			(
+				select count(relationship)
+				from omis.relationship.domain.Relationship as relationship
+				inner join relationship.firstPerson firstPerson
+				inner join relationship.secondPerson secondPerson
+				where firstPerson = person
+				or secondPerson = person
 			)
 		)
 		from omis.person.domain.Person as person
@@ -805,6 +861,14 @@
 				inner join telephoneNumber.contact contact
 				where contact.person = person
 				  and telephoneNumber.primary = true
+			),
+			(
+				select count(relationship)
+				from omis.relationship.domain.Relationship as relationship
+				inner join relationship.firstPerson firstPerson
+				inner join relationship.secondPerson secondPerson
+				where firstPerson = person
+				or secondPerson = person
 			)
 		)
 		from omis.person.domain.Person as person
@@ -885,6 +949,14 @@
 				inner join telephoneNumber.contact contact
 				where contact.person = person
 				  and telephoneNumber.primary = true
+			),
+			(
+				select count(relationship)
+				from omis.relationship.domain.Relationship as relationship
+				inner join relationship.firstPerson firstPerson
+				inner join relationship.secondPerson secondPerson
+				where firstPerson = person
+				or secondPerson = person
 			)
 		)
 		from omis.person.domain.Person as person

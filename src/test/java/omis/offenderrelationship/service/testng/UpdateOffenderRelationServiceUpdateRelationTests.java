@@ -48,6 +48,7 @@ import omis.util.PropertyValueAsserter;
  * and without passing in on update, even if one exist.
  *
  * @author Sheronda Vaughn
+ * @author Stephen Abson
  * @version 0.0.1 (Mar 22, 2018)
  * @since OMIS 3.0
  */
@@ -147,6 +148,52 @@ public class UpdateOffenderRelationServiceUpdateRelationTests
 			.performAssertions(person);
 	}
 
+	/**
+	 * Tests update of relation with SSN when relation initially does not
+	 * have an identity.
+	 * 
+	 * @throws PersonIdentityExistsException if person identity exists
+	 * @throws PersonNameExistsException if person name exists
+	 */
+	public void testUpdateRelationWithoutIdentity()
+			throws PersonNameExistsException,
+				PersonIdentityExistsException {
+		
+		// Arrangements
+		final String lastName = "LastName";
+		final String firstName = "FirstName";
+		Person person = this.personDelegate
+				.create(lastName, firstName, null, null);
+		
+		// Action - updates person with identity information
+		final Integer socialSecurityNumber = 123456789;
+		final Sex female = Sex.FEMALE;
+		final Date birthDate = this.parseDateText("12/12/1992");
+		final Boolean deceased = false;
+		person = this.updateOffenderRelationService
+				.updateRelation(person, lastName, firstName, null, null, female,
+						birthDate, null, null, null, socialSecurityNumber, null,
+						deceased, null);
+		
+		// Assertions
+		PropertyValueAsserter.create()
+			.addExpectedValue("name.lastName", lastName)
+			.addExpectedValue("name.firstName", firstName)
+			.addExpectedValue("name.middleName", null)
+			.addExpectedValue("name.suffix", null)
+			.addExpectedValue("identity.sex", female)
+			.addExpectedValue("identity.birthDate", birthDate)
+			.addExpectedValue("identity.birthCountry", null)
+			.addExpectedValue("identity.birthState", null)
+			.addExpectedValue("identity.birthPlace", null)
+			.addExpectedValue("identity.socialSecurityNumber",
+					socialSecurityNumber)
+			.addExpectedValue("identity.stateIdNumber", null)
+			.addExpectedValue("identity.deceased", deceased)
+			.addExpectedValue("identity.deathDate", null)
+			.performAssertions(person);
+	}
+	
 	/**
 	 * Test update relation with existing social security number, but updated
 	 * from person identity social security number.

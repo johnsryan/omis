@@ -65,6 +65,7 @@ import omis.offender.domain.Offender;
 import omis.offender.web.controller.delegate.OffenderSummaryModelDelegate;
 import omis.person.domain.Person;
 import omis.user.domain.UserAccount;
+import omis.util.DateManipulator;
 import omis.util.StringUtility;
 import omis.violationevent.domain.ConditionViolation;
 import omis.violationevent.domain.DisciplinaryCodeViolation;
@@ -76,7 +77,8 @@ import omis.web.controller.delegate.BusinessExceptionHandlerDelegate;
  * 
  * @author Annie Wahl
  * @author Josh Divine
- * @version 0.1.4 (May 3, 2018)
+ * @author Ryan Johns
+ * @version 0.1.5 (July 6, 2018)
  * @since OMIS 3.0
  */
 @Controller
@@ -351,7 +353,7 @@ public class ResolutionController {
 					this.hearingService.updateHearing(hearing,
 							hearing.getLocation(),
 							hearing.getSubject().getInAttendance(),
-							form.getDate(), hearing.getCategory(),
+							DateManipulator.getDateAtTimeOfDay(form.getDate(), form.getTime()), hearing.getCategory(),
 							hearing.getOfficer());
 				}
 				if (!(form.getInAttendance().equals(
@@ -542,8 +544,9 @@ public class ResolutionController {
 								infraction.getHearing().getLocation(),
 								infraction.getHearing().getSubject()
 									.getInAttendance(),
-								form.getDate(), infraction.getHearing()
-									.getCategory(),
+								DateManipulator.getDateAtTimeOfDay(
+										form.getDate(), form.getTime()), 
+								infraction.getHearing().getCategory(),
 								infraction.getHearing().getOfficer());
 					}
 					if (!(form.getInAttendance().equals(
@@ -879,6 +882,7 @@ public class ResolutionController {
 		form.setViolationItems(violationItems);
 		form.setResolutionCategory(resolutionCategory);
 		form.setDate(hearing.getDate());
+		form.setTime(hearing.getDate());
 		form.setInAttendance(hearing.getSubject().getInAttendance());
 		form.setUserAttendanceItems(userAttendanceItems);
 		form.setGroupEdit(false);
@@ -1099,5 +1103,7 @@ public class ResolutionController {
 				UserAccount.class,
 				this.userAccountPropertyEditorFactory
 				.createPropertyEditor());
+		binder.registerCustomEditor(Date.class, "time", 
+				this.customDateEditorFactory.createCustomTimeOnlyEditor(true));
 	}
 }
