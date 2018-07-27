@@ -7,7 +7,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <fmt:bundle basename="omis.employment.msgs.employment">
-<form:form commandName = "employerSearchForm"  id="searchForm" method="POST">
+<form:form commandName="employerSearchForm"  class="searchForm" id="searchForm" method="POST">
 	<fieldset>
 		<p>
 			<label><fmt:message key="searchEmployerByLabel"/></label>

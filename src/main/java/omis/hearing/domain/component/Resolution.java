@@ -19,7 +19,8 @@ package omis.hearing.domain.component;
 
 import java.io.Serializable;
 import java.util.Date;
-
+import omis.condition.domain.Condition;
+import omis.disciplinaryCode.domain.DisciplinaryCode;
 import omis.hearing.domain.DispositionCategory;
 import omis.hearing.domain.ResolutionClassificationCategory;
 import omis.person.domain.Person;
@@ -29,7 +30,7 @@ import omis.person.domain.Person;
  * 
  * @author Annie Wahl 
  * @author Josh Divine
- * @version 0.1.2 (May 4, 2018)
+ * @version 0.1.3 (Jul 17, 2018)
  * @since OMIS 3.0
  */
 public class Resolution implements Serializable {
@@ -49,6 +50,10 @@ public class Resolution implements Serializable {
 	private DispositionCategory disposition;
 	
 	private ResolutionClassificationCategory category;
+	
+	private DisciplinaryCode adjustedCode;
+	
+	private Condition adjustedCondition;
 	
 	/**
 	 * 
@@ -193,7 +198,32 @@ public class Resolution implements Serializable {
 	public void setCategory(final ResolutionClassificationCategory category) {
 		this.category = category;
 	}
-	
-	
 
+	/**
+	 * @return the adjustedCode
+	 */
+	public DisciplinaryCode getAdjustedCode() {
+		return this.adjustedCode;
+	}
+
+	/**
+	 * @param adjustedCode the adjustedCode to set
+	 */
+	public void setAdjustedCode(final DisciplinaryCode adjustedCode) {
+		this.adjustedCode = adjustedCode;
+	}
+
+	/**
+	 * @return the adjustedCondition
+	 */
+	public Condition getAdjustedCondition() {
+		return this.adjustedCondition;
+	}
+
+	/**
+	 * @param adjustedCondition the adjustedCondition to set
+	 */
+	public void setAdjustedCondition(final Condition adjustedCondition) {
+		this.adjustedCondition = adjustedCondition;
+	}
 }

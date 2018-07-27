@@ -93,4 +93,14 @@ public interface Location
 	 */
 	@Override
 	int hashCode();
+	
+	/**
+	 * Returns string representation of {@code this} including organization,
+	 * address and start date.
+	 * 
+	 * @return string representation of {@code this} including organization,
+	 * address and start date
+	 */
+	@Override
+	String toString();
 }

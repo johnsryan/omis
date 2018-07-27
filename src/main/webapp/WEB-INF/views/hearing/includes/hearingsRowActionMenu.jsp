@@ -30,7 +30,21 @@
 				<a href="${pageContext.request.contextPath}/hearing/adjudicateHearingReport.html?hearing=${hearing.id}&reportFormat=PDF" class="newTab adobeReportLink"><fmt:message key="adjudicateHearingReportLinkLabel"/></a>
 			</li>
 		</c:if>
-		</sec:authorize>	
+		</sec:authorize>
+		<sec:authorize access="hasRole('HEARING_VIEW') or hasRole('ADMIN')">
+		<c:if test="${not empty hearing}">
+			<li>
+				<a href="${pageContext.request.contextPath}/hearing/disciplinaryAppealReport.html?hearing=${hearing.id}&reportFormat=PDF" class="newTab adobeReportLink"><fmt:message key="disciplinaryAppealReportLinkLabel"/></a>
+			</li>
+		</c:if>
+		</sec:authorize>
+		<sec:authorize access="hasRole('HEARING_VIEW') or hasRole('ADMIN')">
+		<c:if test="${not empty hearing}">
+			<li>
+				<a href="${pageContext.request.contextPath}/hearing/disciplinaryDecisionReport.html?hearing=${hearing.id}&reportFormat=PDF" class="newTab adobeReportLink"><fmt:message key="disciplinaryDecisionReportLinkLabel"/></a>
+			</li>
+		</c:if>
+		</sec:authorize>					
 		<sec:authorize access="hasRole('HEARING_VIEW') or hasRole('ADMIN')">
 		<c:if test="${not empty hearing}">
 			<li>

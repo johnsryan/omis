@@ -172,15 +172,6 @@ public class LocationTermServiceImpl
 	public List<LocationTerm> findByOffender(final Offender offender) {
 		return this.locationTermDao.findByOffender(offender);
 	}
-
-	/** {@inheritDoc} */
-	@Override
-	public List<Location> findLocations() {
-		
-		// TODO: Remove - SA
-		throw new UnsupportedOperationException(
-				"Finding locations not supported");
-	}
 	
 	/** {@inheritDoc} */
 	@Override
@@ -214,41 +205,47 @@ public class LocationTermServiceImpl
 						LocationTermConflictException, 
 						LocationTermExistsAfterException, 
 						OffenderNotUnderSupervisionException {
+		
+		// Stores start and end date
+		Date startDate = DateRange.getStartDate(dateRange);
+		Date endDate = DateRange.getEndDate(dateRange);
+		
 		// Throws exception if duplicate location term exists
-		if (this.locationTermDao.find(offender, 
-				DateRange.getStartDate(dateRange),
-				DateRange.getEndDate(dateRange)) != null) {
+		if (this.locationTermDao.find(offender, startDate, endDate) != null) {
 			throw new LocationTermExistsException("Location term exists");
 		}
 		
-		// Prevents dates from being equal unless both are null
-		Date startDate = DateRange.getStartDate(dateRange);
-		Date endDate = DateRange.getEndDate(dateRange);
-		if (startDate != null && startDate.equals(endDate)) {
+		// Prevents dates from being equal
+		if (startDate.equals(endDate)) {
 			throw new IllegalArgumentException(
 					"Start and end date cannot be equal");
 		}
 		
 		// Throw exception if the offender does not have a current placement for
 		// the specified date.
-		if (startDate != null) {
-			if(this.placementTermDelegate
-					.findForOffenderOnDate(offender, startDate) == null) {
+		if(this.placementTermDelegate
+			.findForOffenderOnDate(offender, startDate) == null) {
 				throw new OffenderNotUnderSupervisionException("Offender is not"
 						+ " under supervision on the specified date");
-			}
 		}
 		
 		LocationTerm startLocationTerm = this.locationTermDao
 				.findByOffenderOnDate(offender, startDate);
-		//Throws an exception if location terms exist after the start date and 
-		//the end date is null
-		if (endDate == null) {
+		LocationTerm endLocationTerm;
+		// Finds location term on end date when end date is not null
+		// Otherwise, Throws an exception if location terms exist after the
+		// start date and the end date is null
+		if (endDate != null) {
+			endLocationTerm = this.locationTermDao.findByOffenderOnDate(
+					offender, endDate);
+		} else {
 			long locationCount = this.locationTermDao.countAfterDateExcluding(
 					offender, startDate, startLocationTerm);
 			if (locationCount > 0) {
 				throw new LocationTermExistsAfterException(locationCount + 
 					" location term(s) exist after the specified date range.");
+			} else {
+				endLocationTerm = null;
 			}
 		}
 		if (startLocationTerm != null) {
@@ -261,13 +258,8 @@ public class LocationTermServiceImpl
 						+ "in conflict with existing location term.");
 			}
 			
-			//Get end location term when possible
-			LocationTerm endLocationTerm = null;
 			if (endDate != null) {
-				endLocationTerm = this.locationTermDao.findByOffenderOnDate(
-						offender, endDate);
-				ArrayList<LocationTerm> excludedLocationTerms 
-					= new ArrayList<LocationTerm>();
+				List<LocationTerm> excludedLocationTerms = new ArrayList<>();
 				excludedLocationTerms.add(startLocationTerm);
 				if (endLocationTerm != null) {
 					excludedLocationTerms.add(endLocationTerm);
@@ -276,7 +268,7 @@ public class LocationTermServiceImpl
 				// dates that can not be automatically adjusted
 				long existingCount = this.locationTermDao.countExcluding(
 						offender, startDate, endDate, 
-						excludedLocationTerms.toArray(new LocationTerm[0]));
+						excludedLocationTerms.toArray(new LocationTerm[] {}));
 				if (existingCount > 0) {
 					throw new LocationTermConflictException("Date span covers " 
 							+ existingCount + " existing location term(s) that "
@@ -292,35 +284,54 @@ public class LocationTermServiceImpl
 					this.auditComponentRetriever.retrieveUserAccount(),
 					this.auditComponentRetriever.retrieveDate()));
 			this.locationTermDao.makePersistent(startLocationTerm);
-			
-			//Update the existing end location term if it exists
-			if (endLocationTerm != null) {
-				endLocationTerm.setDateRange(new DateRange(endDate, 
-						DateRange.getEndDate(endLocationTerm.getDateRange())));
-				endLocationTerm.setUpdateSignature(new UpdateSignature(
-						this.auditComponentRetriever.retrieveUserAccount(),
-						this.auditComponentRetriever.retrieveDate()));
-			}
-			
 		}
 		
-		// Updates the existing location reason term if it exists
-		LocationReasonTerm activeLocationReasonTerm 
-		= this.locationReasonTermDelegate.findForOffenderOnDate(offender, 
+		//Update the existing end location term if it exists
+		if (endLocationTerm != null) {
+			endLocationTerm.setDateRange(new DateRange(endDate, 
+					DateRange.getEndDate(endLocationTerm.getDateRange())));
+			endLocationTerm.setUpdateSignature(new UpdateSignature(
+					this.auditComponentRetriever.retrieveUserAccount(),
+					this.auditComponentRetriever.retrieveDate()));
+		}
+		
+		// Updates the location reason term on start date if it exists
+		LocationReasonTerm locationReasonTermOnStartDate
+			= this.locationReasonTermDelegate.findForOffenderOnDate(offender, 
 				startDate);
-		if (activeLocationReasonTerm != null) {
+		if (locationReasonTermOnStartDate != null) {
 			try {
-				this.locationReasonTermDelegate.update(activeLocationReasonTerm, 
+				this.locationReasonTermDelegate.update(
+						locationReasonTermOnStartDate, 
 						new DateRange(DateRange.getStartDate(
-								activeLocationReasonTerm.getDateRange()), 
+								locationReasonTermOnStartDate.getDateRange()), 
 								startDate),
-						activeLocationReasonTerm.getReason());
+						locationReasonTermOnStartDate.getReason());
 			} catch (LocationReasonTermExistsException e) {
 				
 				// It should not be possible for two reason terms for the same
 				// location term to exist with the same start date
 				// This would be bad data and unrecoverable in the application
 				throw new AssertionError("Conflicting reason term exists", e);
+			}
+		}
+		
+		// Updates location reason term on end date if it exists
+		LocationReasonTerm locationReasonTermOnEndDate
+			= this.locationReasonTermDelegate.findForOffenderOnDate(offender,
+					endDate);
+		if (locationReasonTermOnEndDate != null) {
+			try {
+				this.locationReasonTermDelegate.update(
+						locationReasonTermOnEndDate,
+						new DateRange(endDate,
+							DateRange.getEndDate(
+								locationReasonTermOnEndDate.getDateRange())),
+						locationReasonTermOnEndDate.getReason());
+			} catch (LocationReasonTermExistsException e) {
+				
+				// As above when location reason term on start date is ended
+				throw new AssertionError("Conflicting reason term exists" ,e); 
 			}
 		}
 		
@@ -349,27 +360,26 @@ public class LocationTermServiceImpl
 						LocationTermExistsAfterException,
 						LocationTermLockedException, 
 						OffenderNotUnderSupervisionException {
+		
 		// Prevents update of locked location term
 		if (locationTerm.getLocked()) {
 			throw new LocationTermLockedException("Location term locked");
 		}
 		
-		// Prevents dates from being equal unless both are null
+		// Prevents dates from being equal
 		Date startDate = DateRange.getStartDate(dateRange);
 		Date endDate = DateRange.getEndDate(dateRange);
-		if (startDate != null && startDate.equals(endDate)) {
+		if (startDate.equals(endDate)) {
 			throw new IllegalArgumentException(
 					"Start and end date cannot be equal");
 		}
 		
 		// Throw exception if the offender does not have a current placement for
 		// the specified date.
-		if (startDate != null) {
-			if(this.placementTermDelegate.findForOffenderOnDate(
-					locationTerm.getOffender(), startDate) == null) {
-				throw new OffenderNotUnderSupervisionException("Offender is not"
-						+ " under supervision on the specified date");
-			}
+		if(this.placementTermDelegate.findForOffenderOnDate(
+				locationTerm.getOffender(), startDate) == null) {
+			throw new OffenderNotUnderSupervisionException("Offender is not"
+					+ " under supervision on the specified date");
 		}
 		
 		// Throws exception if duplicate location term exists
@@ -377,6 +387,18 @@ public class LocationTermServiceImpl
 				DateRange.getStartDate(dateRange),
 				DateRange.getEndDate(dateRange), locationTerm) != null) {
 			throw new LocationTermExistsException("Location term exists");
+		}
+		
+		// Throws exception if location terms exist after
+		if (endDate == null) {
+			long existingTermsAfterDateCount = this.locationTermDao
+					.countAfterDateExcluding(locationTerm.getOffender(), 
+							DateRange.getStartDate(dateRange), locationTerm);
+			if (existingTermsAfterDateCount > 0) {
+				throw new LocationTermExistsAfterException(
+						existingTermsAfterDateCount + " location term(s) exist "
+								+ "after the specified date range.");
+			}
 		}
 		
 		// Throws exception if conflicting location terms exist (exclude
@@ -399,18 +421,6 @@ public class LocationTermServiceImpl
 		if (conflictingCount > 0) {
 			throw new LocationTermConflictException(
 					conflictingCount + " conflicting location term(s) exist");
-		}
-		
-		// Throws exception if location terms exist after
-		if (endDate == null) {
-			long existingTermsAfterDateCount = this.locationTermDao
-					.countAfterDateExcluding(locationTerm.getOffender(), 
-							DateRange.getStartDate(dateRange), locationTerm);
-			if (existingTermsAfterDateCount > 0) {
-				throw new LocationTermExistsAfterException(
-						existingTermsAfterDateCount + " location term(s) exist "
-								+ "after the specified date range.");
-			}
 		}
 		
 		// Updates existing location term
@@ -705,8 +715,8 @@ public class LocationTermServiceImpl
 				.findAllowedForPlacementInState(state);
 		if (organizations.size() > 0) {
 			return this.locationDelegate
-				.findByOrganizations(
-						organizations.toArray(
+				.findByOrganizationsInState(
+						state, organizations.toArray(
 								new SupervisoryOrganization[] { }));
 		} else{
 			return Collections.emptyList();

@@ -21,11 +21,11 @@ import java.util.List;
 
 import omis.datatype.DateRange;
 import omis.exception.DateRangeOutOfBoundsException;
-import omis.exception.DuplicateEntityFoundException;
 import omis.locationterm.domain.LocationReason;
 import omis.locationterm.domain.LocationReasonTerm;
 import omis.locationterm.domain.LocationTerm;
 import omis.locationterm.exception.LocationReasonTermConflictException;
+import omis.locationterm.exception.LocationReasonTermExistsException;
 import omis.offender.domain.Offender;
 import omis.offender.exception.OffenderMismatchException;
 
@@ -33,6 +33,7 @@ import omis.offender.exception.OffenderMismatchException;
  * Service for location reason term.
  * 
  * @author Stephen Abson
+ * @author Sheronda Vaughn
  * @version 0.1.0 (Jan 16, 2014)
  * @since OMIS 3.0
  */
@@ -69,7 +70,7 @@ public interface LocationReasonTermService {
 	 * @param reason location reason
 	 * @param dateRange date range
 	 * @return location reason term
-	 * @throws DuplicateEntityFoundException if location reason term exists
+	 * @throws LocationReasonTermExistsException if location reason term exists
 	 * @throws OffenderMismatchException if offender and offender of
 	 * location term are not the same
 	 * @throws LocationReasonTermConflictException if conflicting location
@@ -79,7 +80,7 @@ public interface LocationReasonTermService {
 	 */
 	LocationReasonTerm create(Offender offender, LocationTerm locationTerm,
 			LocationReason reason, DateRange dateRange)
-					throws DuplicateEntityFoundException,
+					throws LocationReasonTermExistsException,
 						OffenderMismatchException,
 						LocationReasonTermConflictException,
 						DateRangeOutOfBoundsException;
@@ -92,7 +93,7 @@ public interface LocationReasonTermService {
 	 * @param reason location reason
 	 * @param dateRange date range
 	 * @return location reason term
-	 * @throws DuplicateEntityFoundException if location reason term exists
+	 * @throws LocationReasonTermExistsException if location reason term exists
 	 * @throws OffenderMismatchException if offender of location reason term
 	 * and offender of location term are not the same
 	 * @throws LocationReasonTermConflictException if conflicting location
@@ -103,7 +104,7 @@ public interface LocationReasonTermService {
 	LocationReasonTerm update(LocationReasonTerm locationReasonTerm,
 			LocationTerm locationTerm, LocationReason reason,
 			DateRange dateRange)
-					throws DuplicateEntityFoundException,
+					throws LocationReasonTermExistsException,
 						OffenderMismatchException,
 						LocationReasonTermConflictException,
 						DateRangeOutOfBoundsException;

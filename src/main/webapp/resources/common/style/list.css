@@ -79,3 +79,13 @@ table.listTable colgroup col.smallPhoto, table.listTable thead tr th.smallPhoto 
 table.listTable tbody tr td.smallPhoto {
 	text-align: center;
 }
+
+/* Link container */
+
+span.linkContainer {
+	display: inline-block;
+	border-style: solid;
+	border-width: 2px;
+	padding: 5px;
+	margin: 5px 5px 5px 25px;
+}

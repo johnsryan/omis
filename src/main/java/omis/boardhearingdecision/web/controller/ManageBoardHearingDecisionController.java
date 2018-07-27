@@ -58,7 +58,7 @@ import omis.web.controller.delegate.BusinessExceptionHandlerDelegate;
  * Controller for managing board hearing decisions.
  * 
  * @author Josh Divine
- * @version 0.1.0 (Jan 23, 2018)
+ * @version 0.1.1 (Jul 26, 2018)
  * @since OMIS 3.0
  */
 @Controller
@@ -198,13 +198,16 @@ public class ManageBoardHearingDecisionController {
 	 * Shows screen to edit a board hearing decision.
 	 * 
 	 * @param boardHearing board hearing
+	 * @param redirectUrl URL to redirect to upon completion
 	 * @return screen to edit a board hearing decision
 	 */
 	@PreAuthorize("hasRole('BOARD_HEARING_DECISION_VIEW') or hasRole('ADMIN')")
 	@RequestMapping(value = "/edit.html", method = RequestMethod.GET)
 	public ModelAndView edit(
 			@RequestParam(value = "boardHearing", required = true)
-				final BoardHearing boardHearing) {
+				final BoardHearing boardHearing,
+			@RequestParam(value = "redirectUrl", required = false)
+				final String redirectUrl) {
 		BoardHearingDecision boardHearingDecision = this
 				.boardHearingDecisionService.findBoardHearingDecisionByHearing(
 						boardHearing);
@@ -274,6 +277,8 @@ public class ManageBoardHearingDecisionController {
 	public ModelAndView update(
 			@RequestParam(value = "boardHearing", required = true)
 				final BoardHearing boardHearing,
+			@RequestParam(value = "redirectUrl", required = false)
+				final String redirectUrl,
 			final BoardHearingDecisionForm boardHearingDecisionForm,
 			final BindingResult bindingResult) 
 					throws DuplicateEntityFoundException {
@@ -302,7 +307,9 @@ public class ManageBoardHearingDecisionController {
 		
 		processHearingDecisionNoteItems(boardHearingDecision, 
 				boardHearingDecisionForm.getHearingDecisionNoteItems());
-		
+		if (redirectUrl != null) {
+			return new ModelAndView(redirectUrl);
+		}
 		return new ModelAndView(String.format(REDIRECT_URL, 
 				boardHearing.getId()));
 	}

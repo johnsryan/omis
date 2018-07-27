@@ -22,11 +22,14 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import omis.asrc.domain.AssessmentSanctionRevocationCenter;
 import omis.asrc.service.delegate.AssessmentSanctionRevocationCenterDelegate;
 import omis.communitysupervision.domain.CommunitySupervisionOffice;
 import omis.communitysupervision.service.delegate.CommunitySupervisionOfficeDelegate;
+import omis.condition.domain.Condition;
+import omis.condition.service.delegate.ConditionDelegate;
+import omis.disciplinaryCode.domain.DisciplinaryCode;
+import omis.disciplinaryCode.service.delegate.DisciplinaryCodeDelegate;
 import omis.facility.domain.Facility;
 import omis.facility.service.delegate.FacilityDelegate;
 import omis.hearing.domain.Hearing;
@@ -74,7 +77,7 @@ import omis.violationevent.service.delegate.ViolationEventDelegate;
  * 
  * @author Annie Wahl 
  * @author Josh Divine
- * @version 0.1.4 (May 17, 2018)
+ * @version 0.1.5 (Jul 17, 2018)
  * @since OMIS 3.0
  */
 public class HearingServiceImpl implements HearingService {
@@ -115,6 +118,10 @@ public class HearingServiceImpl implements HearingService {
 	private final AssessmentSanctionRevocationCenterDelegate 
 			assessmentSanctionRevocationCenterDelegate;
 	
+	private final DisciplinaryCodeDelegate disciplinaryCodeDelegate;
+	
+	private final ConditionDelegate conditionDelegate;
+	
 	/**
 	 * @param hearingDelegate - hearing delegate
 	 * @param hearingNoteDelegate - hearing note delegate
@@ -130,10 +137,14 @@ public class HearingServiceImpl implements HearingService {
 	 * @param facilityDelegate - facility delegate
 	 * @param treatmentCenterDelegate - treatment center delegate
 	 * @param preReleaseCenterDelegate - prerelease center delegate
-	 * @param communitySupervisionOfficeDelegate - community supervision office delegate
-	 * @param supervisoryOrganizationDelegate - supervisory organization delegate
+	 * @param communitySupervisionOfficeDelegate - community supervision
+	 * office delegate
+	 * @param supervisoryOrganizationDelegate - supervisory organization
+	 * delegate
 	 * @param assessmentSanctionRevocationCenterDelegate assessment sanction 
 	 * revocation center delegate
+	 * @param disciplinaryCodeDelegate disciplinary code delegate
+	 * @param conditionDelegate condition delegate
 	 */
 	public HearingServiceImpl(final HearingDelegate hearingDelegate,
 			final HearingNoteDelegate hearingNoteDelegate,
@@ -154,7 +165,9 @@ public class HearingServiceImpl implements HearingService {
 			final SupervisoryOrganizationDelegate 
 					supervisoryOrganizationDelegate,
 			final AssessmentSanctionRevocationCenterDelegate 
-					assessmentSanctionRevocationCenterDelegate) {
+					assessmentSanctionRevocationCenterDelegate,
+			final DisciplinaryCodeDelegate disciplinaryCodeDelegate,
+			final ConditionDelegate conditionDelegate) {
 		this.hearingDelegate = hearingDelegate;
 		this.hearingNoteDelegate = hearingNoteDelegate;
 		this.userAttendanceDelegate = userAttendanceDelegate;
@@ -174,6 +187,8 @@ public class HearingServiceImpl implements HearingService {
 		this.supervisoryOrganizationDelegate = supervisoryOrganizationDelegate;
 		this.assessmentSanctionRevocationCenterDelegate = 
 				assessmentSanctionRevocationCenterDelegate;
+		this.disciplinaryCodeDelegate = disciplinaryCodeDelegate;
+		this.conditionDelegate = conditionDelegate;
 	}
 
 	/**{@inheritDoc} */
@@ -369,12 +384,12 @@ public class HearingServiceImpl implements HearingService {
 			assessmentSanctionRevocationCenters = this
 				.assessmentSanctionRevocationCenterDelegate.findAll();
 		for (TreatmentCenter treatmentCenter : treatmentCenters) {
-				uniqueLocations.add(treatmentCenter.getLocation());
+			uniqueLocations.add(treatmentCenter.getLocation());
 		}
 		for (AssessmentSanctionRevocationCenter 
-				assessmentSanctionRevocationCenter : 
-					assessmentSanctionRevocationCenters) {
-				uniqueLocations.add(assessmentSanctionRevocationCenter
+				assessmentSanctionRevocationCenter
+				: assessmentSanctionRevocationCenters) {
+			uniqueLocations.add(assessmentSanctionRevocationCenter
 						.getLocation());
 		}
 		treatmentCenterLocations.addAll(uniqueLocations);
@@ -403,7 +418,7 @@ public class HearingServiceImpl implements HearingService {
 				this.communitySupervisionOfficeDelegate.findAll();
 		for (CommunitySupervisionOffice communitySupervisionOffice
 				: communitySupervisionOffices) {
-				communitySupervisionOfficeLocations.add(
+			communitySupervisionOfficeLocations.add(
 						communitySupervisionOffice.getLocation());
 		}
 		return communitySupervisionOfficeLocations;
@@ -451,5 +466,22 @@ public class HearingServiceImpl implements HearingService {
 	public List<HearingStatus> findHearingStatusesByHearing(
 			final Hearing hearing) {
 		return this.hearingStatusDelegate.findByHearing(hearing);
+	}
+
+	/**{@inheritDoc} */
+	@Override
+	public List<DisciplinaryCode>
+		findDisciplinaryCodesByJurisdictionAndEventDate(
+			final SupervisoryOrganization jurisdiction, final Date eventDate) {
+		return this.disciplinaryCodeDelegate
+				.findBySupervisoryOrganizationAndDate(jurisdiction, eventDate);
+	}
+
+	/**{@inheritDoc} */
+	@Override
+	public List<Condition> findConditionsByOffenderAndEffectiveDate(
+			final Offender offender, final Date eventDate) {
+		return this.conditionDelegate.findByOffenderAndEffectiveDate(
+				offender, eventDate);
 	}
 }

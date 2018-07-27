@@ -20,7 +20,7 @@
 		</span>
 		<span class="fieldGroup">
 			<label for="searchByLastName" class="fieldLabel"><fmt:message key="lastNameLabel" bundle="${nameBundle}"/></label>
-			<input id="searchByLastName" name="lastName" value="${offenderSearchForm.lastName}" class="fieldValue"/>			
+			<input tabindex="0" id="searchByLastName" name="lastName" value="${offenderSearchForm.lastName}" class="fieldValue"/>			
 		</span>
 		<span class="fieldGroup">
 			<label for="searchByFirstName" class="fieldLabel"><fmt:message key="firstNameLabel" bundle="${nameBundle}"/></label>

@@ -1,7 +1,9 @@
 package omis.userpreference.domain.impl;
 
+import omis.media.domain.Photo;
 import omis.user.domain.UserAccount;
 import omis.userpreference.domain.ColorValue;
+import omis.userpreference.domain.DisplayTheme;
 import omis.userpreference.domain.UserPreference;
 
 /**
@@ -16,15 +18,14 @@ public class UserPreferenceImpl implements UserPreference {
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
-	
 	private ColorValue foregroundColorValue;
-	
 	private ColorValue backgroundColorValue;
-	
 	private ColorValue accentColorValue;
-	
 	private Boolean whiteBackground;
-	
+	private Boolean shadows;
+	private Short borderRadius;
+	private Photo backgroundPhoto;
+	private DisplayTheme displayTheme;
 	private UserAccount userAccount;
 	
 	/**
@@ -106,6 +107,54 @@ public class UserPreferenceImpl implements UserPreference {
 		this.userAccount = userAccount;
 	}
 	
+	/** {@inheritDoc} */
+	@Override
+	public Boolean getShadows() {
+		return this.shadows;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void setShadows(final Boolean shadows) {
+		this.shadows = shadows;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public Short getBorderRadius() {
+		return this.borderRadius;
+	}
+	
+	/** {@inheritDoc} */
+	@Override
+	public void setBorderRadius(final Short borderRadius) {
+		this.borderRadius = borderRadius;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public Photo getBackgroundPhoto() {
+		return this.backgroundPhoto;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void setBackgroundPhoto(final Photo backgroundPhoto) {
+		this.backgroundPhoto = backgroundPhoto;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public DisplayTheme getDisplayTheme() {
+		return this.displayTheme;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void setDisplayTheme(final DisplayTheme displayTheme) {
+		this.displayTheme = displayTheme;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object o) {

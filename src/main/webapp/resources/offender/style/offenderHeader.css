@@ -280,7 +280,7 @@ it ensures that the last pane can scroll to the far left as needed */
 
 #fullNavBarWrapper{
 	width: auto;
-	height: 27px;
+	height: 33px;
 	overflow: hidden;
 	position: relative;
 	white-space: nowrap;

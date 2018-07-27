@@ -4,7 +4,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <fmt:bundle basename="omis.offender.msgs.offenderHeader">
-<div class="item scrollItem foregroundUltraLight" id="${summaryItemRegistryTitle}_contentPane">
+<div class="item scrollItem" id="${summaryItemRegistryTitle}_contentPane">
 	<div class="itemsContainer">
 		<c:forEach var="summaryItem" items="${summaryItemRegistry.items}" varStatus="i">
 			<c:if test="${summaryItem.enabled}">

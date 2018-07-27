@@ -25,6 +25,7 @@ import omis.travelpermit.web.form.TravelPermitForm;
 import omis.travelpermit.web.form.TravelPermitNoteItem;
 import omis.travelpermit.web.form.TravelPermitNoteItemOperation;
 import omis.util.EqualityChecker;
+import omis.web.validator.StringLengthChecks;
 
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -103,12 +104,17 @@ public class TravelPermitFormValidator implements Validator {
 		="travelMethod";
 	private static final String TRAVEL_METHOD_EMPTY_ERROR_KEY
 		="TravelPermit.travelmethod.empty";
+	private static final String TRANSPORTATIION_NUMBER_BEYONG_MAX_ERROR_KEY
+		="TravelPermit.transportation.number.beyond.max";
 	private final AddressFieldsValidatorDelegate addressFieldsValidatorDelegate;
+	private final StringLengthChecks stringLengthChecks;
 	
 	/** Instantiates a validator for travel permit form. */
 	public TravelPermitFormValidator(
-		final AddressFieldsValidatorDelegate addressFieldsValidatorDelegate) {
+		final AddressFieldsValidatorDelegate addressFieldsValidatorDelegate,
+		final StringLengthChecks stringLengthChecks) {
 		this.addressFieldsValidatorDelegate = addressFieldsValidatorDelegate;
+		this.stringLengthChecks = stringLengthChecks;
 	}
 
 	/** {@inheritDoc} */
@@ -136,11 +142,21 @@ public class TravelPermitFormValidator implements Validator {
 			errors.rejectValue(TRIP_PURPOSE_PROPERTY_NAME,
 			TRIP_PURPOSE_EMPTY_ERROR_KEY);
 		}
+		if (travelPermitForm.getTripPurpose()!=null
+			&&travelPermitForm.getTripPurpose().length()>0) {
+			stringLengthChecks.getMediumCheck().check(
+				"tripPurpose", travelPermitForm.getTripPurpose(), errors);
+		}
 		if (travelPermitForm.getName().isEmpty()
 			|| travelPermitForm.getName().length()==0
 			|| travelPermitForm.getName() == null) {
 			errors.rejectValue(DESTINATION_NAME_PROPERTY_NAME,
 			DESTINATION_NAME_EMPTY_ERROR_KEY);
+		}
+		if (travelPermitForm.getName()!=null
+			&&travelPermitForm.getName().length()>0) {
+			stringLengthChecks.getMediumCheck().check(
+				"name", travelPermitForm.getName(), errors);
 		}
 		
 		if (travelPermitForm.getIssuer() == null) {
@@ -236,6 +252,10 @@ public class TravelPermitFormValidator implements Validator {
 							"travelPermitNoteItems[%d].note", index),
 							NOTE_VALUE_EMPTY_ERROR_KEY);
 					}
+					if (item.getNote()!=null&&item.getNote().length()>0) {
+						stringLengthChecks.getHugeCheck().check(
+							"travelPermitNoteItems["+index+"].note", item.getNote(), errors);
+					}
 				}
 				
 				for (int innerNoteIndex = 0; innerNoteIndex < index;
@@ -273,6 +293,25 @@ public class TravelPermitFormValidator implements Validator {
 				errors.rejectValue(TELEPHONE_NUMBER_PROPERTY_NAME,
 					TELEPHONE_NUMBER_WRONG_ERROR_KEY);
 			}
+		}
+		if (travelPermitForm.getRelationships()!=null
+			&&travelPermitForm.getRelationships().length()>0) {
+			stringLengthChecks.getMediumCheck().check(
+				"relationships", travelPermitForm.getRelationships(), errors);
+		}
+		if (travelPermitForm.getVehicleInfo()!=null
+			&&travelPermitForm.getVehicleInfo().length()>0) {
+			stringLengthChecks.getLargeCheck().check(
+				"vehicleInfo", travelPermitForm.getVehicleInfo(), errors);
+		}
+		if (travelPermitForm.getPersons()!=null
+			&&travelPermitForm.getPersons().length()>0) {
+			stringLengthChecks.getMediumCheck().check(
+				"persons", travelPermitForm.getPersons(), errors);
+		}
+		if (travelPermitForm.getPlateNumber()!=null
+			&&travelPermitForm.getPlateNumber().length()>16) {
+			errors.rejectValue("plateNumber", TRANSPORTATIION_NUMBER_BEYONG_MAX_ERROR_KEY);
 		}
 	}
 }

@@ -16,6 +16,15 @@ import omis.media.domain.Photo;
 public class PhotoDaoHibernateImpl
 		extends GenericHibernateDaoImpl<Photo>
 		implements PhotoDao {
+	
+	/* Query names. */
+	
+	private static final String FIND_PHOTO_QUERY_NAME = "findPhotoByFilename";
+	private static final String FIND_NEXT_PHOTO_FILENAME = "findNextPhotoFilename";
+	
+	/* Parameter names. */
+	
+	private static final String FILENAME_PARAM_NAME = "filename";
 
 	/**
 	 * Instantiates an Hibernate implementation of data access object for
@@ -33,7 +42,20 @@ public class PhotoDaoHibernateImpl
 	/** {@inheritDoc} */
 	@Override
 	public String findNextFilenameDistinguisher() {
-		return getSessionFactory().getCurrentSession().getNamedQuery(
-				"findNextPhotoFilename").uniqueResult().toString();
+		return getSessionFactory()
+				.getCurrentSession()
+				.getNamedQuery(FIND_NEXT_PHOTO_FILENAME)
+				.uniqueResult().toString();
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public Photo find(String filename) {
+		Photo photo = (Photo) this.getSessionFactory()
+				.getCurrentSession()
+				.getNamedQuery(FIND_PHOTO_QUERY_NAME)
+				.setParameter(FILENAME_PARAM_NAME, filename)
+				.uniqueResult();
+		return photo;
 	}
 }

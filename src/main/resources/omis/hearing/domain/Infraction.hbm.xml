@@ -52,6 +52,8 @@
 						<param name="type">12</param>
 					</type>
 				</property>
+				<many-to-one name="adjustedCode" column="`DISCIPLINARY_CODE_ID`" entity-name="omis.disciplinaryCode.domain.DisciplinaryCode" not-null="false" />
+				<many-to-one name="adjustedCondition" column="`CONDITION_ID`" entity-name="omis.condition.domain.Condition" not-null="false" />
 			</component>
 			<many-to-one name="plea" column="`INFRACTION_PLEA_ID`" entity-name="omis.hearing.domain.InfractionPlea" not-null="false" />
 			<component name="creationSignature">

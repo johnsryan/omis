@@ -8,7 +8,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <fmt:bundle basename="omis.employment.msgs.employment">
-	<table id="searchResults">
+	<table id="searchResults" class="listTable">
 		<thead>
 		<tr>
 			<th></th>

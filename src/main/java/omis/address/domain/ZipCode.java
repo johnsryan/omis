@@ -101,4 +101,14 @@ public interface ZipCode
 	 */
 	@Override
 	int hashCode();
+	
+	/**
+	 * Returns string representation of {@code this} including value, extension,
+	 * city and country.
+	 * 
+	 * @return string representation of {@code this} including value, extension,
+	 * city and country
+	 */
+	@Override
+	String toString();
 }

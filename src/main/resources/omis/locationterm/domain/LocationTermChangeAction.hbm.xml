@@ -36,11 +36,13 @@
           <param name="sequence">`LOC_TERM_CHANGE_ACTION_SEQ`</param>
         </generator>
 	  </id>
-      <property name="name" not-null="true" unique="true" column="`NAME`"/>
+      <property name="name" type="java.lang.String" not-null="true" unique="true" column="`NAME`"/>
+      <property name="valid" type="yes_no" not-null="true" column="`VALID`"/>
 	</class>
 	<query name="findLocationTermChangeAction"><![CDATA[
 		select changeAction
 		from omis.locationterm.domain.LocationTermChangeAction changeAction
 		where changeAction.name = :name
+		  and changeAction.valid = true
 	]]></query>
 </hibernate-mapping>

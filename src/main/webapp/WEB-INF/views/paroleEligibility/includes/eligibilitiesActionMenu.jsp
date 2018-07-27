@@ -18,12 +18,14 @@
 
 <%--
  - Author: Trevor Isles
+ - Author Sierra Haynes
  - Version: 0.1.0 (Dec 15, 2017)
  - Since: OMIS 3.0
  --%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib uri="/WEB-INF/tld/omis.tld" prefix="omis" %>
 <fmt:setBundle basename="omis.msgs.common" var="commonBundle" />
 <fmt:bundle basename="omis.paroleeligibility.msgs.paroleEligibility">
 <ul>
@@ -33,11 +35,16 @@
 	</sec:authorize>
 	<sec:authorize access="hasRole('PAROLE_ELIGIBILITY_VIEW') or hasRole('ADMIN')">
 		<c:if test="${not empty offender}">
+		<li><omis:reportPro reportPath="/BOPP/Parole_Report/BOPP_Parole_Report&ofndr_num=${offender.offenderNumber}" decorate="no" title="" className="newTab reportLink"><fmt:message key="bOPPParoleReportLinkLabel"/></omis:reportPro></li>
+		</c:if>
+	</sec:authorize>
+	<sec:authorize access="hasRole('PAROLE_ELIGIBILITY_VIEW') or hasRole('ADMIN')">
+		<c:if test="${not empty offender}">
 		<li>
 			<a href="${pageContext.request.contextPath}/paroleEligibility/paroleEligibilityListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="paroleEligibilityListingReportLinkLabel"/></a>
 		</li>
 		</c:if>
-	</sec:authorize>
+	</sec:authorize>	
 	<sec:authorize access="hasRole('PAROLE_ELIGIBILITY_VIEW') or hasRole('ADMIN')">
 		<c:if test="${not empty eligibility}"><li><a class="viewEditLink" href="${pageContext.request.contextPath}/paroleEligibility/edit.html?eligibility=${eligibility.id}"><span class="visibleLinkLabel"><fmt:message key="viewParoleEligibilityEditLink"/></span></a></li>
 		</c:if>

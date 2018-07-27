@@ -17,6 +17,7 @@
  */
 package omis.paroleeligibility.report.impl.hibernate;
 
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.SessionFactory;
@@ -26,6 +27,7 @@ import omis.boardhearing.service.delegate.BoardHearingDelegate;
 import omis.hearinganalysis.domain.HearingAnalysis;
 import omis.hearinganalysis.service.delegate.HearingAnalysisDelegate;
 import omis.offender.domain.Offender;
+import omis.paroleboarditinerary.domain.ParoleBoardItinerary;
 import omis.paroleeligibility.domain.ParoleEligibility;
 import omis.paroleeligibility.report.ParoleEligibilityReportService;
 import omis.paroleeligibility.report.ParoleEligibilitySummary;
@@ -36,7 +38,7 @@ import omis.paroleeligibility.report.ParoleEligibilitySummary;
  * @author Trevor Isles
  * @author Josh Divine
  * @author Annie Wahl
- * @version 0.1.4 (May 29, 2018)
+ * @version 0.1.5 (Jul 10, 2018)
  * @since OMIS 3.0
  */
 public class ParoleEligibilityReportServiceHibernateImpl 
@@ -50,8 +52,18 @@ public class ParoleEligibilityReportServiceHibernateImpl
 	private static final String FIND_UNRESOLVED_PAROLE_ELIGIBILITIES_QUERY_NAME = 
 			"findUnresolvedParoleEligibilities";
 	
+	private static final String FIND_UNSCHEDULED_PAROLE_ELIGIBILITIES_QUERY_NAME
+			= "findUnscheduledParoleEligibilitySummaries";
+	
 	private static final String SUMMARIZE_PAROLE_ELIGIBILITY_QUERY_NAME =
 			"summarizeParoleEligibility";
+	
+	private static final String FIND_PAROLE_ELIGIBILITIES_BY_ITINERARY_QUERY_NAME = 
+			"findParoleEligibilitiesByItinerary";
+	
+	private static final String 
+			FIND_UNRESOLVED_PAROLE_ELIGIBILITIES_BY_DATE_RANGE_QUERY_NAME = 
+			"findUnresolvedParoleEligibilitiesByDateRange";
 	
 	/* Parameters.*/ 
 	
@@ -60,6 +72,12 @@ public class ParoleEligibilityReportServiceHibernateImpl
 	private static final String PAROLE_ELIGIBILITY_PARAM_NAME =
 			"paroleEligibility";
 	
+	private static final String ITINERARY_PARAM_NAME = "itinerary";
+	
+	private static final String START_DATE_PARAM_NAME = "startDate";
+	
+	private static final String END_DATE_PARAM_NAME = "endDate";
+		
 	/* Members. */
 	
 	private final SessionFactory sessionFactory;
@@ -117,6 +135,18 @@ public class ParoleEligibilityReportServiceHibernateImpl
 				.list();
 		return summaries;
 	}
+	
+	/** {@inheritDoc} */
+	@Override
+	public List<ParoleEligibilitySummary> findUnscheduledEligibilitySummaries() {
+		@SuppressWarnings("unchecked")
+		List<ParoleEligibilitySummary> summaries = this.sessionFactory
+				.getCurrentSession()
+				.getNamedQuery(FIND_UNSCHEDULED_PAROLE_ELIGIBILITIES_QUERY_NAME)
+				.setReadOnly(true)
+				.list();
+		return summaries;
+	}
 
 	/** {@inheritDoc} */
 	@Override
@@ -136,5 +166,34 @@ public class ParoleEligibilityReportServiceHibernateImpl
 				.setReadOnly(true)
 				.uniqueResult();
 		return summary;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public List<ParoleEligibilitySummary> findByItinerary(
+			final ParoleBoardItinerary itinerary) {
+		@SuppressWarnings("unchecked")
+		List<ParoleEligibilitySummary> summaries = this.sessionFactory
+				.getCurrentSession()
+				.getNamedQuery(FIND_PAROLE_ELIGIBILITIES_BY_ITINERARY_QUERY_NAME)
+				.setParameter(ITINERARY_PARAM_NAME, itinerary)
+				.list();
+		return summaries;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public List<ParoleEligibilitySummary> 
+			findUnresolvedEligibilitySummariesByDateRange(final Date startDate, 
+					final Date endDate) {
+		@SuppressWarnings("unchecked")
+		List<ParoleEligibilitySummary> summaries = this.sessionFactory
+				.getCurrentSession()
+				.getNamedQuery(
+						FIND_UNRESOLVED_PAROLE_ELIGIBILITIES_BY_DATE_RANGE_QUERY_NAME)
+				.setDate(START_DATE_PARAM_NAME, startDate)
+				.setDate(END_DATE_PARAM_NAME, endDate)
+				.list();
+		return summaries;
 	}
 }

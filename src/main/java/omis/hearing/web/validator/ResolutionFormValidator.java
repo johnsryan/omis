@@ -2,11 +2,9 @@ package omis.hearing.web.validator;
 
 import java.util.Date;
 import java.util.EnumSet;
-
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
-
 import omis.hearing.domain.DispositionCategory;
 import omis.hearing.domain.HearingStatusCategory;
 import omis.hearing.domain.ResolutionClassificationCategory;
@@ -61,18 +59,37 @@ public class ResolutionFormValidator implements Validator {
 	private static final String USER_ATTENDANCE_EMPTY_IF_HELD_MSG_KEY =
 			"userAttendance.emptyIfHeld";
 
+	/*private static final String ADJUSTED_CONDITION_REQUIRED_MSG_KEY =
+			"resolution.adjustedCondition.empty";
+
+	private static final String ADJUSTED_DISCIPLINARY_CODE_REQUIRED_MSG_KEY =
+			"resolution.adjustedDisciplinaryCode.empty";*/
+	
+	private ResolutionClassificationCategory resolutionCategory;
+
 	/**{@inheritDoc} */
 	@Override
 	public boolean supports(final Class<?> clazz) {
 		return ResolutionForm.class.isAssignableFrom(clazz);
 	}
-
+	
+	/**
+	 * @param target target
+	 * @param errors errors
+	 * @param resolutionCategory resolution category
+	 */
+	public void validate(final Object target, final Errors errors,
+			final ResolutionClassificationCategory resolutionCategory) {
+		this.resolutionCategory = resolutionCategory;
+		this.validate(target, errors);
+	}
+	
 	/**{@inheritDoc} */
 	@Override
 	public void validate(final Object target, final Errors errors) {
 		ResolutionForm form = (ResolutionForm) target;
 		if (ResolutionClassificationCategory.FORMAL.equals(
-				form.getResolutionCategory())) {
+				this.resolutionCategory)) {
 			//validate hearing status properties
 			ValidationUtils.rejectIfEmpty(errors, "date",
 					DATE_REQUIRED_MSG_KEY);
@@ -107,8 +124,8 @@ public class ResolutionFormValidator implements Validator {
 								item.getItemOperation())) {
 						if (item.getUserAccount() == null) {
 							errors.rejectValue(
-									"userAttendanceItems[" + i + "].userAccount",
-									USER_ACCOUNT_REQUIRED_MSG_KEY);
+								"userAttendanceItems[" + i + "].userAccount",
+								USER_ACCOUNT_REQUIRED_MSG_KEY);
 						}
 					}
 					i++;
@@ -116,38 +133,54 @@ public class ResolutionFormValidator implements Validator {
 			}
 		}
 		for (int i = 0; i < form.getViolationItems().size(); i++) {
-			switch (form.getResolutionCategory()) {
+			switch (this.resolutionCategory) {
 				case FORMAL:
 					ValidationUtils.rejectIfEmpty(errors,
 							"violationItems[" + i + "].disposition",
 							DISPOSITION_REQUIRED_MSG_KEY);
 					if (!(DispositionCategory.GUILTY.equals(
-							form.getViolationItems().get(i).getDisposition()) || 
-							DispositionCategory.REDUCED.equals(
-								form.getViolationItems().get(i).getDisposition()))
+							form.getViolationItems().get(i).getDisposition())
+							|| DispositionCategory.REDUCED.equals(
+							form.getViolationItems().get(i).getDisposition()))
 							&& (form.getViolationItems().get(i).getSanction()
-							!= null
+									!= null
 							&& !form.getViolationItems().get(i).getSanction()
 							.equals(""))) {
 						errors.rejectValue("violationItems[" + i + "].sanction",
 								SANCTION_ONLY_ON_GUILTY_MSG_KEY);
 					}
+					/*if (form.getViolationItems().get(i).getAdjusted() != null
+							&& form.getViolationItems().get(i).getAdjusted()) {
+						if (form.getViolationItems().get(i)
+								.getConditionViolation() != null) {
+							ValidationUtils.rejectIfEmpty(errors,
+									"violationItems[" + i + "]"
+											+ ".adjustedCondition",
+									ADJUSTED_CONDITION_REQUIRED_MSG_KEY);
+						} else if (form.getViolationItems().get(i)
+								.getDisciplinaryCodeViolation() != null) {
+							ValidationUtils.rejectIfEmpty(errors,
+									"violationItems[" + i + "]"
+											+ ".adjustedDisciplinaryCode",
+								ADJUSTED_DISCIPLINARY_CODE_REQUIRED_MSG_KEY);
+						}
+					}*/
 				case INFORMAL:
 					if ((ResolutionClassificationCategory.FORMAL.equals(
-							form.getResolutionCategory())
+							this.resolutionCategory)
 							&& (DispositionCategory.GUILTY.equals(
 							form.getViolationItems().get(i).getDisposition())
 							|| DispositionCategory.REDUCED.equals(
 							form.getViolationItems().get(i).getDisposition())))
 							|| ResolutionClassificationCategory.INFORMAL.equals(
-							form.getResolutionCategory())) {
+							this.resolutionCategory)) {
 						ValidationUtils.rejectIfEmptyOrWhitespace(errors,
 							"violationItems[" + i + "].sanction",
 							SANCTION_REQUIRED_MESSAGE_KEY);
 					}
 				case DISMISSED:
 					if (!(ResolutionClassificationCategory.FORMAL.equals(
-							form.getResolutionCategory()))) {
+							this.resolutionCategory))) {
 						ValidationUtils.rejectIfEmptyOrWhitespace(errors,
 								"violationItems[" + i + "].decision",
 								DECISION_REQUIRED_MSG_KEY);
@@ -166,62 +199,8 @@ public class ResolutionFormValidator implements Validator {
 					throw new UnsupportedOperationException(
 							"Resolution Category is not supported.");
 			}
-			if (form.getGroupEdit()) {
+			if (form.getGroupEdit() != null && form.getGroupEdit()) {
 				break;
-			}
-		}
-		if (form.getViolationItem() != null) {
-			switch (form.getResolutionCategory()) {
-				case FORMAL:
-					//validate disposition
-					ValidationUtils.rejectIfEmpty(errors,
-							"violationItem.disposition",
-							DISPOSITION_REQUIRED_MSG_KEY);
-					if (!(DispositionCategory.GUILTY.equals(
-							form.getViolationItem().getDisposition()) ||
-							DispositionCategory.REDUCED.equals(
-									form.getViolationItem().getDisposition()))
-							&& (form.getViolationItem().getSanction() != null
-									&& !form.getViolationItem().getSanction()
-									.equals(""))) {
-						errors.rejectValue("violationItem.sanction",
-								SANCTION_ONLY_ON_GUILTY_MSG_KEY);
-					}
-				case INFORMAL:
-					//validate sanction
-					if ((ResolutionClassificationCategory.FORMAL.equals(
-							form.getResolutionCategory())
-							&& (DispositionCategory.GUILTY.equals(
-									form.getViolationItem().getDisposition()) || 
-								DispositionCategory.REDUCED.equals(
-									form.getViolationItem().getDisposition())))
-							|| ResolutionClassificationCategory.INFORMAL.equals(
-							form.getResolutionCategory())) {
-						ValidationUtils.rejectIfEmptyOrWhitespace(errors,
-							"violationItem.sanction",
-							SANCTION_REQUIRED_MESSAGE_KEY);
-					}
-				case DISMISSED:
-					//if not formal, validate decision/date/authority
-					if (!(ResolutionClassificationCategory.FORMAL.equals(
-							form.getResolutionCategory()))) {
-						ValidationUtils.rejectIfEmptyOrWhitespace(errors,
-								"violationItem.decision",
-								DECISION_REQUIRED_MSG_KEY);
-						ValidationUtils.rejectIfEmpty(errors,
-								"violationItem.date", DATE_REQUIRED_MSG_KEY);
-						ValidationUtils.rejectIfEmpty(errors,
-								"violationItem.authority",
-								DECIDED_BY_REQUIRED_MSG_KEY);
-					}
-					//validate date and reason
-					ValidationUtils.rejectIfEmptyOrWhitespace(errors,
-							"violationItem.reason", REASON_REQUIRED_MSG_KEY);
-					break;
-				default:
-					//validate resolutionCategory!
-					throw new UnsupportedOperationException(
-							"Resolution Category is not supported.");
 			}
 		}
 	}

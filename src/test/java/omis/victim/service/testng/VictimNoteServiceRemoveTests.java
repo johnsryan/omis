@@ -20,6 +20,7 @@ package omis.victim.service.testng;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -32,7 +33,6 @@ import omis.relationship.exception.ReflexiveRelationshipException;
 import omis.relationship.exception.RelationshipExistsException;
 import omis.relationship.service.delegate.RelationshipDelegate;
 import omis.testng.AbstractHibernateTransactionalTestNGSpringContextTests;
-import omis.util.PropertyValueAsserter;
 import omis.victim.domain.VictimAssociation;
 import omis.victim.domain.VictimNote;
 import omis.victim.domain.VictimNoteCategory;
@@ -43,6 +43,7 @@ import omis.victim.exception.VictimNoteExistsException;
 import omis.victim.service.VictimNoteService;
 import omis.victim.service.delegate.VictimAssociationDelegate;
 import omis.victim.service.delegate.VictimNoteCategoryDelegate;
+import omis.victim.service.delegate.VictimNoteDelegate;
 
 /**
  * Tests method to remove victim note.
@@ -68,6 +69,9 @@ public class VictimNoteServiceRemoveTests
 		
 	@Autowired
 	private RelationshipDelegate relationshipDelegate;
+	
+	@Autowired
+	private VictimNoteDelegate victimNoteDelegate;
 
 	/* Services. */
 
@@ -103,14 +107,15 @@ public class VictimNoteServiceRemoveTests
 				flags);
 		Date date = this.parseDateText("01/01/2017");
 		String value = "Testing note creation";
-
-		// Action
-		VictimNote victimNote = this.victimNoteService.create(
+		VictimNote victimNote = this.victimNoteDelegate.create(
 				victim, category, association, date, value);
 		
-		// Assertions
-		PropertyValueAsserter.create()
-			.performAssertions(victimNote);
+		// Action
+		this.victimNoteService.remove(victimNote); 
+		List<VictimNote> notes = this.victimNoteDelegate.findByVictim(victim);
+		
+		// Assertions	
+		assert !notes.contains(victimNote) : "No victim note removed";
 	}
 
 	/* Helpers. */

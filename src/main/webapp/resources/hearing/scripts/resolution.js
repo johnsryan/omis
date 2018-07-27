@@ -17,6 +17,7 @@
  */
 window.onload = function() {
 	applyActionMenu(document.getElementById("actionMenuLink"));
+	applyModifyLinks();
 	if(document.getElementById("userAttendanceItemsActionMenuLink")) {
 		applyActionMenu(document.getElementById("userAttendanceItemsActionMenuLink"), userAttendanceItemsCreateOnClick);
 	}
@@ -62,7 +63,7 @@ window.onload = function() {
 	var showButtons = document.getElementsByClassName("showOverflow");
 	var items = document.getElementsByClassName("violationItem");
 	var firstDescription = items[0].getElementsByClassName('violationDescription')[0];
-	var firstViolation = items[0].getElementsByClassName('violation')[0];
+	//var firstViolation = items[0].getElementsByClassName('violation')[0];
 	var groupDescription = document.getElementById('groupViolationDescription');
 	var groupViolation = document.getElementById('groupViolations');
 	var groupEdit = document.getElementsByName("groupEdit");
@@ -105,22 +106,46 @@ window.onload = function() {
 				groupDescription.innerHTML += descriptions[i];
 				dupDescriptionCheck.push(descriptions[i]);
 			}
-			groupViolation.innerHTML += violations[i];
 		}
 		
 		for(var i = 0; i < groupEdit.length; i++){
 			groupEdit[i].onchange = function(event){
-				for(var j = 1; j < items.length; j++){
+				for(var j = 0; j < items.length; j++){
+					var modificationList;
+					if (document.getElementById("violationItems"+j+".adjustedDisciplinaryCode")) {
+						modificationList = document.getElementById("violationItems"+j+".adjustedDisciplinaryCode");
+					} else if (document.getElementById("violationItems"+j+".adjustedCondition")) {
+						modificationList = document.getElementById("violationItems"+j+".adjustedCondition");
+					}
+					
+					if (modificationList) {
+						for (var k = 0; k < modificationList.getElementsByTagName("option").length; k++) {
+							if (modificationList.getElementsByTagName("option")[k].value == modificationList.value) {
+								modificationList.getElementsByTagName("option")[k].setAttribute("selected", "selected");
+							} else {
+								modificationList.getElementsByTagName("option")[k].removeAttribute("selected");
+							}
+						
+						}
+					}
+					
 					if(event.target.value == 'true'){
-						items[j].style.display = 'none';
+						if (j > 0) {
+							items[j].style.display = 'none';
+						}
+						groupViolation.innerHTML +=
+							"<div id=\"violation" + j + "\" class=\"violation\">"
+							+ items[j].getElementsByClassName('violation')[0].innerHTML
+							+ "</div>";
+						items[j].getElementsByClassName('violation')[0].innerHTML = '';
 					}
 					else{
-						items[j].style.display = 'block';
-					}
+						items[j].getElementsByClassName('violation')[0].innerHTML = groupViolation.getElementsByClassName('violation')[j].innerHTML;
+						items[j].style.display = 'block';}
 				}
 				if(event.target.value == 'true'){
 					firstDescription.style.display = 'none';
-					firstViolation.style.display = 'none';
+				//firstViolation.style.display = 'none';
 					groupDescription.style.display = 'block';
 					groupViolation.style.display = 'block';
 				}
@@ -128,12 +153,14 @@ window.onload = function() {
 					groupDescription.style.display = 'none';
 					groupViolation.style.display = 'none';
 					firstDescription.style.display = 'block';
-					firstViolation.style.display = 'block';
+				//	firstViolation.style.display = 'block';
+					groupViolation.innerHTML = '';
 				}
+				applyModifyLinks();
 			}
 			if(groupEdit[i].checked){
 				if(groupEdit[i].value == 'true'){
-					for(var j = 1; j < items.length; j++){
+					for(var j = 0; j < items.length; j++){
 							items[j].style.display = 'none';
 					}
 					firstDescription.style.display = 'none';
@@ -153,6 +180,22 @@ window.onload = function() {
 		hideButtons[i].onclick = function(){
 			this.parentElement.className = "violationDescriptionNoOverflow";
 			this.parentElement.parentElement.getElementsByClassName("showOverflow")[0].style.display = 'inline-block';
+		}
+	}
+}
+
+function applyModifyLinks() {
+	var modifyViolationLinks = document.getElementsByClassName("modifyViolationLink");
+	for (var i = 0; i < modifyViolationLinks.length; i++) {
+		modifyViolationLinks[i].onclick = function(e) {
+			e.preventDefault();
+			if (document.getElementById("violationItems" + e.target.id.split("modifyViolationLink")[1] + ".adjusted").value == "true") {
+				document.getElementById("violationItems" + e.target.id.split("modifyViolationLink")[1] + ".adjusted").value = "false";
+				document.getElementById("violationModification" + e.target.id.split("modifyViolationLink")[1]).classList.add("hidden");
+			} else {
+				document.getElementById("violationItems" + e.target.id.split("modifyViolationLink")[1] + ".adjusted").value = "true";
+				document.getElementById("violationModification" + e.target.id.split("modifyViolationLink")[1]).classList.remove("hidden");
+			}
 		}
 	}
 }

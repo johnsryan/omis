@@ -58,6 +58,20 @@ public interface LocationTermChangeAction
 	String getName();
 	
 	/**
+	 * Returns whether {@code this} is valid.
+	 * 
+	 * @param valid whether {@code this} is valid
+	 */
+	void setValid(Boolean valid);
+	
+	/**
+	 * Sets whether {@code this} is valid.
+	 * 
+	 * @return whether {@code this} is valid
+	 */
+	Boolean getValid();
+	
+	/**
 	 * Compares {@code this} and {@code obj} for equality.
 	 * 
 	 * <p>Any mandatory property may be used in the comparison. If a  mandatory

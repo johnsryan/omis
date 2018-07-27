@@ -101,19 +101,17 @@
 		select count(locationTerm)
 		from omis.locationterm.domain.LocationTerm locationTerm
 		where locationTerm.offender = :offender
-		  and (locationTerm.dateRange.startDate <= :endDate
-		      or (locationTerm.dateRange.startDate is null and :endDate is null))
+		  and (locationTerm.dateRange.startDate <= :endDate or :endDate is null)
 		    and (locationTerm.dateRange.endDate > :startDate
-		      or (locationTerm.dateRange.endDate is null and :startDate is null))
+		      or (locationTerm.dateRange.endDate is null or :startDate is null))
 	]]></query>
 	<query name="countLocationTermsForOffenderBetweenDatesExcluding"><![CDATA[
 		select count(locationTerm)
 		from omis.locationterm.domain.LocationTerm locationTerm
 		where locationTerm.offender = :offender
-		  and (locationTerm.dateRange.startDate <= :endDate
-		      or (locationTerm.dateRange.startDate is null and :endDate is null))
+		  and (locationTerm.dateRange.startDate <= :endDate or :endDate is null)
 		    and (locationTerm.dateRange.endDate > :startDate
-		      or (locationTerm.dateRange.endDate is null and :startDate is null))
+		      or (locationTerm.dateRange.endDate is null or :startDate is null))
 		  and locationTerm not in (:excludedLocationTerms)
 	]]></query>
 	<query name="countLocationTermsForOffenderAfterDateExcluding"><![CDATA[

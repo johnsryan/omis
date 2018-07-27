@@ -67,11 +67,13 @@ public class LocationTermChangeActionDelegate {
 	 * Creates location term change action.
 	 * 
 	 * @param name name
+	 * @param valid whether action is valid
 	 * @return newly created location term change action
 	 * @throws LocationTermChangeActionExistsException if location term change
 	 * action exists
 	 */
-	public LocationTermChangeAction create(final String name)
+	public LocationTermChangeAction create(
+				final String name, final Boolean valid)
 			throws LocationTermChangeActionExistsException {
 		if (this.locationTermChangeActionDao.find(name) != null) {
 			throw new LocationTermChangeActionExistsException(
@@ -80,6 +82,7 @@ public class LocationTermChangeActionDelegate {
 		LocationTermChangeAction changeAction
 			= this.locationTermChangeActionInstanceFactory.createInstance();
 		changeAction.setName(name);
+		changeAction.setValid(valid);
 		return this.locationTermChangeActionDao.makePersistent(changeAction);
 	}
 	

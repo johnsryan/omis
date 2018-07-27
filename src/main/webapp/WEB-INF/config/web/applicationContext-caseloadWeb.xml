@@ -39,8 +39,22 @@
 		class="omis.caseload.web.validator.OfficerCaseAssignmentFormValidator"/>
 		
     <!-- Web configuration -->
-  
   	<context:component-scan base-package="omis.caseload.web.controller"/>
+  
+  	<!--  Profile Item -->
+  	<bean id="caseloadProfileItem"
+  		class="omis.caseload.web.profile.CaseloadProfileItem">
+  		<constructor-arg name="requiredAuthorizations">
+  			<set>
+  				<value>OFFICER_CASE_ASSIGNMENT_LIST</value>
+  				<value>ADMIN</value>
+  			</set>
+  		</constructor-arg>
+  		<constructor-arg name="includePage" value="/WEB-INF/views/caseload/profile/includes/profileItem.jsp"/>
+  		<constructor-arg name="name" value="caseload"/>
+  		<constructor-arg name="profileItemRegistry" ref="caseManagementProfileItemRegistry"/>
+  		<constructor-arg name="enabled" value="${caseloadProfileItemEnabled}"/>
+  	</bean>
   
 	<!-- Use controller transactions -->
 	  <aop:config>

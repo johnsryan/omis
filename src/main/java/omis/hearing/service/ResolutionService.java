@@ -27,6 +27,8 @@ import omis.hearing.domain.ImposedSanction;
 import omis.hearing.domain.Infraction;
 import omis.hearing.domain.InfractionPlea;
 import omis.hearing.domain.component.Resolution;
+import omis.hearing.exception.HearingStatusExistsException;
+import omis.hearing.exception.InfractionExistsException;
 import omis.offender.domain.Offender;
 import omis.violationevent.domain.ConditionViolation;
 import omis.violationevent.domain.DisciplinaryCodeViolation;
@@ -49,15 +51,14 @@ public interface ResolutionService {
 	 * @param resolution - Resolution
 	 * @param plea - Infraction Plea
 	 * @return Newly created Infraction
-	 * @throws DuplicateEntityFoundException - When an Infraction already exists
+	 * @throws InfractionExistsException - When an Infraction already exists
 	 * with given Hearing, ConditionViolation, and DisciplinaryCodeViolation.
-	 * @throws DuplicateEntityFoundException
 	 */
 	Infraction createInfraction(Hearing hearing,
 			ConditionViolation conditionViolation,
 			DisciplinaryCodeViolation disciplinaryCodeViolation,
 			Resolution resolution, InfractionPlea plea)
-					throws DuplicateEntityFoundException;
+					throws InfractionExistsException;
 	
 	/**
 	 * Updates an Infraction with the specified properties.
@@ -67,14 +68,14 @@ public interface ResolutionService {
 	 * @param resolution - Resolution
 	 * @param plea - Infraction Plea
 	 * @return Updated Infraction
-	 * @throws DuplicateEntityFoundException - When an Infraction already exists
+	 * @throws InfractionExistsException - When an Infraction already exists
 	 * with given Hearing, ConditionViolation, and DisciplinaryCodeViolation.
 	 */
 	Infraction updateInfraction(Infraction infraction,
 			ConditionViolation conditionViolation,
 			DisciplinaryCodeViolation disciplinaryCodeViolation,
 			Resolution resolution, InfractionPlea plea)
-					throws DuplicateEntityFoundException;
+					throws InfractionExistsException;
 	
 	/**
 	 * Removes an Infraction.
@@ -89,12 +90,12 @@ public interface ResolutionService {
 	 * @param date - Date
 	 * @param category - HearingStatusCategory
 	 * @return Newly Created HearingStatus
-	 * @throws DuplicateEntityFoundException - When a HearingStatus already
+	 * @throws HearingStatusExistsException - When a HearingStatus already
 	 * exists with specified Date and Category for given Hearing
 	 */
 	HearingStatus createHearingStatus(Hearing hearing, String description,
 			Date date, HearingStatusCategory category)
-					throws DuplicateEntityFoundException;
+					throws HearingStatusExistsException;
 	
 	/**
 	 * Updates a HearingStatus with the specified properties.
@@ -103,13 +104,13 @@ public interface ResolutionService {
 	 * @param date - Date
 	 * @param category - HearingStatusCategory
 	 * @return Updated HearingStatus
-	 * @throws DuplicateEntityFoundException - When a HearingStatus already
+	 * @throws HearingStatusExistsException - When a HearingStatus already
 	 * exists with specified Date and Category for given Hearing
 	 */
 	HearingStatus updateHearingStatus(HearingStatus hearingStatus,
 			String description, Date date,
 			HearingStatusCategory category)
-					throws DuplicateEntityFoundException;
+					throws HearingStatusExistsException;
 	
 	/**
 	 * Removes a Hearing Status.

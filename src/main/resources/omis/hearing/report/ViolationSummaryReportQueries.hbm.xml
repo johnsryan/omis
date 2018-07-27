@@ -323,6 +323,7 @@
 	]]></query>
 	<query name="summarizeConditionViolation"><![CDATA[
 		select new omis.hearing.report.ViolationSummary(
+			conditionViolation.id,
 			violationEvent.event.details,
 			violationEvent.category,
 			'',
@@ -341,6 +342,7 @@
 	]]></query>
 	<query name="summarizeDisciplinaryCodeViolation"><![CDATA[
 		select new omis.hearing.report.ViolationSummary(
+			disciplinaryCodeViolation.id,
 			violationEvent.event.details,
 			violationEvent.category,
 			disciplinaryCode.description,

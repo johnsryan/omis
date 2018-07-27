@@ -85,6 +85,7 @@ import omis.web.controller.delegate.BusinessExceptionHandlerDelegate;
  * 
  * @author Annie Wahl
  * @author Josh Divine
+ * @author Sierra Haynes
  * @version 0.1.4 (May 15, 2018)
  * @since OMIS 3.0
  */
@@ -179,6 +180,13 @@ public class HearingController {
 	
 	private static final String ADJUDICATE_HEARING_REPORT_NAME 
 		= "/Compliance/Hearings/Adjudicate_Hearing";
+	
+	private static final String DISCIPLINARY_APPEAL_REPORT_NAME 
+		= "/Compliance/Hearings/Disciplinary_Appeal";	
+	
+	private static final String DISCIPLINARY_DECISION_REPORT_NAME 
+		= "/Compliance/Hearings/Disciplinary_Hearing_Decision";	
+	
 
 	/* Report parameter names. */
 	
@@ -193,6 +201,12 @@ public class HearingController {
 
 	private static final String ADJUDICATE_HEARING_ID_REPORT_PARAM_NAME 
 		= "HEARING_ID";
+	
+	private static final String DISCIPLINARY_APPEAL_ID_REPORT_PARAM_NAME 
+		= "HEARING_ID";	
+	
+	private static final String DISCIPLINARY_DECISION_ID_REPORT_PARAM_NAME 
+		= "HEARING_ID";	
 
 	/* Bundles */
 	
@@ -744,6 +758,56 @@ public class HearingController {
 				Long.toString(hearing.getId()));
 		byte[] doc = this.reportRunner.runReport(
 				HEARING_DETAILS_REPORT_NAME,
+				reportParamMap, reportFormat);
+		return this.reportControllerDelegate.constructReportResponseEntity(
+				doc, reportFormat);
+	}
+	
+	/**
+	 * Returns the report for appealing the specified hearing.
+	 * 
+	 * @param hearing hearing
+	 * @param reportFormat report format
+	 * @return response entity with report
+	 */
+	@RequestMapping(value = "/disciplinaryAppealReport.html",
+			method = RequestMethod.GET)
+	@PreAuthorize("hasRole('HEARING_VIEW') or hasRole('ADMIN')")
+	public ResponseEntity<byte []> reportDisciplinaryAppeal(@RequestParam(
+			value = "hearing", required = true)
+			final Hearing hearing,
+			@RequestParam(value = "reportFormat", required = true)
+			final ReportFormat reportFormat) {
+		Map<String, String> reportParamMap = new HashMap<String, String>();
+		reportParamMap.put(DISCIPLINARY_APPEAL_ID_REPORT_PARAM_NAME,
+				Long.toString(hearing.getId()));
+		byte[] doc = this.reportRunner.runReport(
+				DISCIPLINARY_APPEAL_REPORT_NAME,
+				reportParamMap, reportFormat);
+		return this.reportControllerDelegate.constructReportResponseEntity(
+				doc, reportFormat);
+	}
+	
+	/**
+	 * Returns the report for decision on the specified hearing.
+	 * 
+	 * @param hearing hearing
+	 * @param reportFormat report format
+	 * @return response entity with report
+	 */
+	@RequestMapping(value = "/disciplinaryDecisionReport.html",
+			method = RequestMethod.GET)
+	@PreAuthorize("hasRole('HEARING_VIEW') or hasRole('ADMIN')")
+	public ResponseEntity<byte []> reportDisciplinaryDecision(@RequestParam(
+			value = "hearing", required = true)
+			final Hearing hearing,
+			@RequestParam(value = "reportFormat", required = true)
+			final ReportFormat reportFormat) {
+		Map<String, String> reportParamMap = new HashMap<String, String>();
+		reportParamMap.put(DISCIPLINARY_DECISION_ID_REPORT_PARAM_NAME,
+				Long.toString(hearing.getId()));
+		byte[] doc = this.reportRunner.runReport(
+				DISCIPLINARY_DECISION_REPORT_NAME,
 				reportParamMap, reportFormat);
 		return this.reportControllerDelegate.constructReportResponseEntity(
 				doc, reportFormat);

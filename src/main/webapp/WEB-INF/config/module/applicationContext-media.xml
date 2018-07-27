@@ -30,4 +30,12 @@
     <constructor-arg name="entityName" value="omis.media.domain.Photo"/>
   </bean>
   
+  <!--  Service delegates -->
+	
+	<bean id="photoDelegate"
+		class="omis.media.service.delegate.PhotoDelegate">
+		<constructor-arg name="photoDao" ref="photoDao"/>
+		<constructor-arg name="auditComponentRetriever" ref="auditComponentRetriever"/>
+		<constructor-arg name="photoInstanceFactory" ref="photoInstanceFactory"/>
+	</bean>
 </beans>

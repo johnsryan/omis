@@ -17,12 +17,11 @@
  */
 package omis.hearing.web.form;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import omis.hearing.domain.HearingStatusCategory;
-import omis.hearing.domain.ResolutionClassificationCategory;
 
 
 /**
@@ -31,11 +30,13 @@ import omis.hearing.domain.ResolutionClassificationCategory;
  * @author Annie Wahl 
  * @author Josh Divine
  * @author Ryan Johns
- * @version 0.1.3 (July 6, 2018)
+ * @version 0.1.4 (July 23, 2018)
  * @since OMIS 3.0
  */
-public class ResolutionForm {
+public class ResolutionForm implements Serializable {
 	
+	private static final long serialVersionUID = 1L;
+
 	private List<ViolationItem> violationItems = new ArrayList<ViolationItem>();
 	
 	private List<UserAttendanceItem> userAttendanceItems =
@@ -50,10 +51,6 @@ public class ResolutionForm {
 	private String statusDescription;
 	
 	private Boolean inAttendance;
-	
-	private ResolutionClassificationCategory resolutionCategory;
-	
-	private ViolationItem violationItem;
 	
 	private Boolean groupEdit;
 	
@@ -157,40 +154,7 @@ public class ResolutionForm {
 	public void setStatusDescription(final String statusDescription) {
 		this.statusDescription = statusDescription;
 	}
-
-	/**
-	 * Returns the resolutionCategory.
-	 * @return resolutionCategory - ResolutionClassificationCategory
-	 */
-	public ResolutionClassificationCategory getResolutionCategory() {
-		return resolutionCategory;
-	}
-
-	/**
-	 * Sets the resolutionCategory.
-	 * @param resolutionCategory - ResolutionClassificationCategory
-	 */
-	public void setResolutionCategory(
-			final ResolutionClassificationCategory resolutionCategory) {
-		this.resolutionCategory = resolutionCategory;
-	}
-
-	/**
-	 * Returns the violationItem.
-	 * @return violationItem - ViolationItem
-	 */
-	public ViolationItem getViolationItem() {
-		return violationItem;
-	}
-
-	/**
-	 * Sets the violationItem.
-	 * @param violationItem - ViolationItem
-	 */
-	public void setViolationItem(final ViolationItem violationItem) {
-		this.violationItem = violationItem;
-	}
-
+	
 	/**
 	 * Returns the groupEdit.
 	 * @return groupEdit - Boolean

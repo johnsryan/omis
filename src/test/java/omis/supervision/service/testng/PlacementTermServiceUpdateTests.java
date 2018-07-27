@@ -1248,6 +1248,59 @@ public class PlacementTermServiceUpdateTests
 			.performAssertions(probationPlacement);
 	}
 	
+	/**
+	 * Tests that on update correctional status term on end date is used if
+	 * correctional status matches.
+	 * 
+	 * @throws PlacementTermLockedException if placement term is locked
+	 * @throws SupervisoryOrganizationTermConflictException if conflicting
+	 * supervisory organization terms exist
+	 * @throws CorrectionalStatusTermConflictException if conflicting
+	 * correctional status terms exist 
+	 * @throws DuplicateEntityFoundException if duplicate entities exist 
+	 */
+	@Test(enabled = false) // Doesn't work - SA
+	public void testUseMatchingCorrectionalStatusOnEndDate()
+			throws CorrectionalStatusTermConflictException,
+				SupervisoryOrganizationTermConflictException,
+				PlacementTermLockedException,
+				DuplicateEntityFoundException {
+		
+		// Arrangements - creates two correctional status terms that are
+		// consecutive but have the same status, creates a placement term
+		// for the first correctional status term
+		Offender offender = this.createOffender();
+		CorrectionalStatus secure = this.createSecureStatus();
+		DateRange dateRange = new DateRange(
+				this.parseDateText("12/12/2012"),
+				this.parseDateText("01/01/2013"));
+		CorrectionalStatusTerm firstSecureTerm
+			= this.correctionalStatusTermDelegate
+				.create(offender, dateRange, secure);
+		DateRange secondRange = new DateRange(
+				this.parseDateText("01/01/2013"),
+				this.parseDateText("02/02/2014"));
+		CorrectionalStatusTerm secondSecureTerm
+			= this.correctionalStatusTermDelegate
+				.create(offender, secondRange, secure);
+		PlacementTerm placementTerm = this.placementTermDelegate
+				.create(offender, dateRange, null, firstSecureTerm, null, null,
+						false);
+		
+		// Action - changes the end date to some time during the second
+		// correctional status term
+		Date newEndDate = this.parseDateText("06/06/2013");
+		placementTerm = this.placementTermService.update(
+				placementTerm, newEndDate, PlacementStatus.PLACED, null, null,
+				null);
+		
+		// Assertions - second correctional status term should be started
+		// earlier and used first one should be discarded
+		assert placementTerm.getCorrectionalStatusTerm()
+				.equals(secondSecureTerm)
+			: "Placement term uses wrong correctional status term";
+	}
+	
 	/* Helper methods. */
 	
 	private void assertValues(PlacementTerm placementTerm, 

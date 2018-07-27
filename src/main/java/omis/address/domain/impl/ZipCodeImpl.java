@@ -143,4 +143,34 @@ public class ZipCodeImpl implements ZipCode {
 		}
 		return hashCode;
 	}
+	
+	/** {@inheritDoc} */
+	@Override
+	public String toString() {
+		final String cityName;
+		final String stateName;
+		final String countryName;
+		if (this.getCity() != null) {
+			cityName = this.getCity().getName();
+			if (this.getCity().getState() != null) {
+				stateName = this.getCity().getState().getName();
+				if (this.getCity().getState().getCountry() != null) {
+					countryName = this.getCity().getState().getCountry()
+							.getName();
+				} else {
+					countryName = null;
+				}
+			} else {
+				stateName = null;
+				countryName = null;
+			}
+		} else {
+			cityName = null;
+			stateName = null;
+			countryName = null;
+		}
+		return String.format("#%d: %s %s %s-%s, %s", this.getId(),
+				cityName, stateName, this.getValue(), this.getExtension(),
+				countryName);
+	}
 }

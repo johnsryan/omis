@@ -256,7 +256,8 @@ public class LocationTermServiceRemoveTests
 		LocationTerm locationTerm = this.locationTermDelegate
 				.create(offender, hospital, startDate, null, true);
 		LocationTermChangeAction changeAction
-			= this.locationTermChangeActionDelegate.create("Hospital visit");
+			= this.locationTermChangeActionDelegate.create(
+					"Hospital visit", true);
 		this.locationTermChangeActionAssociationDelegate
 				.create(locationTerm, changeAction);
 		

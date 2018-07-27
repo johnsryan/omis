@@ -10,6 +10,6 @@
 	<jsp:include page="/WEB-INF/views/common/includes/messageEventResources.jsp"/>
 	<c:if test="${empty tabsLIB}">
 		<c:set var="tabsLIB" value="true" scope="request"/>
-		<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/common/style/tabs.css?VERSION=11"/>
+		<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/common/style/tabs.css?VERSION=12"/>
 		<script type="text/javascript" src="${pageContext.request.contextPath}/resources/common/scripts/tabs.js?VERSION=12"></script>
 	</c:if>

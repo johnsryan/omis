@@ -30,6 +30,7 @@
 	<div id="boppModuleGroup" class="moduleGroupLinkContainer">
 		<a href="${pageContext.request.contextPath}/paroleBoardItinerary/list.html"><fmt:message key="itineraryLink"/></a>
 		<a href="${pageContext.request.contextPath}/paroleEligibility/listUnresolved.html"><fmt:message key="unresolvedEligibilitiesLink"/></a>
+		<a href="${pageContext.request.contextPath}/paroleEligibility/listUnscheduled.html"><fmt:message key="unscheduledEligibilitiesLink"/></a>
 		<a href="${pageContext.request.contextPath}/paroleBoardMember/list.html"><fmt:message key="paroleBoardMembersLink"/></a>
 		<a href="${pageContext.request.contextPath}/paroleBoardLocation/list.html"><fmt:message key="paroleBoardLocationsLink"/></a>
 	</div>

@@ -3,7 +3,7 @@
  * Version: 0.1.0 (Nov 22, 2014) */
  
  .left_arrow:before {
- 	content: url('../images/arrowLeft.png');
+ 	content: url('../images/tabArrowLeft.png');
 }
 
 .left_arrow {
@@ -15,7 +15,7 @@
 } 
  
  .right_arrow:before {
- 	content: url('../images/arrowRight.png');
+ 	content: url('../images/tabArrowRight.png');
  	;
 }
 

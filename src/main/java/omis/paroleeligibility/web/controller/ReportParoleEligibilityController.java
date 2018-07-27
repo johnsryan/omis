@@ -66,6 +66,9 @@ public class ReportParoleEligibilityController {
 	private static final String LIST_UNRESOLVED_VIEW_NAME = 
 			"paroleEligibility/listUnresolved";
 	
+	private static final String LIST_UNSCHEDULED_VIEW_NAME =
+			"paroleEligibility/listUnscheduled";
+	
 	/* Action menu view names. */
 	
 	private static final String ELIGIBILITIES_ACTION_MENU_VIEW_NAME = 
@@ -77,6 +80,14 @@ public class ReportParoleEligibilityController {
 	
 	private static final String
 		UNRESOLVED_ELIGIBILITIES_ACTION_MENU_VIEW_NAME =
+			"paroleEligibility/includes/unresolvedEligibilitiesActionMenu";
+	
+	private static final String
+		UNSCHEDULED_ELIGIBILITIES_ROW_ACTION_MENU_VIEW_NAME =
+			"paroleEligibility/includes/unresolvedEligibilitiesRowActionMenu";
+
+	private static final String
+		UNSCHEDULED_ELIGIBILITIES_ACTION_MENU_VIEW_NAME =
 			"paroleEligibility/includes/unresolvedEligibilitiesActionMenu";
 	
 	/* Model keys. */
@@ -182,6 +193,23 @@ public class ReportParoleEligibilityController {
 		List<ParoleEligibilitySummary> paroleEligibilitySummaries = this
 				.paroleEligibilityReportService
 				.findUnresolvedEligibilitySummaries();
+		mav.addObject(PAROLE_ELIGIBILITY_SUMMARIES_MODEL_KEY, 
+				paroleEligibilitySummaries);
+		return mav;
+	}
+	
+	/**
+	 * Displays a list of unscheduled parole eligibilities.
+	 * 
+	 * @return screen to display list of unscheduled parole eligibilities
+	 */
+	@RequestMapping(value = "/listUnscheduled.html", method = RequestMethod.GET)
+	@PreAuthorize("hasRole('PAROLE_ELIGIBILITY_LIST') or hasRole('ADMIN')")
+	public ModelAndView listUnscheduled() {
+		ModelAndView mav = new ModelAndView(LIST_UNSCHEDULED_VIEW_NAME);
+		List<ParoleEligibilitySummary> paroleEligibilitySummaries = this
+				.paroleEligibilityReportService
+				.findUnscheduledEligibilitySummaries();
 		mav.addObject(PAROLE_ELIGIBILITY_SUMMARIES_MODEL_KEY, 
 				paroleEligibilitySummaries);
 		return mav;
@@ -299,6 +327,42 @@ public class ReportParoleEligibilityController {
 	public ModelAndView showUnresolvedEligibilitiesActionMenu() {
 		ModelAndView mav = new ModelAndView(
 				UNRESOLVED_ELIGIBILITIES_ACTION_MENU_VIEW_NAME);
+		return mav;
+	}
+	
+	/**
+	 * Returns unscheduled eligibilities row action menu.
+	 *
+	 * @param eligibility parole eligibility
+	 * @return unscheduled eligibilities action menu
+	 */
+	@RequestMapping(value = "/unscheduledEligibilitiesRowActionMenu.html", 
+			method = RequestMethod.GET)
+	public ModelAndView showUnscheduledEligibilitiesRowActionMenu(
+			@RequestParam(value = "eligibility", required = true)
+				final ParoleEligibility eligibility) {
+		ModelAndView mav = new ModelAndView(
+				UNSCHEDULED_ELIGIBILITIES_ROW_ACTION_MENU_VIEW_NAME);
+		mav.addObject(ELIGIBILITY_MODEL_KEY, eligibility);
+		mav.addObject(HEARING_ANALYSIS_MODEL_KEY, this
+				.paroleEligibilityReportService
+				.findHearingAnalysisByParoleEligibility(eligibility));
+		mav.addObject(BOARD_HEARING_MODEL_KEY, this
+				.paroleEligibilityReportService
+				.findBoardHearingByParoleEligibility(eligibility));
+		return mav;
+	}
+	
+	/**
+	 * Returns unscheduled eligibilities action menu.
+	 *
+	 * @return unscheduled eligibilities action menu
+	 */
+	@RequestMapping(value = "/unscheduledEligibilitiesActionMenu.html", 
+			method = RequestMethod.GET)
+	public ModelAndView showUnscheduledEligibilitiesActionMenu() {
+		ModelAndView mav = new ModelAndView(
+				UNSCHEDULED_ELIGIBILITIES_ACTION_MENU_VIEW_NAME);
 		return mav;
 	}
 	

@@ -150,4 +150,53 @@ public class LocationImpl implements Location {
 		}
 		return hashCode;
 	}
+	
+	/** {@inheritDoc} */
+	public String toString() {
+		final String organizationName;
+		if (this.getOrganization() != null) {
+			organizationName = this.getOrganization().getName();
+		} else {
+			organizationName = null;
+		}
+		final String addressText;
+		if (this.getAddress() != null) {
+			final String cityName;
+			final String stateAbbreviation;
+			final String zipCodeValue;
+			final String zipCodeExtension;
+			if (this.getAddress().getZipCode() != null) {
+				if (this.getAddress().getZipCode().getCity() != null) {
+					cityName = this.getAddress().getZipCode().getCity()
+							.getName();
+					if (this.getAddress().getZipCode().getCity()
+							.getState() != null) {
+						stateAbbreviation = this.getAddress().getZipCode()
+								.getCity().getState().getAbbreviation();
+					} else {
+						stateAbbreviation = null;
+					}
+				} else {
+					cityName = null;
+					stateAbbreviation = null;
+				}
+				zipCodeValue = this.getAddress().getZipCode().getValue();
+				zipCodeExtension
+					= this.getAddress().getZipCode().getExtension();
+			} else {
+				cityName = null;
+				stateAbbreviation = null;
+				zipCodeValue = null;
+				zipCodeExtension = null;
+			}
+			addressText = String.format("%s, %s, %s %s-%s",
+					this.getAddress().getValue(), cityName, stateAbbreviation,
+					zipCodeValue, zipCodeExtension);
+		} else {
+			addressText = null;
+		}
+		return String.format("#%d: %s - %s, %s", this.getId(),
+				organizationName, addressText,
+				DateRange.getStartDate(this.getDateRange()));
+	}
 }

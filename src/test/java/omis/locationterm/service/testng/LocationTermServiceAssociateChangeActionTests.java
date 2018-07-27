@@ -181,7 +181,8 @@ public class LocationTermServiceAssociateChangeActionTests
 		
 		// Action - associates change action
 		LocationTermChangeAction gotoHospital
-			= this.locationTermChangeActionDelegate.create("Goto Hospital");
+			= this.locationTermChangeActionDelegate.create(
+					"Goto Hospital", true);
 		this.locationTermService.associateChangeAction(
 				locationTerm, gotoHospital);
 		

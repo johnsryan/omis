@@ -12,8 +12,8 @@
 			<a class="actionMenuItem profileActionMenuItem" id="profileBasicInformationActionMenuLink" href="${pageContext.request.contextPath}/offender/profileBasicInformationActionMenu.html?offender=${offender.id}"></a>
 			<fmt:message key="basicInformationLabel"/>
 		</h2>
-		<div class="profileItemsWrapper accentDark">	
-			<div class="foregroundUltraLight profileItemsInnerWrapper">
+		<div class="profileItemsWrapper">	
+			<div class="profileItemsInnerWrapper">
 				<c:forEach var="profileItem" items="${basicInformationProfileItemRegistry.items}">
 					<c:if test="${profileItem.enabled}">
 						<c:set var="offenderSummary" value="${offender}" scope="request" />
@@ -40,8 +40,8 @@
 			<a class="actionMenuItem profileActionMenuItem" id="profilePlacementActionMenuLink" href="${pageContext.request.contextPath}/offender/profilePlacementActionMenu.html?offender=${offender.id}"></a>
 			<span class="contentHeading"><fmt:message key="placementLabel"/></span>
 		</h2>
-		<div class="profileItemsWrapper accentDark">
-			<div class="foregroundUltraLight profileItemsInnerWrapper">
+		<div class="profileItemsWrapper">
+			<div class="profileItemsInnerWrapper">
 				<c:forEach var="profileItem" items="${placementProfileItemRegistry.items}">
 					<c:if test="${profileItem.enabled}">
 						<c:set var="offenderSummary" value="${offender}" scope="request" />
@@ -68,8 +68,8 @@
 			<a class="actionMenuItem profileActionMenuItem" id="profileLegalActionMenuLink" href="${pageContext.request.contextPath}/offender/profileLegalActionMenu.html?offender=${offender.id}"></a>
 			<fmt:message key="legalLabel"/>
 		</h2>
-		<div class="profileItemsWrapper accentDark">
-			<div class="foregroundUltraLight profileItemsInnerWrapper">
+		<div class="profileItemsWrapper">
+			<div class="profileItemsInnerWrapper">
 				<c:forEach var="profileItem" items="${legalProfileItemRegistry.items}">
 					<c:if test="${profileItem.enabled}">
 						<c:set var="offenderSummary" value="${offender}" scope="request" />
@@ -98,8 +98,8 @@
 			<a class="actionMenuItem profileActionMenuItem" id="profileCaseManagementActionMenuLink" href="${pageContext.request.contextPath}/offender/profileCaseManagementActionMenu.html?offender=${offender.id}"></a>
 			<fmt:message key="caseManagementLabel"/>
 		</h2>
-		<div class="profileItemsWrapper accentDark">
-			<div class="foregroundUltraLight profileItemsInnerWrapper">
+		<div class="profileItemsWrapper">
+			<div class="profileItemsInnerWrapper">
 				<c:forEach var="profileItem" items="${caseManagementProfileItemRegistry.items}">
 					<c:if test="${profileItem.enabled}">
 						<c:set var="offenderSummary" value="${offender}" scope="request" />
@@ -128,8 +128,8 @@
 			<a class="actionMenuItem profileActionMenuItem" id="profileSafetyActionMenuLink" href="${pageContext.request.contextPath}/offender/profileSafetyActionMenu.html?offender=${offender.id}"></a>
 			<fmt:message key="safetyLabel"/>
 		</h2>
-		<div class="profileItemsWrapper accentDark">
-			<div class="foregroundUltraLight profileItemsInnerWrapper">
+		<div class="profileItemsWrapper">
+			<div class="profileItemsInnerWrapper">
 				<c:forEach var="profileItem" items="${safetyProfileItemRegistry.items}">
 					<c:if test="${profileItem.enabled}">
 						<c:set var="offenderSummary" value="${offender}" scope="request" />
@@ -157,8 +157,8 @@
 		<h2>
 			<fmt:message key="complianceLabel"/>
 		</h2>
-		<div class="profileItemsWrapper accentDark">
-			<div class="foregroundUltraLight profileItemsInnerWrapper">
+		<div class="profileItemsWrapper">
+			<div class="profileItemsInnerWrapper">
 				<c:forEach var="profileItem" items="${complianceProfileItemRegistry.items}">
 					<c:if test="${profileItem.enabled}">
 						<c:set var="offenderSummary" value="${offender}" scope="request" />
@@ -187,8 +187,8 @@
 			<a class="actionMenuItem profileActionMenuItem" id="profileHealthActionMenuLink" href="${pageContext.request.contextPath}/offender/profileHealthActionMenu.html?offender=${offender.id}"></a>
 			<fmt:message key="healthLabel"/>
 		</h2>
-		<div class="profileItemsWrapper accentDark">
-			<div class="foregroundUltraLight profileItemsInnerWrapper">
+		<div class="profileItemsWrapper">
+			<div class="profileItemsInnerWrapper">
 				<c:forEach var="profileItem" items="${healthProfileItemRegistry.items}">
 					<c:if test="${profileItem.enabled}">
 						<c:set var="offenderSummary" value="${offender}" scope="request" />
@@ -216,8 +216,8 @@
 		<h2>
 			<fmt:message key="relationshipsLabel"/>
 		</h2>
-		<div class="profileItemsWrapper accentDark">
-			<div class="foregroundUltraLight profileItemsInnerWrapper">
+		<div class="profileItemsWrapper">
+			<div class="profileItemsInnerWrapper">
 				<c:forEach var="profileItem" items="${relationshipsProfileItemRegistry.items}">
 					<c:if test="${profileItem.enabled}">
 						<c:set var="offenderSummary" value="${offender}" scope="request" />
@@ -246,8 +246,8 @@
 		<h2>
 			<fmt:message key="boardOfPardonsAndParoleLabel"/>
 		</h2>
-		<div class="profileItemsWrapper accentDark">
-			<div class="foregroundUltraLight profileItemsInnerWrapper">
+		<div class="profileItemsWrapper">
+			<div class="profileItemsInnerWrapper">
 				<c:forEach var="profileItem" items="${boardOfPardonsAndParoleProfileItemRegistry.items}">
 					<c:if test="${profileItem.enabled}">
 						<c:set var="offenderSummary" value="${offender}" scope="request" />

@@ -24,6 +24,11 @@
 			<property name="date" column="`UPDATE_DATE`" not-null="true"/>
 		</component>
 	</class>
+	<query name="findPhotoByFilename"><![CDATA[
+		select photo
+		from omis.media.domain.Photo photo
+		where photo.filename = :filename
+	]]></query>
 	<sql-query name="findNextPhotoFilename"><![CDATA[
 		select "PHOTO_FILENAME_SEQ".nextval from dual
 	]]></sql-query>

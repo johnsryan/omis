@@ -20,25 +20,6 @@ package omis.locationterm.web.controller;
 import java.util.Date;
 import java.util.List;
 
-import omis.beans.factory.PropertyEditorFactory;
-import omis.beans.factory.spring.CustomDateEditorFactory;
-import omis.datatype.DateRange;
-import omis.exception.DateRangeOutOfBoundsException;
-import omis.exception.DuplicateEntityFoundException;
-import omis.locationterm.domain.LocationReason;
-import omis.locationterm.domain.LocationReasonTerm;
-import omis.locationterm.domain.LocationTerm;
-import omis.locationterm.exception.LocationReasonTermConflictException;
-import omis.locationterm.service.LocationReasonTermService;
-import omis.locationterm.web.form.LocationReasonTermForm;
-import omis.locationterm.web.validator.LocationReasonTermFormValidator;
-import omis.offender.beans.factory.OffenderPropertyEditorFactory;
-import omis.offender.domain.Offender;
-import omis.offender.exception.OffenderMismatchException;
-import omis.offender.web.controller.delegate.OffenderSummaryModelDelegate;
-import omis.util.DateManipulator;
-import omis.web.controller.delegate.BusinessExceptionHandlerDelegate;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -52,10 +33,30 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import omis.beans.factory.PropertyEditorFactory;
+import omis.beans.factory.spring.CustomDateEditorFactory;
+import omis.datatype.DateRange;
+import omis.exception.DateRangeOutOfBoundsException;
+import omis.locationterm.domain.LocationReason;
+import omis.locationterm.domain.LocationReasonTerm;
+import omis.locationterm.domain.LocationTerm;
+import omis.locationterm.exception.LocationReasonTermConflictException;
+import omis.locationterm.exception.LocationReasonTermExistsException;
+import omis.locationterm.service.LocationReasonTermService;
+import omis.locationterm.web.form.LocationReasonTermForm;
+import omis.locationterm.web.validator.LocationReasonTermFormValidator;
+import omis.offender.beans.factory.OffenderPropertyEditorFactory;
+import omis.offender.domain.Offender;
+import omis.offender.exception.OffenderMismatchException;
+import omis.offender.web.controller.delegate.OffenderSummaryModelDelegate;
+import omis.util.DateManipulator;
+import omis.web.controller.delegate.BusinessExceptionHandlerDelegate;
+
 /**
  * Controller for location reason terms.
  * 
  * @author Stephen Abson
+ * @author Sheronda Vaughn
  * @version 0.1.0 (Jan 16, 2014)
  * @since OMIS 3.0
  */
@@ -111,7 +112,7 @@ public class LocationReasonTermController {
 
 	/* Message keys. */
 	
-	private static final String DUPLICATE_ENTITY_FOUND_MESSAGE_KEY
+	private static final String LOCATION_REASON_TERM_EXISTS_MESSAGE_KEY
 		= "locationReasonTerm.exists";
 
 	private static final String OFFENDER_MISMATCH_MESSAGE_KEY
@@ -249,7 +250,7 @@ public class LocationReasonTermController {
 	 * @param locationReasonTermForm form for location reason term
 	 * @param result binding result
 	 * @return redirect to screen listing location reason terms by offender
-	 * @throws DuplicateEntityFoundException if the location reason term exists
+	 * @throws LocationReasonTermExistsException if the location reason term exists
 	 * @throws OffenderMismatchException if the offender and the offender of
 	 * the location term are not the same
 	 * @throws LocationReasonTermConflictException if conflicting location
@@ -264,7 +265,7 @@ public class LocationReasonTermController {
 				final Offender offender,
 			final LocationReasonTermForm locationReasonTermForm,
 			final BindingResult result)
-					throws DuplicateEntityFoundException,
+					throws LocationReasonTermExistsException,
 						OffenderMismatchException,
 						LocationReasonTermConflictException,
 						DateRangeOutOfBoundsException {
@@ -292,7 +293,7 @@ public class LocationReasonTermController {
 	 * @param locationReasonTermForm form for location reason term
 	 * @param result binding result
 	 * @return redirect to screen listing location reason terms by offender
-	 * @throws DuplicateEntityFoundException if location reason term exists
+	 * @throws LocationReasonTermExistsException if location reason term exists
 	 * @throws OffenderMismatchException if the offender of the location reason
 	 * term and location term are not the same
 	 * @throws LocationReasonTermConflictException if conflicting location
@@ -307,7 +308,7 @@ public class LocationReasonTermController {
 				final LocationReasonTerm locationReasonTerm,
 			final LocationReasonTermForm locationReasonTermForm,
 			final BindingResult result)
-					throws DuplicateEntityFoundException,
+					throws LocationReasonTermExistsException,
 						OffenderMismatchException,
 						LocationReasonTermConflictException,
 						DateRangeOutOfBoundsException {
@@ -352,17 +353,17 @@ public class LocationReasonTermController {
 	/* Exception handlers. */
 	
 	/**
-	 * Handles {@code DuplicateEntityFoundException}.
+	 * Handles {@code LocationReasonTermExistsException}.
 	 * 
-	 * @param duplicateEntityFoundException exception thrown
-	 * @return screen to handle {@code DuplicateEntityFoundException}
+	 * @param LocationReasonTermExistsException exception thrown
+	 * @return screen to handle {@code LocationReasonTermExistsException}
 	 */
-	@ExceptionHandler(DuplicateEntityFoundException.class)
-	public ModelAndView handleDuplicateEntityFoundException(
-			final DuplicateEntityFoundException duplicateEntityFoundException) {
+	@ExceptionHandler(LocationReasonTermExistsException.class)
+	public ModelAndView handleLocationReasonTermExistsException(
+			final LocationReasonTermExistsException locationReasonTermExistsException) {
 		return this.businessExceptionHandlerDelegate.prepareModelAndView(
-				DUPLICATE_ENTITY_FOUND_MESSAGE_KEY,
-				ERROR_BUNDLE_NAME, duplicateEntityFoundException);
+				LOCATION_REASON_TERM_EXISTS_MESSAGE_KEY,
+				ERROR_BUNDLE_NAME, locationReasonTermExistsException);
 	}
 	
 	/**

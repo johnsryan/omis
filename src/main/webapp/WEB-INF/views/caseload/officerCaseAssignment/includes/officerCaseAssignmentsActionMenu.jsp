@@ -28,6 +28,27 @@
 				</li>
 			</sec:authorize>
 		</c:if>
+		<c:if test="${empty officerCaseAssignment and not empty offender}">
+			<sec:authorize access="hasRole('OFFICER_CASE_ASSIGNMENT_LIST') or hasRole('ADMIN')">
+				<li>
+				<a href="${pageContext.request.contextPath}/caseload/officerCaseAssignment/officerCaseListingReport.html?offender=${offender.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="officerCaseListingReportLinkLabel"/></a>
+				</li>
+			</sec:authorize>
+		</c:if>
+		<c:if test="${empty officerCaseAssignment and empty offender}">
+			<sec:authorize access="hasRole('OFFICER_CASE_ASSIGNMENT_LIST') or hasRole('ADMIN')">
+				<li>
+				<a href="${pageContext.request.contextPath}/caseload/officerCaseAssignment/officerCaseloadActiveListingReport.html?userAccount=${userAccount.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="officerCaseloadActiveListingReportLinkLabel"/></a>
+				</li>
+			</sec:authorize>
+		</c:if>
+		<c:if test="${empty officerCaseAssignment and empty offender}">
+			<sec:authorize access="hasRole('OFFICER_CASE_ASSIGNMENT_LIST') or hasRole('ADMIN')">
+				<li>
+				<a href="${pageContext.request.contextPath}/caseload/officerCaseAssignment/officerCaseloadListingReport.html?userAccount=${userAccount.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="officerCaseloadListingReportLinkLabel"/></a>
+				</li>
+			</sec:authorize>
+		</c:if>				
 		<c:if test="${not empty officerCaseAssignment}">
 			<sec:authorize access="hasRole('OFFICER_CASE_ASSIGNMENT_VIEW') or hasRole('ADMIN')">
 				<li>
@@ -40,5 +61,12 @@
 				</li>
 			</sec:authorize>
 		</c:if>
+		<c:if test="${not empty officerCaseAssignment}">
+			<sec:authorize access="hasRole('OFFICER_CASE_ASSIGNMENT_LIST') or hasRole('ADMIN')">
+				<li>
+					<a href="${pageContext.request.contextPath}/caseload/officerCaseAssignment/officerCaseDetailsReport.html?officerCaseAssignment=${officerCaseAssignment.id}&reportFormat=PDF" class="newTab printLink"><fmt:message key="officerCaseDetailsReportLinkLabel"/></a>
+				</li>
+			</sec:authorize>
+		</c:if>		
 	</ul>
 </fmt:bundle>

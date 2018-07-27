@@ -51,6 +51,7 @@
    <!--  Validator -->
    <bean id="travelPermitFormValidator" class="omis.travelpermit.web.validator.TravelPermitFormValidator">
 		<constructor-arg name="addressFieldsValidatorDelegate" ref="addressFieldsValidatorDelegate"/>
+		<constructor-arg name="stringLengthChecks" ref="stringLengthChecks"/>
 	</bean>
   
   <!--  Validator delegate -->

@@ -42,7 +42,7 @@
 	<jsp:include page="/WEB-INF/views/offender/includes/offenderHeader.jsp"/>
 	<c:choose>
 		<c:when test="${resolutionCategory eq 'FORMAL'}">
-		<div id="hearingHeader">
+		<div id="hearingHeader" class="foregroundRegular">
 			<fieldset>
 				<span class="oneline">
 					<span class="onelineHalf">

@@ -19,13 +19,11 @@ package omis.boardhearing.service;
 
 import java.util.Date;
 import java.util.List;
-
 import omis.boardhearing.domain.BoardHearing;
 import omis.boardhearing.domain.BoardHearingCategory;
 import omis.boardhearing.domain.BoardHearingParticipant;
 import omis.boardhearing.exception.BoardHearingExistsException;
 import omis.boardhearing.exception.BoardHearingParticipantExistsException;
-import omis.exception.DuplicateEntityFoundException;
 import omis.hearinganalysis.domain.HearingAnalysis;
 import omis.paroleboarditinerary.domain.BoardAttendee;
 import omis.paroleboarditinerary.domain.ParoleBoardItinerary;
@@ -50,10 +48,9 @@ public interface ScheduleHearingService {
 	 * @param hearingDate - Date
 	 * @param paroleEligibility - Parole Eligibility
 	 * @param category - Board Hearing Category
-	 * @param cancellation - Cancellation Category
 	 * @param videoConference - Boolean
 	 * @return Newly Created Board Hearing
-	 * @throws DuplicateEntityFoundException - When a Board Hearing already
+	 * @throws BoardHearingExistsException - When a Board Hearing already
 	 * exists with the specified Parole Eligibility
 	 */
 	BoardHearing createBoardHearing(ParoleBoardItinerary itinerary,
@@ -70,10 +67,9 @@ public interface ScheduleHearingService {
 	 * @param hearingDate - Date
 	 * @param paroleEligibility - Parole Eligibility
 	 * @param category - Board Hearing Category
-	 * @param cancellation - Cancellation Category
 	 * @param videoConference - Boolean
 	 * @return Updated Board Hearing
-	 * @throws DuplicateEntityFoundException - When a Board Hearing already
+	 * @throws BoardHearingExistsException - When a Board Hearing already
 	 * exists with the specified Parole Eligibility
 	 */
 	BoardHearing updateBoardHearing(BoardHearing boardHearing,
@@ -98,8 +94,8 @@ public interface ScheduleHearingService {
 	 * @param boardMember - Parole Board Member
 	 * @param number - Long
 	 * @return Newly Created Board Hearing Participant
-	 * @throws DuplicateEntityFoundException - When a Board Hearing Participant
-	 * already exists with the given Board Member for the specified
+	 * @throws BoardHearingParticipantExistsException - When a Board Hearing
+	 * Participant already exists with the given Board Member for the specified
 	 * Board Hearing.
 	 */
 	BoardHearingParticipant createBoardHearingParticipant(
@@ -116,8 +112,8 @@ public interface ScheduleHearingService {
 	 * @param boardMember - Parole Board Member
 	 * @param number - Long
 	 * @return Updated Board Hearing Participant
-	 * @throws DuplicateEntityFoundException - When a Board Hearing Participant
-	 * already exists with the given Board Member for the specified
+	 * @throws BoardHearingParticipantExistsException - When a Board Hearing
+	 * Participant already exists with the given Board Member for the specified
 	 * Board Hearing.
 	 */
 	BoardHearingParticipant updateBoardHearingParticipant(
@@ -220,4 +216,4 @@ public interface ScheduleHearingService {
 	 */
 	List<ParoleEligibility> findUnscheduledParoleEligibilitiesIncluding(
 			ParoleBoardItinerary including);
-}
+} 

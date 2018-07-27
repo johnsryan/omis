@@ -59,17 +59,7 @@ public interface LocationTermService {
 	 * @return location terms for offender
 	 */
 	List<LocationTerm> findByOffender(Offender offender);
-	
-	/**
-	 * Returns locations.
-	 * 
-	 * <p>This method should be deprecated and replaced with one that returns
-	 * only locations active on a given date.
-	 * 
-	 * @return locations
-	 */
-	List<Location> findLocations();
-	
+
 	/**
 	 * Returns locations by organization.
 	 * 
@@ -84,8 +74,11 @@ public interface LocationTermService {
 	/**
 	 * Creates location term.
 	 * 
-	 * <p>If not null, the start and end date of the date range are prevented
-	 * from being equal by a {@code IllegalArgumentException} being thrown.
+	 * <p>Start and end date of the date range are prevented from being equal by
+	 * a {@code IllegalArgumentException} being thrown.
+	 * 
+	 * <p>If a location term for the offender is active on the start date it
+	 * will be ended with the start date.
 	 * 
 	 * <p>Updates reason term active on start date to be ended on start date.
 	 * 
@@ -106,8 +99,8 @@ public interface LocationTermService {
 	/**
 	 * Updates location term.
 	 * 
-	 * <p>If not null, the start and end date of the date range are prevented
-	 * from being equal by a {@code IllegalArgumentException} being thrown.
+	 * Start and end date of the date range are prevented from being equal by
+	 * a {@code IllegalArgumentException} being thrown.
 	 * 
 	 * @param locationTerm location term
 	 * @param location location

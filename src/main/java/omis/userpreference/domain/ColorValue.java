@@ -18,23 +18,24 @@
 package omis.userpreference.domain;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  * Color value.
  * 
  * @author Joel Norris
  * @author Josh Divine 
- * @version 0.1.1 (Feb 12, 2018)
+ * @version 0.1.2 (May 11, 2018)
  * @since OMIS 3.0
  */
 public class ColorValue implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
 	private Short hue;
-	
 	private Short saturation;
-	
+	private Short lightness;
+	private BigDecimal opacity;
+		
 	/**
 	 * Instantiates a default instance of color value.
 	 */
@@ -49,9 +50,29 @@ public class ColorValue implements Serializable {
 	 * @param hue hue
 	 * @param saturation saturation
 	 */
+	@Deprecated
 	public ColorValue(final Short hue, final Short saturation) {
 		this.hue = hue;
 		this.saturation = saturation;
+	}
+	
+	/**
+	 * Instantiates a color value with the specified hue, saturation, opacity, and lightness.
+	 * <p>
+	 * This color value is to support typical HSLA (Hue Saturation Lightness Alpha) values
+	 * for use in variables in generated CSS3 files.
+	 * 
+	 * @param hue hue
+	 * @param saturation saturation
+	 * @param lightness lightness
+	 * @param opacity opacity
+	 */
+	public ColorValue(final Short hue, final Short saturation,
+			final Short lightness, final BigDecimal opacity) {
+		this.hue = hue;
+		this.saturation = saturation;
+		this.lightness = lightness;
+		this.opacity = opacity;
 	}
 
 	/**
@@ -88,5 +109,41 @@ public class ColorValue implements Serializable {
 	 */
 	public void setSaturation(Short saturation) {
 		this.saturation = saturation;
+	}
+
+	/**
+	 * Returns the lightness.
+	 * 
+	 * @return lightness
+	 */
+	public Short getLightness() {
+		return this.lightness;
+	}
+
+	/**
+	 * Sets the lightness.
+	 * 
+	 * @param lightness lightness
+	 */
+	public void setLightness(final Short lightness) {
+		this.lightness = lightness;
+	}
+
+	/**
+	 * Returns the opacity.
+	 * 
+	 * @return opacity
+	 */
+	public BigDecimal getOpacity() {
+		return this.opacity;
+	}
+
+	/**
+	 * Sets the opacity.
+	 * 
+	 * @param opacity opacity
+	 */
+	public void setOpacity(final BigDecimal opacity) {
+		this.opacity = opacity;
 	}
 }

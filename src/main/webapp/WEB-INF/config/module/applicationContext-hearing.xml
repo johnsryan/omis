@@ -22,7 +22,7 @@
   - Author: Annie Wahl
   - Author: Sheronda Vaughn
   - Author: Josh Divine
-  - Version: 0.1.8 (May 17, 2018)
+  - Version: 0.1.9 (Jul 17, 2018)
   - Since: OMIS 3.0
   -->
 <beans xmlns="http://www.springframework.org/schema/beans"
@@ -51,6 +51,8 @@
 			<constructor-arg name="communitySupervisionOfficeDelegate" ref="communitySupervisionOfficeDelegate" />
 			<constructor-arg name="supervisoryOrganizationDelegate" ref="supervisoryOrganizationDelegate" />
 			<constructor-arg name="assessmentSanctionRevocationCenterDelegate" ref="assessmentSanctionRevocationCenterDelegate" />
+			<constructor-arg name="disciplinaryCodeDelegate" ref="disciplinaryCodeDelegate" />
+			<constructor-arg name="conditionDelegate" ref="conditionDelegate" />
 		</bean>
 		
 		<bean id="resolutionService" class="omis.hearing.service.impl.ResolutionServiceImpl">

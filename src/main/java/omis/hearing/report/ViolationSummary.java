@@ -63,6 +63,7 @@ public class ViolationSummary implements Serializable {
 	 * @param decisionReason - String
 	 * @param decision - String
 	 * @param dispositionCategory - String
+	 * @param appealDate - appeal date
 	 * @param sanctionDescription - String
 	 * @param resolutionCategory - Resolution Classification Category
 	 */
@@ -109,6 +110,7 @@ public class ViolationSummary implements Serializable {
 	 * @param decisionReason - String
 	 * @param decision - String
 	 * @param dispositionCategory - String
+	 * @param appealDate - appeal date
 	 * @param sanctionDescription - String
 	 * @param resolutionCategory - Resolution Classification Category
 	 */
@@ -153,6 +155,7 @@ public class ViolationSummary implements Serializable {
 	 * @param decisionReason - String
 	 * @param decision - String
 	 * @param dispositionCategory - String
+	 * @param appealDate - appeal date
 	 * @param sanctionDescription - String
 	 * @param resolutionCategory - Resolution Classification Category
 	 */
@@ -294,6 +297,7 @@ public class ViolationSummary implements Serializable {
 	/**
 	 * Constructor to summarize a single
 	 *  DisciplinaryCodeViolation/ConditionViolation.
+	 * @param violationId - violation id
 	 * @param violationEventDetails - String
 	 * @param violationEventCategory - Violation Event Category
 	 * @param disciplinaryCodeDescription - String
@@ -302,7 +306,9 @@ public class ViolationSummary implements Serializable {
 	 * @param conditionTitle - String
 	 * @param violationEventDate - Date
 	 */
-	public ViolationSummary(final String violationEventDetails,
+	public ViolationSummary(
+			final Long violationId,
+			final String violationEventDetails,
 			final ViolationEventCategory violationEventCategory,
 			final String disciplinaryCodeDescription,
 			final String disciplinaryCodeValue,
@@ -310,8 +316,8 @@ public class ViolationSummary implements Serializable {
 			final String conditionTitle,
 			final Date violationEventDate) {
 		this.infractionId = null;
-		this.conditionViolationId = null;
-		this.disciplinaryCodeViolationId = null;
+		this.conditionViolationId = violationId;
+		this.disciplinaryCodeViolationId = violationId;
 		this.violationEventCategory = violationEventCategory;
 		this.disciplinaryCodeDescription = disciplinaryCodeDescription;
 		this.disciplinaryCodeValue = disciplinaryCodeValue;

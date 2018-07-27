@@ -2,6 +2,7 @@ package omis.userpreference.domain;
 
 import java.io.Serializable;
 
+import omis.media.domain.Photo;
 import omis.user.domain.UserAccount;
 
 /**
@@ -82,6 +83,62 @@ public interface UserPreference extends Serializable {
 	 * @param whiteBackground white background
 	 */
 	void setWhiteBackground(Boolean whiteBackground);
+	
+	/**
+	 * Return whether shadows are applicable.
+	 * 
+	 * @return shadows
+	 */
+	Boolean getShadows();
+	
+	/**
+	 * Sets whether shadows are applicable.
+	 * 
+	 * @param shadows shadows
+	 */
+	void setShadows(Boolean shadows);
+	
+	/**
+	 * Returns border radius.
+	 * 
+	 * @return border radius
+	 */
+	Short getBorderRadius();
+	
+	/**
+	 * Sets border radius.
+	 * 
+	 * @param borderRadius border radius
+	 */
+	void setBorderRadius(Short borderRadius);
+	
+	/**
+	 * Returns background photo.
+	 * 
+	 * @return background photo
+	 */
+	Photo getBackgroundPhoto();
+	
+	/**
+	 * Sets background photo.
+	 * 
+	 * @param backgroundPhoto background photo
+	 */
+	void setBackgroundPhoto(Photo backgroundPhoto);
+	
+	/**
+	 * Returns display theme.
+	 * 
+	 * @return display theme
+	 */
+	DisplayTheme getDisplayTheme();
+	
+	/**
+	 * Sets display theme.
+	 * 
+	 * @param displayTheme display theme
+	 */
+	void setDisplayTheme(DisplayTheme displayTheme);
 	
 	/**
 	 * Returns the user account.

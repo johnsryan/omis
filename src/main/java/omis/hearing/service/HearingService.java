@@ -19,7 +19,8 @@ package omis.hearing.service;
 
 import java.util.Date;
 import java.util.List;
-
+import omis.condition.domain.Condition;
+import omis.disciplinaryCode.domain.DisciplinaryCode;
 import omis.exception.DuplicateEntityFoundException;
 import omis.hearing.domain.Hearing;
 import omis.hearing.domain.HearingCategory;
@@ -208,7 +209,8 @@ public interface HearingService {
 	 * @return Newly created Infraction
 	 * @throws DuplicateEntityFoundException - When an Infraction already exists
 	 * with given Hearing, ConditionViolation, and DisciplinaryCodeViolation.
-	 * @throws InfractionExistsException
+	 * @throws InfractionExistsException - When an Infraction already exists
+	 * with given Hearing, Condition Violation, and Disciplinary Code Violation.
 	 */
 	Infraction createInfraction(Hearing hearing,
 			ConditionViolation conditionViolation,
@@ -225,7 +227,7 @@ public interface HearingService {
 	 * @param plea - Infraction Plea
 	 * @return Updated Infraction
 	 * @throws InfractionExistsException - When an Infraction already exists
-	 * with given Hearing, ConditionViolation, and DisciplinaryCodeViolation.
+	 * with given Hearing, Condition Violation, and Disciplinary Code Violation.
 	 */
 	Infraction updateInfraction(Infraction infraction,
 			ConditionViolation conditionViolation,
@@ -351,4 +353,25 @@ public interface HearingService {
 	 * @return List of all HearingStatuses for specified Hearing
 	 */
 	List<HearingStatus> findHearingStatusesByHearing(Hearing hearing);
+	
+	/**
+	 * Returns a list of disciplinary codes valid for the given jurisdiction and
+	 * event date.
+	 * @param jurisdiction - Jurisdiction
+	 * @param eventDate - Event Date
+	 * @return  list of disciplinary codes valid for specified Supervisory 
+	 * Organization on specified date
+	 */
+	List<DisciplinaryCode> findDisciplinaryCodesByJurisdictionAndEventDate(
+			SupervisoryOrganization jurisdiction,
+			Date eventDate);
+	
+	/**
+	 * Finds and returns a list of Conditions for an offender on specified date.
+	 * @param offender - Offender
+	 * @param eventDate - Event Date
+	 * @return list of Conditions for an offender on specified date
+	 */
+	List<Condition> findConditionsByOffenderAndEffectiveDate(
+			Offender offender, Date eventDate);
 }

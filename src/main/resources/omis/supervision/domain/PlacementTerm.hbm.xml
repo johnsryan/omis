@@ -122,7 +122,8 @@
 	<query name="countPlacementTermsBetweenDatesForOffender"><![CDATA[
 		select count (placementTerm)
 		from omis.supervision.domain.PlacementTerm placementTerm
-		where (placementTerm.dateRange.startDate <= :endDate or :endDate is null)
+		where (placementTerm.dateRange.startDate <= :endDate or :endDate is null
+				or placementTerm.dateRange.startDate is null)
 			and (placementTerm.dateRange.endDate > :startDate or :startDate is null
 				or placementTerm.dateRange.endDate is null)
 			and placementTerm.offender = :offender
@@ -132,7 +133,8 @@
 	<query name="countPlacementTermsBetweenDatesForOffenderExcluding"><![CDATA[
 		select count (placementTerm)
 		from omis.supervision.domain.PlacementTerm placementTerm
-		where (placementTerm.dateRange.startDate <= :endDate or :endDate is null)
+		where (placementTerm.dateRange.startDate <= :endDate or :endDate is null
+				or placementTerm.dateRange.startDate is null)
 			and (placementTerm.dateRange.endDate > :startDate or :startDate is null
 				or placementTerm.dateRange.endDate is null)
 			and placementTerm.offender = :offender

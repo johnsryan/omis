@@ -122,9 +122,9 @@ public interface Address
 	int hashCode();
 	
 	/**
-	 * Returns a string representation of the address containing the street,
-	 * unit and ZIP code.
-	 * @return string including street, unit and ZIP code
+	 * Returns a string representation of the address containing the value and
+	 * ZIP code.
+	 * @return string including value and ZIP code
 	 */
 	@Override
 	String toString();	

@@ -12,10 +12,12 @@
 <head>
 	<title><fmt:message key="employerSearchTitle"/></title>
 	<jsp:include page="/WEB-INF/views/common/includes/headerOffenderListResources.jsp"/>
+	<jsp:include page="/WEB-INF/views/common/includes/headerOffenderFormResources.jsp"/>
 	<jsp:include page="/WEB-INF/views/common/includes/serverConfigResources.jsp"/>
 	<jsp:include page="/WEB-INF/views/common/includes/messageResolverResources.jsp"/>
 	<jsp:include page="/WEB-INF/views/common/includes/linksResources.jsp"/>
 	<jsp:include page="/WEB-INF/views/common/includes/searchResources.jsp"/>
+<%-- 	<jsp:include page="/WEB-INF/views/common/includes/searchCSS.jsp"/> --%>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/employment/scripts/employer.js"></script>
 </head>
 <body>
@@ -28,8 +30,8 @@
 		<jsp:include page="includes/searchResults.jsp"/>
 	</c:if>
 </body>
-	<p>
+	<span class="linkContainer">
 		<a class="createLink" href="${pageContext.request.contextPath}/employment/create.html?offender=${employerSearchForm.offender.id}&exist=false"><span class="visibleLinkLabel"><fmt:message key="createNewEmployerLabel"/></span></a>
-	</p>
+	</span>
 </fmt:bundle>
 </html>

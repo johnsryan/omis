@@ -17,11 +17,13 @@
  */
 package omis.hearing.web.form;
 
+import java.io.Serializable;
 import java.util.Date;
+import omis.condition.domain.Condition;
+import omis.disciplinaryCode.domain.DisciplinaryCode;
 import omis.hearing.domain.DispositionCategory;
 import omis.hearing.domain.Infraction;
 import omis.hearing.domain.InfractionPlea;
-import omis.hearing.report.ViolationSummary;
 import omis.person.domain.Person;
 import omis.violationevent.domain.ConditionViolation;
 import omis.violationevent.domain.DisciplinaryCodeViolation;
@@ -30,14 +32,14 @@ import omis.violationevent.domain.DisciplinaryCodeViolation;
  * Violation Item.
  * 
  *@author Annie Wahl
- *@version 0.1.1 (Feb 28, 2018)
+ *@version 0.1.2 (Jul 18, 2018)
  *@since OMIS 3.0
  *
  */
-public class ViolationItem {
+public class ViolationItem implements Serializable {
 	
-	private ViolationSummary summary;
-	
+	private static final long serialVersionUID = 1L;
+
 	private ConditionViolation conditionViolation;
 	
 	private DisciplinaryCodeViolation disciplinaryCodeViolation;
@@ -60,61 +62,57 @@ public class ViolationItem {
 	
 	private InfractionPlea plea;
 	
+	private Boolean adjusted;
+	
+	private DisciplinaryCode adjustedDisciplinaryCode;
+	
+	private Condition adjustedCondition;
+	
 	/**
-	 * 
+	 * Default constructor for Violation Item.
 	 */
 	public ViolationItem() {
 	}
 
 	/**
-	 * @param summary - Violation Summary
 	 * @param conditionViolation - Condition Violation
 	 */
-	public ViolationItem(final ViolationSummary summary,
+	public ViolationItem(
 			final ConditionViolation conditionViolation) {
-		this.summary = summary;
 		this.conditionViolation = conditionViolation;
 		this.disciplinaryCodeViolation = null;
 		this.infraction = null;
 	}
 
 	/**
-	 * @param summary - Violation Summary
 	 * @param disciplinaryCodeViolation - Disciplinary Code Violation
 	 */
 	public ViolationItem(
-			final ViolationSummary summary,
 			final DisciplinaryCodeViolation disciplinaryCodeViolation) {
-		this.summary = summary;
 		this.disciplinaryCodeViolation = disciplinaryCodeViolation;
 		this.conditionViolation = null;
 		this.infraction = null;
 	}
 	
 	/**
-	 * @param summary - Violation Summary
 	 * @param conditionViolation - Condition Violation
 	 * @param infraction - Infraction
 	 */
-	public ViolationItem(final ViolationSummary summary,
+	public ViolationItem(
 			final ConditionViolation conditionViolation,
 			final Infraction infraction) {
-		this.summary = summary;
 		this.conditionViolation = conditionViolation;
 		this.disciplinaryCodeViolation = null;
 		this.infraction = infraction;
 	}
 
 	/**
-	 * @param summary - Violation Summary
 	 * @param disciplinaryCodeViolation - Disciplinary code Violation
 	 * @param infraction - Infraction
 	 */
 	public ViolationItem(
-			final ViolationSummary summary,
 			final DisciplinaryCodeViolation disciplinaryCodeViolation,
 			final Infraction infraction) {
-		this.summary = summary;
 		this.disciplinaryCodeViolation = disciplinaryCodeViolation;
 		this.conditionViolation = null;
 		this.infraction = infraction;
@@ -209,14 +207,6 @@ public class ViolationItem {
 	}
 
 	/**
-	 * Returns the summary.
-	 * @return summary - ViolationSummary
-	 */
-	public ViolationSummary getSummary() {
-		return summary;
-	}
-
-	/**
 	 * Returns the conditionViolation.
 	 * @return conditionViolation - ConditionViolation
 	 */
@@ -230,15 +220,6 @@ public class ViolationItem {
 	 */
 	public DisciplinaryCodeViolation getDisciplinaryCodeViolation() {
 		return disciplinaryCodeViolation;
-	}
-
-	/**
-	 * Sets the summary.
-	 * @param summary - ViolationSummary
-	 */
-	public void setSummary(
-			final ViolationSummary summary) {
-		this.summary = summary;
 	}
 
 	/**
@@ -314,4 +295,55 @@ public class ViolationItem {
 	public void setPlea(final InfractionPlea plea) {
 		this.plea = plea;
 	}
+
+	/**
+	 * Returns adjusted.
+	 * @return adjusted - adjusted
+	 */
+	public Boolean getAdjusted() {
+		return this.adjusted;
+	}
+
+	/**
+	 * Sets adjusted.
+	 * @param adjusted - adjusted
+	 */
+	public void setAdjusted(final Boolean adjusted) {
+		this.adjusted = adjusted;
+	}
+
+	/**
+	 * Returns the adjusted Disciplinary Code.
+	 * @return adjustedDisciplinaryCode - adjusted disciplinary code
+	 */
+	public DisciplinaryCode getAdjustedDisciplinaryCode() {
+		return this.adjustedDisciplinaryCode;
+	}
+
+	/**
+	 * Sets the adjusted disciplinary code.
+	 * @param adjustedDisciplinaryCode - adjusted disciplinary code
+	 */
+	public void setAdjustedDisciplinaryCode(
+			final DisciplinaryCode adjustedDisciplinaryCode) {
+		this.adjustedDisciplinaryCode = adjustedDisciplinaryCode;
+	}
+
+	/**
+	 * Returns the adjusted condition.
+	 * @return adjustedCondition - adjusted condition
+	 */
+	public Condition getAdjustedCondition() {
+		return this.adjustedCondition;
+	}
+
+	/**
+	 * Sets the adjusted condition.
+	 * @param adjustedCondition - adjusted condition
+	 */
+	public void setAdjustedCondition(final Condition adjustedCondition) {
+		this.adjustedCondition = adjustedCondition;
+	}
+	
+	
 }

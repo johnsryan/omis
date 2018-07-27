@@ -104,4 +104,17 @@ public class OrganizationImpl
 		hashCode = 29 * hashCode + this.getName().hashCode();
 		return hashCode;
 	}
+	
+	/** {@inheritDoc} */
+	@Override
+	public String toString() {
+		String parentName;
+		if (this.getParent() != null) {
+			parentName = this.getParent().getName();
+		} else {
+			parentName = null;
+		}
+		return String.format("#%d: %s - %s [parent: %d]", this.getId(),
+				this.getName(), this.getAlias(), parentName);
+	}
 }

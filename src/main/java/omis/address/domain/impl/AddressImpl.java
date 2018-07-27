@@ -182,4 +182,33 @@ public class AddressImpl implements Address {
 		hashCode = 29 * hashCode + this.getZipCode().hashCode();
 		return hashCode;
 	}
+	
+	/** {@inheritDoc} */
+	@Override
+	public String toString() {
+		final String zipCodeText;
+		if (this.getZipCode() != null) {
+			final String cityName;
+			final String stateAbbreviation;
+			if (this.getZipCode().getCity() != null) {
+				cityName = this.getZipCode().getCity().getName();
+				if (this.getZipCode().getCity().getState() != null) {
+					stateAbbreviation = this.getZipCode().getCity().getState()
+							.getAbbreviation();
+				} else {
+					stateAbbreviation = null;
+				}
+			} else {
+				cityName = null;
+				stateAbbreviation = null;
+			}
+			zipCodeText = String.format("%s, %s %s-%s",
+					cityName, stateAbbreviation, zipCode.getValue(),
+					zipCode.getExtension());
+		} else {
+			zipCodeText = null;
+		}
+		return String.format("#%d: %s, %s", this.getId(), this.getValue(),
+				zipCodeText);
+	}
 }

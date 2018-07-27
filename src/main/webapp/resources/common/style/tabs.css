@@ -126,7 +126,7 @@ ul.tabs li.tab_li span a.remove {
 }
 
 ul.tabs li.tab_li span a.remove:after {
-	content: url('../images/close.png');
+	content: url('../images/tabClose.png');
 }
 
 ul.tabs li span {

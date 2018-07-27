@@ -25,7 +25,7 @@ window.onload = function() {
 	applyActionMenu(document.getElementById("actionMenuLink"));
 	applyDatePicker("startDate");
 	applyDatePicker("endDate");
-	applyUserSearch(document.getElementById("assignedTo"),
+	applyUserIDSearch(document.getElementById("assignedTo"),
 			document.getElementById("officer"),
 			document.getElementById("userAccountCurrentLabel"),
 			document.getElementById("currentUserAccountLink"), 

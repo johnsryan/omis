@@ -26,7 +26,7 @@
 	<jsp:include page="/WEB-INF/views/common/includes/toolsResources.jsp"/>
 	<jsp:include page="/WEB-INF/views/common/includes/interactiveImageResources.jsp"/>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/offender/scripts/offenderProfile.js"> </script>
-	<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/offender/style/profile.css?VERSION=13"/>
+	<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/offender/style/profile.css?VERSION=14"/>
 </head>
 <body>
 	<div id="offenderHeader">

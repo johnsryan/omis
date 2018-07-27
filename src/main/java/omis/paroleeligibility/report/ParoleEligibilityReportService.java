@@ -17,11 +17,13 @@
  */
 package omis.paroleeligibility.report;
 
+import java.util.Date;
 import java.util.List;
 
 import omis.boardhearing.domain.BoardHearing;
 import omis.hearinganalysis.domain.HearingAnalysis;
 import omis.offender.domain.Offender;
+import omis.paroleboarditinerary.domain.ParoleBoardItinerary;
 import omis.paroleeligibility.domain.ParoleEligibility;
 
 /**
@@ -30,7 +32,7 @@ import omis.paroleeligibility.domain.ParoleEligibility;
  * @author Trevor Isles
  * @author Josh Divine
  * @author Annie Wahl
- * @version 0.1.3 (May 29, 2018)
+ * @version 0.1.4 (Jul 10, 2018)
  * @since OMIS 3.0
  */
 public interface ParoleEligibilityReportService {
@@ -59,6 +61,13 @@ public interface ParoleEligibilityReportService {
 	 * @return list of unresolved parole eligibility summaries
 	 */
 	List<ParoleEligibilitySummary> findUnresolvedEligibilitySummaries();
+	
+	/**
+	 * Returns a list of unscheduled parole eligibility summaries.
+	 * 
+	 * @return list of unscheduled parole eligibility summaries
+	 */
+	List<ParoleEligibilitySummary> findUnscheduledEligibilitySummaries();
 
 	/**
 	 * Returns the board hearing for the specified parole eligibility.
@@ -77,4 +86,24 @@ public interface ParoleEligibilityReportService {
 	 */
 	ParoleEligibilitySummary summarizeParoleEligibility(
 			ParoleEligibility paroleEligibility);
+	
+	/**
+	 * Returns a list of parole eligibility summaries by itinerary.
+	 * 
+	 * @param itinerary parole board itinerary
+	 * @return list of parole eligibility summaries
+	 */
+	List<ParoleEligibilitySummary> findByItinerary(
+			ParoleBoardItinerary itinerary);
+	
+	/**
+	 * Returns a list of unresolved parole eligibility summaries within the 
+	 * specified date range.
+	 * 
+	 * @param startDate start date
+	 * @param endDate end date
+	 * @return list of unresolved parole eligibility summaries
+	 */
+	List<ParoleEligibilitySummary> findUnresolvedEligibilitySummariesByDateRange(
+			Date startDate, Date endDate);
 }

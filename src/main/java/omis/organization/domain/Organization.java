@@ -97,4 +97,14 @@ public interface Organization
 	 */
 	@Override
 	int hashCode();
+	
+	/**
+	 * Returns textual representation of {@code this} including name, alias
+	 * and parent name.
+	 * 
+	 * @return textual representation of {@code this} including name, alias
+	 * and parent name
+	 */
+	@Override
+	String toString() ;
 }

@@ -21,11 +21,14 @@ import org.springframework.web.servlet.ModelAndView;
 
 import omis.beans.factory.PropertyEditorFactory;
 import omis.beans.factory.spring.CustomDateEditorFactory;
+import omis.datatype.DateRange;
 import omis.paroleboarditinerary.domain.ParoleBoardItinerary;
 import omis.paroleboarditinerary.report.BoardAttendeeSummary;
 import omis.paroleboarditinerary.report.ParoleBoardItinerarySummary;
 import omis.paroleboarditinerary.report.ParoleBoardItinerarySummaryReportService;
 import omis.paroleboarditinerary.web.form.ParoleBoardItinerarySearchForm;
+import omis.paroleeligibility.domain.ParoleEligibility;
+import omis.paroleeligibility.report.ParoleEligibilityReportService;
 import omis.report.ReportFormat;
 import omis.report.ReportRunner;
 import omis.report.web.controller.delegate.ReportControllerDelegate;
@@ -35,7 +38,7 @@ import omis.report.web.controller.delegate.ReportControllerDelegate;
  *
  * @author Josh Divine
  * @author Sierra Rosales
- * @version 0.1.0 (Nov 29, 2017)
+ * @version 0.1.2 (Jul 23, 2018)
  * @since OMIS 3.0
  */
 @Controller
@@ -47,11 +50,20 @@ public class ReportParoleBoardItineraryController {
 	
 	private static final String VIEW_NAME = "paroleBoardItinerary/list";
 	
+	private static final String HEARINGS_VIEW_NAME = 
+			"paroleBoardItinerary/listHearings";
+	
 	/* Action menus. */
 	
 	private static final String ACTION_MENU_VIEW_NAME = 
 			"paroleBoardItinerary/includes/paroleBoardItinerariesActionMenu";
 
+	private static final String HEARINGS_ACTION_MENU_VIEW_NAME = 
+			"paroleBoardItinerary/includes/itineraryHearingsActionMenu";
+	
+	private static final String HEARINGS_ROW_ACTION_MENU_VIEW_NAME = 
+			"paroleBoardItinerary/includes/itineraryHearingsRowActionMenu";
+	
 	/* Model keys. */
 	
 	private static final String PAROLE_BOARD_ITINERARY_SUMMARIES_MODEL_KEY = 
@@ -65,6 +77,21 @@ public class ReportParoleBoardItineraryController {
 	
 	private static final String BOARD_ATTENDEE_SUMMARIES_MODEL_KEY = 
 			"boardAttendeeSummaries";
+	
+	private static final String SCHEDULED_HEARINGS_MODEL_KEY = 
+			"scheduledHearings";
+	
+	private static final String UNRESOLVED_ELIGIBILITY_SUMMARIES_MODEL_KEY = 
+			"unresolvedEligibilitySummaries";
+	
+	private static final String PAROLE_BOARD_ITINERARY_SUMMARY_MODEL_KEY = 
+			"itinerarySummary";
+	
+	private static final String PAROLE_ELIGIBILITY_MODEL_KEY = "eligibility";
+	
+	private static final String HEARING_ANALYSIS_MODEL_KEY = "hearingAnalysis";
+	
+	private static final String BOARD_HEARING_MODEL_KEY = "boardHearing";
 	
 	/* Report Names. */
 	
@@ -86,12 +113,20 @@ public class ReportParoleBoardItineraryController {
 	@Qualifier("datePropertyEditorFactory")
 	private CustomDateEditorFactory customDateEditorFactory;
 	
+	@Autowired
+	@Qualifier("paroleEligibilityPropertyEditorFactory")
+	private PropertyEditorFactory paroleEligibilityPropertyEditorFactory;
+	
 	/* Report services. */
 	
 	@Autowired
 	@Qualifier("paroleBoardItinerarySummaryReportService")
 	private ParoleBoardItinerarySummaryReportService 
 			paroleBoardItinerarySummaryReportService;
+	
+	@Autowired
+	@Qualifier("paroleEligibilityReportService")
+	private ParoleEligibilityReportService paroleEligibilityReportService;
 	
 	/* Report runners. */
 	
@@ -181,6 +216,34 @@ public class ReportParoleBoardItineraryController {
 		return prepareModelAndView(form, paroleBoardItineraries);
 	}
 	
+	/**
+	 * Shows screen that lists scheduled hearings and unresolved eligibilities.
+	 * 
+	 * @param paroleBoardItinerary parole board itinerary
+	 * @return screen that lists scheduled hearings and unresolved eligibilities
+	 */
+	@PreAuthorize("hasRole('PAROLE_BOARD_ITINERARY_LIST') or hasRole('ADMIN')")
+	@RequestMapping(value = "/listHearings.html", method = RequestMethod.GET)
+	public ModelAndView listHearings(
+			@RequestParam(value = "paroleBoardItinerary", required = true)
+				final ParoleBoardItinerary paroleBoardItinerary) {
+		ModelAndView mav = new ModelAndView(HEARINGS_VIEW_NAME);
+		mav.addObject(SCHEDULED_HEARINGS_MODEL_KEY, 
+				this.paroleEligibilityReportService.findByItinerary(
+						paroleBoardItinerary));
+		mav.addObject(UNRESOLVED_ELIGIBILITY_SUMMARIES_MODEL_KEY, 
+				this.paroleEligibilityReportService
+				.findUnresolvedEligibilitySummariesByDateRange(
+						DateRange.getStartDate(
+								paroleBoardItinerary.getDateRange()), 
+						DateRange.getEndDate(
+								paroleBoardItinerary.getDateRange())));
+		mav.addObject(PAROLE_BOARD_ITINERARY_SUMMARY_MODEL_KEY, 
+				this.paroleBoardItinerarySummaryReportService.summarize(
+						paroleBoardItinerary));
+		return mav;
+	}
+	
 	/* Action menus. */
 	
 	/**
@@ -197,6 +260,49 @@ public class ReportParoleBoardItineraryController {
 		ModelAndView mav = new ModelAndView(ACTION_MENU_VIEW_NAME);
 		mav.addObject(PAROLE_BOARD_ITINERARY_MODEL_KEY, 
 				paroleBoardItinerary);
+		return mav;
+	}
+	
+	/**
+	 * Shows action menu for scheduled hearings.
+	 * 
+	 * @param paroleBoardItinerary parole board itinerary
+	 * @return action menu for parole board itineraries
+	 */
+	@RequestMapping(value = "/itineraryHearingsActionMenu.html",
+			method = RequestMethod.GET)
+	public ModelAndView showItineraryHearingsActionMenu(
+			@RequestParam(value = "paroleBoardItinerary", required = true)
+				final ParoleBoardItinerary paroleBoardItinerary) {
+		ModelAndView mav = new ModelAndView(HEARINGS_ACTION_MENU_VIEW_NAME);
+		mav.addObject(PAROLE_BOARD_ITINERARY_MODEL_KEY, 
+				paroleBoardItinerary);
+		return mav;
+	}
+	
+	/**
+	 * Shows action menu for scheduled hearings.
+	 * 
+	 * @param paroleBoardItinerary parole board itinerary
+	 * @param eligibility parole eligibility
+	 * @return action menu for parole board itineraries
+	 */
+	@RequestMapping(value = "/itineraryHearingsRowActionMenu.html",
+			method = RequestMethod.GET)
+	public ModelAndView showItineraryHearingsRowActionMenu(
+			@RequestParam(value = "paroleBoardItinerary", required = true)
+				final ParoleBoardItinerary paroleBoardItinerary,
+			@RequestParam(value = "eligibility", required = true)
+				final ParoleEligibility eligibility) {
+		ModelAndView mav = new ModelAndView(HEARINGS_ROW_ACTION_MENU_VIEW_NAME);
+		mav.addObject(PAROLE_BOARD_ITINERARY_MODEL_KEY, paroleBoardItinerary);
+		mav.addObject(PAROLE_ELIGIBILITY_MODEL_KEY, eligibility);
+		mav.addObject(HEARING_ANALYSIS_MODEL_KEY, this
+				.paroleEligibilityReportService
+				.findHearingAnalysisByParoleEligibility(eligibility));
+		mav.addObject(BOARD_HEARING_MODEL_KEY, this
+				.paroleEligibilityReportService
+				.findBoardHearingByParoleEligibility(eligibility));
 		return mav;
 	}
 	
@@ -267,5 +373,8 @@ public class ReportParoleBoardItineraryController {
 				.createPropertyEditor());
 		binder.registerCustomEditor(Date.class,
 				this.customDateEditorFactory.createCustomDateOnlyEditor(true));
+		binder.registerCustomEditor(ParoleEligibility.class, 
+				this.paroleEligibilityPropertyEditorFactory
+				.createPropertyEditor());
 	}
 }

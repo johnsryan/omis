@@ -33,7 +33,7 @@
 	<jsp:include page="/WEB-INF/views/common/includes/toolsResources.jsp"/>
 	<jsp:include page="/WEB-INF/views/common/includes/searchResources.jsp"/>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/caseload/officerCaseAssignment/scripts/JQuery/jquery.omis.officerCaseAssignment.js?VERSION=1"></script>
-	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/caseload/officerCaseAssignment/scripts/officerCaseAssignment.js?VERSION=1"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/resources/caseload/officerCaseAssignment/scripts/officerCaseAssignment.js?VERSION=2"></script>
 	<title>
 		<c:if test="${empty officerCaseAssignment}">
 			<fmt:message key="createOfficerCaseAssignmentTitle" />

@@ -83,8 +83,8 @@
 		select count (correctionalStatusTerm)
 		from omis.supervision.domain.CorrectionalStatusTerm correctionalStatusTerm
 		where (correctionalStatusTerm.dateRange.startDate <= :endDate or :endDate is null)
-			and (correctionalStatusTerm.dateRange.endDate > :startDate or :startDate is null
-				or correctionalStatusTerm.dateRange.endDate is null)
+			and (correctionalStatusTerm.dateRange.endDate > :startDate
+				or (correctionalStatusTerm.dateRange.endDate is null or :startDate is null))
 			and correctionalStatusTerm.offender = :offender
 	]]></query>
 	
@@ -93,8 +93,8 @@
 		select count (correctionalStatusTerm)
 		from omis.supervision.domain.CorrectionalStatusTerm correctionalStatusTerm
 		where (correctionalStatusTerm.dateRange.startDate <= :endDate or :endDate is null)
-			and (correctionalStatusTerm.dateRange.endDate > :startDate or :startDate is null
-				or correctionalStatusTerm.dateRange.endDate is null)
+			and (correctionalStatusTerm.dateRange.endDate > :startDate
+				or (correctionalStatusTerm.dateRange.endDate is null or :startDate is null))
 			and correctionalStatusTerm.offender = :offender
 			and correctionalStatusTerm not in (:excludeCorrectionalStatusTerms)
 	]]></query>
@@ -104,7 +104,8 @@
 		select correctionalStatusTerm
 		from omis.supervision.domain.CorrectionalStatusTerm correctionalStatusTerm
 		where correctionalStatusTerm.offender = :offender
-		  and correctionalStatusTerm.dateRange.endDate = :endDate
+		  and (correctionalStatusTerm.dateRange.endDate = :endDate
+		  	or (correctionalStatusTerm.dateRange.endDate is null and :endDate is null))
 	]]></query>
 	
 	<!-- Returns correctional status term for offender with start date. -->
@@ -112,7 +113,8 @@
 		select correctionalStatusTerm
 		from omis.supervision.domain.CorrectionalStatusTerm correctionalStatusTerm
 		where correctionalStatusTerm.offender = :offender
-		  and correctionalStatusTerm.dateRange.startDate = :startDate
+		  and (correctionalStatusTerm.dateRange.startDate = :startDate
+		  	or (correctionalStatusTerm.dateRange.startDate is null and :startDate is null))
 	]]></query>
 	
 	<!-- Returns correctional status term. -->

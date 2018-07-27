@@ -17,8 +17,12 @@
 */
 package omis.caseload.web.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -38,12 +42,16 @@ import omis.caseload.service.OfficerCaseAssignmentService;
 import omis.offender.beans.factory.OffenderPropertyEditorFactory;
 import omis.offender.domain.Offender;
 import omis.offender.web.controller.delegate.OffenderSummaryModelDelegate;
+import omis.report.ReportFormat;
+import omis.report.ReportRunner;
+import omis.report.web.controller.delegate.ReportControllerDelegate;
 import omis.user.domain.UserAccount;
 
 /**
  * Controller for reporting officer case assignments.
  * 
  * @author Josh Divine
+ * @author Sierra Haynes
  * @version 0.1.0 (Jun 19, 2018)
  * @since OMIS 3.0
  */
@@ -89,6 +97,43 @@ public class ReportOfficerCaseAssignmentController {
 	@Autowired
 	@Qualifier("offenderSummaryModelDelegate")
 	private OffenderSummaryModelDelegate offenderSummaryModelDelegate;
+	
+	/* Report names. */
+	
+	private static final String OFFICER_CASE_LISTING_REPORT_NAME 
+		= "/CaseManagement/OfficerCaseAssignment/Officer_Case_Assignment_Listing";
+
+	private static final String OFFICER_CASE_DETAILS_REPORT_NAME 
+		= "/CaseManagement/OfficerCaseAssignment/Officer_Case_Assignment_Details";
+	
+	private static final String OFFICER_CASELOAD_LISTING_REPORT_NAME 
+		= "/CaseManagement/OfficerCaseAssignment/Officer_Caseload_Listing";
+	
+	private static final String ACTIVE_OFFICER_CASELOAD_LISTING_REPORT_NAME 
+		= "/CaseManagement/OfficerCaseAssignment/Officer_Caseload_Listing_Active";	
+
+	/* Report parameter names. */
+	
+	private static final String OFFICER_CASE_LISTING_ID_REPORT_PARAM_NAME 
+		= "DOC_ID";
+
+    private static final String OFFICER_CASE_DETAILS_ID_REPORT_PARAM_NAME 
+		= "CASE_ASSGN_ID";
+    
+	private static final String OFFICER_CASELOAD_LISTING_ID_REPORT_PARAM_NAME 
+		= "USER_ID";   
+	
+	/* Report runners. */
+	
+	@Autowired
+	@Qualifier("reportRunner")
+	private ReportRunner reportRunner;
+	
+	/* Controller delegates. */
+	
+	@Autowired
+	@Qualifier("reportControllerDelegate")
+	private ReportControllerDelegate reportControllerDelegate;
 	
 	/* Property editors. */
 	
@@ -175,6 +220,108 @@ public class ReportOfficerCaseAssignmentController {
 		mav.addObject(USER_ACCOUNT_MODEL_KEY, userAccount);
 		mav.addObject(OFFICER_CASE_ASSIGNMENT_MODEL_KEY, officerCaseAssignment);
 		return mav;
+	}
+	
+/* Reports */
+	
+	/**
+	 * Returns the report for the specified offenders officer case assignments.
+	 * 
+	 * @param offender offender
+	 * @param reportFormat report format
+	 * @return response entity with report
+	 */
+	@RequestMapping(value = "/officerCaseListingReport.html",
+			method = RequestMethod.GET)
+	@PreAuthorize("hasRole('OFFICER_CASE_ASSIGNMENT_LIST') or hasRole('ADMIN')")
+	public ResponseEntity<byte []> reportOfficerCaseListing(@RequestParam(
+			value = "offender", required = true)
+			final Offender offender,
+			@RequestParam(value = "reportFormat", required = true)
+			final ReportFormat reportFormat) {
+		Map<String, String> reportParamMap = new HashMap<String, String>();
+		reportParamMap.put(OFFICER_CASE_LISTING_ID_REPORT_PARAM_NAME,
+				Long.toString(offender.getOffenderNumber()));
+		byte[] doc = this.reportRunner.runReport(
+				OFFICER_CASE_LISTING_REPORT_NAME,
+				reportParamMap, reportFormat);
+		return this.reportControllerDelegate.constructReportResponseEntity(
+				doc, reportFormat);
+	}
+	
+	/**
+	 * Returns the report for the specified officer case assignment.
+	 * 
+	 * @param officerCaseAssignment officer case assignment
+	 * @param reportFormat report format
+	 * @return response entity with report
+	 */
+	@RequestMapping(value = "/officerCaseDetailsReport.html",
+			method = RequestMethod.GET)
+	@PreAuthorize("hasRole('OFFICER_CASE_ASSIGNMENT_LIST') or hasRole('ADMIN')")
+	public ResponseEntity<byte []> reportEducationDetails(@RequestParam(
+			value = "officerCaseAssignment", required = true)
+			final OfficerCaseAssignment officerCaseAssignment,
+			@RequestParam(value = "reportFormat", required = true)
+			final ReportFormat reportFormat) {
+		Map<String, String> reportParamMap = new HashMap<String, String>();
+		reportParamMap.put(OFFICER_CASE_DETAILS_ID_REPORT_PARAM_NAME,
+				Long.toString(officerCaseAssignment.getId()));
+		byte[] doc = this.reportRunner.runReport(
+				OFFICER_CASE_DETAILS_REPORT_NAME,
+				reportParamMap, reportFormat);
+		return this.reportControllerDelegate.constructReportResponseEntity(
+				doc, reportFormat);
+	}
+	
+	/**
+	 * Returns the report for the specified officers case assignments.
+	 * 
+	 * @param userAccount user account
+	 * @param reportFormat report format
+	 * @return response entity with report
+	 */
+	@RequestMapping(value = "/officerCaseloadListingReport.html",
+			method = RequestMethod.GET)
+	@PreAuthorize("hasRole('OFFICER_CASE_ASSIGNMENT_LIST') or hasRole('ADMIN')")
+	public ResponseEntity<byte []> reportOfficerCaseloadListing(@RequestParam(
+			value = "userAccount", required = true)
+			final UserAccount userAccount,
+			@RequestParam(value = "reportFormat", required = true)
+			final ReportFormat reportFormat) {
+		Map<String, String> reportParamMap = new HashMap<String, String>();
+		reportParamMap.put(OFFICER_CASELOAD_LISTING_ID_REPORT_PARAM_NAME,
+				Long.toString(userAccount.getId()));
+		byte[] doc = this.reportRunner.runReport(
+				OFFICER_CASELOAD_LISTING_REPORT_NAME,
+				reportParamMap, reportFormat);
+		return this.reportControllerDelegate.constructReportResponseEntity(
+				doc, reportFormat);
+	}
+	
+	/**
+	 * Returns the report for the specified officers active case assignments.
+	 * 
+	 * @param userAccount user account
+	 * @param reportFormat report format
+	 * @return response entity with report
+	 */
+	@RequestMapping(value = "/officerCaseloadActiveListingReport.html",
+			method = RequestMethod.GET)
+	@PreAuthorize("hasRole('OFFICER_CASE_ASSIGNMENT_LIST') or hasRole('ADMIN')")
+	public ResponseEntity<byte []> reportOfficerCaseloadActiveListing(@RequestParam(
+			value = "userAccount", required = true)
+			final UserAccount userAccount,
+			@RequestParam(value = "reportFormat", required = true)
+			final ReportFormat reportFormat) {
+		Map<String, String> reportParamMap = new HashMap<String, String>();
+		reportParamMap.put(OFFICER_CASELOAD_LISTING_ID_REPORT_PARAM_NAME,
+				Long.toString(userAccount.getId()));
+		byte[] doc = this.reportRunner.runReport(
+				ACTIVE_OFFICER_CASELOAD_LISTING_REPORT_NAME,
+				reportParamMap, reportFormat);
+		return this.reportControllerDelegate.constructReportResponseEntity(
+				doc, reportFormat);
 	}
 	
 	/* Helper Methods */

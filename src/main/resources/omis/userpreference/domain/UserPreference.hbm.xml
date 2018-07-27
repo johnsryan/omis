@@ -3,6 +3,11 @@
        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="omis.userpreference.domain">
+	<typedef name="displayTheme" class="org.hibernate.type.EnumType">
+		<param name="enumClass">omis.userpreference.domain.DisplayTheme</param>
+		<param name="useNamed">true</param>
+		<param name="type">12</param>
+	</typedef>
 	<class entity-name="omis.userpreference.domain.UserPreference"
 		proxy="omis.userpreference.domain.UserPreference"
 		name="omis.userpreference.domain.impl.UserPreferenceImpl"
@@ -15,16 +20,27 @@
 		<component name="foregroundColorValue">
 			<property name="hue" column="`FOREGROUND_HUE_COLOR_VALUE`" type="java.lang.Short" not-null="false"/>
 			<property name="saturation" column="`FOREGROUND_SAT_COLOR_VALUE`" type="java.lang.Short" not-null="false"/>
+			<property name="opacity" column="`FOREGROUND_OPACITY_COLOR_VAL`" type="java.math.BigDecimal" not-null="false"/>
+			<property name="lightness" column="`FOREGROUND_LIGHT_COLOR_VAL`" type="java.lang.Short" not-null="false"/>
 		</component>
 		<component name="backgroundColorValue">
 			<property name="hue" column="`BACKGROUND_HUE_COLOR_VALUE`" type="java.lang.Short" not-null="false"/>
 			<property name="saturation" column="`BACKGROUND_SAT_COLOR_VALUE`" type="java.lang.Short" not-null="false"/>
+			<property name="opacity" column="`BACKGROUND_OPACITY_COLOR_VAL`" type="java.math.BigDecimal" not-null="false"/>
+			<property name="lightness" column="`BACKGROUND_LIGHT_COLOR_VAL`" type="java.lang.Short" not-null="false"/>
 		</component>
 		<component name="accentColorValue">
 			<property name="hue" column="`ACCENT_HUE_COLOR_VALUE`" type="java.lang.Short" not-null="false"/>
 			<property name="saturation" column="`ACCENT_SAT_COLOR_VALUE`" type="java.lang.Short" not-null="false"/>
+			<property name="opacity" column="`ACCENT_OPACITY_COLOR_VAL`" type="java.math.BigDecimal" not-null="false"/>
+			<property name="lightness" column="`ACCENT_LIGHT_COLOR_VAL`" type="java.lang.Short" not-null="false"/>
 		</component>
 		<property name="whiteBackground" column="`WHITE_BACKGROUND`" not-null="false" type="yes_no"/>
+		<property name="shadows" column="`SHADOWS`" not-null="false" type="yes_no"/>
+		<property name="borderRadius" column="`BORDER_RADIUS`" not-null="false" type="java.lang.Short"/>
+		<many-to-one name="backgroundPhoto" column="`BACKGROUND_PHOTO_ID`" cascade="none" not-null="false"
+			entity-name="omis.media.domain.Photo" unique="false"/>
+		<property name="displayTheme" column="`DISPLAY_THEME`" not-null="false" type="displayTheme"/>
 		<many-to-one name="userAccount" column="`USER_ACCOUNT_ID`" cascade="none" not-null="true"
 			entity-name="omis.user.domain.UserAccount" unique="false"/>
 	</class>

@@ -5,8 +5,8 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <div id="offenderHeaderDetails">
 <fmt:bundle basename="omis.offender.msgs.offenderHeader">
-<div id="offenderHeaderBadge" class="offenderHeaderContainer accentDark">
-	<div class="item foregroundUltraLight">
+<div id="offenderHeaderBadge" class="offenderHeaderContainer">
+	<div class="item">
 		<c:forEach var="summaryItem" items="${basicInformationSummaryItemRegistry.items}" varStatus="i">
 				<c:if test="${summaryItem.enabled}">
 					<jsp:include page="${summaryItem.includedPageName}"/>
@@ -14,7 +14,7 @@
 		</c:forEach>
 	</div>
 </div>
-<div id="scrollWrapper" class="offenderHeaderContainer accentDark">
+<div id="scrollWrapper" class="offenderHeaderContainer">
 	<div id="leftArrow" class="arrow"></div>
 	<div id="rightArrow" class="arrow"></div>
 	<div id="scroll" class="noSelect">

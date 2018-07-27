@@ -40,10 +40,10 @@
 					<c:forEach var="optionDocket" items="${dockets}">
 						<c:choose>
 							<c:when test="${trackedDocumentForm.docket eq optionDocket}">
-								<option value="${optionDocket.id}" selected="selected"><c:out value="${optionDocket.value}"/><c:out value="${optionDocket.court.location.address.value }"/>
+								<option value="${optionDocket.id}" selected="selected"><c:out value="${optionDocket.value}"/><c:out value="${optionDocket.court.location.address.value }"/></option>
 							</c:when>
 							<c:otherwise>
-								<option value="${optionDocket.id}"><c:out value="${optionDocket.value}"/> <c:out value="${optionDocket.court.name}"/>
+								<option value="${optionDocket.id}"><c:out value="${optionDocket.value}"/> <c:out value="${optionDocket.court.name}"/></option>
 							</c:otherwise>
 						</c:choose>
 					</c:forEach>

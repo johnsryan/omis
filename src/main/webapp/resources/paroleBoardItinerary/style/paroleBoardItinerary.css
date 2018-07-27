@@ -68,3 +68,7 @@ form.filterForm select, form select {
     text-indent: 0.01px;
     text-overflow: ""; 
 }
+
+.detailsLabel {
+	font-weight: bold;
+}

@@ -22,7 +22,6 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -36,7 +35,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-
 import omis.beans.factory.PropertyEditorFactory;
 import omis.beans.factory.spring.CustomDateEditorFactory;
 import omis.boardhearing.domain.BoardHearing;
@@ -62,7 +60,7 @@ import omis.web.controller.delegate.BusinessExceptionHandlerDelegate;
 /**
  * Schedule Hearings Controller.
  * 
- *@author Annie Wahl 
+ *@author Annie Wahl
  *@version 0.1.0 (Jun 28, 2018)
  *@since OMIS 3.0
  *
@@ -210,7 +208,7 @@ public class ScheduleHearingsController {
 	 * @throws BoardHearingParticipantExistsException - When a Board Hearing
 	 * Participant with the given Board Member already exists for the given
 	 * Board Hearing.
-	 */
+	 */ 
 	@RequestMapping(value = "/edit.html", method = RequestMethod.POST)
 	@PreAuthorize("hasRole('BOARD_HEARING_CREATE') "
 			+ "or hasRole('ADMIN')")
@@ -225,7 +223,7 @@ public class ScheduleHearingsController {
 			return this.prepareEditMav(itinerary, form);
 		} else {
 			for (BoardHearingItem item : form.getBoardHearingItems()) {
-				if(item.getSelected()) {
+				if (item.getSelected()) {
 					BoardHearing boardHearing = item.getBoardHearing();
 					if (boardHearing == null) {
 						boardHearing = this.scheduleHearingService
@@ -341,7 +339,7 @@ public class ScheduleHearingsController {
 		for (int i = 0; i < form.getBoardHearingItems().size(); i++) {
 			ParoleEligibility eligibility = form.getBoardHearingItems().get(i)
 					.getParoleEligibility();
-			if(eligibility != null) {
+			if (eligibility != null) {
 				ParoleEligibilitySummary summary =
 						this.paroleEligibilityReportService
 							.summarizeParoleEligibility(eligibility);
@@ -369,23 +367,23 @@ public class ScheduleHearingsController {
 		ScheduleHearingsForm form = new ScheduleHearingsForm();
 		List<BoardHearingItem> items = new ArrayList<BoardHearingItem>();
 		
-		for(ParoleEligibility eligibility :
-				this.scheduleHearingService
+		for (ParoleEligibility eligibility
+				: this.scheduleHearingService
 					.findUnscheduledParoleEligibilitiesIncluding(itinerary)) {
 			BoardHearingItem item = new BoardHearingItem();
 			item.setParoleEligibility(eligibility);
 			BoardHearing boardHearing = this.scheduleHearingService
 					.findBoardHearingByParoleEligibility(eligibility);
-			if(boardHearing != null) {
+			if (boardHearing != null) {
 				item.setBoardHearing(boardHearing);
 				item.setCategory(boardHearing.getCategory());
 				item.setHearingDate(boardHearing.getHearingDate());
 				item.setVideoConference(boardHearing.getVideoConference());
 				item.setSelected(true);
 				item.setItemOperation(BoardHearingItemOperation.UPDATE);
-				for (BoardHearingParticipant participant :
-					this.scheduleHearingService
-					.findBoardHearingParticipantsByHearing(boardHearing)) {
+				for (BoardHearingParticipant participant
+						: this.scheduleHearingService
+						.findBoardHearingParticipantsByHearing(boardHearing)) {
 					if (participant.getNumber().equals(ONE)) {
 						item.setBoardHearingParticipant1(participant);
 						item.setBoardMember1(participant.getBoardMember());

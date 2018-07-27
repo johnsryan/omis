@@ -7,11 +7,20 @@ import omis.media.domain.Photo;
  * Data access object for photos.
  * 
  * @author Stephen Abson
- * @version 0.1.0 (Feb 8, 2013)
+ * @author Joel Norris
+ * @version 0.1.1 (July 9, 2018)
  * @since OMIS 3.0
  */
 public interface PhotoDao
 		extends GenericDao<Photo> {
+	
+	/**
+	 * Returns the photo with the specified filename.
+	 * 
+	 * @param filename filename
+	 * @return photo
+	 */
+	Photo find(String filename);
 
 	/**
 	 * Returns the next database generated filename distinguisher for photos.

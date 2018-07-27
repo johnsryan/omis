@@ -23,6 +23,7 @@
 			<constructor-arg name="userPreferenceDao" ref="userPreferenceDao"/>
 			<constructor-arg name="userAccountDelegate" ref="userAccountDelegate"/>
 			<constructor-arg name="userPreferenceDelegate" ref="userPreferenceDelegate"/>
+			<constructor-arg name="photoDelegate" ref="photoDelegate"/>
 	</bean>
 
 	<!--  Data access objects -->
@@ -49,4 +50,31 @@
 		<constructor-arg name="userPreferenceDao" ref="userPreferenceDao"/>
 		<constructor-arg name="userPreferenceInstanceFactory" ref="userPreferenceInstanceFactory"/>
 	</bean>
+	
+	<!-- Photo Retrievers -->
+		
+		 <bean id="userPreferencePhotoRetriever"
+            class="omis.media.io.impl.SimplePhotoRetrieverImpl">
+    		<constructor-arg name="fileLocator" ref="userPreferencePhotoLocator"/>
+    		<constructor-arg name="defaultFilename" value="NotFound.jpg"/>
+		</bean>
+        
+        <!-- Photo Persisters -->
+        
+        <bean id="userPreferencePhotoPersister"
+	        class="omis.media.io.impl.SimplePhotoPersisterImpl">
+    		<constructor-arg name="fileLocator" ref="userPreferencePhotoLocator"/>
+  		</bean>
+  		
+  		<!-- Photo File Locators -->
+
+	  	<bean id="userPreferencePhotoLocator" class="omis.io.impl.FileFromPathLocatorImpl">
+	    	<constructor-arg name="path" value="${application.resource.path}\Photos\UserPreferencePhotos"/>
+	  	</bean>
+        
+        <!-- Photo File Remover -->
+        
+        <bean id="userPreferencePhotoRemover" class="omis.io.impl.SimpleFileRemoverImpl">
+        	<constructor-arg name="fileLocator" ref="userPreferencePhotoLocator"/>
+        </bean>
 </beans>        

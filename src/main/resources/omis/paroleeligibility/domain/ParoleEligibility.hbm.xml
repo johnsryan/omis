@@ -97,15 +97,29 @@
 	<query name="findUnscheduledParoleEligibilitiesIncluding"><![CDATA[
 		select eligibility
 		from
-			omis.hearinganalysis.domain.HearingAnalysis hearingAnalysis
-		inner join
-			hearingAnalysis.eligibility eligibility
-		inner join
-			hearingAnalysis.paroleBoardItinerary paroleBoardItinerary
+			omis.paroleeligibility.domain.ParoleEligibility eligibility
 		where
-			paroleBoardItinerary = :paroleBoardItinerary
+			(eligibility in (
+				select eligibility1
+				from
+					omis.hearinganalysis.domain.HearingAnalysis hearingAnalysis
+				inner join
+					hearingAnalysis.eligibility eligibility1
+				inner join
+					hearingAnalysis.paroleBoardItinerary paroleBoardItinerary
+				where
+					paroleBoardItinerary = :paroleBoardItinerary)
+			)
 		or
-			(eligibility.status.category = 'APPEARING')
+			(eligibility.status.category = 'APPEARING'
+			and
+			eligibility not in
+				(select eligibility2
+				from
+					omis.boardhearing.domain.BoardHearing as boardHearing
+				inner join
+					boardHearing.paroleEligibility as eligibility2)
+			)
 		order by
 			eligibility.hearingEligibilityDate asc
 	]]></query>

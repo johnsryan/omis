@@ -1,16 +1,18 @@
 package omis.userpreference.service.delegate;
 
 import omis.instance.factory.InstanceFactory;
+import omis.media.domain.Photo;
 import omis.user.domain.UserAccount;
 import omis.userpreference.dao.UserPreferenceDao;
 import omis.userpreference.domain.ColorValue;
+import omis.userpreference.domain.DisplayTheme;
 import omis.userpreference.domain.UserPreference;
 
 /**
  * User preference delegate.
  * 
  * @author Joel Norris
- * @version 0.1.0 (Nov 30, 2015)
+ * @version 0.1.1 (July, 16 2018)
  * @since OMIS 3.0
  */
 public class UserPreferenceDelegate {
@@ -50,6 +52,7 @@ public class UserPreferenceDelegate {
 	 * @param userAccount user account
 	 * @return user preference
 	 */
+	@Deprecated
 	public UserPreference create(final ColorValue foregroundColorValue,
 			final ColorValue backgroundColorValue,
 			final ColorValue accentColorValue,
@@ -59,6 +62,32 @@ public class UserPreferenceDelegate {
 		this.populateUserPreference(userPreference, foregroundColorValue,
 				backgroundColorValue, accentColorValue, whiteBackground);
 		userPreference.setUserAccount(userAccount);
+		return this.userPreferenceDao.makePersistent(userPreference);
+	}
+
+	/**
+	 * Creates a new user preference.
+	 * 
+	 * @param foregroundColorValue foreground color value
+	 * @param backgroundColorValue background color value
+	 * @param accentColorValue accent color value
+	 * @param whiteBackground white background
+	 * @param shadows shadows
+	 * @param borderRadius border radius
+	 * @param userAccount user account
+	 * @return user preference
+	 */
+	public UserPreference create(final ColorValue foregroundColorValue,
+			final ColorValue backgroundColorValue, final ColorValue accentColorValue,
+			final Boolean whiteBackground, final Boolean shadows, final Short borderRadius,
+			final DisplayTheme displayTheme, final Photo backgroundPhoto, 
+			final UserAccount userAccount) {
+		UserPreference userPreference = userPreferenceInstanceFactory.createInstance();
+		userPreference.setUserAccount(userAccount);
+		this.populateUserPreference(userPreference, foregroundColorValue, backgroundColorValue,
+				accentColorValue, whiteBackground,
+				borderRadius, shadows, displayTheme,
+				backgroundPhoto);
 		return this.userPreferenceDao.makePersistent(userPreference);
 	}
 	
@@ -71,6 +100,7 @@ public class UserPreferenceDelegate {
 	 * @param whiteBackground white background
 	 * @return updated user preference
 	 */
+	@Deprecated
 	public UserPreference update(final UserPreference userPreference,
 			final ColorValue foregroundColorValue,
 			final ColorValue backgroundColorValue,
@@ -78,6 +108,31 @@ public class UserPreferenceDelegate {
 			final Boolean whiteBackground) {
 		this.populateUserPreference(userPreference, foregroundColorValue,
 				backgroundColorValue, accentColorValue, whiteBackground);
+		return this.userPreferenceDao.makePersistent(userPreference);
+	}
+	
+	/**
+	 * Updates the specified user preference.
+	 * 
+	 * @param userPreference user preference
+	 * @param foregroundColorValue foreground color value
+	 * @param backgroundColorValue backgounrd color value
+	 * @param accentColorValue accent color value
+	 * @param whiteBackground white background
+	 * @param shadows shadows 
+	 * @param borderRadius border radius
+	 * @return updated user preference
+	 */
+	public UserPreference update(final UserPreference userPreference,
+			final ColorValue foregroundColorValue,
+			final ColorValue backgroundColorValue,
+			final ColorValue accentColorValue,
+			final Boolean whiteBackground, final Boolean shadows, final Short borderRadius,
+			final DisplayTheme displayTheme, final Photo backgroundPhoto) {
+		this.populateUserPreference(userPreference, foregroundColorValue,
+				backgroundColorValue, accentColorValue,
+				whiteBackground, borderRadius, shadows,
+				displayTheme, backgroundPhoto);
 		return this.userPreferenceDao.makePersistent(userPreference);
 	}
 	
@@ -112,6 +167,7 @@ public class UserPreferenceDelegate {
 	 * @param whiteBackground white background
 	 * @return populated user preference
 	 */
+	@Deprecated
 	private UserPreference populateUserPreference(
 			final UserPreference userPreference,
 			final ColorValue foregroundColorValue,
@@ -121,6 +177,38 @@ public class UserPreferenceDelegate {
 		userPreference.setBackgroundColorValue(backgroundColorValue);
 		userPreference.setAccentColorValue(accentColorValue);
 		userPreference.setWhiteBackground(whiteBackground);
+		return userPreference;
+	}
+	
+	/*
+	 * Populates the specified user preference.
+	 * 
+	 * @param userPreference user preference
+	 * @param foregroundColorValue foreground color value
+	 * @param backgroundColorValue background color value
+	 * @param accentColorValue accent color value
+	 * @param whiteBackground white background
+	 * @param borderRadius border radius
+	 * @param shadows shadows
+	 * @param displayTheme display theme
+	 * @param backgroundPhoto background photo
+	 * @return populated user preference
+	 */
+	private UserPreference populateUserPreference(
+			final UserPreference userPreference,
+			final ColorValue foregroundColorValue,
+			final ColorValue backgroundColorValue,
+			final ColorValue accentColorValue, final Boolean whiteBackground,
+			final Short borderRadius, Boolean shadows,
+			final DisplayTheme displayTheme, final Photo backgroundPhoto) {
+		userPreference.setForegroundColorValue(foregroundColorValue);
+		userPreference.setBackgroundColorValue(backgroundColorValue);
+		userPreference.setAccentColorValue(accentColorValue);
+		userPreference.setWhiteBackground(whiteBackground);
+		userPreference.setBorderRadius(borderRadius);
+		userPreference.setShadows(shadows);
+		userPreference.setDisplayTheme(displayTheme);
+		userPreference.setBackgroundPhoto(backgroundPhoto);
 		return userPreference;
 	}
 }

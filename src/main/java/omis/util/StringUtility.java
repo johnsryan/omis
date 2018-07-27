@@ -11,8 +11,6 @@ public final class StringUtility {
 
 	// Prevents accidental instantiation...
 	private StringUtility() {
-		
-		// ... the entire universe will collapse on itself if allowed!
 		throw new AssertionError("StringUtility instances not allowed");
 	}
 	

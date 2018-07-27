@@ -35,6 +35,8 @@ public class LocationTermChangeActionImpl
 	
 	private String name;
 	
+	private Boolean valid;
+	
 	/** Instantiates implementation of location term change action. */
 	public LocationTermChangeActionImpl() {
 		// Default instantiation
@@ -62,6 +64,18 @@ public class LocationTermChangeActionImpl
 	@Override
 	public String getName() {
 		return this.name;
+	}
+	
+	/** {@inheritDoc} */
+	@Override
+	public void setValid(final Boolean valid) {
+		this.valid = valid;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public Boolean getValid() {
+		return this.valid;
 	}
 	
 	/** {@inheritDoc} */
